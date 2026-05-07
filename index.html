@@ -440,6 +440,10 @@
     box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
   }
 
+  .module-modal-panel {
+    width: min(1060px, 100%);
+  }
+
   .program-modal-close {
     position: sticky;
     top: 14px;
@@ -558,6 +562,257 @@
     transform: translateY(-2px);
   }
 
+  .module-modal-body {
+    font-family: 'Poppins', sans-serif;
+    padding: 40px 46px 44px;
+  }
+
+  .module-detail-title {
+    padding-right: 48px;
+    text-align: center;
+    font-size: clamp(24px, 3.4vw, 34px);
+    line-height: 1.14;
+    font-weight: 900;
+    color: #050505;
+    margin-bottom: 8px;
+  }
+
+  .module-detail-subtitle {
+    text-align: center;
+    font-size: clamp(15px, 2vw, 20px);
+    line-height: 1.45;
+    color: #151515;
+    margin-bottom: 34px;
+  }
+
+  .module-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.78fr) 1fr;
+    gap: 54px;
+    align-items: center;
+  }
+
+  .module-cover-wrap {
+    text-align: center;
+  }
+
+  .module-cover {
+    width: min(270px, 100%);
+    aspect-ratio: 0.74;
+    margin: 0 auto 12px;
+    padding: 24px 22px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+    box-shadow: 0 16px 28px rgba(15, 23, 42, 0.22);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .module-cover-img {
+    width: min(270px, 100%);
+    height: auto;
+    margin: 0 auto 12px;
+    border-radius: 30px;
+    display: block;
+    box-shadow: 0 16px 28px rgba(15, 23, 42, 0.22);
+  }
+
+  .module-cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    pointer-events: none;
+  }
+
+  .module-cover-logo {
+    align-self: flex-end;
+    width: 54px;
+    height: 24px;
+    object-fit: contain;
+    opacity: 0.78;
+  }
+
+  .module-cover-title {
+    font-size: clamp(25px, 3.2vw, 35px);
+    line-height: 0.92;
+    font-weight: 900;
+    letter-spacing: 0;
+    color: #1c1c1c;
+    text-transform: uppercase;
+  }
+
+  .module-cover-title span {
+    display: block;
+    font-size: 0.72em;
+    font-style: italic;
+    font-weight: 700;
+    text-transform: none;
+  }
+
+  .module-cover-art {
+    display: grid;
+    grid-template-columns: 0.9fr 1fr;
+    align-items: end;
+    min-height: 150px;
+  }
+
+  .module-landmark {
+    min-height: 126px;
+    border-radius: 16px 16px 4px 4px;
+    background:
+      linear-gradient(90deg, transparent 45%, #a34721 45% 56%, transparent 56%),
+      linear-gradient(#b8722a 0 0) center 8px / 54px 58px no-repeat,
+      linear-gradient(#d4492d 0 0) center bottom / 104px 30px no-repeat,
+      radial-gradient(circle at 48% 32%, #e8f5ff 0 46px, transparent 47px);
+  }
+
+  .module-cover-penguin {
+    width: 118px;
+    justify-self: end;
+    margin-bottom: -6px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 8px rgba(15, 23, 42, 0.18));
+  }
+
+  .module-cover-author {
+    font-size: 9px;
+    font-weight: 800;
+    color: #1f2937;
+  }
+
+  .module-sold {
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #111;
+  }
+
+  .module-detail-content h4 {
+    font-size: clamp(18px, 2.1vw, 22px);
+    line-height: 1.25;
+    color: #1a1a1a;
+    margin-bottom: 18px;
+  }
+
+  .module-detail-list {
+    display: grid;
+    gap: 10px;
+    margin: 0 0 28px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .module-detail-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #2b2b2b;
+  }
+
+  .module-detail-list li::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    margin-top: 8px;
+    border: 2px solid #0f172a;
+    border-radius: 50%;
+    flex: 0 0 9px;
+  }
+
+  .module-claim-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-width: min(100%, 360px);
+    min-height: 48px;
+    padding: 13px 24px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #7f8191 0%, #2d314d 100%);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 15px;
+    line-height: 1.1;
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.24);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .module-claim-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(15, 23, 42, 0.3);
+  }
+
+  .module-claim-icon {
+    font-size: 17px;
+    line-height: 1;
+  }
+
+  .korea-detail {
+    font-family: 'Poppins', sans-serif;
+    color: #242424;
+  }
+
+  .korea-detail-img {
+    width: 100%;
+    height: auto;
+    max-height: 360px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 28px;
+    border-radius: 16px;
+    background: #f8fafc;
+  }
+
+  .korea-detail h3 {
+    padding-right: 48px;
+    margin-bottom: 18px;
+    font-size: clamp(24px, 3.4vw, 34px);
+    line-height: 1.14;
+    font-weight: 900;
+    color: #242424;
+  }
+
+  .korea-detail p,
+  .korea-detail li {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #242424;
+  }
+
+  .korea-detail p {
+    margin-bottom: 18px;
+  }
+
+  .korea-detail ul,
+  .korea-detail ol {
+    margin: 0 0 24px 20px;
+    padding-left: 18px;
+  }
+
+  .korea-detail strong {
+    font-weight: 900;
+  }
+
+  .korea-detail em {
+    font-style: italic;
+    font-weight: 800;
+  }
+
+  .korea-detail h4 {
+    margin: 32px 0 8px;
+    font-size: clamp(18px, 2.1vw, 22px);
+    line-height: 1.25;
+    font-weight: 900;
+    color: #242424;
+  }
+
   @media (max-width: 1024px) {
     .program-list {
       grid-template-columns: repeat(2, 1fr);
@@ -581,6 +836,63 @@
     .program-modal-body {
       padding: 28px 20px;
     }
+
+    .module-modal-body {
+      padding: 34px 20px;
+    }
+
+    .module-detail-title,
+    .module-detail-subtitle {
+      text-align: left;
+    }
+
+    .module-detail-subtitle {
+      margin-bottom: 28px;
+    }
+
+    .module-detail-layout {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .module-detail-content h4 {
+      font-size: 18px;
+    }
+
+    .module-detail-list li {
+      font-size: 14px;
+      gap: 10px;
+    }
+
+    .module-detail-list li::before {
+      width: 8px;
+      height: 8px;
+      flex-basis: 8px;
+      margin-top: 7px;
+    }
+
+    .module-claim-btn {
+      width: 100%;
+      min-height: 54px;
+      border-radius: 18px;
+      font-size: 18px;
+    }
+
+    .korea-detail h3 {
+      padding-right: 42px;
+      font-size: 24px;
+    }
+
+    .korea-detail p,
+    .korea-detail li {
+      font-size: 14px;
+    }
+
+    .korea-detail ul,
+    .korea-detail ol {
+      margin-left: 20px;
+      padding-left: 16px;
+    }
   }
 
   @media (max-width: 900px) {
@@ -590,10 +902,6 @@
 
     .trending-card {
       min-height: auto;
-    }
-
-    .trending-card-inner {
-      grid-template-columns: 1fr;
     }
 
     .product-grid {
@@ -650,27 +958,7 @@
   }
 
   .trending-card-inner {
-    display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 26px;
-    align-items: center;
-  }
-
-  .trending-poster {
-    aspect-ratio: 16 / 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-    background: transparent;
-  }
-
-  .trending-poster img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 18px;
-    display: block;
+    max-width: 560px;
   }
 
   .trending-content {
@@ -911,7 +1199,6 @@
 
   @media (max-width: 768px) {
     .trending-grid,
-    .trending-card-inner,
     .product-grid {
       grid-template-columns: 1fr;
     }
@@ -1423,6 +1710,7 @@
     <li><a href="#features">Program</a></li>
     <li><a href="#trending-program">Trending</a></li>
     <li><a href="#digital-products">Produk Digital</a></li>
+    <li><a href="english_menfess.html">English Menfess</a></li>
     <li><a href="#communities">Communities</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#footer">About</a></li>
@@ -1443,6 +1731,7 @@
   <a href="#features">Program</a>
   <a href="#trending-program">Trending</a>
   <a href="#digital-products">Produk Digital</a>
+  <a href="english_menfess.html">English Menfess</a>
   <a href="#communities">Communities</a>
   <a href="#gallery">Gallery</a>
   <a href="#footer">About</a>
@@ -1484,7 +1773,7 @@
     <div class="stat-item">
       <div class="stat-icon blue">💬</div>
       <div>
-        <div class="stat-num">5 Bahasa</div>
+        <div class="stat-num">4 Bahasa</div>
         <div class="stat-label">Inggris, Korea, Prancis, Jepang</div>
       </div>
     </div>
@@ -1569,9 +1858,6 @@
     <div class="trending-grid">
       <div class="trending-card featured">
         <div class="trending-card-inner">
-          <div class="trending-poster">
-            <img src="assets/optimized/hangout.jpg" alt="English Hangout Club poster" width="980" height="692" loading="lazy" decoding="async">
-          </div>
           <div class="trending-content">
             <span class="trending-badge">English Hangout Club</span>
             <h3>English Hangout Club</h3>
@@ -1610,7 +1896,7 @@
           <li>Cocok untuk pemula yang ingin mulai konsisten</li>
           <li>Materi bertahap untuk vocabulary dan expression</li>
         </ul>
-        <a href="#" class="product-link">Lihat Produk</a>
+        <a href="#" class="product-link" data-product="english-journey" aria-haspopup="dialog">Lihat Produk</a>
       </article>
 
       <article class="product-card">
@@ -1622,7 +1908,7 @@
           <li>Latihan soal untuk mengukur progress</li>
           <li>Strategi menjawab lebih cepat dan tepat</li>
         </ul>
-        <a href="#" class="product-link">Lihat Produk</a>
+        <a href="#" class="product-link" data-product="toefl-package" aria-haspopup="dialog">Lihat Produk</a>
       </article>
 
       <article class="product-card">
@@ -1634,11 +1920,19 @@
           <li>Kosakata dan ekspresi sehari-hari</li>
           <li>Latihan singkat untuk belajar mandiri</li>
         </ul>
-        <a href="#" class="product-link">Lihat Produk</a>
+        <a href="#" class="product-link" data-product="korea-module" aria-haspopup="dialog">Lihat Produk</a>
       </article>
     </div>
   </div>
 </section>
+
+<div class="program-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle" aria-hidden="true">
+  <div class="program-modal-backdrop" data-close-product></div>
+  <div class="program-modal-panel module-modal-panel">
+    <button class="program-modal-close" type="button" aria-label="Close product details" data-close-product>&times;</button>
+    <div class="module-modal-body" id="productModalBody"></div>
+  </div>
+</div>
 
 <!-- COMMUNITIES -->
 <section id="communities">
@@ -1978,7 +2272,77 @@
 
   const programModal = document.getElementById('programModal');
   const programModalBody = document.getElementById('programModalBody');
+  const productModal = document.getElementById('productModal');
+  const productModalBody = document.getElementById('productModalBody');
   let lastProgramTrigger = null;
+  let lastProductTrigger = null;
+
+  const productDetails = {
+    'english-journey': `
+      <h3 class="module-detail-title" id="productModalTitle">30-DAY ENGLISH JOURNEY (E-MODUL)</h3>
+      <p class="module-detail-subtitle">Belajar bahasa Inggris dari dasar secara mandiri dalam 30 hari!</p>
+
+      <div class="module-detail-layout">
+        <div class="module-cover-wrap">
+          <img class="module-cover-img" src="assets/moduleng.jpg" alt="30-Day English Journey module cover" width="422" height="596" loading="lazy" decoding="async">
+          <div class="module-sold">Terjual 100+</div>
+        </div>
+
+        <div class="module-detail-content">
+          <h4>Modul 30-Day English Journey berisi:</h4>
+          <ul class="module-detail-list">
+            <li>Materi harian bahasa Inggris dari dasar</li>
+            <li>Latihan soal harian dalam setiap materi</li>
+            <li>Kuis evaluasi materi mingguan</li>
+            <li>Kunci jawaban latihan soal harian</li>
+            <li>Kunci jawaban kuis evaluasi mingguan</li>
+            <li>Tips belajar bahasa Inggris otodidak</li>
+          </ul>
+          <a href="https://forms.gle/hRqaRN8WFtXt4fS48" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    `,
+    'korea-module': `
+      <div class="korea-detail">
+        <img class="korea-detail-img" src="assets/modulkorea.png" alt="Modul 30 Hari Belajar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async">
+        <h3 id="productModalTitle">Modul 30 Hari Belajar Bahasa Korea</h3>
+        <p><em>Modul 30 Hari Belajar Bahasa Korea bareng Jeya's Club</em> adalah buku penuntun untuk kamu yang mau otodidak belajar Bahasa Korea dari dasar. Modul ini berisi:</p>
+        <ul>
+          <li>Materi belajar Day 1 - Day 30, lengkap dengan tabel dan ilustrasi untuk belajar Bahasa Korea secara interaktif. <strong>FULL COLOR!</strong></li>
+          <li>Akses Quizlet untuk menambah kosakata Bahasa Korea</li>
+          <li>Latihan soal setiap hari beserta kunci jawabannya</li>
+        </ul>
+        <p>Dengan modul ini, kamu bisa belajar Bahasa Korea secara konsisten setiap harinya tanpa takut kehabisan bahan belajar atau bingung mau belajar apa. <strong>Hanya dengan Rp45.000</strong> kamu udah bisa dapetin <em>Modul 30 Hari Belajar Bahasa Korea ini.</em></p>
+        <h4>Cara aksesnya gimana?</h4>
+        <ol>
+          <li>Isi form ini dengan mengisikan email kamu (jangan sampai typo ya)</li>
+          <li>Email kamu akan diberikan akses link untuk membuka PDF modul</li>
+          <li>Kamu bisa mengakses modul kapanpun dengan email tersebut</li>
+        </ol>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLDVFwIIB_xmc_U7DVQSAD-MFwe1LV_NjfB7GNeaOLAs6bMg/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+      </div>
+    `,
+    'toefl-package': `
+      <div class="korea-detail">
+        <h3 id="productModalTitle">Folder Video &amp; PPT Belajar TOEFL ITP - Jeya's English Club</h3>
+        <p>Folder Video &amp; PPT Belajar TOEFL ITP berisi:</p>
+        <ul>
+          <li>PPT Materi Belajar TOEFL ITP 8 Pertemuan</li>
+          <li>Video Rekaman Zoom Penjelasan Materi 8 Pertemuan</li>
+          <li>Latihan Soal di Tiap Pertemuan</li>
+          <li>Cara Menghitung Skor TOEFL</li>
+        </ul>
+        <p>Dengan folder belajar ini, kamu bisa belajar TOEFL secara konsisten tanpa takut kehabisan bahan belajar atau bingung mau belajar apa. <strong>Hanya dengan Rp50.000</strong> kamu udah bisa dapetin akses folder belajar ini sepuasnya!</p>
+        <h4>Cara aksesnya gimana?</h4>
+        <ol>
+          <li>Isi form ini dengan mengisikan email kamu (jangan sampai typo ya)</li>
+          <li>Email kamu akan diberikan akses link untuk membuka folder</li>
+          <li>Kamu bisa mengakses modul kapanpun dengan email tersebut (atau bisa juga melalui link <a href="https://bit.ly/folderTOEFLjeya2" target="_blank" rel="noreferrer noopener">bit.ly/folderTOEFLjeya2</a></li>
+        </ol>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+      </div>
+    `
+  };
 
   function renderProgramDetails(program) {
     const tags = program.tags.map(tag => `<span class="program-tag">${tag}</span>`).join('');
@@ -2019,6 +2383,26 @@
     if (lastProgramTrigger) lastProgramTrigger.focus();
   }
 
+  function openProductModal(productKey, trigger) {
+    const product = productDetails[productKey];
+    if (!product) return;
+
+    lastProductTrigger = trigger;
+    productModalBody.innerHTML = product;
+    productModal.classList.add('open');
+    productModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    productModal.querySelector('.program-modal-close').focus();
+  }
+
+  function closeProductModal(event) {
+    if (event) event.preventDefault();
+    productModal.classList.remove('open');
+    productModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastProductTrigger) lastProductTrigger.focus();
+  }
+
   document.querySelectorAll('.program-card').forEach(card => {
     card.addEventListener('click', () => openProgramModal(card.dataset.program, card));
   });
@@ -2027,9 +2411,23 @@
     el.addEventListener('click', closeProgramModal);
   });
 
+  document.querySelectorAll('[data-product]').forEach(link => {
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      openProductModal(link.dataset.product, link);
+    });
+  });
+
+  document.querySelectorAll('[data-close-product]').forEach(el => {
+    el.addEventListener('click', closeProductModal);
+  });
+
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && programModal.classList.contains('open')) {
       closeProgramModal();
+    }
+    if (event.key === 'Escape' && productModal.classList.contains('open')) {
+      closeProductModal(event);
     }
   });
 
