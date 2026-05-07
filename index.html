@@ -338,15 +338,17 @@
   .program-card {
     background: var(--white);
     border: 1.5px solid var(--border);
-    border-radius: 20px;
-    padding: 18px 16px;
+    border-radius: 22px;
+    padding: 24px;
     display: flex;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
     text-align: left;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     color: var(--text);
+    min-height: 260px;
   }
 
   .program-card:hover,
@@ -358,20 +360,32 @@
   }
 
   .program-card .feature-img {
-    width: 72px;
-    height: 72px;
-    flex: 0 0 72px;
-    margin: 0;
+    width: 62px;
+    height: 62px;
+    flex: 0 0 62px;
+    margin: 0 0 18px;
+    border-radius: 16px;
+    background: var(--blue-light);
   }
 
   .program-card .feature-name {
-    margin-bottom: 6px;
+    font-size: 18px;
+    line-height: 1.25;
+    margin-bottom: 12px;
   }
 
   .program-card .feature-desc {
     margin-bottom: 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .program-card .program-card-action {
+    margin-top: auto;
+    padding-top: 22px;
+    color: var(--blue);
     font-size: 13px;
-    line-height: 1.5;
+    font-weight: 800;
   }
 
   .program-modal {
@@ -525,6 +539,24 @@
       padding: 28px 20px;
     }
   }
+
+  @media (max-width: 900px) {
+    .trending-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .trending-card {
+      min-height: auto;
+    }
+
+    .trending-card-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+  }
   .feature-img img {
     width: 100%;
     height: 100%;
@@ -536,6 +568,290 @@
   .feature-img.bg-purple,
   .feature-img.bg-yellow {
     background: transparent;
+  }
+
+  /* ── TRENDING PROGRAM ── */
+  .trending-program {
+    background: var(--white);
+  }
+
+  .trending-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 920px);
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .trending-card {
+    position: relative;
+    min-height: 360px;
+    padding: 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
+    overflow: hidden;
+    text-align: left;
+    color: var(--text);
+    box-shadow: 0 14px 34px rgba(22, 63, 122, 0.08);
+  }
+
+  .trending-card.featured {
+    background: linear-gradient(135deg, #f9b233 0%, #ffd66b 48%, #fff1b8 100%);
+    color: #3a2600;
+    border-color: rgba(190, 124, 0, 0.28);
+    box-shadow: 0 22px 48px rgba(190, 124, 0, 0.22);
+  }
+
+  .trending-card:hover {
+    box-shadow: 0 26px 58px rgba(190, 124, 0, 0.28);
+  }
+
+  .trending-card-inner {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 26px;
+    align-items: center;
+  }
+
+  .trending-poster {
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .trending-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 18px;
+    display: block;
+  }
+
+  .trending-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .trending-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(26, 111, 232, 0.1);
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .trending-card.featured .trending-badge {
+    background: rgba(255,255,255,0.46);
+    color: #6d4300;
+  }
+
+  .trending-card h3 {
+    font-size: clamp(28px, 4vw, 46px);
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .trending-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+    max-width: 420px;
+  }
+
+  .trending-card.featured p {
+    color: rgba(58, 38, 0, 0.78);
+  }
+
+  .trending-benefits {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0 22px;
+  }
+
+  .trending-benefit {
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.44);
+    color: #3a2600;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .trending-price-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+
+  .trending-price {
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 900;
+    color: #2c1b00;
+  }
+
+  .trending-date {
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.46);
+    color: #5f3900;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .trending-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 13px 20px;
+    border-radius: 14px;
+    background: #2f5d73;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 12px 24px rgba(47, 93, 115, 0.25);
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .trending-action:hover {
+    background: #24495b;
+    transform: translateY(-2px);
+  }
+
+  /* ── DIGITAL PRODUCTS ── */
+  .digital-products {
+    background: var(--bg);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .product-card {
+    min-height: 310px;
+    padding: 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 22px;
+    background: var(--white);
+    box-shadow: 0 14px 34px rgba(22, 63, 122, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 42px rgba(22, 63, 122, 0.12);
+    border-color: rgba(26, 111, 232, 0.24);
+  }
+
+  .product-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    font-size: 28px;
+  }
+
+  .product-icon.blue { background: #EEF4FF; }
+  .product-icon.gold { background: #FFF4CF; }
+  .product-icon.pink { background: #FFECEF; }
+
+  .product-card h3 {
+    font-size: 20px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .product-card p {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .product-points {
+    display: grid;
+    gap: 9px;
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-points li {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.5;
+    display: flex;
+    gap: 8px;
+  }
+
+  .product-points li::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex: 0 0 7px;
+    margin-top: 6px;
+  }
+
+  .product-link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 11px 16px;
+    border-radius: 12px;
+    background: var(--blue);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .product-link:hover {
+    background: var(--blue-dark);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .trending-grid,
+    .trending-card-inner,
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .trending-card,
+    .product-card {
+      min-height: auto;
+    }
+
+    .trending-benefits {
+      grid-template-columns: 1fr;
+    }
   }
 
   .feature-name {
@@ -713,6 +1029,8 @@
   .gallery .section-title { margin-bottom: 24px; }
   .gallery-slider {
     position: relative;
+    max-width: 860px;
+    margin: 0 auto;
   }
   .gallery-viewport {
     overflow: hidden;
@@ -848,8 +1166,14 @@
     width: 36px; height: 36px; border-radius: 8px;
     background: var(--bg); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; text-decoration: none;
+    text-decoration: none;
     transition: background 0.2s, transform 0.2s;
+  }
+  .social-link img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
   }
   .social-link:hover { background: var(--blue-light); transform: translateY(-2px); }
 
@@ -1027,31 +1351,24 @@
 <div class="container" style="padding: 0 24px; margin-top: -10px; position:relative; z-index:3;">
   <div class="stats">
     <div class="stat-item">
-      <div class="stat-icon blue">👥</div>
+      <div class="stat-icon blue">💬</div>
       <div>
-        <div class="stat-num">350K++</div>
-        <div class="stat-label">Follower</div>
+        <div class="stat-num">5 Bahasa</div>
+        <div class="stat-label">Inggris, Korea, Prancis, Jepang</div>
       </div>
     </div>
     <div class="stat-item">
-      <div class="stat-icon green">📗</div>
+      <div class="stat-icon green">👥</div>
       <div>
-        <div class="stat-num">5</div>
-        <div class="stat-label">Program Kursus</div>
+        <div class="stat-num">350K+ Followers</div>
+        <div class="stat-label">Seluruh Indonesia</div>
       </div>
     </div>
     <div class="stat-item">
-      <div class="stat-icon purple">💬</div>
+      <div class="stat-icon purple">🏆</div>
       <div>
-        <div class="stat-num">5</div>
-        <div class="stat-label">Bahasa</div>
-      </div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-icon gold">🏆</div>
-      <div>
-        <div class="stat-num">120+</div>
-        <div class="stat-label">Badges Earned</div>
+        <div class="stat-num">5 Tahun</div>
+        <div class="stat-label">Pengalaman sejak 2021</div>
       </div>
     </div>
   </div>
@@ -1069,6 +1386,7 @@
             <div class="feature-name">Kursus Dasar Bahasa Inggris</div>
             <div class="feature-desc">Belajar bahasa Inggris dari dasar, supaya paham sampai ke akarnya!</div>
           </div>
+          <span class="program-card-action">Lihat Detail →</span>
         </button>
 
         <button class="program-card" data-program="speaking" aria-haspopup="dialog">
@@ -1077,6 +1395,7 @@
             <div class="feature-name">Private Speaking Practice</div>
             <div class="feature-desc">Program speaking interaktif dengan tutor via Zoom untuk meningkatkan percaya diri.</div>
           </div>
+          <span class="program-card-action">Lihat Detail →</span>
         </button>
 
         <button class="program-card" data-program="writing" aria-haspopup="dialog">
@@ -1085,6 +1404,7 @@
             <div class="feature-name">Private Writing Practice</div>
             <div class="feature-desc">Sesi writing dan reading comprehension interaktif untuk kemampuan bahasa Inggris yang lebih kuat.</div>
           </div>
+          <span class="program-card-action">Lihat Detail →</span>
         </button>
 
         <button class="program-card" data-program="kids" aria-haspopup="dialog">
@@ -1093,6 +1413,7 @@
             <div class="feature-name">English Course for Kids</div>
             <div class="feature-desc">Kursus private anak dengan materi fun dan personalized sesuai kemampuan.</div>
           </div>
+          <span class="program-card-action">Lihat Detail →</span>
         </button>
       </div>
 
@@ -1108,6 +1429,86 @@
   </div>
 </div>
 
+<!-- TRENDING PROGRAM -->
+<section class="trending-program" id="trending-program">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> TRENDING PROGRAM <span class="snow-icon"></span></h2>
+    <p class="section-sub">Program favorit yang paling banyak dipilih untuk mulai belajar lebih percaya diri.</p>
+
+    <div class="trending-grid">
+      <div class="trending-card featured">
+        <div class="trending-card-inner">
+          <div class="trending-poster">
+            <img src="assets/hangout.png" alt="English Hangout Club poster">
+          </div>
+          <div class="trending-content">
+            <span class="trending-badge">English Hangout Club</span>
+            <h3>English Hangout Club</h3>
+            <p>Hangout online seru untuk latihan bahasa Inggris, ngobrol bareng, dan ketemu teman baru selama bulan Mei.</p>
+            <div class="trending-benefits">
+              <span class="trending-benefit">Fun games</span>
+              <span class="trending-benefit">Valuable discussion</span>
+              <span class="trending-benefit">New friends</span>
+              <span class="trending-benefit">Free e-certificate</span>
+            </div>
+            <div class="trending-price-row">
+              <span class="trending-price">35K</span>
+              <span class="trending-date">1-31 Mei 2026</span>
+            </div>
+            <a href="https://jeyasclub.com/#EHC" class="trending-action" target="_blank" rel="noreferrer noopener">Join Program</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIGITAL PRODUCTS -->
+<section class="digital-products" id="digital-products">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Produk Digital <span class="snow-icon"></span></h2>
+    <p class="section-sub">Materi belajar praktis yang bisa kamu pelajari mandiri, kapan saja dan dari mana saja.</p>
+
+    <div class="product-grid">
+      <article class="product-card">
+        <div class="product-icon blue">📘</div>
+        <h3>E-Modul 30-Day English Journey</h3>
+        <p>Panduan belajar 30 hari untuk membangun habit bahasa Inggris secara ringan, terarah, dan konsisten.</p>
+        <ul class="product-points">
+          <li>Latihan harian yang mudah diikuti</li>
+          <li>Cocok untuk pemula yang ingin mulai konsisten</li>
+          <li>Materi bertahap untuk vocabulary dan expression</li>
+        </ul>
+        <a href="#" class="product-link">Lihat Produk</a>
+      </article>
+
+      <article class="product-card">
+        <div class="product-icon gold">📝</div>
+        <h3>Paket Belajar TOEFL</h3>
+        <p>Paket materi untuk membantu persiapan TOEFL dengan fokus latihan, strategi, dan pemahaman tipe soal.</p>
+        <ul class="product-points">
+          <li>Materi listening, structure, dan reading</li>
+          <li>Latihan soal untuk mengukur progress</li>
+          <li>Strategi menjawab lebih cepat dan tepat</li>
+        </ul>
+        <a href="#" class="product-link">Lihat Produk</a>
+      </article>
+
+      <article class="product-card">
+        <div class="product-icon pink">🇰🇷</div>
+        <h3>Modul Otodidak Bahasa Korea</h3>
+        <p>Modul belajar mandiri untuk mengenal dasar bahasa Korea dari hangul, kosakata, hingga kalimat sehari-hari.</p>
+        <ul class="product-points">
+          <li>Pengenalan hangul dan pelafalan dasar</li>
+          <li>Kosakata dan ekspresi sehari-hari</li>
+          <li>Latihan singkat untuk belajar mandiri</li>
+        </ul>
+        <a href="#" class="product-link">Lihat Produk</a>
+      </article>
+    </div>
+  </div>
+</section>
+
 <!-- COMMUNITIES -->
 <section id="communities">
   <div class="container">
@@ -1120,7 +1521,7 @@
         <div class="community-content">
           <div class="community-name">English Hacks</div>
           <div class="community-desc">Belajar Bahasa Inggris | Jeya's English Hacks</div>
-          <a href="#" class="join-link">Join Now →</a>
+          <a href="https://whatsapp.com/channel/0029VaFH75R6RGJPEeRhQb3q" class="join-link">Join Now →</a>
         </div>
       </div>
       <div class="community-card">
@@ -1130,7 +1531,7 @@
         <div class="community-content">
           <div class="community-name">English Articles</div>
           <div class="community-desc">Kumpulan artikel berbahasa Inggris untuk latihan membaca.</div>
-          <a href="#" class="join-link">Join Now →</a>
+          <a href="https://whatsapp.com/channel/0029Vb2ZBsZEwEk4AUChbu0Z" class="join-link">Join Now →</a>
         </div>
       </div>
       <div class="community-card">
@@ -1140,7 +1541,7 @@
         <div class="community-content">
           <div class="community-name">Jeya's French Club</div>
           <div class="community-desc">Komunitas belajar Bahasa Prancis secara fun dan interaktif.</div>
-          <a href="#" class="join-link">Join Now →</a>
+          <a href="https://whatsapp.com/channel/0029VaiL0Wu8vd1Ke25Dwh1f" class="join-link">Join Now →</a>
         </div>
       </div>
       <div class="community-card">
@@ -1150,7 +1551,7 @@
         <div class="community-content">
           <div class="community-name">Jeya's Korean Club</div>
           <div class="community-desc">Belajar Bahasa Korea bersama dengan materi menarik.</div>
-          <a href="#" class="join-link">Join Now →</a>
+          <a href="https://whatsapp.com/channel/0029Vajswtg2P59t5YkG1I05" class="join-link">Join Now →</a>
         </div>
       </div>
       <div class="community-card">
@@ -1160,7 +1561,7 @@
         <div class="community-content">
           <div class="community-name">Jeya's Japanese Club</div>
           <div class="community-desc">Komunitas Bahasa Jepang untuk anak dan remaja pemula.</div>
-          <a href="#" class="join-link">Join Now →</a>
+          <a href="https://whatsapp.com/channel/0029Vb3qQDF9hXF8KS0mJ23v" class="join-link">Join Now →</a>
         </div>
       </div>
     </div>
@@ -1244,9 +1645,10 @@
         </div>
         <p>A language learning and social platform for everyone who wants to grow.</p>
         <div class="social-links">
-          <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club">✉️</a>
-          <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram">📷</a>
-          <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X">X</a>
+          <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="assets/mail.png" alt=""></a>
+          <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="assets/ig.png" alt=""></a>
+          <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="assets/x.png" alt=""></a>
+          <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="assets/linkedin.png" alt=""></a>
         </div>
       </div>
 
