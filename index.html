@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jeya's Club - Language and Social</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="assets/optimized/normal-min.png" fetchpriority="high">
+<link rel="preload" as="image" href="assets/optimized/bg.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -127,7 +131,9 @@
 
   .hero-snowflakes {
     position: absolute; inset: 0; pointer-events: none;
-    background-image: url('assets/bg.png');
+    background-image: url('assets/optimized/bg.jpg');
+    background-size: cover;
+    background-position: center;
     opacity: 0.7;
   }
 
@@ -288,6 +294,17 @@
   /* ── SECTION COMMON ── */
   section { padding: 72px 24px; }
   .container { max-width: 1100px; margin: 0 auto; }
+
+  .features-bg,
+  .trending-program,
+  .digital-products,
+  #communities,
+  .testimonials,
+  .gallery,
+  footer {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 760px;
+  }
 
   .section-title {
     font-size: clamp(24px, 4vw, 34px);
@@ -1398,7 +1415,7 @@
 <!-- NAVBAR -->
 <nav>
   <a href="#home" class="nav-logo">
-    <div class="nav-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo"></div>
+    <div class="nav-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" decoding="async" fetchpriority="high"></div>
   </a>
 
   <ul class="nav-links">
@@ -1448,14 +1465,14 @@
 
     <div class="hero-penguins">
       <!-- Floating penguins -->
-      <div class="penguin-float penguin-float-1" title="Floating penguin ok"><img src="assets/piala.png" alt="Floating penguin ok"></div>
-      <div class="penguin-float penguin-float-2" title="Floating penguin jatuh"><img src="assets/jatuh.png" alt="Floating penguin jatuh"></div>
-      <div class="penguin-float penguin-float-3" title="Penguin reading"><img src="assets/love.png" alt="Floating penguin jatuh"></div>
-      <div class="penguin-float penguin-float-4" title="Penguin with glasses"><img src="assets/tidur.png" alt="Floating penguin jatuh"></div>
+      <div class="penguin-float penguin-float-1" title="Floating penguin ok"><img src="assets/optimized/piala.png" alt="Floating penguin ok" width="448" height="560" decoding="async" fetchpriority="high"></div>
+      <div class="penguin-float penguin-float-2" title="Floating penguin jatuh"><img src="assets/optimized/jatuh.png" alt="Floating penguin jatuh" width="368" height="460" decoding="async"></div>
+      <div class="penguin-float penguin-float-3" title="Penguin reading"><img src="assets/optimized/love.png" alt="Floating penguin jatuh" width="360" height="360" decoding="async"></div>
+      <div class="penguin-float penguin-float-4" title="Penguin with glasses"><img src="assets/optimized/tidur.png" alt="Floating penguin jatuh" width="448" height="560" decoding="async"></div>
 
       <!-- Main penguin -->
       <div class="penguin-main">
-        <img src="assets/normal-min.png" alt="Main penguin">
+        <img src="assets/optimized/normal-min.png" alt="Main penguin" width="570" height="760" decoding="async" fetchpriority="high">
       </div>
     </div>
   </div>
@@ -1495,7 +1512,7 @@
     <div class="program-shell">
       <div class="program-list">
         <button class="program-card" data-program="basic" aria-haspopup="dialog">
-          <div class="feature-img bg-blue"><img src="assets/ok.png" alt="Kursus Dasar Bahasa Inggris"></div>
+          <div class="feature-img bg-blue"><img src="assets/optimized/ok.png" alt="Kursus Dasar Bahasa Inggris" width="203" height="260" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">Kursus Dasar Bahasa Inggris</div>
             <div class="feature-desc">Belajar bahasa Inggris dari dasar, supaya paham sampai ke akarnya!</div>
@@ -1504,7 +1521,7 @@
         </button>
 
         <button class="program-card" data-program="speaking" aria-haspopup="dialog">
-          <div class="feature-img bg-green"><img src="assets/laptop.png" alt="Private Speaking Practice"></div>
+          <div class="feature-img bg-green"><img src="assets/optimized/laptop.png" alt="Private Speaking Practice" width="208" height="260" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">Private Speaking Practice</div>
             <div class="feature-desc">Program speaking interaktif dengan tutor via Zoom untuk meningkatkan percaya diri.</div>
@@ -1513,7 +1530,7 @@
         </button>
 
         <button class="program-card" data-program="writing" aria-haspopup="dialog">
-          <div class="feature-img bg-purple"><img src="assets/book.png" alt="Private Writing Practice"></div>
+          <div class="feature-img bg-purple"><img src="assets/optimized/book.png" alt="Private Writing Practice" width="218" height="220" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">Private Writing Practice</div>
             <div class="feature-desc">Sesi writing dan reading comprehension interaktif untuk kemampuan bahasa Inggris yang lebih kuat.</div>
@@ -1522,7 +1539,7 @@
         </button>
 
         <button class="program-card" data-program="kids" aria-haspopup="dialog">
-          <div class="feature-img bg-yellow"><img src="assets/kids.png" alt="English Course for Kids"></div>
+          <div class="feature-img bg-yellow"><img src="assets/optimized/kids.png" alt="English Course for Kids" width="208" height="260" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">English Course for Kids</div>
             <div class="feature-desc">Kursus private anak dengan materi fun dan personalized sesuai kemampuan.</div>
@@ -1553,7 +1570,7 @@
       <div class="trending-card featured">
         <div class="trending-card-inner">
           <div class="trending-poster">
-            <img src="assets/hangout.png" alt="English Hangout Club poster">
+            <img src="assets/optimized/hangout.jpg" alt="English Hangout Club poster" width="980" height="692" loading="lazy" decoding="async">
           </div>
           <div class="trending-content">
             <span class="trending-badge">English Hangout Club</span>
@@ -1630,7 +1647,7 @@
     <div class="communities-grid">
       <div class="community-card">
         <div class="community-icon" style="background:#FFF8E6;">
-          <img src="assets/jeh.jpg" alt="English Hacks">
+          <img src="assets/jeh.jpg" alt="English Hacks" width="320" height="320" loading="lazy" decoding="async">
         </div>
         <div class="community-content">
           <div class="community-name">English Hacks</div>
@@ -1640,7 +1657,7 @@
       </div>
       <div class="community-card">
         <div class="community-icon" style="background:#EEF4FF;">
-          <img src="assets/kabi.jpg" alt="English Articles">
+          <img src="assets/kabi.jpg" alt="English Articles" width="320" height="320" loading="lazy" decoding="async">
         </div>
         <div class="community-content">
           <div class="community-name">English Articles</div>
@@ -1650,7 +1667,7 @@
       </div>
       <div class="community-card">
         <div class="community-icon" style="background:#FDE6E0;">
-          <img src="assets/jfc.jpg" alt="Jeya's French Club">
+          <img src="assets/jfc.jpg" alt="Jeya's French Club" width="320" height="320" loading="lazy" decoding="async">
         </div>
         <div class="community-content">
           <div class="community-name">Jeya's French Club</div>
@@ -1660,7 +1677,7 @@
       </div>
       <div class="community-card">
         <div class="community-icon" style="background:#E8F5FF;">
-          <img src="assets/jkc.jpg" alt="Jeya's Korean Club">
+          <img src="assets/jkc.jpg" alt="Jeya's Korean Club" width="320" height="320" loading="lazy" decoding="async">
         </div>
         <div class="community-content">
           <div class="community-name">Jeya's Korean Club</div>
@@ -1670,7 +1687,7 @@
       </div>
       <div class="community-card">
         <div class="community-icon" style="background:#E9E4FF;">
-          <img src="assets/jjc.jpg" alt="Jeya's Japanese Club">
+          <img src="assets/jjc.jpg" alt="Jeya's Japanese Club" width="320" height="320" loading="lazy" decoding="async">
         </div>
         <div class="community-content">
           <div class="community-name">Jeya's Japanese Club</div>
@@ -1689,7 +1706,7 @@
     <div class="testimonials-grid">
       <div class="testimonial-card">
         <div class="testimonial-header">
-          <div class="testimonial-avatar"><img src="assets/roro.jpg" alt="Roro Andini"></div>
+          <div class="testimonial-avatar"><img src="assets/roro.jpg" alt="Roro Andini" width="585" height="585" loading="lazy" decoding="async"></div>
           <div>
             <div class="testimonial-name">Roro Andini</div>
             <div class="testimonial-role">Mahasiswa</div>
@@ -1699,7 +1716,7 @@
       </div>
       <div class="testimonial-card">
         <div class="testimonial-header">
-          <div class="testimonial-avatar"><img src="assets/rizqi.jpg" alt="Rizqi Rahmawati"></div>
+          <div class="testimonial-avatar"><img src="assets/rizqi.jpg" alt="Rizqi Rahmawati" width="585" height="585" loading="lazy" decoding="async"></div>
           <div>
             <div class="testimonial-name">Rizqi Rahmawati</div>
             <div class="testimonial-role">Karyawan Swasta</div>
@@ -1732,14 +1749,14 @@
     <div class="gallery-slider" aria-label="Gallery slider">
       <div class="gallery-viewport">
         <div class="gallery-track">
-          <div class="gallery-item"><img src="assets/1.jpg" alt="Gallery image 1"></div>
-          <div class="gallery-item"><img src="assets/2.jpg" alt="Gallery image 2"></div>
-          <div class="gallery-item"><img src="assets/3.jpg" alt="Gallery image 3"></div>
-          <div class="gallery-item"><img src="assets/4.jpg" alt="Gallery image 4"></div>
-          <div class="gallery-item"><img src="assets/5.jpg" alt="Gallery image 5"></div>
-          <div class="gallery-item"><img src="assets/6.jpg" alt="Gallery image 6"></div>
-          <div class="gallery-item"><img src="assets/7.jpg" alt="Gallery image 7"></div>
-          <div class="gallery-item"><img src="assets/8.jpg" alt="Gallery image 8"></div>
+          <div class="gallery-item"><img src="assets/optimized/1.jpg" alt="Gallery image 1" width="900" height="536" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/2.jpg" alt="Gallery image 2" width="900" height="558" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/3.jpg" alt="Gallery image 3" width="1100" height="687" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/4.jpg" alt="Gallery image 4" width="1100" height="687" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/5.jpg" alt="Gallery image 5" width="1100" height="664" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/6.jpg" alt="Gallery image 6" width="1100" height="687" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/7.jpg" alt="Gallery image 7" width="1100" height="687" loading="lazy" decoding="async"></div>
+          <div class="gallery-item"><img src="assets/optimized/8.jpg" alt="Gallery image 8" width="1100" height="621" loading="lazy" decoding="async"></div>
         </div>
       </div>
       <button class="gallery-nav prev" type="button" aria-label="Previous gallery image">&lsaquo;</button>
@@ -1755,15 +1772,15 @@
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-logo">
-          <div class="footer-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo"></div>
+          <div class="footer-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" loading="lazy" decoding="async"></div>
         </div>
         <p>A language learning and social platform for everyone who wants to grow.</p>
         <a href="tel:+6285183305497" class="footer-phone">☎ +62 851 8330 5497</a>
         <div class="social-links">
-          <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="assets/mail.png" alt=""></a>
-          <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="assets/ig.png" alt=""></a>
-          <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="assets/x.png" alt=""></a>
-          <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="assets/linkedin.png" alt=""></a>
+          <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="assets/mail.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="assets/ig.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="assets/x.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="assets/linkedin.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
         </div>
       </div>
 
