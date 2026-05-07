@@ -326,14 +326,12 @@
   }
 
   .program-shell {
-    display: grid;
-    grid-template-columns: minmax(280px, 380px) 1fr;
-    gap: 24px;
-    align-items: start;
+    display: block;
   }
 
   .program-list {
     display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 14px;
   }
 
@@ -352,19 +350,17 @@
   }
 
   .program-card:hover,
-  .program-card.active {
+  .program-card:focus-visible {
     transform: translateY(-2px);
     box-shadow: 0 14px 28px rgba(22, 63, 122, 0.08);
     border-color: rgba(16, 59, 171, 0.24);
-  }
-
-  .program-card.active {
-    background: rgba(236, 244, 255, 0.9);
+    outline: none;
   }
 
   .program-card .feature-img {
     width: 72px;
     height: 72px;
+    flex: 0 0 72px;
     margin: 0;
   }
 
@@ -378,35 +374,155 @@
     line-height: 1.5;
   }
 
-  .program-iframe-wrap {
+  .program-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .program-modal.open {
+    display: flex;
+  }
+
+  .program-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(5px);
+  }
+
+  .program-modal-panel {
+    position: relative;
+    width: min(760px, 100%);
+    max-height: min(86vh, 780px);
+    overflow: auto;
     background: var(--white);
-    border: 1.5px solid var(--border);
     border-radius: 24px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(22, 63, 122, 0.06);
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
   }
 
-  #programFrame {
-    width: 100%;
-    min-height: 560px;
-    border: none;
+  .program-modal-close {
+    position: sticky;
+    top: 14px;
+    float: right;
+    z-index: 2;
+    width: 42px;
+    height: 42px;
+    margin: 14px 14px 0 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--text);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
   }
 
-  .program-frame-caption {
-    padding: 14px 18px;
+  .program-modal-close:hover {
+    color: var(--blue);
+    border-color: rgba(26, 111, 232, 0.32);
+  }
+
+  .program-modal-body {
+    padding: 34px;
+  }
+
+  .program-modal-body h3 {
+    font-size: clamp(24px, 4vw, 34px);
+    line-height: 1.15;
+    color: #102a43;
+    margin-bottom: 16px;
+    padding-right: 42px;
+  }
+
+  .program-modal-body p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #334155;
+    margin-bottom: 20px;
+  }
+
+  .program-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .program-tag {
+    display: inline-flex;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: #eff6ff;
+    color: #0f172a;
     font-size: 13px;
-    color: var(--text-muted);
-    border-top: 1px solid var(--border);
-    background: var(--bg);
+    font-weight: 700;
+  }
+
+  .program-modal-body h4 {
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .program-modal-body ul {
+    padding-left: 20px;
+    color: #334155;
+    line-height: 1.8;
+    margin: 0 0 24px;
+  }
+
+  .program-modal-body li {
+    margin-bottom: 8px;
+  }
+
+  .program-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 18px;
+  }
+
+  .program-table th,
+  .program-table td {
+    padding: 12px 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    text-align: left;
+    font-size: 14px;
+    color: #102a43;
+  }
+
+  .program-table th {
+    background: #eef2ff;
+  }
+
+  @media (max-width: 1024px) {
+    .program-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   @media (max-width: 768px) {
-    .program-shell {
+    .program-list {
       grid-template-columns: 1fr;
     }
 
-    #programFrame {
-      min-height: 520px;
+    .program-modal {
+      padding: 14px;
+    }
+
+    .program-modal-panel {
+      max-height: 88vh;
+      border-radius: 20px;
+    }
+
+    .program-modal-body {
+      padding: 28px 20px;
     }
   }
   .feature-img img {
@@ -882,7 +998,7 @@
     <h2 class="section-title"><span class="snow-icon"></span> Program Belajar <span class="snow-icon"></span></h2>
     <div class="program-shell">
       <div class="program-list">
-        <button class="program-card active" data-program="basic">
+        <button class="program-card" data-program="basic" aria-haspopup="dialog">
           <div class="feature-img bg-blue"><img src="assets/ok.png" alt="Kursus Dasar Bahasa Inggris"></div>
           <div>
             <div class="feature-name">Kursus Dasar Bahasa Inggris</div>
@@ -890,7 +1006,7 @@
           </div>
         </button>
 
-        <button class="program-card" data-program="speaking">
+        <button class="program-card" data-program="speaking" aria-haspopup="dialog">
           <div class="feature-img bg-green"><img src="assets/laptop.png" alt="Private Speaking Practice"></div>
           <div>
             <div class="feature-name">Private Speaking Practice</div>
@@ -898,7 +1014,7 @@
           </div>
         </button>
 
-        <button class="program-card" data-program="writing">
+        <button class="program-card" data-program="writing" aria-haspopup="dialog">
           <div class="feature-img bg-purple"><img src="assets/book.png" alt="Private Writing Practice"></div>
           <div>
             <div class="feature-name">Private Writing Practice</div>
@@ -906,7 +1022,7 @@
           </div>
         </button>
 
-        <button class="program-card" data-program="kids">
+        <button class="program-card" data-program="kids" aria-haspopup="dialog">
           <div class="feature-img bg-yellow"><img src="assets/kids.png" alt="English Course for Kids"></div>
           <div>
             <div class="feature-name">English Course for Kids</div>
@@ -915,13 +1031,17 @@
         </button>
       </div>
 
-      <div class="program-iframe-wrap">
-        <iframe id="programFrame" title="Program Details" sandbox="allow-same-origin allow-scripts" srcdoc="<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Kursus Dasar Bahasa Inggris</h1><p>Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.</p><span class='tag'>8 Pertemuan Online • Durasi @90 Menit</span><span class='tag'>Bebas Tentukan Jadwalmu, 2x Seminggu</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Kelas interaktif dengan tutor melalui Zoom</li><li>Bisa booking kursus bareng teman kamu</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya</li><li>Dapat rekaman kelas</li><li>Bebas tanya jawab</li><li>Sertifikat kepesertaan kursus</li></ul><table class='program-table'><thead><tr><th>Kapasitas</th><th>Harga</th></tr></thead><tbody><tr><td>1 Orang</td><td>Rp600.000</td></tr><tr><td>2 Orang</td><td>Rp350.000 / siswa</td></tr><tr><td>3 Orang</td><td>Rp300.000 / siswa</td></tr><tr><td>4 Orang</td><td>Rp250.000 / siswa</td></tr></tbody></table></div></body></html>"></iframe>
-        <div class="program-frame-caption">Klik judul program di kiri untuk melihat detail & harga masing-masing.</div>
-      </div>
     </div>
   </div>
 </section>
+
+<div class="program-modal" id="programModal" role="dialog" aria-modal="true" aria-labelledby="programModalTitle" aria-hidden="true">
+  <div class="program-modal-backdrop" data-close-program></div>
+  <div class="program-modal-panel">
+    <button class="program-modal-close" type="button" aria-label="Close program details" data-close-program>&times;</button>
+    <div class="program-modal-body" id="programModalBody"></div>
+  </div>
+</div>
 
 <!-- COMMUNITIES -->
 <section id="communities">
@@ -1163,22 +1283,137 @@
   }
 
   const programDetails = {
-    basic: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Kursus Dasar Bahasa Inggris</h1><p>Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.</p><span class='tag'>8 Pertemuan Online • Durasi @90 Menit</span><span class='tag'>Bebas Tentukan Jadwalmu, 2x Seminggu</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Kelas interaktif dengan tutor melalui Zoom</li><li>Bisa booking kursus bareng teman kamu</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya</li><li>Dapat rekaman kelas</li><li>Bebas tanya jawab</li><li>Sertifikat kepesertaan kursus</li></ul><table class='program-table'><thead><tr><th>Kapasitas</th><th>Harga</th></tr></thead><tbody><tr><td>1 Orang</td><td>Rp600.000</td></tr><tr><td>2 Orang</td><td>Rp350.000 / siswa</td></tr><tr><td>3 Orang</td><td>Rp300.000 / siswa</td></tr><tr><td>4 Orang</td><td>Rp250.000 / siswa</td></tr></tbody></table></div></body></html>`,
-    speaking: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Private Speaking Practice</h1><p>Program speaking interaktif pribadi dengan tutor via Zoom untuk meningkatkan percaya diri dan kelancaran bicara.</p><span class='tag'>Private Online Course</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Sesi private speaking interaktif dengan tutor melalui Zoom</li><li>Bisa booking kursus bareng teman kamu</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya!</li><li>Topik disediakan, bisa juga pilih sendiri!</li><li>Sertifikat kepesertaan kursus dari Jeya's English Club</li></ul><table class='program-table'><thead><tr><th>Pertemuan</th><th>Harga</th></tr></thead><tbody><tr><td>2 Pertemuan/Bulan</td><td>Rp180.000</td></tr><tr><td>4 Pertemuan/Bulan</td><td>Rp300.000</td></tr><tr><td>8 Pertemuan/Bulan</td><td>Rp550.000</td></tr></tbody></table></div></body></html>`,
-    writing: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Private Writing Practice</h1><p>Sesi private writing dan reading comprehension interaktif dengan tutor via Zoom Meeting.</p><span class='tag'>Private Online Course</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Sesi private interaktif writing dan reading comprehension dengan tutor via Zoom Meeting</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya!</li><li>Topik dan materi beraneka ragam sesuai minat siswa</li><li>Dapat rekaman kelas</li><li>Sertifikat kepesertaan kursus dari Jeya's Club</li></ul><table class='program-table'><thead><tr><th>Pertemuan</th><th>Harga</th></tr></thead><tbody><tr><td>2 Pertemuan/Bulan</td><td>Rp200.000</td></tr><tr><td>4 Pertemuan/Bulan</td><td>Rp350.000</td></tr><tr><td>8 Pertemuan/Bulan</td><td>Rp650.000</td></tr></tbody></table></div></body></html>`,
-    kids: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>English Course for Kids</h1><p>Kursus bahasa Inggris sesuai kemampuan anak dengan pendekatan private dan fun.</p><span class='tag'>Private Online Course</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Sesi private course dengan tutor melalui Zoom</li><li>Materi belajar personalized (menyesuaikan kemampuan siswa)</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya!</li><li>Dapat rekaman kelas</li><li>Bebas tanya jawab</li><li>Sertifikat kepesertaan kursus dari Jeya's English Club</li></ul><table class='program-table'><thead><tr><th>Pertemuan</th><th>Harga</th></tr></thead><tbody><tr><td>2 Pertemuan/Bulan</td><td>Rp200.000</td></tr><tr><td>4 Pertemuan/Bulan</td><td>Rp375.000</td></tr><tr><td>8 Pertemuan/Bulan</td><td>Rp700.000</td></tr></tbody></table></div></body></html>`
+    basic: {
+      title: 'Kursus Dasar Bahasa Inggris',
+      description: 'Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.',
+      tags: ['8 Pertemuan Online - Durasi @90 Menit', 'Bebas Tentukan Jadwalmu, 2x Seminggu'],
+      facilities: [
+        'Kelas interaktif dengan tutor melalui Zoom',
+        'Bisa booking kursus bareng teman kamu',
+        'Jadwal fleksibel, bisa kamu tentukan hari & jamnya',
+        'Dapat rekaman kelas',
+        'Bebas tanya jawab',
+        'Sertifikat kepesertaan kursus'
+      ],
+      tableHead: ['Kapasitas', 'Harga'],
+      rows: [
+        ['1 Orang', 'Rp600.000'],
+        ['2 Orang', 'Rp350.000 / siswa'],
+        ['3 Orang', 'Rp300.000 / siswa'],
+        ['4 Orang', 'Rp250.000 / siswa']
+      ]
+    },
+    speaking: {
+      title: 'Private Speaking Practice',
+      description: 'Program speaking interaktif pribadi dengan tutor via Zoom untuk meningkatkan percaya diri dan kelancaran bicara.',
+      tags: ['Private Online Course'],
+      facilities: [
+        'Sesi private speaking interaktif dengan tutor melalui Zoom',
+        'Bisa booking kursus bareng teman kamu',
+        'Jadwal fleksibel, bisa kamu tentukan hari & jamnya!',
+        'Topik disediakan, bisa juga pilih sendiri!',
+        "Sertifikat kepesertaan kursus dari Jeya's English Club"
+      ],
+      tableHead: ['Pertemuan', 'Harga'],
+      rows: [
+        ['2 Pertemuan/Bulan', 'Rp180.000'],
+        ['4 Pertemuan/Bulan', 'Rp300.000'],
+        ['8 Pertemuan/Bulan', 'Rp550.000']
+      ]
+    },
+    writing: {
+      title: 'Private Writing Practice',
+      description: 'Sesi private writing dan reading comprehension interaktif dengan tutor via Zoom Meeting.',
+      tags: ['Private Online Course'],
+      facilities: [
+        'Sesi private interaktif writing dan reading comprehension dengan tutor via Zoom Meeting',
+        'Jadwal fleksibel, bisa kamu tentukan hari & jamnya!',
+        'Topik dan materi beraneka ragam sesuai minat siswa',
+        'Dapat rekaman kelas',
+        "Sertifikat kepesertaan kursus dari Jeya's Club"
+      ],
+      tableHead: ['Pertemuan', 'Harga'],
+      rows: [
+        ['2 Pertemuan/Bulan', 'Rp200.000'],
+        ['4 Pertemuan/Bulan', 'Rp350.000'],
+        ['8 Pertemuan/Bulan', 'Rp650.000']
+      ]
+    },
+    kids: {
+      title: 'English Course for Kids',
+      description: 'Kursus bahasa Inggris sesuai kemampuan anak dengan pendekatan private dan fun.',
+      tags: ['Private Online Course'],
+      facilities: [
+        'Sesi private course dengan tutor melalui Zoom',
+        'Materi belajar personalized (menyesuaikan kemampuan siswa)',
+        'Jadwal fleksibel, bisa kamu tentukan hari & jamnya!',
+        'Dapat rekaman kelas',
+        'Bebas tanya jawab',
+        "Sertifikat kepesertaan kursus dari Jeya's English Club"
+      ],
+      tableHead: ['Pertemuan', 'Harga'],
+      rows: [
+        ['2 Pertemuan/Bulan', 'Rp200.000'],
+        ['4 Pertemuan/Bulan', 'Rp375.000'],
+        ['8 Pertemuan/Bulan', 'Rp700.000']
+      ]
+    }
   };
 
-  function setProgram(programKey) {
-    const frame = document.getElementById('programFrame');
-    frame.srcdoc = programDetails[programKey];
-    document.querySelectorAll('.program-card').forEach(card => {
-      card.classList.toggle('active', card.dataset.program === programKey);
-    });
+  const programModal = document.getElementById('programModal');
+  const programModalBody = document.getElementById('programModalBody');
+  let lastProgramTrigger = null;
+
+  function renderProgramDetails(program) {
+    const tags = program.tags.map(tag => `<span class="program-tag">${tag}</span>`).join('');
+    const facilities = program.facilities.map(item => `<li>${item}</li>`).join('');
+    const tableHead = program.tableHead.map(item => `<th>${item}</th>`).join('');
+    const rows = program.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('');
+
+    return `
+      <h3 id="programModalTitle">${program.title}</h3>
+      <p>${program.description}</p>
+      <div class="program-tags">${tags}</div>
+      <h4>Fasilitas</h4>
+      <ul>${facilities}</ul>
+      <table class="program-table">
+        <thead><tr>${tableHead}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  function openProgramModal(programKey, trigger) {
+    const program = programDetails[programKey];
+    if (!program) return;
+
+    lastProgramTrigger = trigger;
+    programModalBody.innerHTML = renderProgramDetails(program);
+    programModal.classList.add('open');
+    programModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    programModal.querySelector('.program-modal-close').focus();
+  }
+
+  function closeProgramModal() {
+    programModal.classList.remove('open');
+    programModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastProgramTrigger) lastProgramTrigger.focus();
   }
 
   document.querySelectorAll('.program-card').forEach(card => {
-    card.addEventListener('click', () => setProgram(card.dataset.program));
+    card.addEventListener('click', () => openProgramModal(card.dataset.program, card));
+  });
+
+  document.querySelectorAll('[data-close-program]').forEach(el => {
+    el.addEventListener('click', closeProgramModal);
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && programModal.classList.contains('open')) {
+      closeProgramModal();
+    }
   });
 </script>
 </body>
