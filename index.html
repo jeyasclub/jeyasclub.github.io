@@ -711,21 +711,24 @@
     padding: 72px 24px;
   }
   .gallery .section-title { margin-bottom: 24px; }
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
+  .gallery-slider {
+    position: relative;
+  }
+  .gallery-viewport {
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: 0 14px 34px rgba(22, 63, 122, 0.12);
+  }
+  .gallery-track {
+    display: flex;
+    transition: transform 0.35s ease;
+    will-change: transform;
   }
   .gallery-item {
-    aspect-ratio: 1;
+    flex: 0 0 100%;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .gallery-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    background: var(--white);
   }
   .gallery-item img {
     width: 100%;
@@ -733,10 +736,72 @@
     object-fit: cover;
     display: block;
   }
+  .gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255,255,255,0.72);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 30px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+  }
+  .gallery-nav:hover {
+    background: var(--blue);
+    color: var(--white);
+  }
+  .gallery-nav.prev { left: 16px; }
+  .gallery-nav.next { right: 16px; }
+  .gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .gallery-dot {
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+    background: #cbd5e1;
+    cursor: pointer;
+    transition: width 0.2s, background 0.2s;
+  }
+  .gallery-dot.active {
+    width: 26px;
+    border-radius: 999px;
+    background: var(--blue);
+  }
   @media (max-width: 768px) {
-    .gallery-grid {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
+    .gallery {
+      padding: 56px 16px;
+    }
+
+    .gallery-viewport {
+      border-radius: 14px;
+    }
+
+    .gallery-nav {
+      width: 38px;
+      height: 38px;
+      font-size: 26px;
+    }
+
+    .gallery-nav.prev { left: 10px; }
+    .gallery-nav.next { right: 10px; }
+  }
+  @media (max-width: 520px) {
+    .gallery-item {
+      aspect-ratio: 4 / 3;
     }
   }
 
@@ -1149,15 +1214,22 @@
 <section class="gallery">
   <div class="container">
     <h2 class="section-title"><span class="snow-icon"></span> Gallery <span class="snow-icon"></span></h2>
-    <div class="gallery-grid">
-      <div class="gallery-item"><img src="assets/1.jpg" alt="Gallery image 1"></div>
-      <div class="gallery-item"><img src="assets/2.jpg" alt="Gallery image 2"></div>
-      <div class="gallery-item"><img src="assets/3.jpg" alt="Gallery image 3"></div>
-      <div class="gallery-item"><img src="assets/4.jpg" alt="Gallery image 4"></div>
-      <div class="gallery-item"><img src="assets/5.jpg" alt="Gallery image 5"></div>
-      <div class="gallery-item"><img src="assets/6.jpg" alt="Gallery image 6"></div>
-      <div class="gallery-item"><img src="assets/7.jpg" alt="Gallery image 7"></div>
-      <div class="gallery-item"><img src="assets/8.jpg" alt="Gallery image 8"></div>
+    <div class="gallery-slider" aria-label="Gallery slider">
+      <div class="gallery-viewport">
+        <div class="gallery-track">
+          <div class="gallery-item"><img src="assets/1.jpg" alt="Gallery image 1"></div>
+          <div class="gallery-item"><img src="assets/2.jpg" alt="Gallery image 2"></div>
+          <div class="gallery-item"><img src="assets/3.jpg" alt="Gallery image 3"></div>
+          <div class="gallery-item"><img src="assets/4.jpg" alt="Gallery image 4"></div>
+          <div class="gallery-item"><img src="assets/5.jpg" alt="Gallery image 5"></div>
+          <div class="gallery-item"><img src="assets/6.jpg" alt="Gallery image 6"></div>
+          <div class="gallery-item"><img src="assets/7.jpg" alt="Gallery image 7"></div>
+          <div class="gallery-item"><img src="assets/8.jpg" alt="Gallery image 8"></div>
+        </div>
+      </div>
+      <button class="gallery-nav prev" type="button" aria-label="Previous gallery image">&lsaquo;</button>
+      <button class="gallery-nav next" type="button" aria-label="Next gallery image">&rsaquo;</button>
+      <div class="gallery-dots" aria-label="Gallery pagination"></div>
     </div>
   </div>
 </section>
@@ -1415,6 +1487,45 @@
       closeProgramModal();
     }
   });
+
+  const gallerySlider = document.querySelector('.gallery-slider');
+  if (gallerySlider) {
+    const galleryTrack = gallerySlider.querySelector('.gallery-track');
+    const gallerySlides = [...gallerySlider.querySelectorAll('.gallery-item')];
+    const galleryDots = gallerySlider.querySelector('.gallery-dots');
+    const prevGalleryBtn = gallerySlider.querySelector('.gallery-nav.prev');
+    const nextGalleryBtn = gallerySlider.querySelector('.gallery-nav.next');
+    let galleryIndex = 0;
+
+    gallerySlides.forEach((_, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'gallery-dot';
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Show gallery image ${index + 1}`);
+      dot.addEventListener('click', () => showGallerySlide(index));
+      galleryDots.appendChild(dot);
+    });
+
+    const galleryDotButtons = [...galleryDots.querySelectorAll('.gallery-dot')];
+
+    function showGallerySlide(index) {
+      galleryIndex = (index + gallerySlides.length) % gallerySlides.length;
+      galleryTrack.style.transform = `translateX(-${galleryIndex * 100}%)`;
+      galleryDotButtons.forEach((dot, dotIndex) => {
+        dot.classList.toggle('active', dotIndex === galleryIndex);
+        dot.setAttribute('aria-current', dotIndex === galleryIndex ? 'true' : 'false');
+      });
+    }
+
+    prevGalleryBtn.addEventListener('click', () => showGallerySlide(galleryIndex - 1));
+    nextGalleryBtn.addEventListener('click', () => showGallerySlide(galleryIndex + 1));
+    gallerySlider.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft') showGallerySlide(galleryIndex - 1);
+      if (event.key === 'ArrowRight') showGallerySlide(galleryIndex + 1);
+    });
+
+    showGallerySlide(0);
+  }
 </script>
 </body>
 </html>
