@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeya's Club - Language and Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A6FE8;
+    --blue-dark: #1558c0;
+    --blue-light: #E8F1FD;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --bg: #f7f9fc;
+    --border: #e5e7eb;
+    --snow: #dce8f7;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 72px; height: 72px; border-radius: 14px;
+    background: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  
+  .nav-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .nav-logo-text { line-height: 1.1; }
+  .nav-logo-text strong { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: 0.3px; display: block; }
+  .nav-logo-text span { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 32px; list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--blue); }
+  .nav-links a.active { border-bottom: 2px solid var(--blue); padding-bottom: 2px; }
+
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+  .btn-login {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 500;
+    color: var(--text); background: none; border: none; cursor: pointer;
+    padding: 8px 16px; border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .btn-login:hover { background: var(--blue-light); }
+
+  .btn-join {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--white); background: var(--blue);
+    border: none; cursor: pointer;
+    padding: 10px 20px; border-radius: 10px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-join:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .nav-hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; }
+
+  .mobile-menu {
+    display: none; flex-direction: column; gap: 0;
+    background: var(--white); border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+  }
+  .mobile-menu a {
+    font-size: 15px; font-weight: 500; color: var(--text);
+    text-decoration: none; padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: block;
+  }
+  .mobile-menu.open { display: flex; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(180deg, #dce8f7 0%, #eaf2fd 50%, #f0f6ff 80%, #ffffff 100%);
+    position: relative; overflow: hidden;
+    padding: 60px 24px 0;
+    min-height: 520px;
+    display: flex; align-items: center;
+  }
+
+  .hero-snowflakes {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: url('assets/bg.png');
+    opacity: 0.7;
+  }
+
+  .hero-trees {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 180px; pointer-events: none;
+    background: linear-gradient(180deg, transparent 0%, rgba(180,210,240,0.3) 100%);
+  }
+
+  .hero-inner {
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 2;
+    gap: 40px;
+  }
+
+  .hero-content { flex: 1; max-width: 440px; }
+
+  .hero-title {
+    font-size: clamp(36px, 6vw, 62px);
+    font-weight: 400; line-height: 1.05;
+    color: var(--text); margin-bottom: 12px;
+  }
+  .hero-title span { color: var(--text); font-weight: 800; }
+
+  .hero-subtitle {
+    font-size: 13px; font-weight: 700; letter-spacing: 4px;
+    color: var(--text); text-transform: uppercase; margin-bottom: 16px;
+  }
+
+  .hero-desc {
+    font-size: 15px; color: var(--text-muted); line-height: 1.7;
+    margin-bottom: 32px; max-width: 340px;
+  }
+
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .btn-primary {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--white); background: var(--blue);
+    border: none; cursor: pointer;
+    padding: 13px 24px; border-radius: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary:hover { background: var(--blue-dark); transform: translateY(-2px); }
+
+  .btn-secondary {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--text); background: var(--white);
+    border: 2px solid var(--border); cursor: pointer;
+    padding: 11px 24px; border-radius: 12px;
+    transition: border-color 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-secondary:hover { border-color: var(--blue); transform: translateY(-2px); }
+
+  .hero-penguins {
+    flex: 1; max-width: 500px;
+    display: flex; align-items: flex-end; justify-content: center;
+    position: relative; min-height: 320px;
+  }
+
+  /* Penguin placeholders */
+  .penguin-main {
+    width: clamp(160px, 80vw, 280px); height: auto;
+    position: relative; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: none;
+    overflow: visible;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-radius: 0;
+    padding: 0;
+  }
+  
+  .penguin-main img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    border-radius: 0;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .penguin-badge {
+    position: absolute; top: -20px; right: -10px;
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, #1A6FE8, #4fa3f7);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 800; color: white;
+    text-align: center; line-height: 1.2;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(26,111,232,0.4);
+  }
+
+  /* Floating small penguins */
+  .penguin-float {
+    position: absolute;
+    width: 210px; height: 210px;
+    background: none;
+    border-radius: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    box-shadow: none;
+    border: none;
+    overflow: hidden;
+  }
+  .penguin-float img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: transparent;
+  }
+  .penguin-float-1 { top: 15px; left: 40px; width: 180px; height: 180px;}
+  .penguin-float-2 { top: 0px; right: 60px; width: 150px; height: 150px; }
+  .penguin-float-3 { bottom: 50px; right: 0px; }
+  .penguin-float-4 { bottom: 30px; left: 0px; width: 240px; height: 240px; }
+
+  /* ── STATS ── */
+  .stats {
+    background: var(--white);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+    border-radius: 20px;
+    margin: -30px 24px 0;
+    padding: 28px 40px;
+    display: flex; align-items: center; justify-content: space-around;
+    flex-wrap: wrap; gap: 24px;
+    position: relative; z-index: 3;
+    max-width: 1100px;
+    margin-left: auto; margin-right: auto;
+    transform: translateY(-10px);
+  }
+
+  .stat-item {
+    display: flex; align-items: center; gap: 14px;
+    flex: 1; min-width: 140px;
+  }
+
+  .stat-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .stat-icon.blue { background: #EEF4FF; }
+  .stat-icon.green { background: #EDFAF3; }
+  .stat-icon.purple { background: #F3EEFF; }
+  .stat-icon.gold { background: #FFF8E6; }
+
+  .stat-num { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 72px 24px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-title {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 800; color: var(--text);
+    text-align: center; margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  .snow-icon { font-size: 20px; color: var(--blue); }
+  .section-sub {
+    text-align: center; color: var(--text-muted);
+    font-size: 15px; margin-bottom: 48px;
+  }
+
+  /* ── FEATURES ── */
+  .features-bg { background: var(--bg); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 28px 20px 24px;
+    text-align: center;
+    border: 1.5px solid var(--border);
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+  }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(26,111,232,0.1); }
+
+  .feature-img {
+    width: 100px; height: 100px; border-radius: 0;
+    margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px;
+    overflow: hidden;
+  }
+
+  .program-shell {
+    display: grid;
+    grid-template-columns: minmax(280px, 380px) 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .program-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .program-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 18px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    color: var(--text);
+  }
+
+  .program-card:hover,
+  .program-card.active {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(22, 63, 122, 0.08);
+    border-color: rgba(16, 59, 171, 0.24);
+  }
+
+  .program-card.active {
+    background: rgba(236, 244, 255, 0.9);
+  }
+
+  .program-card .feature-img {
+    width: 72px;
+    height: 72px;
+    margin: 0;
+  }
+
+  .program-card .feature-name {
+    margin-bottom: 6px;
+  }
+
+  .program-card .feature-desc {
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .program-iframe-wrap {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(22, 63, 122, 0.06);
+  }
+
+  #programFrame {
+    width: 100%;
+    min-height: 560px;
+    border: none;
+  }
+
+  .program-frame-caption {
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  @media (max-width: 768px) {
+    .program-shell {
+      grid-template-columns: 1fr;
+    }
+
+    #programFrame {
+      min-height: 520px;
+    }
+  }
+  .feature-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .feature-img.bg-blue,
+  .feature-img.bg-green,
+  .feature-img.bg-purple,
+  .feature-img.bg-yellow {
+    background: transparent;
+  }
+
+  .feature-name {
+    font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--text);
+  }
+  .feature-desc {
+    font-size: 12.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;
+  }
+
+  .feature-arrow {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto; font-size: 14px; color: var(--text-muted);
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+  }
+  .feature-card:hover .feature-arrow { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+  /* ── COMMUNITIES ── */
+  .communities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 0;
+  }
+
+  .community-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .community-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(26,111,232,0.1); }
+
+  .community-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; margin-bottom: 12px;
+  }
+
+  .community-icon img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+
+  .community-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .community-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+
+  .join-link {
+    font-size: 12.5px; font-weight: 600; color: var(--blue);
+    text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+  }
+  .join-link:hover { gap: 8px; }
+
+
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  .progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .progress-level {
+    font-size: 28px; font-weight: 800; color: var(--text);
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+
+
+  .testimonials {
+    background: var(--bg);
+    padding: 72px 24px;
+  }
+  .testimonials .section-title { margin-bottom: 24px; }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .testimonial-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 16px 35px rgba(26,111,232,0.08);
+  }
+  .testimonial-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .testimonial-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--blue);
+  }
+  .testimonial-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .testimonial-card p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin: 18px 0 0;
+  }
+  .testimonial-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .testimonial-role {
+    font-size: 12px;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  @media (max-width: 768px) {
+    .testimonials-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    background: linear-gradient(135deg, var(--blue) 0%, #4fa3f7 100%);
+    border-radius: 24px;
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .newsletter-left {
+    display: flex; align-items: center; gap: 16px;
+    color: white;
+  }
+  .newsletter-left span { font-size: 28px; }
+  .newsletter-left p { font-size: 15px; font-weight: 600; line-height: 1.4; }
+
+  .newsletter-form {
+    display: flex; gap: 0; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    flex: 1; max-width: 400px; min-width: 260px;
+  }
+  .newsletter-form input {
+    font-family: 'Poppins', sans-serif;
+    flex: 1; padding: 14px 18px;
+    border: none; outline: none;
+    font-size: 13px; background: white;
+  }
+  .newsletter-form button {
+    font-family: 'Poppins', sans-serif;
+    padding: 14px 20px;
+    background: var(--blue-dark);
+    color: white; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .newsletter-form button:hover { background: #0f3d8a; }
+
+  /* ── GALLERY ── */
+  .gallery {
+    background: var(--bg);
+    padding: 72px 24px;
+  }
+  .gallery .section-title { margin-bottom: 24px; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .gallery-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 48px 24px 24px;
+  }
+
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 280px repeat(3, 1fr);
+    gap: 40px; margin-bottom: 40px;
+  }
+
+  .footer-brand { }
+  .footer-logo {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .footer-logo-icon {
+    width: 128px; height: 128px; border-radius: 18px;
+    background: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  
+  .footer-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .footer-logo strong { font-size: 13px; font-weight: 800; display: block; }
+  .footer-logo span { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+
+  .footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 18px; }
+
+  .social-links { display: flex; gap: 12px; }
+  .social-link {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .social-link:hover { background: var(--blue-light); transform: translateY(-2px); }
+
+  .footer-col h4 { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a {
+    font-size: 13px; color: var(--text-muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col ul a:hover { color: var(--blue); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    text-align: center;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  /* Footer penguin */
+  .footer-penguin {
+    position: relative;
+    display: flex; justify-content: flex-end; align-items: flex-end;
+    margin-top: -80px;
+    pointer-events: none;
+  }
+
+  .footer-penguin-img {
+    width: 100px; height: 100px;
+    background: linear-gradient(135deg, #1a1a2e, #2a2a4e);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-links, .nav-actions { display: none; }
+    .nav-hamburger { display: flex; }
+
+    .hero { padding: 40px 16px 0; min-height: auto; }
+    .hero-inner { flex-direction: column; align-items: center; text-align: center; }
+    .hero-content { max-width: 100%; }
+    .hero-desc { margin: 0 auto 28px; }
+    .hero-btns { justify-content: center; flex-direction: column; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    .hero-penguins { min-height: 220px; width: 100%; }
+    .penguin-main { width: clamp(140px, 70vw, 200px); height: auto; }
+    .penguin-float { width: 168px; height: 168px; font-size: 20px; }
+    .penguin-float-1 { left: 40px; }
+    .penguin-float-2 { right: 70px; width: 140px; height: 140px; }
+    .penguin-float-3 { right: 0; top: 80px; }
+    .penguin-float-4 { left: 0; top: 80px; width: 190px; height: 190px; }
+
+    .stats {
+      margin: -20px 16px 0;
+      padding: 20px;
+      grid-template-columns: 1fr 1fr;
+      display: grid;
+      border-radius: 16px;
+    }
+    .stat-item { min-width: auto; }
+
+    section { padding: 48px 16px; }
+
+    .features-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .feature-img { width: 80px; height: 80px; font-size: 34px; }
+
+    .communities-grid { grid-template-columns: 1fr; gap: 12px; }
+    .community-card { display: flex; gap: 16px; align-items: flex-start; }
+    .community-icon { margin-bottom: 0; flex-shrink: 0; }
+    .community-content { flex: 1; }
+
+
+    .speech-bubble::before, .speech-bubble::after { display: none; }
+
+    .newsletter { padding: 24px 20px; border-radius: 16px; }
+    .newsletter-left { flex-direction: column; text-align: center; }
+    .newsletter-form { max-width: 100%; flex: none; width: 100%; }
+
+    .footer-top { grid-template-columns: 1fr; }
+    .footer-col { }
+
+    .footer-penguin { display: none; }
+
+    /* Mobile accordion for footer */
+    .footer-col-mobile summary {
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      list-style: none; display: flex;
+      justify-content: space-between; align-items: center;
+    }
+    .footer-col-mobile summary::after { content: '▾'; }
+    .footer-col-mobile[open] summary::after { content: '▴'; }
+    .footer-col-mobile ul { padding: 12px 0; gap: 12px; }
+  }
+
+  @media (min-width: 769px) {
+    .footer-col-mobile { }
+    .footer-col-mobile summary { display: none; }
+    .footer-col-mobile > ul { display: flex !important; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: 32px; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .feature-card { padding: 20px 14px 18px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo"></div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#communities">Communities</a></li>
+    <li><a href="#footer">About</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="btn-join">Join Now</button>
+  </div>
+
+  <button class="nav-hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">Home</a>
+  <a href="#features">Articles</a>
+  <a href="#communities">Communities</a>
+  <a href="#footer">About</a>
+  <a href="#" style="color:var(--blue);font-weight:600">Join Now</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-snowflakes"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h1 class="hero-title">JEYA'S <span>CLUB</span></h1>
+      <p class="hero-subtitle">Language and Social</p>
+      <p class="hero-desc">A friendly place to learn languages, make friends, and grow every day.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">Join the Community →</a>
+        <a href="#features" class="btn-secondary">Explore More</a>
+      </div>
+    </div>
+
+    <div class="hero-penguins">
+      <!-- Floating penguins -->
+      <div class="penguin-float penguin-float-1" title="Floating penguin ok"><img src="assets/piala.png" alt="Floating penguin ok"></div>
+      <div class="penguin-float penguin-float-2" title="Floating penguin jatuh"><img src="assets/jatuh.png" alt="Floating penguin jatuh"></div>
+      <div class="penguin-float penguin-float-3" title="Penguin reading"><img src="assets/love.png" alt="Floating penguin jatuh"></div>
+      <div class="penguin-float penguin-float-4" title="Penguin with glasses"><img src="assets/tidur.png" alt="Floating penguin jatuh"></div>
+
+      <!-- Main penguin -->
+      <div class="penguin-main">
+        <img src="assets/normal-min.png" alt="Main penguin">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="container" style="padding: 0 24px; margin-top: -10px; position:relative; z-index:3;">
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-icon blue">👥</div>
+      <div>
+        <div class="stat-num">350K++</div>
+        <div class="stat-label">Follower</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon green">📗</div>
+      <div>
+        <div class="stat-num">5</div>
+        <div class="stat-label">Program Kursus</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon purple">💬</div>
+      <div>
+        <div class="stat-num">5</div>
+        <div class="stat-label">Bahasa</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon gold">🏆</div>
+      <div>
+        <div class="stat-num">120+</div>
+        <div class="stat-label">Badges Earned</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-bg" id="features">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Program Belajar <span class="snow-icon"></span></h2>
+    <div class="program-shell">
+      <div class="program-list">
+        <button class="program-card active" data-program="basic">
+          <div class="feature-img bg-blue"><img src="assets/ok.png" alt="Kursus Dasar Bahasa Inggris"></div>
+          <div>
+            <div class="feature-name">Kursus Dasar Bahasa Inggris</div>
+            <div class="feature-desc">Belajar bahasa Inggris dari dasar, supaya paham sampai ke akarnya!</div>
+          </div>
+        </button>
+
+        <button class="program-card" data-program="speaking">
+          <div class="feature-img bg-green"><img src="assets/laptop.png" alt="Private Speaking Practice"></div>
+          <div>
+            <div class="feature-name">Private Speaking Practice</div>
+            <div class="feature-desc">Program speaking interaktif dengan tutor via Zoom untuk meningkatkan percaya diri.</div>
+          </div>
+        </button>
+
+        <button class="program-card" data-program="writing">
+          <div class="feature-img bg-purple"><img src="assets/book.png" alt="Private Writing Practice"></div>
+          <div>
+            <div class="feature-name">Private Writing Practice</div>
+            <div class="feature-desc">Sesi writing dan reading comprehension interaktif untuk kemampuan bahasa Inggris yang lebih kuat.</div>
+          </div>
+        </button>
+
+        <button class="program-card" data-program="kids">
+          <div class="feature-img bg-yellow"><img src="assets/kids.png" alt="English Course for Kids"></div>
+          <div>
+            <div class="feature-name">English Course for Kids</div>
+            <div class="feature-desc">Kursus private anak dengan materi fun dan personalized sesuai kemampuan.</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="program-iframe-wrap">
+        <iframe id="programFrame" title="Program Details" sandbox="allow-same-origin allow-scripts" srcdoc="<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Kursus Dasar Bahasa Inggris</h1><p>Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.</p><span class='tag'>8 Pertemuan Online • Durasi @90 Menit</span><span class='tag'>Bebas Tentukan Jadwalmu, 2x Seminggu</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Kelas interaktif dengan tutor melalui Zoom</li><li>Bisa booking kursus bareng teman kamu</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya</li><li>Dapat rekaman kelas</li><li>Bebas tanya jawab</li><li>Sertifikat kepesertaan kursus</li></ul><table class='program-table'><thead><tr><th>Kapasitas</th><th>Harga</th></tr></thead><tbody><tr><td>1 Orang</td><td>Rp600.000</td></tr><tr><td>2 Orang</td><td>Rp350.000 / siswa</td></tr><tr><td>3 Orang</td><td>Rp300.000 / siswa</td></tr><tr><td>4 Orang</td><td>Rp250.000 / siswa</td></tr></tbody></table></div></body></html>"></iframe>
+        <div class="program-frame-caption">Klik judul program di kiri untuk melihat detail & harga masing-masing.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITIES -->
+<section id="communities">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Join Our Communities <span class="snow-icon"></span></h2>
+    <div class="communities-grid">
+      <div class="community-card">
+        <div class="community-icon" style="background:#FFF8E6;">
+          <img src="assets/jeh.jpg" alt="English Hacks">
+        </div>
+        <div class="community-content">
+          <div class="community-name">English Hacks</div>
+          <div class="community-desc">Belajar Bahasa Inggris | Jeya's English Hacks</div>
+          <a href="#" class="join-link">Join Now →</a>
+        </div>
+      </div>
+      <div class="community-card">
+        <div class="community-icon" style="background:#EEF4FF;">
+          <img src="assets/kabi.jpg" alt="English Articles">
+        </div>
+        <div class="community-content">
+          <div class="community-name">English Articles</div>
+          <div class="community-desc">Kumpulan artikel berbahasa Inggris untuk latihan membaca.</div>
+          <a href="#" class="join-link">Join Now →</a>
+        </div>
+      </div>
+      <div class="community-card">
+        <div class="community-icon" style="background:#FDE6E0;">
+          <img src="assets/jfc.jpg" alt="Jeya's French Club">
+        </div>
+        <div class="community-content">
+          <div class="community-name">Jeya's French Club</div>
+          <div class="community-desc">Komunitas belajar Bahasa Prancis secara fun dan interaktif.</div>
+          <a href="#" class="join-link">Join Now →</a>
+        </div>
+      </div>
+      <div class="community-card">
+        <div class="community-icon" style="background:#E8F5FF;">
+          <img src="assets/jkc.jpg" alt="Jeya's Korean Club">
+        </div>
+        <div class="community-content">
+          <div class="community-name">Jeya's Korean Club</div>
+          <div class="community-desc">Belajar Bahasa Korea bersama dengan materi menarik.</div>
+          <a href="#" class="join-link">Join Now →</a>
+        </div>
+      </div>
+      <div class="community-card">
+        <div class="community-icon" style="background:#E9E4FF;">
+          <img src="assets/jjc.jpg" alt="Jeya's Japanese Club">
+        </div>
+        <div class="community-content">
+          <div class="community-name">Jeya's Japanese Club</div>
+          <div class="community-desc">Komunitas Bahasa Jepang untuk anak dan remaja pemula.</div>
+          <a href="#" class="join-link">Join Now →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Testimonials <span class="snow-icon"></span></h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar"><img src="assets/roro.jpg" alt="Roro Andini"></div>
+          <div>
+            <div class="testimonial-name">Roro Andini</div>
+            <div class="testimonial-role">Mahasiswa</div>
+          </div>
+        </div>
+        <p>"Jeya's Club is my safe place to learn English! Aku sukaaa banget selama belajar disini. Jeya's Club tuh beneran memberi materi selama full seminggu, kita dibimbing, diberikan tugas, dan dikasih kebebasan untuk berdiskusi. Terus karena jeya's club channel Whatsapp juga aku jadi tau tentang hal yang baru, seperti slang atau hal-hal menarik lainnya seputar bahasa Inggris. Jeya's Club is so helpful for me, big thanksss!!"</p>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-header">
+          <div class="testimonial-avatar"><img src="assets/rizqi.jpg" alt="Rizqi Rahmawati"></div>
+          <div>
+            <div class="testimonial-name">Rizqi Rahmawati</div>
+            <div class="testimonial-role">Karyawan Swasta</div>
+          </div>
+        </div>
+        <p>"I'm really happy to join Jeya's Club because it's so helpful! I learned a lot and met amazing people. The support here is real and fun at the same time."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding: 24px 24px 72px;">
+  <div class="newsletter">
+    <div class="newsletter-left">
+      <span>✉️</span>
+      <p>Stay updated with new articles, events and challenges!</p>
+    </div>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Your email address">
+      <button>Subscribe</button>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Gallery <span class="snow-icon"></span></h2>
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="assets/1.jpg" alt="Gallery image 1"></div>
+      <div class="gallery-item"><img src="assets/2.jpg" alt="Gallery image 2"></div>
+      <div class="gallery-item"><img src="assets/3.jpg" alt="Gallery image 3"></div>
+      <div class="gallery-item"><img src="assets/4.jpg" alt="Gallery image 4"></div>
+      <div class="gallery-item"><img src="assets/5.jpg" alt="Gallery image 5"></div>
+      <div class="gallery-item"><img src="assets/6.jpg" alt="Gallery image 6"></div>
+      <div class="gallery-item"><img src="assets/7.jpg" alt="Gallery image 7"></div>
+      <div class="gallery-item"><img src="assets/8.jpg" alt="Gallery image 8"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo"></div>
+        </div>
+        <p>A language learning and social platform for everyone who wants to grow.</p>
+        <div class="social-links">
+          <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club">✉️</a>
+          <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram">📷</a>
+          <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X">X</a>
+        </div>
+      </div>
+
+      <!-- Desktop footer cols -->
+      <div class="footer-col" style="display:none" id="fc1-desktop">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">Articles</a></li>
+          <li><a href="#">Communities</a></li>
+          <li><a href="#">Games</a></li>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" style="display:none" id="fc2-desktop">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Guidelines</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col" style="display:none" id="fc3-desktop">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Challenges</a></li>
+          <li><a href="#">Leaderboard</a></li>
+          <li><a href="#">Events</a></li>
+        </ul>
+      </div>
+
+      <!-- Quick Links -->
+      <details class="footer-col footer-col-mobile">
+        <summary>Quick Links</summary>
+        <ul>
+          <li><a href="#">Articles</a></li>
+          <li><a href="#">Communities</a></li>
+          <li><a href="#">Games</a></li>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </details>
+
+      <!-- Support -->
+      <details class="footer-col footer-col-mobile">
+        <summary>Support</summary>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Guidelines</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </details>
+
+      <!-- Resources -->
+      <details class="footer-col footer-col-mobile">
+        <summary>Resources</summary>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Challenges</a></li>
+          <li><a href="#">Leaderboard</a></li>
+          <li><a href="#">Events</a></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2024 Jeya's Club. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Show desktop footer cols on larger screens, hide mobile accordion
+  function handleFooterLayout() {
+    const isDesktop = window.innerWidth >= 769;
+    ['fc1-desktop','fc2-desktop','fc3-desktop'].forEach(id => {
+      document.getElementById(id).style.display = isDesktop ? 'block' : 'none';
+    });
+    document.querySelectorAll('.footer-col-mobile').forEach(el => {
+      el.style.display = isDesktop ? 'none' : 'block';
+    });
+  }
+  handleFooterLayout();
+  window.addEventListener('resize', handleFooterLayout);
+
+  // Close mobile menu on nav link click
+  document.querySelectorAll('.mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+    });
+  });
+
+  // Animate XP bar on scroll into view
+  const xpBar = document.querySelector('.xp-bar-fill');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        xpBar.style.width = '68%';
+      }
+    });
+  }, { threshold: 0.5 });
+  if (xpBar) {
+    xpBar.style.width = '0%';
+    observer.observe(xpBar);
+  }
+
+  const programDetails = {
+    basic: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Kursus Dasar Bahasa Inggris</h1><p>Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.</p><span class='tag'>8 Pertemuan Online • Durasi @90 Menit</span><span class='tag'>Bebas Tentukan Jadwalmu, 2x Seminggu</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Kelas interaktif dengan tutor melalui Zoom</li><li>Bisa booking kursus bareng teman kamu</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya</li><li>Dapat rekaman kelas</li><li>Bebas tanya jawab</li><li>Sertifikat kepesertaan kursus</li></ul><table class='program-table'><thead><tr><th>Kapasitas</th><th>Harga</th></tr></thead><tbody><tr><td>1 Orang</td><td>Rp600.000</td></tr><tr><td>2 Orang</td><td>Rp350.000 / siswa</td></tr><tr><td>3 Orang</td><td>Rp300.000 / siswa</td></tr><tr><td>4 Orang</td><td>Rp250.000 / siswa</td></tr></tbody></table></div></body></html>`,
+    speaking: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Private Speaking Practice</h1><p>Program speaking interaktif pribadi dengan tutor via Zoom untuk meningkatkan percaya diri dan kelancaran bicara.</p><span class='tag'>Private Online Course</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Sesi private speaking interaktif dengan tutor melalui Zoom</li><li>Bisa booking kursus bareng teman kamu</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya!</li><li>Topik disediakan, bisa juga pilih sendiri!</li><li>Sertifikat kepesertaan kursus dari Jeya's English Club</li></ul><table class='program-table'><thead><tr><th>Pertemuan</th><th>Harga</th></tr></thead><tbody><tr><td>2 Pertemuan/Bulan</td><td>Rp180.000</td></tr><tr><td>4 Pertemuan/Bulan</td><td>Rp300.000</td></tr><tr><td>8 Pertemuan/Bulan</td><td>Rp550.000</td></tr></tbody></table></div></body></html>`,
+    writing: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>Private Writing Practice</h1><p>Sesi private writing dan reading comprehension interaktif dengan tutor via Zoom Meeting.</p><span class='tag'>Private Online Course</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Sesi private interaktif writing dan reading comprehension dengan tutor via Zoom Meeting</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya!</li><li>Topik dan materi beraneka ragam sesuai minat siswa</li><li>Dapat rekaman kelas</li><li>Sertifikat kepesertaan kursus dari Jeya's Club</li></ul><table class='program-table'><thead><tr><th>Pertemuan</th><th>Harga</th></tr></thead><tbody><tr><td>2 Pertemuan/Bulan</td><td>Rp200.000</td></tr><tr><td>4 Pertemuan/Bulan</td><td>Rp350.000</td></tr><tr><td>8 Pertemuan/Bulan</td><td>Rp650.000</td></tr></tbody></table></div></body></html>`,
+    kids: `<!doctype html><html><head><meta charset='utf-8'><style>body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0f172a;background:#f8fafc;} .frame-body{padding:28px;max-width:860px;margin:0 auto;} h1{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px;color:#102a43;} p{font-size:15px;line-height:1.8;color:#334155;margin-bottom:20px;} ul{padding-left:20px;color:#334155;line-height:1.8;margin:0 0 24px;} li{margin-bottom:10px;} .tag{display:inline-block;margin-bottom:10px;padding:10px 14px;border-radius:14px;background:#eff6ff;color:#0f172a;font-weight:700;font-size:13px;} .program-table{width:100%;border-collapse:collapse;margin-top:18px;} .program-table th,.program-table td{padding:12px 14px;border:1px solid rgba(15,23,42,0.08);text-align:left;font-size:14px;color:#102a43;} .program-table th{background:#eef2ff;} .frame-subtitle{margin-top:0;color:#334155;font-size:14px;font-weight:600;}</style></head><body><div class='frame-body'><h1>English Course for Kids</h1><p>Kursus bahasa Inggris sesuai kemampuan anak dengan pendekatan private dan fun.</p><span class='tag'>Private Online Course</span><h2 class='frame-subtitle'>Fasilitas</h2><ul><li>Sesi private course dengan tutor melalui Zoom</li><li>Materi belajar personalized (menyesuaikan kemampuan siswa)</li><li>Jadwal fleksibel, bisa kamu tentukan hari & jamnya!</li><li>Dapat rekaman kelas</li><li>Bebas tanya jawab</li><li>Sertifikat kepesertaan kursus dari Jeya's English Club</li></ul><table class='program-table'><thead><tr><th>Pertemuan</th><th>Harga</th></tr></thead><tbody><tr><td>2 Pertemuan/Bulan</td><td>Rp200.000</td></tr><tr><td>4 Pertemuan/Bulan</td><td>Rp375.000</td></tr><tr><td>8 Pertemuan/Bulan</td><td>Rp700.000</td></tr></tbody></table></div></body></html>`
+  };
+
+  function setProgram(programKey) {
+    const frame = document.getElementById('programFrame');
+    frame.srcdoc = programDetails[programKey];
+    document.querySelectorAll('.program-card').forEach(card => {
+      card.classList.toggle('active', card.dataset.program === programKey);
+    });
+  }
+
+  document.querySelectorAll('.program-card').forEach(card => {
+    card.addEventListener('click', () => setProgram(card.dataset.program));
+  });
+</script>
+</body>
+</html>
