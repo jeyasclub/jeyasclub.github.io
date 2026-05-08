@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jeya's Club - Language and Social</title>
+<meta property="og:image" content="assets/optimized/banner-thumbnail.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="675">
+<meta property="og:image:type" content="image/jpeg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="assets/optimized/banner-thumbnail.jpg">
+<link rel="image_src" href="assets/optimized/banner-thumbnail.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="assets/optimized/normal-min.png" fetchpriority="high">
@@ -983,7 +990,7 @@
   .trending-card {
     position: relative;
     min-height: 360px;
-    padding: 24px;
+    padding: 32px;
     border: 1.5px solid var(--border);
     border-radius: 24px;
     background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
@@ -1005,12 +1012,29 @@
   }
 
   .trending-card-inner {
-    max-width: 560px;
+    max-width: 520px;
   }
 
   .trending-content {
     position: relative;
+    z-index: 2;
+  }
+
+  .trending-illustration {
+    position: absolute;
+    right: clamp(22px, 6vw, 70px);
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 1;
+    width: clamp(170px, 26vw, 260px);
+    pointer-events: none;
+  }
+
+  .trending-illustration img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 22px 26px rgba(83, 48, 0, 0.28));
   }
 
   .trending-badge {
@@ -1042,7 +1066,7 @@
     font-size: 14px;
     line-height: 1.7;
     margin-bottom: 18px;
-    max-width: 420px;
+    max-width: 400px;
   }
 
   .trending-card.featured p {
@@ -1108,6 +1132,13 @@
   .trending-action:hover {
     background: #24495b;
     transform: translateY(-2px);
+  }
+
+  .trending-action.is-disabled {
+    background: rgba(44, 27, 0, 0.86);
+    color: #fff8dd;
+    cursor: default;
+    pointer-events: none;
   }
 
   /* ── DIGITAL PRODUCTS ── */
@@ -1383,6 +1414,25 @@
     .trending-card,
     .product-card {
       min-height: auto;
+    }
+
+    .trending-card {
+      padding: 0 22px 26px;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .trending-card-inner {
+      max-width: none;
+    }
+
+    .trending-illustration {
+      position: relative;
+      right: auto;
+      top: auto;
+      transform: none;
+      width: min(210px, 72vw);
+      margin: 0 auto 6px;
     }
 
     .menfess-card {
@@ -2035,21 +2085,24 @@
       <div class="trending-card featured">
         <div class="trending-card-inner">
           <div class="trending-content">
-            <span class="trending-badge">English Hangout Club</span>
+            <span class="trending-badge">Coming Soon - Juni 2026</span>
             <h3>English Hangout Club</h3>
-            <p>Hangout online seru untuk latihan bahasa Inggris, ngobrol bareng, dan ketemu teman baru selama bulan Mei.</p>
+            <p>Ruang hangout online yang santai untuk latihan speaking, membangun percaya diri, dan ngobrol bareng teman baru tanpa takut salah.</p>
             <div class="trending-benefits">
-              <span class="trending-benefit">Fun games</span>
-              <span class="trending-benefit">Valuable discussion</span>
-              <span class="trending-benefit">New friends</span>
-              <span class="trending-benefit">Free e-certificate</span>
+              <span class="trending-benefit">Live conversation practice</span>
+              <span class="trending-benefit">Fun games &amp; prompts</span>
+              <span class="trending-benefit">Supportive peer circle</span>
+              <span class="trending-benefit">Confidence boost</span>
             </div>
             <div class="trending-price-row">
-              <span class="trending-price">35K</span>
-              <span class="trending-date">1-31 Mei 2026</span>
+              <span class="trending-price">Coming Soon</span>
+              <span class="trending-date">Juni 2026</span>
             </div>
-            <a href="https://jeyasclub.com/#EHC" class="trending-action" target="_blank" rel="noreferrer noopener">Join Program</a>
+            <span class="trending-action is-disabled">Stay Tuned</span>
           </div>
+        </div>
+        <div class="trending-illustration" aria-hidden="true">
+          <img src="assets/optimized/ok.png" alt="" width="203" height="260" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
