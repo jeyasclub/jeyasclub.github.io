@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ - Jeya's Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A6FE8;
+    --blue-light: #E8F1FD;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --bg: #f7f9fc;
+    --border: #e5e7eb;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 64px;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--blue);
+  }
+
+  .nav-links a.active {
+    border-bottom: 2px solid var(--blue);
+    padding-bottom: 2px;
+  }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-hamburger span {
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255,255,255,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow-y: auto;
+    box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-menu a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: block;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  main {
+    padding: 58px 24px 72px;
+  }
+
+  .faq-wrap {
+    width: min(920px, 100%);
+    margin: 0 auto;
+  }
+
+  .faq-title {
+    text-align: center;
+    font-size: clamp(24px, 4vw, 32px);
+    line-height: 1.2;
+    font-weight: 900;
+    margin-bottom: 34px;
+  }
+
+  .faq-section {
+    margin-top: 28px;
+  }
+
+  .faq-section h2 {
+    font-size: clamp(18px, 2.4vw, 22px);
+    line-height: 1.25;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 12px;
+    counter-reset: faq;
+  }
+
+  .faq-item {
+    counter-increment: faq;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .faq-item::before {
+    content: counter(faq) ".";
+    color: #7a7a7a;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .faq-question {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.7;
+  }
+
+  .faq-answer {
+    grid-column: 2;
+    color: #4a4a4a;
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+
+  .module-list {
+    display: grid;
+    gap: 2px;
+  }
+
+  footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 44px 24px;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.2fr) repeat(3, minmax(150px, 1fr));
+    gap: 32px;
+    align-items: start;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .footer-logo-icon {
+    width: 128px;
+    height: 86px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .footer-tagline {
+    max-width: 280px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--blue);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 12px;
+  }
+
+  .social-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .social-link img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .social-link:hover {
+    background: var(--blue-light);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    main { padding: 42px 16px 56px; }
+    .faq-title { margin-bottom: 28px; }
+    .faq-item { grid-template-columns: 20px minmax(0, 1fr); }
+    .footer-top { grid-template-columns: 1fr; gap: 24px; }
+    .footer-logo-icon { width: 112px; height: 76px; }
+    .footer-tagline { max-width: none; }
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="nav-logo" aria-label="Back to Jeya's Club home">
+      <div class="nav-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" decoding="async" fetchpriority="high"></div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#features">Program</a></li>
+      <li><a href="index.html#digital-products">Produk Digital</a></li>
+      <li><a href="english_menfess.html">English Menfess</a></li>
+      <li><a class="active" href="faq.html">FAQ</a></li>
+    </ul>
+
+    <button class="nav-hamburger" type="button" aria-label="Open mobile menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html#features">Program</a>
+    <a href="index.html#digital-products">Produk Digital</a>
+    <a href="english_menfess.html">English Menfess</a>
+    <a href="faq.html">FAQ</a>
+  </div>
+
+  <main>
+    <div class="faq-wrap">
+      <h1 class="faq-title">FAQ</h1>
+
+      <section class="faq-section">
+        <h2>Kursus Privat (Grammar)</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">Jika booking untuk lebih dari 1 orang, apakah Jeya's Club yang mencarikan teman kursusnya?</div>
+            <div class="faq-answer">Jeya's Club tidak bisa mencarikan teman untuk sesi kursus privat. Untuk pemesanan kursus lebih dari satu orang, kamu harus mencari teman sendiri untuk diajak daftar bersama.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <h2>Private Speaking Practice</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">Apa saja topik yang dibahas di setiap sesi?</div>
+            <div class="faq-answer">Topik yang dibahas bisa beragam dan menyesuaikan kebutuhan peserta. Jeya's Club menyediakan topik seperti Pendidikan, Self Development, Career, Music, Movie, Family, Mental Health, dan lain-lain. Namun, kamu juga bisa membicarakan tentang topik lain sesuai minat dan kebutuhan kamu.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Berapa durasi setiap sesi?</div>
+            <div class="faq-answer">Sesi private speaking practice berdurasi 90 menit untuk setiap pertemuannya.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <h2>Modul Belajar</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">Modul apa saja yang tersedia?</div>
+            <div class="faq-answer module-list">
+              <span>Modul 30-Day English 1</span>
+              <span>Modul 30-Day English 2</span>
+              <span>Modul 30 Hari Belajar Bahasa Korea</span>
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Saya telah membeli, di mana saya bisa mengakses modul?</div>
+            <div class="faq-answer">Kamu bisa mengakses modul melalui Google Drive, silakan cek folder "Shared with me" atau "Dibagikan kepada saya" untuk mengakses modul.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">Apakah modul boleh didownload / print?</div>
+            <div class="faq-answer">Untuk menjaga hak cipta, modul Jeya's Club tidak diperkenankan untuk didownload maupun diprint. Namun untuk modul <strong>30 Hari Belajar Bahasa Korea</strong> kamu akan mendapatkan workbook yang bisa didownload dan diprint untuk latihan soal.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <h2>Video Belajar TOEFL</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">Saya telah membeli, di mana saya bisa mengakses folder?</div>
+            <div class="faq-answer">Kamu bisa mengakses modul melalui Google Drive, silakan cek folder "Shared with me" atau "Dibagikan kepada saya" untuk mengakses modul.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <h2>Lainnya</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-question">Apakah Jeya's Club bisa menyediakan program training Bahasa Inggris untuk karyawan perusahaan?</div>
+            <div class="faq-answer">Ya, Jeya's Club terbuka untuk penyediaan <em>corporate training</em>, silakan hubungi kontak <strong>WhatsApp 0851-8330-5497</strong> untuk informasi lebih lanjut.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="footer-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" loading="lazy" decoding="async"></div>
+          </div>
+          <p class="footer-tagline">A language learning and social platform for everyone who wants to grow.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a></li>
+            <li><a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">+62 851 8330 5497</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Social Media</h4>
+          <div class="social-links">
+            <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="assets/mail.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="assets/ig.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="assets/x.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="assets/linkedin.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Links</h4>
+          <ul class="footer-links">
+            <li><a href="english_menfess.html">English Menfess</a></li>
+            <li><a href="english_menfess.html#paid-promote">Partnership</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
