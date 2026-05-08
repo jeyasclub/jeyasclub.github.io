@@ -78,6 +78,29 @@
 
   .nav-actions { display: flex; align-items: center; gap: 12px; }
 
+  .nav-trending-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #2d1a00;
+    background: linear-gradient(135deg, #ffe78a 0%, #f2b71b 54%, #c98207 100%);
+    border: 1px solid rgba(177, 113, 0, 0.24);
+    box-shadow: 0 10px 22px rgba(201, 130, 7, 0.24);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .nav-trending-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(201, 130, 7, 0.32);
+  }
+
   .btn-login {
     font-family: 'Poppins', sans-serif;
     font-size: 14px; font-weight: 500;
@@ -108,15 +131,38 @@
   .nav-hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; }
 
   .mobile-menu {
-    display: none; flex-direction: column; gap: 0;
-    background: var(--white); border-bottom: 1px solid var(--border);
-    padding: 8px 0;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255,255,255,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow-y: auto;
+    box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(10px);
   }
   .mobile-menu a {
     font-size: 15px; font-weight: 500; color: var(--text);
     text-decoration: none; padding: 12px 24px;
     border-bottom: 1px solid var(--border);
     display: block;
+  }
+
+  .mobile-menu .mobile-trending-link {
+    margin: auto 16px 10px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffe78a 0%, #f2b71b 54%, #c98207 100%);
+    color: #2d1a00;
+    box-shadow: 0 12px 26px rgba(201, 130, 7, 0.25);
+    text-align: center;
+    font-weight: 800;
   }
   .mobile-menu.open { display: flex; }
 
@@ -298,6 +344,7 @@
   .features-bg,
   .trending-program,
   .digital-products,
+  .menfess-teaser,
   #communities,
   .testimonials,
   .gallery,
@@ -1168,6 +1215,136 @@
     transform: translateY(-2px);
   }
 
+  /* ── ENGLISH MENFESS TEASER ── */
+  .menfess-teaser {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--white) 100%);
+  }
+
+  .menfess-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    border-radius: 24px;
+    padding: 34px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.9fr);
+    align-items: center;
+    gap: 28px;
+    background:
+      radial-gradient(circle at 82% 18%, rgba(255, 220, 126, 0.32), transparent 28%),
+      radial-gradient(circle at 18% 100%, rgba(186, 129, 31, 0.22), transparent 32%),
+      linear-gradient(135deg, #080808 0%, #16120a 48%, #3a2507 100%);
+    border: 1px solid rgba(245, 197, 94, 0.36);
+    box-shadow: 0 24px 56px rgba(24, 18, 8, 0.22);
+  }
+
+  .menfess-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255,255,255,0.08), transparent 32%, rgba(245,197,94,0.12));
+    pointer-events: none;
+  }
+
+  .menfess-copy,
+  .menfess-x-logo,
+  .menfess-visual {
+    position: relative;
+    z-index: 1;
+  }
+
+  .menfess-x-logo {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(245, 197, 94, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .menfess-x-logo:hover {
+    background: rgba(245, 197, 94, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .menfess-x-logo img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+    filter: invert(1);
+  }
+
+  .menfess-label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(245, 197, 94, 0.16);
+    color: #f7d982;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .menfess-copy h3 {
+    color: var(--white);
+    font-size: clamp(30px, 6vw, 56px);
+    line-height: 0.98;
+    margin-bottom: 12px;
+  }
+
+  .menfess-copy p {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: clamp(16px, 2vw, 22px);
+    line-height: 1.45;
+    margin-bottom: 24px;
+  }
+
+  .menfess-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 13px 20px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f8d97b, #b97815);
+    color: #17100a;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 14px 28px rgba(185, 120, 21, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .menfess-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px rgba(185, 120, 21, 0.38);
+  }
+
+  .menfess-visual {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    min-height: 220px;
+  }
+
+  .menfess-visual img {
+    width: min(260px, 100%);
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.38));
+  }
+
   .whatsapp-float {
     position: fixed;
     right: 22px;
@@ -1206,6 +1383,36 @@
     .trending-card,
     .product-card {
       min-height: auto;
+    }
+
+    .menfess-card {
+      grid-template-columns: 1fr;
+      padding: 28px 22px 0;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .menfess-x-logo {
+      top: 16px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+    }
+
+    .menfess-copy p {
+      margin-bottom: 20px;
+    }
+
+    .menfess-button {
+      width: 100%;
+    }
+
+    .menfess-visual {
+      min-height: 160px;
+    }
+
+    .menfess-visual img {
+      width: min(210px, 78vw);
     }
 
     .trending-benefits {
@@ -1498,7 +1705,7 @@
   footer {
     background: var(--white);
     border-top: 1px solid var(--border);
-    padding: 48px 24px 24px;
+    padding: 44px 24px;
   }
 
   .footer-inner {
@@ -1507,16 +1714,17 @@
 
   .footer-top {
     display: grid;
-    grid-template-columns: 280px repeat(3, 1fr);
-    gap: 40px; margin-bottom: 40px;
+    grid-template-columns: minmax(220px, 1.2fr) repeat(3, minmax(150px, 1fr));
+    gap: 32px;
+    align-items: start;
   }
 
-  .footer-brand { }
   .footer-logo {
     display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
   }
+
   .footer-logo-icon {
-    width: 128px; height: 128px; border-radius: 18px;
+    width: 128px; height: 86px; border-radius: 18px;
     background: none;
     display: flex; align-items: center; justify-content: center;
   }
@@ -1527,24 +1735,44 @@
     object-fit: contain;
     display: block;
   }
-  .footer-logo strong { font-size: 13px; font-weight: 800; display: block; }
-  .footer-logo span { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
 
-  .footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 18px; }
-
-  .footer-phone {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 18px;
-    color: var(--text);
+  .footer-tagline {
+    max-width: 280px;
     font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
+    color: var(--text-muted);
+    line-height: 1.7;
   }
-  .footer-phone:hover { color: var(--blue); }
 
-  .social-links { display: flex; gap: 12px; }
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--blue);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 12px;
+  }
+
   .social-link {
     width: 36px; height: 36px; border-radius: 8px;
     background: var(--bg); border: 1px solid var(--border);
@@ -1552,44 +1780,15 @@
     text-decoration: none;
     transition: background 0.2s, transform 0.2s;
   }
+
   .social-link img {
     width: 18px;
     height: 18px;
     object-fit: contain;
     display: block;
   }
+
   .social-link:hover { background: var(--blue-light); transform: translateY(-2px); }
-
-  .footer-col h4 { font-size: 13px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .footer-col ul a {
-    font-size: 13px; color: var(--text-muted); text-decoration: none;
-    transition: color 0.2s;
-  }
-  .footer-col ul a:hover { color: var(--blue); }
-
-  .footer-bottom {
-    border-top: 1px solid var(--border);
-    padding-top: 24px;
-    text-align: center;
-    font-size: 12px; color: var(--text-muted);
-  }
-
-  /* Footer penguin */
-  .footer-penguin {
-    position: relative;
-    display: flex; justify-content: flex-end; align-items: flex-end;
-    margin-top: -80px;
-    pointer-events: none;
-  }
-
-  .footer-penguin-img {
-    width: 100px; height: 100px;
-    background: linear-gradient(135deg, #1a1a2e, #2a2a4e);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px;
-  }
 
   /* ── MOBILE RESPONSIVE ── */
   @media (max-width: 768px) {
@@ -1657,28 +1856,9 @@
     .newsletter-left { flex-direction: column; text-align: center; }
     .newsletter-form { max-width: 100%; flex: none; width: 100%; }
 
-    .footer-top { grid-template-columns: 1fr; }
-    .footer-col { }
-
-    .footer-penguin { display: none; }
-
-    /* Mobile accordion for footer */
-    .footer-col-mobile summary {
-      font-size: 13px; font-weight: 700;
-      cursor: pointer; padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      list-style: none; display: flex;
-      justify-content: space-between; align-items: center;
-    }
-    .footer-col-mobile summary::after { content: '▾'; }
-    .footer-col-mobile[open] summary::after { content: '▴'; }
-    .footer-col-mobile ul { padding: 12px 0; gap: 12px; }
-  }
-
-  @media (min-width: 769px) {
-    .footer-col-mobile { }
-    .footer-col-mobile summary { display: none; }
-    .footer-col-mobile > ul { display: flex !important; }
+    .footer-top { grid-template-columns: 1fr; gap: 24px; }
+    .footer-logo-icon { width: 112px; height: 76px; }
+    .footer-tagline { max-width: none; }
   }
 
   @media (max-width: 480px) {
@@ -1708,16 +1888,14 @@
   <ul class="nav-links">
     <li><a href="#home" class="active">Home</a></li>
     <li><a href="#features">Program</a></li>
-    <li><a href="#trending-program">Trending</a></li>
     <li><a href="#digital-products">Produk Digital</a></li>
     <li><a href="english_menfess.html">English Menfess</a></li>
     <li><a href="#communities">Communities</a></li>
     <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#footer">About</a></li>
   </ul>
 
   <div class="nav-actions">
-    <a href="#communities" class="btn-join">Join Now</a>
+    <a href="#trending-program" class="nav-trending-link">Trending Program</a>
   </div>
 
   <button class="nav-hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
@@ -1729,13 +1907,11 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#home">Home</a>
   <a href="#features">Program</a>
-  <a href="#trending-program">Trending</a>
   <a href="#digital-products">Produk Digital</a>
   <a href="english_menfess.html">English Menfess</a>
   <a href="#communities">Communities</a>
   <a href="#gallery">Gallery</a>
-  <a href="#footer">About</a>
-  <a href="#communities" style="color:var(--blue);font-weight:600">Join Now</a>
+  <a href="#trending-program" class="mobile-trending-link">Trending Program</a>
 </div>
 
 <!-- HERO -->
@@ -1926,6 +2102,29 @@
   </div>
 </section>
 
+<!-- ENGLISH MENFESS TEASER -->
+<section class="menfess-teaser" id="english-menfess">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Diskusi Bareng English Menfess <span class="snow-icon"></span></h2>
+    <p class="section-sub">Tempat ngobrol, tanya, dan berbagi insight bahasa Inggris bareng komunitas yang aktif.</p>
+
+    <div class="menfess-card">
+      <a class="menfess-x-logo" href="https://x.com/english_menfess" target="_blank" rel="noreferrer noopener" aria-label="English Menfess on X">
+        <img src="assets/x.png" alt="" width="50" height="50" loading="lazy" decoding="async">
+      </a>
+      <div class="menfess-copy">
+        <span class="menfess-label">Community Talk</span>
+        <h3>ENGLISH MENFESS</h3>
+        <p>Diskusi real-time seputar bahasa Inggris</p>
+        <a class="menfess-button" href="english_menfess.html">Explore English Menfess</a>
+      </div>
+      <div class="menfess-visual" aria-hidden="true">
+        <img src="assets/optimized/ok.png" alt="" width="203" height="260" loading="lazy" decoding="async">
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="program-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle" aria-hidden="true">
   <div class="program-modal-backdrop" data-close-product></div>
   <div class="program-modal-panel module-modal-panel">
@@ -2068,8 +2267,19 @@
         <div class="footer-logo">
           <div class="footer-logo-icon"><img src="assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" loading="lazy" decoding="async"></div>
         </div>
-        <p>A language learning and social platform for everyone who wants to grow.</p>
-        <p>+62 851 8330 5497</p>
+        <p class="footer-tagline">A language learning and social platform for everyone who wants to grow.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Kontak</h4>
+        <ul class="footer-links">
+          <li><a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a></li>
+          <li><a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">+62 851 8330 5497</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Social Media</h4>
         <div class="social-links">
           <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="assets/mail.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
           <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="assets/ig.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
@@ -2078,71 +2288,13 @@
         </div>
       </div>
 
-      <!-- Desktop footer cols -->
-      <div class="footer-col" style="display:none" id="fc1-desktop">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="#">Articles</a></li>
-          <li><a href="#">Communities</a></li>
-          <li><a href="#">Games</a></li>
-          <li><a href="#">About Us</a></li>
+      <div class="footer-col">
+        <h4>Links</h4>
+        <ul class="footer-links">
+          <li><a href="english_menfess.html">English Menfess</a></li>
+          <li><a href="english_menfess.html#paid-promote">Partnership</a></li>
         </ul>
       </div>
-      <div class="footer-col" style="display:none" id="fc2-desktop">
-        <h4>Support</h4>
-        <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Guidelines</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-        </ul>
-      </div>
-      <div class="footer-col" style="display:none" id="fc3-desktop">
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Challenges</a></li>
-          <li><a href="#">Leaderboard</a></li>
-          <li><a href="#">Events</a></li>
-        </ul>
-      </div>
-
-      <!-- Quick Links -->
-      <details class="footer-col footer-col-mobile">
-        <summary>Quick Links</summary>
-        <ul>
-          <li><a href="#">Articles</a></li>
-          <li><a href="#">Communities</a></li>
-          <li><a href="#">Games</a></li>
-          <li><a href="#">About Us</a></li>
-        </ul>
-      </details>
-
-      <!-- Support -->
-      <details class="footer-col footer-col-mobile">
-        <summary>Support</summary>
-        <ul>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Guidelines</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-        </ul>
-      </details>
-
-      <!-- Resources -->
-      <details class="footer-col footer-col-mobile">
-        <summary>Resources</summary>
-        <ul>
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Challenges</a></li>
-          <li><a href="#">Leaderboard</a></li>
-          <li><a href="#">Events</a></li>
-        </ul>
-      </details>
-    </div>
-
-    <div class="footer-bottom">
-      <p>© 2024 Jeya's Club. All rights reserved.</p>
     </div>
   </div>
 </footer>
@@ -2154,19 +2306,6 @@
 </a>
 
 <script>
-  // Show desktop footer cols on larger screens, hide mobile accordion
-  function handleFooterLayout() {
-    const isDesktop = window.innerWidth >= 769;
-    ['fc1-desktop','fc2-desktop','fc3-desktop'].forEach(id => {
-      document.getElementById(id).style.display = isDesktop ? 'block' : 'none';
-    });
-    document.querySelectorAll('.footer-col-mobile').forEach(el => {
-      el.style.display = isDesktop ? 'none' : 'block';
-    });
-  }
-  handleFooterLayout();
-  window.addEventListener('resize', handleFooterLayout);
-
   // Close mobile menu on nav link click
   document.querySelectorAll('.mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {

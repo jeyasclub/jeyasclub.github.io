@@ -6,7 +6,7 @@
 <title>English Menfess - Jeya's Club</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="assets/optimized/normal-min.png" fetchpriority="high">
+<link rel="preload" as="image" href="assets/optimized/ok.png" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -100,9 +100,21 @@
   .nav-hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; }
 
   .mobile-menu {
-    display: none; flex-direction: column; gap: 0;
-    background: var(--white); border-bottom: 1px solid var(--border);
-    padding: 8px 0;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255,255,255,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow-y: auto;
+    box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(10px);
   }
 
   .mobile-menu a {
@@ -157,10 +169,10 @@
     position: relative;
     padding: 64px 24px 44px;
     background:
-      radial-gradient(circle at 18% 18%, rgba(26,111,232,0.32), transparent 28%),
-      radial-gradient(circle at 78% 12%, rgba(255,213,31,0.22), transparent 24%),
-      radial-gradient(circle at 84% 76%, rgba(79,163,247,0.18), transparent 28%),
-      linear-gradient(135deg, #020617 0%, #050816 48%, #101827 100%);
+      radial-gradient(circle at 18% 18%, rgba(255,213,31,0.18), transparent 28%),
+      radial-gradient(circle at 82% 20%, rgba(205,139,20,0.24), transparent 26%),
+      radial-gradient(circle at 74% 88%, rgba(255,213,31,0.14), transparent 30%),
+      linear-gradient(135deg, #030303 0%, #141006 52%, #3b2505 100%);
     overflow: hidden;
   }
 
@@ -199,9 +211,9 @@
 
   .hero-title {
     display: grid;
-    grid-template-columns: minmax(0, 0.84fr) minmax(280px, 0.5fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.58fr);
     gap: 30px;
-    align-items: end;
+    align-items: center;
     margin-bottom: 30px;
   }
 
@@ -216,14 +228,10 @@
   }
 
   .hero-title p {
-    justify-self: end;
-    max-width: 310px;
-    color: rgba(255,255,255,0.72);
-    font-size: 15px;
+    color: rgba(255,255,255,0.78);
+    font-size: 14.5px;
     line-height: 1.7;
-    font-weight: 800;
-    font-style: italic;
-    text-transform: uppercase;
+    font-weight: 500;
   }
 
   .hero-kicker {
@@ -234,11 +242,34 @@
     border-radius: 999px;
     border: 1px solid rgba(255,255,255,0.18);
     background: rgba(255,255,255,0.08);
-    color: #bfdbfe;
+    color: #f8d982;
     font-size: 12px;
     font-weight: 900;
     letter-spacing: 1px;
     text-transform: uppercase;
+  }
+
+  .hero-summary {
+    justify-self: end;
+    max-width: 380px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .hero-summary-card {
+    border: 1px solid rgba(245,197,94,0.26);
+    border-radius: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 18px;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-penguin {
+    width: min(220px, 62vw);
+    height: auto;
+    justify-self: center;
+    filter: drop-shadow(0 22px 28px rgba(0,0,0,0.42));
   }
 
   .menfess-banner {
@@ -404,6 +435,57 @@
     line-height: 1.7;
   }
 
+  .discussion-preview {
+    background:
+      radial-gradient(circle at 14% 20%, rgba(255,213,31,0.16), transparent 24%),
+      radial-gradient(circle at 88% 18%, rgba(26,111,232,0.12), transparent 26%),
+      linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+  }
+
+  .discussion-copy {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 30px;
+  }
+
+  .discussion-copy h2 {
+    color: var(--text);
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .discussion-copy p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .discussion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+  }
+
+  .discussion-card {
+    min-height: 260px;
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    background: var(--white);
+    box-shadow: 0 14px 34px rgba(22, 63, 122, 0.08);
+    padding: 16px;
+  }
+
+  .discussion-card .twitter-tweet {
+    margin: 0 auto !important;
+  }
+
   section {
     padding: 64px 24px;
   }
@@ -522,30 +604,99 @@
   }
 
   footer {
+    font-family: 'Poppins', sans-serif;
     border-top: 1px solid var(--border);
-    padding: 30px 24px;
+    padding: 44px 24px;
     color: var(--text-muted);
-    font-size: 12px;
   }
 
   .footer-inner {
     width: min(1120px, 100%);
     margin: 0 auto;
+  }
+
+  .footer-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+    align-items: flex-start;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    max-width: 280px;
+  }
+
+  .footer-logo {
+    width: 128px;
+    height: 86px;
+    margin-bottom: 14px;
+  }
+
+  .footer-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .footer-tagline {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .footer-col h4 {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
   }
 
   .footer-links {
+    list-style: none;
     display: flex;
-    gap: 14px;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .footer-links a {
+    font-size: 13px;
     color: var(--text-muted);
     text-decoration: none;
-    font-weight: 700;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--blue);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 12px;
+  }
+
+  .social-link {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .social-link img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .social-link:hover {
+    background: rgba(26,111,232,0.08);
+    transform: translateY(-2px);
   }
 
   @media (max-width: 900px) {
@@ -572,8 +723,14 @@
       text-align: left;
     }
 
-    .hero-title p {
+    .hero-summary {
       justify-self: start;
+      max-width: none;
+    }
+
+    .hero-penguin {
+      justify-self: start;
+      width: min(180px, 56vw);
     }
 
     .menfess-banner {
@@ -591,7 +748,8 @@
     }
 
     .intro-grid,
-    .rules-shell {
+    .rules-shell,
+    .discussion-grid {
       grid-template-columns: 1fr;
     }
 
@@ -600,9 +758,18 @@
     }
 
     .paid-card,
-    .footer-inner {
+    .footer-top {
       flex-direction: column;
       align-items: stretch;
+    }
+
+    .footer-brand {
+      max-width: none;
+    }
+
+    .footer-logo {
+      width: 112px;
+      height: 76px;
     }
 
     .paid-card .btn {
@@ -615,7 +782,7 @@
       font-size: 38px;
     }
 
-    .hero-title p {
+    .hero-summary-card p {
       font-size: 13px;
     }
 
@@ -679,6 +846,7 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="#home">English Menfess</a>
     <a href="#how-to">Cara Kirim</a>
+    <a href="#contoh-diskusi">Contoh Diskusi</a>
     <a href="#rules">Rules</a>
     <a href="#paid-promote">Paid Promote</a>
     <a href="index.html">Jeya's Club</a>
@@ -693,7 +861,12 @@
             <span class="hero-kicker">Autobase Bahasa Inggris</span>
             <h1>Welcome to English_Menfess</h1>
           </div>
-          <p>Autobase seputar bahasa Inggris</p>
+          <div class="hero-summary">
+            <div class="hero-summary-card">
+              <p>English Menfess adalah autobase untuk diskusi real-time seputar bahasa Inggris, tempat kamu bisa bertanya, berbagi opini, dan belajar dari percakapan komunitas.</p>
+            </div>
+            <img class="hero-penguin" src="assets/optimized/ok.png" alt="English Menfess penguin" width="203" height="260" decoding="async" fetchpriority="high">
+          </div>
         </div>
 
         <div class="intro-grid" id="how-to">
@@ -713,6 +886,36 @@
             </div>
             <a class="btn btn-primary" href="https://xfess.com/english_menfess" target="_blank" rel="noreferrer noopener">Kirim Menfess Sekarang</a>
           </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="discussion-preview" id="contoh-diskusi">
+      <div class="container">
+        <div class="discussion-copy">
+          <h2>Contoh Diskusi</h2>
+          <p>Lihat beberapa percakapan real-time dari English Menfess. Dari pertanyaan grammar, vocabulary, sampai cara pakai ekspresi bahasa Inggris dengan lebih natural.</p>
+        </div>
+
+        <div class="discussion-grid">
+          <article class="discussion-card">
+            <blockquote class="twitter-tweet" data-dnt="true" data-theme="light">
+              <p lang="en" dir="ltr">English Menfess discussion</p>
+              <a href="https://x.com/english_menfess/status/2019327304556781652?s=20">View post on X</a>
+            </blockquote>
+          </article>
+          <article class="discussion-card">
+            <blockquote class="twitter-tweet" data-dnt="true" data-theme="light">
+              <p lang="en" dir="ltr">English Menfess discussion</p>
+              <a href="https://x.com/english_menfess/status/2022268279692075414?s=20">View post on X</a>
+            </blockquote>
+          </article>
+          <article class="discussion-card">
+            <blockquote class="twitter-tweet" data-dnt="true" data-theme="light">
+              <p lang="en" dir="ltr">English Menfess discussion</p>
+              <a href="https://x.com/english_menfess/status/1973752349316227369?s=20">View post on X</a>
+            </blockquote>
+          </article>
         </div>
       </div>
     </section>
@@ -776,13 +979,42 @@
 
   <footer>
     <div class="footer-inner">
-      <p>© 2026 Jeya's Club. English Menfess page.</p>
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="mailto:jeyasclub@gmail.com">Email</a>
-        <a href="https://x.com/english_menfess" target="_blank" rel="noreferrer noopener">English Menfess</a>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" loading="lazy" decoding="async">
+          </div>
+          <p class="footer-tagline">A language learning and social platform for everyone who wants to grow.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a></li>
+            <li><a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">+62 851 8330 5497</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Social Media</h4>
+          <div class="social-links">
+            <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="assets/mail.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="assets/ig.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="assets/x.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="assets/linkedin.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Links</h4>
+          <ul class="footer-links">
+            <li><a href="english_menfess.html">English Menfess</a></li>
+            <li><a href="#paid-promote">Partnership</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </footer>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
