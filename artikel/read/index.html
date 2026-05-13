@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baca Artikel - Jeya's Club</title>
+<meta name="description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A6FE8;
+    --blue-light: #E8F1FD;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --bg: #f7f9fc;
+    --border: #e5e7eb;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 64px;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--blue);
+  }
+
+  .nav-links a.active {
+    border-bottom: 2px solid var(--blue);
+    padding-bottom: 2px;
+  }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-hamburger span {
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: none;
+    flex-direction: column;
+    background: rgba(255,255,255,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow-y: auto;
+    box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-menu a {
+    display: block;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .article-shell {
+    background: linear-gradient(180deg, #eef5ff 0%, #ffffff 280px);
+    min-height: calc(100vh - 64px);
+    padding: 48px 24px 76px;
+  }
+
+  .article-wrap {
+    width: min(860px, 100%);
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    margin-bottom: 22px;
+  }
+
+  .article-header {
+    margin-bottom: 26px;
+  }
+
+  .article-label {
+    display: inline-flex;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    color: var(--text);
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 900;
+    line-height: 1.08;
+    margin-bottom: 14px;
+  }
+
+  .article-meta {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .article-cover {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 0 0 30px;
+    border-radius: 22px;
+    background: var(--blue-light);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .article-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .article-body {
+    color: #334155;
+    font-size: 16px;
+    line-height: 1.95;
+  }
+
+  .article-body p {
+    margin-bottom: 18px;
+  }
+
+  .article-empty {
+    padding: 24px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 18px;
+    color: var(--text-muted);
+    background: var(--white);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .article-shell { padding: 34px 16px 56px; }
+    .article-cover { border-radius: 16px; }
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo" aria-label="Back to Jeya's Club home">
+      <div class="nav-logo-icon"><img src="../../assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" decoding="async" fetchpriority="high"></div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/#features">Program</a></li>
+      <li><a href="/#digital-products">Produk Digital</a></li>
+      <li><a href="/english_menfess/">English Menfess</a></li>
+      <li><a href="/faq/">FAQ</a></li>
+      <li><a class="active" href="/artikel/">Artikel</a></li>
+    </ul>
+
+    <button class="nav-hamburger" type="button" aria-label="Open mobile menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/">Home</a>
+    <a href="/#features">Program</a>
+    <a href="/#digital-products">Produk Digital</a>
+    <a href="/english_menfess/">English Menfess</a>
+    <a href="/faq/">FAQ</a>
+    <a href="/artikel/">Artikel</a>
+  </div>
+
+  <main class="article-shell">
+    <article class="article-wrap" id="articleDetail">
+      <a class="back-link" href="/artikel/">← Kembali ke Artikel</a>
+      <div class="article-empty">Memuat artikel...</div>
+    </article>
+  </main>
+
+<script>
+  document.querySelectorAll('.mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+    });
+  });
+
+  const articleDetail = document.getElementById('articleDetail');
+  const params = new URLSearchParams(window.location.search);
+  const articleId = params.get('id');
+
+  function escapeHTML(value) {
+    return String(value || '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[char]));
+  }
+
+  function renderBody(body) {
+    const paragraphs = String(body || '')
+      .split(/\n{2,}/)
+      .map(paragraph => paragraph.trim())
+      .filter(Boolean);
+
+    if (!paragraphs.length) {
+      return '<p>Isi artikel belum tersedia.</p>';
+    }
+
+    return paragraphs.map(paragraph => `<p>${escapeHTML(paragraph).replace(/\n/g, '<br>')}</p>`).join('');
+  }
+
+  function renderArticle(article) {
+    const title = escapeHTML(article.title || 'Untitled Article');
+    const category = escapeHTML(article.category || 'Artikel');
+    const image = escapeHTML(article.image || '../../assets/optimized/1.jpg');
+    const createdAt = escapeHTML(article.createdAt || '');
+
+    document.title = `${article.title || 'Artikel'} - Jeya's Club`;
+
+    articleDetail.innerHTML = `
+      <a class="back-link" href="/artikel/">← Kembali ke Artikel</a>
+      <header class="article-header">
+        <span class="article-label">${category}</span>
+        <h1>${title}</h1>
+        <div class="article-meta">${createdAt ? `Dipublikasikan ${createdAt}` : "Jeya's Club Article"}</div>
+      </header>
+      <figure class="article-cover">
+        <img src="${image}" alt="${title}" loading="eager" decoding="async">
+      </figure>
+      <div class="article-body">${renderBody(article.body)}</div>
+    `;
+  }
+
+  function renderNotFound() {
+    articleDetail.innerHTML = `
+      <a class="back-link" href="/artikel/">← Kembali ke Artikel</a>
+      <div class="article-empty">Artikel tidak ditemukan. Silakan kembali ke halaman artikel dan pilih artikel yang tersedia.</div>
+    `;
+  }
+
+  fetch('../data/artikel.json')
+    .then(response => {
+      if (!response.ok) throw new Error('Artikel JSON tidak ditemukan');
+      return response.json();
+    })
+    .then(articles => {
+      const article = Array.isArray(articles)
+        ? articles.find(item => String(item.id) === String(articleId))
+        : null;
+
+      if (article) {
+        renderArticle(article);
+      } else {
+        renderNotFound();
+      }
+    })
+    .catch(renderNotFound);
+</script>
+</body>
+</html>

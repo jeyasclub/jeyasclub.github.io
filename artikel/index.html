@@ -254,6 +254,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    color: inherit;
+    text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
 
@@ -598,9 +600,10 @@
       const title = escapeHTML(article.title || 'Untitled Article');
       const category = escapeHTML(article.category || 'Artikel');
       const excerpt = escapeHTML(article.excerpt || '');
+      const id = encodeURIComponent(article.id || article.title || '');
 
       return `
-        <article class="article-card">
+        <a class="article-card" href="read/?id=${id}">
           <div class="article-thumb">
             <img src="${escapeHTML(image)}" alt="${title}" loading="lazy" decoding="async">
           </div>
@@ -608,9 +611,9 @@
             <span class="article-label">${category}</span>
             <h3>${title}</h3>
             <p>${excerpt}</p>
-            <a class="article-link" href="#">Baca Artikel</a>
+            <span class="article-link">Baca Artikel</span>
           </div>
-        </article>
+        </a>
       `;
     }).join('');
   }
