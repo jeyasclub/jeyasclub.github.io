@@ -527,6 +527,11 @@
           </label>
 
           <label>
+            Upload Gambar
+            <input id="articleImageUpload" type="file" accept="image/*">
+          </label>
+
+          <label>
             Ringkasan
             <input id="articleExcerpt" type="text" placeholder="Ringkasan singkat untuk card artikel" required>
           </label>
@@ -600,6 +605,7 @@
   const titleInput = document.getElementById('articleTitle');
   const categoryInput = document.getElementById('articleCategory');
   const imageInput = document.getElementById('articleImage');
+  const imageUploadInput = document.getElementById('articleImageUpload');
   const excerptInput = document.getElementById('articleExcerpt');
   const bodyInput = document.getElementById('articleBody');
   const articleEditor = document.getElementById('articleEditor');
@@ -684,7 +690,10 @@
       document.execCommand('formatBlock', false, isSubtitle ? 'p' : 'h2');
     }
     if (format === 'bullet') document.execCommand('insertUnorderedList');
-    if (format === 'quote') document.execCommand('formatBlock', false, 'blockquote');
+    if (format === 'quote') {
+      const isQuote = document.queryCommandValue('formatBlock').toLowerCase().replace(/[<>]/g, '') === 'blockquote';
+      document.execCommand('formatBlock', false, isQuote ? 'p' : 'blockquote');
+    }
 
     syncEditorBody();
   }
@@ -749,6 +758,18 @@
   [titleInput, categoryInput, imageInput, excerptInput].forEach(input => {
     input.addEventListener('input', updatePreview);
     input.addEventListener('change', updatePreview);
+  });
+
+  imageUploadInput.addEventListener('change', () => {
+    const file = imageUploadInput.files && imageUploadInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      imageInput.value = reader.result;
+      updatePreview();
+    });
+    reader.readAsDataURL(file);
   });
 
   document.querySelectorAll('[data-format]').forEach(button => {

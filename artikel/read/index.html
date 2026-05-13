@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Baca Artikel - Jeya's Club</title>
 <meta name="description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Jeya's Club">
+<meta property="og:title" content="Baca Artikel - Jeya's Club" id="metaOgTitle">
+<meta property="og:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaOgDescription">
+<meta property="og:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaOgImage">
+<meta property="og:url" content="https://www.jeyasclub.com/artikel/read/" id="metaOgUrl">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Baca Artikel - Jeya's Club" id="metaTwitterTitle">
+<meta name="twitter:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaTwitterDescription">
+<meta name="twitter:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaTwitterImage">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -214,11 +224,13 @@
   .article-body p {
     margin-bottom: 18px;
     max-width: 100%;
+    text-align: justify;
   }
 
   .article-body div {
     margin-bottom: 14px;
     max-width: 100%;
+    text-align: justify;
   }
 
   .article-body h2 {
@@ -240,6 +252,7 @@
   .article-body li {
     padding-left: 4px;
     overflow-wrap: anywhere;
+    text-align: justify;
   }
 
   .article-body blockquote {
@@ -251,6 +264,7 @@
     color: #102a43;
     font-weight: 600;
     overflow-wrap: anywhere;
+    text-align: justify;
   }
 
   .article-empty {
@@ -459,13 +473,46 @@
     }));
   }
 
+  function stripHTML(value) {
+    const template = document.createElement('template');
+    template.innerHTML = String(value || '');
+    return template.content.textContent || template.content.innerText || '';
+  }
+
+  function absoluteUrl(value) {
+    return new URL(value || '/assets/optimized/banner-thumbnail.jpg', window.location.origin).href;
+  }
+
+  function setMeta(selector, value) {
+    const element = document.querySelector(selector);
+    if (!element) return;
+    element.setAttribute('content', value);
+  }
+
+  function updateArticleMeta(article) {
+    const title = `${article.title || 'Artikel'} - Jeya's Club`;
+    const description = article.excerpt || stripHTML(article.body).slice(0, 155) || 'Baca artikel Jeya\'s Club seputar tips belajar bahasa.';
+    const image = absoluteUrl(article.image);
+    const url = window.location.href;
+
+    document.title = title;
+    setMeta('meta[name="description"]', description);
+    setMeta('meta[property="og:title"]', title);
+    setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:image"]', image);
+    setMeta('meta[property="og:url"]', url);
+    setMeta('meta[name="twitter:title"]', title);
+    setMeta('meta[name="twitter:description"]', description);
+    setMeta('meta[name="twitter:image"]', image);
+  }
+
   function renderArticle(article) {
     const title = escapeHTML(article.title || 'Untitled Article');
     const category = escapeHTML(article.category || 'Artikel');
     const image = escapeHTML(article.image || '../../assets/optimized/1.jpg');
     const createdAt = formatDate(article.created_at || article.createdAt);
 
-    document.title = `${article.title || 'Artikel'} - Jeya's Club`;
+    updateArticleMeta(article);
 
     articleDetail.innerHTML = `
       <a class="back-link" href="/artikel/">← Kembali ke Artikel</a>
