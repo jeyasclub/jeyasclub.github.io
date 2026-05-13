@@ -190,6 +190,10 @@
     line-height: 1.7;
   }
 
+  textarea.is-hidden-field {
+    display: none;
+  }
+
   .editor-wrap {
     display: grid;
     gap: 8px;
@@ -224,6 +228,51 @@
     background: var(--blue-light);
     border-color: rgba(26, 111, 232, 0.28);
     transform: translateY(-1px);
+  }
+
+  .rich-editor {
+    min-height: 240px;
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: var(--white);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.8;
+    padding: 14px;
+    outline: none;
+    overflow-wrap: anywhere;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .rich-editor:empty::before {
+    content: attr(data-placeholder);
+    color: #9ca3af;
+  }
+
+  .rich-editor:focus {
+    border-color: rgba(26, 111, 232, 0.65);
+    box-shadow: 0 0 0 4px rgba(26, 111, 232, 0.1);
+  }
+
+  .rich-editor h2 {
+    font-size: 22px;
+    line-height: 1.3;
+    margin: 18px 0 8px;
+  }
+
+  .rich-editor ul {
+    margin: 8px 0 12px 22px;
+    padding-left: 18px;
+  }
+
+  .rich-editor blockquote {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border-left: 4px solid var(--blue);
+    border-radius: 0 12px 12px 0;
+    background: var(--blue-light);
   }
 
   input:focus,
@@ -493,7 +542,8 @@
                 <button class="editor-tool" type="button" data-format="bullet" title="Bullet list">• List</button>
                 <button class="editor-tool" type="button" data-format="quote" title="Quote">Quote</button>
               </div>
-              <textarea id="articleBody" placeholder="Tulis isi artikel di sini..." required></textarea>
+              <div class="rich-editor" id="articleEditor" contenteditable="true" data-placeholder="Tulis isi artikel di sini..."></div>
+              <textarea class="is-hidden-field" id="articleBody" aria-hidden="true"></textarea>
             </div>
           </label>
 
@@ -552,6 +602,7 @@
   const imageInput = document.getElementById('articleImage');
   const excerptInput = document.getElementById('articleExcerpt');
   const bodyInput = document.getElementById('articleBody');
+  const articleEditor = document.getElementById('articleEditor');
 
   const previewImage = document.getElementById('previewImage');
   const previewCategory = document.getElementById('previewCategory');
@@ -592,14 +643,28 @@
 
   function clearForm() {
     articleForm.reset();
+    articleEditor.innerHTML = '';
+    syncEditorBody();
     updatePreview();
   }
 
+  function syncEditorBody() {
+    bodyInput.value = articleEditor.innerHTML.trim();
+  }
+
+  function focusEditorWithFallback(text) {
+    articleEditor.focus();
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount === 0 && !articleEditor.textContent.trim()) {
+      articleEditor.textContent = text;
+      const range = document.createRange();
+      range.selectNodeContents(articleEditor);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+
   function insertFormat(format) {
-    const start = bodyInput.selectionStart;
-    const end = bodyInput.selectionEnd;
-    const value = bodyInput.value;
-    const selected = value.slice(start, end);
     const fallback = {
       bold: 'teks bold',
       italic: 'teks italic',
@@ -608,31 +673,17 @@
       bullet: 'Poin artikel',
       quote: 'Kutipan artikel'
     }[format] || 'teks';
-    const text = selected || fallback;
-    const before = value.slice(0, start);
-    const after = value.slice(end);
-    let replacement = text;
 
-    if (format === 'bold') replacement = `**${text}**`;
-    if (format === 'italic') replacement = `*${text}*`;
-    if (format === 'underline') replacement = `<u>${text}</u>`;
-    if (format === 'subtitle') replacement = `\n## ${text}\n`;
-    if (format === 'bullet') {
-      replacement = text
-        .split('\n')
-        .map(line => `- ${line.replace(/^[-*]\s+/, '')}`)
-        .join('\n');
-    }
-    if (format === 'quote') {
-      replacement = text
-        .split('\n')
-        .map(line => `> ${line.replace(/^>\s?/, '')}`)
-        .join('\n');
-    }
+    focusEditorWithFallback(fallback);
 
-    bodyInput.value = `${before}${replacement}${after}`;
-    bodyInput.focus();
-    bodyInput.setSelectionRange(start, start + replacement.length);
+    if (format === 'bold') document.execCommand('bold');
+    if (format === 'italic') document.execCommand('italic');
+    if (format === 'underline') document.execCommand('underline');
+    if (format === 'subtitle') document.execCommand('formatBlock', false, 'h2');
+    if (format === 'bullet') document.execCommand('insertUnorderedList');
+    if (format === 'quote') document.execCommand('formatBlock', false, 'blockquote');
+
+    syncEditorBody();
   }
 
   function renderDrafts() {
@@ -701,14 +752,25 @@
     button.addEventListener('click', () => insertFormat(button.dataset.format));
   });
 
+  articleEditor.addEventListener('input', syncEditorBody);
+  articleEditor.addEventListener('blur', syncEditorBody);
+
   articleForm.addEventListener('submit', async event => {
     event.preventDefault();
+    syncEditorBody();
+    if (!articleEditor.textContent.trim()) {
+      articleError.textContent = 'Isi artikel wajib diisi.';
+      articleError.classList.add('show');
+      articleEditor.focus();
+      return;
+    }
+
     const article = {
       title: titleInput.value.trim(),
       category: categoryInput.value,
       image: imageInput.value.trim() || null,
       excerpt: excerptInput.value.trim(),
-      body: bodyInput.value.trim(),
+      body: bodyInput.value,
       published: true
     };
 
@@ -740,6 +802,7 @@
       renderDrafts();
       articleSuccess.classList.add('show');
     } catch (error) {
+      articleError.textContent = 'Artikel gagal dipublish. Pastikan tabel dan policy Supabase sudah benar.';
       articleError.classList.add('show');
     } finally {
       submitArticleBtn.disabled = false;
@@ -761,7 +824,8 @@
       categoryInput.value = draft.category;
       imageInput.value = draft.image;
       excerptInput.value = draft.excerpt;
-      bodyInput.value = draft.body;
+      articleEditor.innerHTML = draft.body || '';
+      syncEditorBody();
       setDrafts(drafts.filter(item => item.id !== editId));
       updatePreview();
       renderDrafts();
