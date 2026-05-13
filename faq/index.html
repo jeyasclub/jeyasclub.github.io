@@ -143,8 +143,81 @@
 
   .mobile-menu.open { display: flex; }
 
+  .faq-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #dce8f7 0%, #eef5ff 70%, #ffffff 100%);
+    padding: 72px 24px 56px;
+  }
+
+  .faq-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/optimized/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .faq-hero-inner {
+    position: relative;
+    z-index: 1;
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 42px;
+  }
+
+  .faq-hero-copy {
+    max-width: 560px;
+  }
+
+  .faq-hero-kicker {
+    display: inline-flex;
+    margin-bottom: 14px;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+  }
+
+  .faq-hero h1 {
+    color: var(--text);
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 18px;
+  }
+
+  .faq-hero p {
+    max-width: 500px;
+    color: #334155;
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 1.75;
+  }
+
+  .faq-hero-visual {
+    flex: 0 0 min(320px, 35vw);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .faq-hero-visual img {
+    width: min(320px, 100%);
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 30px rgba(26, 111, 232, 0.16));
+  }
+
   main {
-    padding: 58px 24px 72px;
+    padding: 50px 24px 72px;
   }
 
   .faq-wrap {
@@ -209,6 +282,45 @@
   .module-list {
     display: grid;
     gap: 2px;
+  }
+
+  .faq-contact {
+    margin-top: 44px;
+    padding: 32px;
+    border-radius: 22px;
+    background: #eef6ff;
+    border: 1px solid rgba(26, 111, 232, 0.12);
+    text-align: center;
+  }
+
+  .faq-contact h2 {
+    max-width: 640px;
+    margin: 0 auto 20px;
+    color: var(--text);
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.25;
+    font-weight: 900;
+  }
+
+  .faq-whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 13px 22px;
+    border-radius: 14px;
+    background: var(--blue);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.24);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .faq-whatsapp-btn:hover {
+    background: #1558c0;
+    transform: translateY(-2px);
   }
 
   footer {
@@ -316,9 +428,20 @@
     nav { padding: 0 16px; }
     .nav-links { display: none; }
     .nav-hamburger { display: flex; }
-    main { padding: 42px 16px 56px; }
+    .faq-hero { padding: 48px 16px 36px; }
+    .faq-hero-inner {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
+    .faq-hero-copy { max-width: 100%; }
+    .faq-hero p { margin: 0 auto; }
+    .faq-hero-visual { flex-basis: auto; width: min(230px, 68vw); }
+    main { padding: 38px 16px 56px; }
     .faq-title { margin-bottom: 28px; }
     .faq-item { grid-template-columns: 20px minmax(0, 1fr); }
+    .faq-contact { padding: 26px 18px; }
     .footer-top { grid-template-columns: 1fr; gap: 24px; }
     .footer-logo-icon { width: 112px; height: 76px; }
     .footer-tagline { max-width: none; }
@@ -348,10 +471,21 @@
     <a href="https://jeyasclub.com/faq">FAQ</a>
   </div>
 
+  <section class="faq-hero">
+    <div class="faq-hero-inner">
+      <div class="faq-hero-copy">
+        <span class="faq-hero-kicker">Jeya's Club Help Center</span>
+        <h1>Frequently Asked Questions</h1>
+        <p>Temukan jawaban seputar kursus privat, speaking practice, modul belajar, video TOEFL, dan kebutuhan training bersama Jeya's Club.</p>
+      </div>
+      <div class="faq-hero-visual" aria-hidden="true">
+        <img src="assets/optimized/normal-min.png" alt="" width="570" height="760" decoding="async" fetchpriority="high">
+      </div>
+    </div>
+  </section>
+
   <main>
     <div class="faq-wrap">
-      <h1 class="faq-title">FAQ</h1>
-
       <section class="faq-section">
         <h2>Kursus Privat (Grammar)</h2>
         <div class="faq-list">
@@ -416,6 +550,11 @@
             <div class="faq-answer">Ya, Jeya's Club terbuka untuk penyediaan <em>corporate training</em>, silakan hubungi kontak <strong>WhatsApp 0851-8330-5497</strong> untuk informasi lebih lanjut.</div>
           </div>
         </div>
+      </section>
+
+      <section class="faq-contact" aria-labelledby="faqContactTitle">
+        <h2 id="faqContactTitle">Masih ada pertanyaan lain? Yuk tanyakan ke kami via WhatsApp!</h2>
+        <a class="faq-whatsapp-btn" href="https://wa.me/6285183305497" target="_blank" rel="noreferrer noopener">Chat via WhatsApp</a>
       </section>
     </div>
   </main>
