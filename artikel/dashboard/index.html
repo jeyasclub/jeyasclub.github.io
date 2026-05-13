@@ -300,6 +300,13 @@
 
   .success.show { display: block; }
 
+  .field-note {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.6;
+    font-weight: 600;
+  }
+
   .dashboard {
     display: none;
     width: min(1180px, 100%);
@@ -530,6 +537,7 @@
           <label>
             Upload Gambar
             <input id="articleImageUpload" type="file" accept="image/*">
+            <span class="field-note" id="imageUploadStatus">Upload akan mengisi URL gambar otomatis.</span>
           </label>
 
           <label>
@@ -590,6 +598,7 @@
   const storageKey = 'jeyaArticleDrafts';
   const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
   const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
+  const imageBucket = 'article-images';
 
   const loginScreen = document.getElementById('loginScreen');
   const dashboard = document.getElementById('dashboard');
@@ -607,6 +616,7 @@
   const categoryInput = document.getElementById('articleCategory');
   const imageInput = document.getElementById('articleImage');
   const imageUploadInput = document.getElementById('articleImageUpload');
+  const imageUploadStatus = document.getElementById('imageUploadStatus');
   const excerptInput = document.getElementById('articleExcerpt');
   const bodyInput = document.getElementById('articleBody');
   const articleEditor = document.getElementById('articleEditor');
@@ -736,6 +746,32 @@
     });
   }
 
+  function getImageExtension(file) {
+    const fromName = file.name.split('.').pop();
+    if (fromName && fromName !== file.name) return fromName.toLowerCase();
+    return (file.type.split('/')[1] || 'jpg').toLowerCase();
+  }
+
+  function uploadCoverImage(file) {
+    const extension = getImageExtension(file);
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+    const filePath = `covers/${fileName}`;
+
+    return fetch(`${supabaseUrl}/storage/v1/object/${imageBucket}/${filePath}`, {
+      method: 'POST',
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-upsert': 'false'
+      },
+      body: file
+    }).then(response => {
+      if (!response.ok) throw new Error('Gambar gagal diupload');
+      return `${supabaseUrl}/storage/v1/object/public/${imageBucket}/${filePath}`;
+    });
+  }
+
   loginForm.addEventListener('submit', event => {
     event.preventDefault();
     const username = document.getElementById('username').value.trim();
@@ -761,16 +797,20 @@
     input.addEventListener('change', updatePreview);
   });
 
-  imageUploadInput.addEventListener('change', () => {
+  imageUploadInput.addEventListener('change', async () => {
     const file = imageUploadInput.files && imageUploadInput.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      imageInput.value = reader.result;
+    imageUploadStatus.textContent = 'Mengupload gambar...';
+
+    try {
+      const imageUrl = await uploadCoverImage(file);
+      imageInput.value = imageUrl;
       updatePreview();
-    });
-    reader.readAsDataURL(file);
+      imageUploadStatus.textContent = 'Gambar berhasil diupload. URL cover sudah terisi.';
+    } catch (error) {
+      imageUploadStatus.textContent = 'Upload gagal. Pastikan bucket Supabase article-images sudah dibuat dan public.';
+    }
   });
 
   document.querySelectorAll('[data-format]').forEach(button => {

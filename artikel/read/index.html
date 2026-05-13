@@ -10,11 +10,14 @@
 <meta property="og:title" content="Baca Artikel - Jeya's Club" id="metaOgTitle">
 <meta property="og:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaOgDescription">
 <meta property="og:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaOgImage">
+<meta property="og:image:secure_url" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaOgImageSecure">
+<meta property="og:image:alt" content="Jeya's Club article cover" id="metaOgImageAlt">
 <meta property="og:url" content="https://www.jeyasclub.com/artikel/read/" id="metaOgUrl">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Baca Artikel - Jeya's Club" id="metaTwitterTitle">
 <meta name="twitter:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaTwitterDescription">
 <meta name="twitter:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaTwitterImage">
+<meta name="twitter:image:alt" content="Jeya's Club article cover" id="metaTwitterImageAlt">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -532,10 +535,13 @@
     setMeta('meta[property="og:title"]', title);
     setMeta('meta[property="og:description"]', description);
     setMeta('meta[property="og:image"]', image);
+    setMeta('meta[property="og:image:secure_url"]', image);
+    setMeta('meta[property="og:image:alt"]', article.title || 'Jeya\'s Club article cover');
     setMeta('meta[property="og:url"]', url);
     setMeta('meta[name="twitter:title"]', title);
     setMeta('meta[name="twitter:description"]', description);
     setMeta('meta[name="twitter:image"]', image);
+    setMeta('meta[name="twitter:image:alt"]', article.title || 'Jeya\'s Club article cover');
   }
 
   function copyArticleUrl(button) {
