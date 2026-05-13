@@ -407,13 +407,19 @@
   }
 
   .program-shell {
-    display: block;
+    margin: 0 -24px;
+    overflow: hidden;
   }
 
   .program-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
     gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    padding: 0 24px 12px;
+    -webkit-overflow-scrolling: touch;
   }
 
   .program-card {
@@ -429,7 +435,9 @@
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     color: var(--text);
+    flex: 0 0 min(280px, 82vw);
     min-height: 260px;
+    scroll-snap-align: start;
   }
 
   .program-card:hover,
@@ -441,10 +449,10 @@
   }
 
   .program-card .feature-img {
-    width: 62px;
-    height: 62px;
-    flex: 0 0 62px;
-    margin: 0 0 18px;
+    width: 93px;
+    height: 93px;
+    flex: 0 0 93px;
+    margin: 0 auto 18px;
     border-radius: 16px;
     background: var(--blue-light);
   }
@@ -874,14 +882,22 @@
   }
 
   @media (max-width: 1024px) {
-    .program-list {
-      grid-template-columns: repeat(2, 1fr);
+    .program-card {
+      flex-basis: min(300px, 72vw);
     }
   }
 
   @media (max-width: 768px) {
+    .program-shell {
+      margin: 0 -20px;
+    }
+
     .program-list {
-      grid-template-columns: 1fr;
+      padding-inline: 20px;
+    }
+
+    .program-card {
+      flex-basis: min(292px, 84vw);
     }
 
     .program-modal {
@@ -2044,6 +2060,15 @@
           <span class="program-card-action">Lihat Detail →</span>
         </button>
 
+        <button class="program-card" data-program="korean-basic" aria-haspopup="dialog">
+          <div class="feature-img bg-purple"><img src="assets/korea.png" alt="Kursus Dasar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async"></div>
+          <div>
+            <div class="feature-name">Kursus Dasar Bahasa Korea</div>
+            <div class="feature-desc">Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!</div>
+          </div>
+          <span class="program-card-action">Lihat Detail →</span>
+        </button>
+
         <button class="program-card" data-program="speaking" aria-haspopup="dialog">
           <div class="feature-img bg-green"><img src="assets/optimized/laptop.png" alt="Private Speaking Practice" width="208" height="260" loading="lazy" decoding="async"></div>
           <div>
@@ -2414,6 +2439,25 @@
         'Jadwal fleksibel, bisa kamu tentukan hari & jamnya',
         'Dapat rekaman kelas',
         'Bebas tanya jawab',
+        'Sertifikat kepesertaan kursus'
+      ],
+      tableHead: ['Kapasitas', 'Harga'],
+      rows: [
+        ['1 Orang', 'Rp600.000'],
+        ['2 Orang', 'Rp350.000 / siswa'],
+        ['3 Orang', 'Rp300.000 / siswa'],
+        ['4 Orang', 'Rp250.000 / siswa']
+      ]
+    },
+    'korean-basic': {
+      title: 'Kursus Dasar Bahasa Korea',
+      description: 'Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!',
+      registerUrl: 'https://wa.link/1k00t6',
+      tags: ['Pemula', '8 Pertemuan Online - Durasi @90 Menit', 'Bebas Tentukan Jadwalmu, 2x Seminggu'],
+      facilities: [
+        'Kelas online via Zoom masing-masing 90 menit per pertemuan',
+        'Interaksi & tanya jawab langsung dengan tutor',
+        'Rekaman kelas',
         'Sertifikat kepesertaan kursus'
       ],
       tableHead: ['Kapasitas', 'Harga'],
