@@ -398,7 +398,7 @@
       <div>
         <div class="eyebrow">Article Input</div>
         <h1>Input Artikel</h1>
-        <p class="muted">Tulis draft artikel, simpan di browser, lalu export data saat siap dipindahkan ke website.</p>
+        <p class="muted">Tulis artikel, publish ke Supabase, lalu artikel akan langsung muncul di halaman artikel.</p>
       </div>
       <button class="ghost-btn" type="button" id="exportBtn">Export JSON</button>
     </div>
@@ -443,9 +443,10 @@
           </label>
 
           <div class="button-row">
-            <button class="primary-btn" type="submit">Simpan Draft</button>
+            <button class="primary-btn" type="submit" id="submitArticleBtn">Publish Artikel</button>
             <button class="ghost-btn" type="button" id="clearFormBtn">Kosongkan Form</button>
           </div>
+          <p class="error" id="articleError">Artikel gagal dipublish. Pastikan tabel dan policy Supabase sudah benar.</p>
         </form>
       </section>
 
@@ -465,7 +466,7 @@
         </div>
 
         <div class="article-list" id="articleList"></div>
-        <div class="empty-state" id="emptyState">Belum ada draft artikel. Isi form lalu klik Simpan Draft.</div>
+        <div class="empty-state" id="emptyState">Belum ada artikel yang dipublish dari browser ini.</div>
       </aside>
     </div>
   </main>
@@ -475,6 +476,8 @@
   const allowedPassword = '123123';
   const sessionKey = 'jeyaArticleDashboardSession';
   const storageKey = 'jeyaArticleDrafts';
+  const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
+  const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
 
   const loginScreen = document.getElementById('loginScreen');
   const dashboard = document.getElementById('dashboard');
@@ -484,6 +487,8 @@
   const articleForm = document.getElementById('articleForm');
   const articleList = document.getElementById('articleList');
   const emptyState = document.getElementById('emptyState');
+  const submitArticleBtn = document.getElementById('submitArticleBtn');
+  const articleError = document.getElementById('articleError');
 
   const titleInput = document.getElementById('articleTitle');
   const categoryInput = document.getElementById('articleCategory');
@@ -554,6 +559,22 @@
     });
   }
 
+  function publishArticle(article) {
+    return fetch(`${supabaseUrl}/rest/v1/articles`, {
+      method: 'POST',
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(article)
+    }).then(response => {
+      if (!response.ok) throw new Error('Artikel gagal dipublish');
+      return response.json();
+    });
+  }
+
   loginForm.addEventListener('submit', event => {
     event.preventDefault();
     const username = document.getElementById('username').value.trim();
@@ -579,25 +600,48 @@
     input.addEventListener('change', updatePreview);
   });
 
-  articleForm.addEventListener('submit', event => {
+  articleForm.addEventListener('submit', async event => {
     event.preventDefault();
-    const drafts = getDrafts();
-    drafts.unshift({
-      id: Date.now().toString(),
+    const article = {
       title: titleInput.value.trim(),
       category: categoryInput.value,
-      image: imageInput.value.trim(),
+      image: imageInput.value.trim() || null,
       excerpt: excerptInput.value.trim(),
       body: bodyInput.value.trim(),
-      createdAt: new Date().toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      })
-    });
-    setDrafts(drafts);
-    clearForm();
-    renderDrafts();
+      published: true
+    };
+
+    submitArticleBtn.disabled = true;
+    submitArticleBtn.textContent = 'Publishing...';
+    articleError.classList.remove('show');
+
+    try {
+      const [publishedArticle] = await publishArticle(article);
+      const drafts = getDrafts();
+      drafts.unshift({
+        id: publishedArticle.id,
+        title: publishedArticle.title,
+        category: publishedArticle.category,
+        image: publishedArticle.image,
+        excerpt: publishedArticle.excerpt,
+        body: publishedArticle.body,
+        created_at: publishedArticle.created_at,
+        published: publishedArticle.published,
+        createdAt: new Date(publishedArticle.created_at).toLocaleDateString('id-ID', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        })
+      });
+      setDrafts(drafts);
+      clearForm();
+      renderDrafts();
+    } catch (error) {
+      articleError.classList.add('show');
+    } finally {
+      submitArticleBtn.disabled = false;
+      submitArticleBtn.textContent = 'Publish Artikel';
+    }
   });
 
   document.getElementById('clearFormBtn').addEventListener('click', clearForm);

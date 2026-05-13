@@ -579,6 +579,9 @@
   });
 
   const articleGrid = document.getElementById('articleGrid');
+  const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
+  const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
+  const articleFields = 'id,title,category,image,excerpt,body,created_at,published';
 
   function escapeHTML(value) {
     return String(value || '').replace(/[&<>"']/g, char => ({
@@ -616,12 +619,31 @@
     }).join('');
   }
 
-  fetch('data/artikel.json')
-    .then(response => {
-      if (!response.ok) throw new Error('Artikel JSON tidak ditemukan');
+  function fetchSupabaseArticles() {
+    return fetch(`${supabaseUrl}/rest/v1/articles?select=${articleFields}&published=eq.true&order=created_at.desc`, {
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`
+      }
+    }).then(response => {
+      if (!response.ok) throw new Error('Artikel Supabase tidak tersedia');
       return response.json();
+    });
+  }
+
+  function fetchLocalArticles() {
+    return fetch('data/artikel.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Artikel JSON tidak ditemukan');
+        return response.json();
+      });
+  }
+
+  fetchSupabaseArticles()
+    .catch(fetchLocalArticles)
+    .then(response => {
+      renderArticles(response);
     })
-    .then(renderArticles)
     .catch(() => {});
 </script>
 </body>

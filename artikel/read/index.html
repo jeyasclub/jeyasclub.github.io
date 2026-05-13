@@ -272,6 +272,9 @@
   const articleDetail = document.getElementById('articleDetail');
   const params = new URLSearchParams(window.location.search);
   const articleId = params.get('id');
+  const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
+  const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
+  const articleFields = 'id,title,category,image,excerpt,body,created_at,published';
 
   function escapeHTML(value) {
     return String(value || '').replace(/[&<>"']/g, char => ({
@@ -296,11 +299,24 @@
     return paragraphs.map(paragraph => `<p>${escapeHTML(paragraph).replace(/\n/g, '<br>')}</p>`).join('');
   }
 
+  function formatDate(value) {
+    if (!value) return '';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return escapeHTML(value);
+
+    return escapeHTML(date.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    }));
+  }
+
   function renderArticle(article) {
     const title = escapeHTML(article.title || 'Untitled Article');
     const category = escapeHTML(article.category || 'Artikel');
     const image = escapeHTML(article.image || '../../assets/optimized/1.jpg');
-    const createdAt = escapeHTML(article.createdAt || '');
+    const createdAt = formatDate(article.created_at || article.createdAt);
 
     document.title = `${article.title || 'Artikel'} - Jeya's Club`;
 
@@ -325,16 +341,34 @@
     `;
   }
 
-  fetch('../data/artikel.json')
-    .then(response => {
-      if (!response.ok) throw new Error('Artikel JSON tidak ditemukan');
-      return response.json();
+  function fetchSupabaseArticle() {
+    return fetch(`${supabaseUrl}/rest/v1/articles?select=${articleFields}&id=eq.${encodeURIComponent(articleId)}&published=eq.true&limit=1`, {
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`
+      }
     })
-    .then(articles => {
-      const article = Array.isArray(articles)
-        ? articles.find(item => String(item.id) === String(articleId))
-        : null;
+      .then(response => {
+        if (!response.ok) throw new Error('Artikel Supabase tidak tersedia');
+        return response.json();
+      })
+      .then(articles => Array.isArray(articles) ? articles[0] : null);
+  }
 
+  function fetchLocalArticle() {
+    return fetch('../data/artikel.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Artikel JSON tidak ditemukan');
+        return response.json();
+      })
+      .then(articles => Array.isArray(articles)
+        ? articles.find(item => String(item.id) === String(articleId))
+        : null);
+  }
+
+  fetchSupabaseArticle()
+    .catch(fetchLocalArticle)
+    .then(article => {
       if (article) {
         renderArticle(article);
       } else {
