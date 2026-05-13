@@ -554,6 +554,14 @@
     margin-bottom: 20px;
   }
 
+  .program-modal-img {
+    display: block;
+    width: min(260px, 72vw);
+    height: auto;
+    margin: 0 auto 22px;
+    object-fit: contain;
+  }
+
   .program-tags {
     display: flex;
     flex-wrap: wrap;
@@ -2612,6 +2620,7 @@
     return `
       <h3 id="programModalTitle">${program.title}</h3>
       <p>${program.description}</p>
+      <img class="program-modal-img" src="assets/laptop1.png" alt="" width="1016" height="879" loading="lazy" decoding="async">
       <div class="program-tags">${tags}</div>
       <h4>Fasilitas</h4>
       <ul>${facilities}</ul>
