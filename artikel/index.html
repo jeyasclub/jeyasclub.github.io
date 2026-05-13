@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikel - Jeya's Club</title>
+<meta name="description" content="Kumpulan artikel Jeya's Club seputar tips belajar bahasa, grammar, speaking, vocabulary, dan pengembangan diri.">
+<meta property="og:image" content="../assets/optimized/banner-thumbnail.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="../assets/optimized/banner-thumbnail.jpg">
+<link rel="image_src" href="../assets/optimized/banner-thumbnail.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A6FE8;
+    --blue-dark: #1558c0;
+    --blue-light: #E8F1FD;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --bg: #f7f9fc;
+    --border: #e5e7eb;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 72px; height: 72px; border-radius: 14px;
+    background: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .nav-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 20px; list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 13.5px; font-weight: 500; color: var(--text-muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--blue); }
+  .nav-links a.active { border-bottom: 2px solid var(--blue); padding-bottom: 2px; }
+
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+  .nav-trending-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #2d1a00;
+    background: linear-gradient(135deg, #ffe78a 0%, #f2b71b 54%, #c98207 100%);
+    border: 1px solid rgba(177, 113, 0, 0.24);
+    box-shadow: 0 10px 22px rgba(201, 130, 7, 0.24);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .nav-trending-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(201, 130, 7, 0.32);
+  }
+
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .nav-hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; }
+
+  .mobile-menu {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255,255,255,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow-y: auto;
+    box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(10px);
+  }
+  .mobile-menu a {
+    font-size: 15px; font-weight: 500; color: var(--text);
+    text-decoration: none; padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: block;
+  }
+
+  .mobile-menu .mobile-trending-link {
+    margin: auto 16px 10px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffe78a 0%, #f2b71b 54%, #c98207 100%);
+    color: #2d1a00;
+    box-shadow: 0 12px 26px rgba(201, 130, 7, 0.25);
+    text-align: center;
+    font-weight: 800;
+  }
+  .mobile-menu.open { display: flex; }
+
+  .article-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #dce8f7 0%, #eef5ff 70%, #ffffff 100%);
+    padding: 76px 24px 58px;
+  }
+
+  .article-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('../assets/optimized/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.38;
+    pointer-events: none;
+  }
+
+  .article-hero-inner {
+    position: relative;
+    z-index: 1;
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 42px;
+  }
+
+  .article-hero-copy {
+    max-width: 560px;
+  }
+
+  .article-kicker {
+    display: inline-flex;
+    margin-bottom: 14px;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+  }
+
+  .article-hero h1 {
+    color: var(--text);
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 18px;
+  }
+
+  .article-hero p {
+    max-width: 510px;
+    color: #334155;
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 1.75;
+  }
+
+  .article-hero-visual {
+    flex: 0 0 min(320px, 35vw);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .article-hero-visual img {
+    width: min(320px, 100%);
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 30px rgba(26, 111, 232, 0.16));
+  }
+
+  main {
+    background: var(--white);
+    padding: 56px 24px 76px;
+  }
+
+  .article-wrap {
+    width: min(1100px, 100%);
+    margin: 0 auto;
+  }
+
+  .section-heading {
+    margin-bottom: 24px;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(24px, 4vw, 34px);
+    line-height: 1.2;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .section-heading p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .article-card {
+    min-height: 100%;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(22, 63, 122, 0.08);
+    border-color: rgba(16, 59, 171, 0.24);
+  }
+
+  .article-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--blue-light);
+    overflow: hidden;
+  }
+
+  .article-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .article-content {
+    padding: 20px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .article-label {
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .article-card h3 {
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .article-card p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.75;
+    margin-bottom: 18px;
+  }
+
+  .article-link {
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 44px 24px;
+  }
+
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.2fr) repeat(3, minmax(150px, 1fr));
+    gap: 32px;
+    align-items: start;
+  }
+
+  .footer-logo {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+
+  .footer-logo-icon {
+    width: 128px; height: 86px; border-radius: 18px;
+    background: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .footer-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .footer-tagline {
+    max-width: 280px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--blue);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 12px;
+  }
+
+  .social-link {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .social-link img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .social-link:hover { background: var(--blue-light); transform: translateY(-2px); }
+
+  @media (max-width: 900px) {
+    .article-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-links, .nav-actions { display: none; }
+    .nav-hamburger { display: flex; }
+    .article-hero { padding: 48px 16px 36px; }
+    .article-hero-inner {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
+    .article-hero-copy { max-width: 100%; }
+    .article-hero p { margin: 0 auto; }
+    .article-hero-visual { flex-basis: auto; width: min(230px, 68vw); }
+    main { padding: 42px 16px 58px; }
+    .article-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; gap: 24px; }
+    .footer-logo-icon { width: 112px; height: 76px; }
+    .footer-tagline { max-width: none; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon"><img src="../assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" decoding="async" fetchpriority="high"></div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/#features">Program</a></li>
+    <li><a href="/#digital-products">Produk Digital</a></li>
+    <li><a href="/english_menfess/">English Menfess</a></li>
+    <li><a href="/#communities">Communities</a></li>
+    <li><a href="/#gallery">Gallery</a></li>
+    <li><a href="/faq/">FAQ</a></li>
+    <li><a href="/artikel/" class="active">Artikel</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="/#trending-program" class="nav-trending-link">Trending Program</a>
+  </div>
+
+  <button class="nav-hamburger" type="button" aria-label="Open mobile menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/#features">Program</a>
+  <a href="/#digital-products">Produk Digital</a>
+  <a href="/english_menfess/">English Menfess</a>
+  <a href="/#communities">Communities</a>
+  <a href="/#gallery">Gallery</a>
+  <a href="/faq/">FAQ</a>
+  <a href="/artikel/">Artikel</a>
+  <a href="/#trending-program" class="mobile-trending-link">Trending Program</a>
+</div>
+
+<section class="article-hero">
+  <div class="article-hero-inner">
+    <div class="article-hero-copy">
+      <span class="article-kicker">Jeya's Club Journal</span>
+      <h1>Artikel</h1>
+      <p>Baca tips belajar bahasa, ide latihan harian, dan insight ringan untuk bantu kamu makin konsisten dan percaya diri.</p>
+    </div>
+    <div class="article-hero-visual" aria-hidden="true">
+      <img src="../assets/optimized/book.png" alt="" width="218" height="220" decoding="async" fetchpriority="high">
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="article-wrap">
+    <div class="section-heading">
+      <h2>Artikel Terbaru</h2>
+      <p>Kumpulan bacaan dari Jeya's Club. Konten artikel lengkap bisa ditambahkan di sini saat sudah siap dipublikasikan.</p>
+    </div>
+
+    <div class="article-grid" id="articleGrid">
+      <article class="article-card">
+        <div class="article-thumb">
+          <img src="../assets/optimized/1.jpg" alt="English learning article" width="900" height="536" loading="lazy" decoding="async">
+        </div>
+        <div class="article-content">
+          <span class="article-label">Learning Tips</span>
+          <h3>Cara Mulai Belajar Bahasa Inggris dari Dasar</h3>
+          <p>Langkah sederhana untuk membangun rutinitas belajar yang ringan, terarah, dan mudah dipertahankan.</p>
+          <a class="article-link" href="#">Coming Soon</a>
+        </div>
+      </article>
+
+      <article class="article-card">
+        <div class="article-thumb">
+          <img src="../assets/optimized/2.jpg" alt="Speaking practice article" width="900" height="558" loading="lazy" decoding="async">
+        </div>
+        <div class="article-content">
+          <span class="article-label">Speaking</span>
+          <h3>Latihan Speaking Biar Lebih Percaya Diri</h3>
+          <p>Ide latihan pendek yang bisa kamu pakai untuk melatih pronunciation, fluency, dan keberanian berbicara.</p>
+          <a class="article-link" href="#">Coming Soon</a>
+        </div>
+      </article>
+
+      <article class="article-card">
+        <div class="article-thumb">
+          <img src="../assets/optimized/3.jpg" alt="Vocabulary article" width="1100" height="687" loading="lazy" decoding="async">
+        </div>
+        <div class="article-content">
+          <span class="article-label">Vocabulary</span>
+          <h3>Bangun Vocabulary Tanpa Menghafal Berlebihan</h3>
+          <p>Cara belajar kosakata lewat konteks supaya kata baru terasa lebih natural dan lebih mudah diingat.</p>
+          <a class="article-link" href="#">Coming Soon</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="footer-logo-icon"><img src="../assets/logo.jpg" alt="Jeya's Club logo" width="500" height="208" loading="lazy" decoding="async"></div>
+        </div>
+        <p class="footer-tagline">A language learning and social platform for everyone who wants to grow.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Kontak</h4>
+        <ul class="footer-links">
+          <li><a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a></li>
+          <li><a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">+62 851 8330 5497</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Social Media</h4>
+        <div class="social-links">
+          <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="../assets/mail.png" alt="mail" width="50" height="50" loading="lazy" decoding="async"></a>
+          <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="../assets/ig.png" alt="ig" width="50" height="50" loading="lazy" decoding="async"></a>
+          <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="../assets/x.png" alt="x" width="50" height="50" loading="lazy" decoding="async"></a>
+          <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="../assets/linkedin.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Links</h4>
+        <ul class="footer-links">
+          <li><a href="/english_menfess/">English Menfess</a></li>
+          <li><a href="/english_menfess/#paid-promote">Partnership</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+    });
+  });
+
+  const articleGrid = document.getElementById('articleGrid');
+
+  function escapeHTML(value) {
+    return String(value || '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[char]));
+  }
+
+  function renderArticles(articles) {
+    if (!Array.isArray(articles) || articles.length === 0) return;
+
+    articleGrid.innerHTML = articles.map(article => {
+      const image = article.image || '../assets/optimized/1.jpg';
+      const title = escapeHTML(article.title || 'Untitled Article');
+      const category = escapeHTML(article.category || 'Artikel');
+      const excerpt = escapeHTML(article.excerpt || '');
+
+      return `
+        <article class="article-card">
+          <div class="article-thumb">
+            <img src="${escapeHTML(image)}" alt="${title}" loading="lazy" decoding="async">
+          </div>
+          <div class="article-content">
+            <span class="article-label">${category}</span>
+            <h3>${title}</h3>
+            <p>${excerpt}</p>
+            <a class="article-link" href="#">Baca Artikel</a>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  fetch('data/artikel.json')
+    .then(response => {
+      if (!response.ok) throw new Error('Artikel JSON tidak ditemukan');
+      return response.json();
+    })
+    .then(renderArticles)
+    .catch(() => {});
+</script>
+</body>
+</html>
