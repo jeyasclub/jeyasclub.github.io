@@ -169,6 +169,34 @@
     margin-bottom: 26px;
   }
 
+  .article-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .share-btn {
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 11px 16px;
+    border: 1px solid rgba(26, 111, 232, 0.18);
+    border-radius: 14px;
+    background: var(--blue);
+    color: var(--white);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.2);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .share-btn:hover {
+    background: #1558c0;
+    transform: translateY(-1px);
+  }
+
   .article-label {
     display: inline-flex;
     color: var(--blue);
@@ -281,6 +309,10 @@
     .nav-links { display: none; }
     .nav-hamburger { display: flex; }
     .article-shell { padding: 34px 16px 56px; }
+    .article-header-row {
+      flex-direction: column;
+      gap: 14px;
+    }
     .article-cover { border-radius: 16px; }
   }
 </style>
@@ -506,6 +538,31 @@
     setMeta('meta[name="twitter:image"]', image);
   }
 
+  function copyArticleUrl(button) {
+    const url = window.location.href;
+    const originalText = button.textContent;
+
+    function showCopied() {
+      button.textContent = 'URL Tersalin';
+      window.setTimeout(() => {
+        button.textContent = originalText;
+      }, 1800);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(url).then(showCopied).catch(() => {});
+      return;
+    }
+
+    const input = document.createElement('input');
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    input.remove();
+    showCopied();
+  }
+
   function renderArticle(article) {
     const title = escapeHTML(article.title || 'Untitled Article');
     const category = escapeHTML(article.category || 'Artikel');
@@ -518,7 +575,10 @@
       <a class="back-link" href="/artikel/">← Kembali ke Artikel</a>
       <header class="article-header">
         <span class="article-label">${category}</span>
-        <h1>${title}</h1>
+        <div class="article-header-row">
+          <h1>${title}</h1>
+          <button class="share-btn" type="button" data-share-article>Share</button>
+        </div>
         <div class="article-meta">${createdAt ? `Dipublikasikan ${createdAt}` : "Jeya's Club Article"}</div>
       </header>
       <figure class="article-cover">
@@ -526,6 +586,9 @@
       </figure>
       <div class="article-body">${renderBody(article.body)}</div>
     `;
+
+    const shareButton = articleDetail.querySelector('[data-share-article]');
+    shareButton.addEventListener('click', () => copyArticleUrl(shareButton));
   }
 
   function renderNotFound() {
