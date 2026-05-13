@@ -206,6 +206,15 @@
 
   .error.show { display: block; }
 
+  .success {
+    display: none;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .success.show { display: block; }
+
   .dashboard {
     display: none;
     width: min(1180px, 100%);
@@ -443,9 +452,10 @@
           </label>
 
           <div class="button-row">
-            <button class="primary-btn" type="submit" id="submitArticleBtn">Publish Artikel</button>
+            <button class="primary-btn" type="submit" id="submitArticleBtn">Submit &amp; Publish</button>
             <button class="ghost-btn" type="button" id="clearFormBtn">Kosongkan Form</button>
           </div>
+          <p class="success" id="articleSuccess">Artikel berhasil dipublish dan sudah bisa tayang di halaman artikel.</p>
           <p class="error" id="articleError">Artikel gagal dipublish. Pastikan tabel dan policy Supabase sudah benar.</p>
         </form>
       </section>
@@ -489,6 +499,7 @@
   const emptyState = document.getElementById('emptyState');
   const submitArticleBtn = document.getElementById('submitArticleBtn');
   const articleError = document.getElementById('articleError');
+  const articleSuccess = document.getElementById('articleSuccess');
 
   const titleInput = document.getElementById('articleTitle');
   const categoryInput = document.getElementById('articleCategory');
@@ -614,6 +625,7 @@
     submitArticleBtn.disabled = true;
     submitArticleBtn.textContent = 'Publishing...';
     articleError.classList.remove('show');
+    articleSuccess.classList.remove('show');
 
     try {
       const [publishedArticle] = await publishArticle(article);
@@ -636,11 +648,12 @@
       setDrafts(drafts);
       clearForm();
       renderDrafts();
+      articleSuccess.classList.add('show');
     } catch (error) {
       articleError.classList.add('show');
     } finally {
       submitArticleBtn.disabled = false;
-      submitArticleBtn.textContent = 'Publish Artikel';
+      submitArticleBtn.textContent = 'Submit & Publish';
     }
   });
 
