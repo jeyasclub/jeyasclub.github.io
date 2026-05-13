@@ -246,6 +246,19 @@
     gap: 18px;
   }
 
+  .article-groups {
+    display: grid;
+    gap: 38px;
+  }
+
+  .article-category-title {
+    color: var(--text);
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.25;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+
   .article-card {
     min-height: 100%;
     background: var(--white);
@@ -490,42 +503,57 @@
       <p>Kumpulan bacaan dari Jeya's Club. Konten artikel lengkap bisa ditambahkan di sini saat sudah siap dipublikasikan.</p>
     </div>
 
-    <div class="article-grid" id="articleGrid">
-      <article class="article-card">
-        <div class="article-thumb">
-          <img src="../assets/optimized/1.jpg" alt="English learning article" width="900" height="536" loading="lazy" decoding="async">
+    <div class="article-groups" id="articleGrid">
+      <section class="article-category-section">
+        <h3 class="article-category-title">Learning Tips</h3>
+        <div class="article-grid">
+          <article class="article-card">
+            <div class="article-thumb">
+              <img src="../assets/optimized/1.jpg" alt="English learning article" width="900" height="536" loading="lazy" decoding="async">
+            </div>
+            <div class="article-content">
+              <span class="article-label">Learning Tips</span>
+              <h3>Cara Mulai Belajar Bahasa Inggris dari Dasar</h3>
+              <p>Langkah sederhana untuk membangun rutinitas belajar yang ringan, terarah, dan mudah dipertahankan.</p>
+              <a class="article-link" href="#">Coming Soon</a>
+            </div>
+          </article>
         </div>
-        <div class="article-content">
-          <span class="article-label">Learning Tips</span>
-          <h3>Cara Mulai Belajar Bahasa Inggris dari Dasar</h3>
-          <p>Langkah sederhana untuk membangun rutinitas belajar yang ringan, terarah, dan mudah dipertahankan.</p>
-          <a class="article-link" href="#">Coming Soon</a>
-        </div>
-      </article>
+      </section>
 
-      <article class="article-card">
-        <div class="article-thumb">
-          <img src="../assets/optimized/2.jpg" alt="Speaking practice article" width="900" height="558" loading="lazy" decoding="async">
+      <section class="article-category-section">
+        <h3 class="article-category-title">Speaking</h3>
+        <div class="article-grid">
+          <article class="article-card">
+            <div class="article-thumb">
+              <img src="../assets/optimized/2.jpg" alt="Speaking practice article" width="900" height="558" loading="lazy" decoding="async">
+            </div>
+            <div class="article-content">
+              <span class="article-label">Speaking</span>
+              <h3>Latihan Speaking Biar Lebih Percaya Diri</h3>
+              <p>Ide latihan pendek yang bisa kamu pakai untuk melatih pronunciation, fluency, dan keberanian berbicara.</p>
+              <a class="article-link" href="#">Coming Soon</a>
+            </div>
+          </article>
         </div>
-        <div class="article-content">
-          <span class="article-label">Speaking</span>
-          <h3>Latihan Speaking Biar Lebih Percaya Diri</h3>
-          <p>Ide latihan pendek yang bisa kamu pakai untuk melatih pronunciation, fluency, dan keberanian berbicara.</p>
-          <a class="article-link" href="#">Coming Soon</a>
-        </div>
-      </article>
+      </section>
 
-      <article class="article-card">
-        <div class="article-thumb">
-          <img src="../assets/optimized/3.jpg" alt="Vocabulary article" width="1100" height="687" loading="lazy" decoding="async">
+      <section class="article-category-section">
+        <h3 class="article-category-title">Vocabulary</h3>
+        <div class="article-grid">
+          <article class="article-card">
+            <div class="article-thumb">
+              <img src="../assets/optimized/3.jpg" alt="Vocabulary article" width="1100" height="687" loading="lazy" decoding="async">
+            </div>
+            <div class="article-content">
+              <span class="article-label">Vocabulary</span>
+              <h3>Bangun Vocabulary Tanpa Menghafal Berlebihan</h3>
+              <p>Cara belajar kosakata lewat konteks supaya kata baru terasa lebih natural dan lebih mudah diingat.</p>
+              <a class="article-link" href="#">Coming Soon</a>
+            </div>
+          </article>
         </div>
-        <div class="article-content">
-          <span class="article-label">Vocabulary</span>
-          <h3>Bangun Vocabulary Tanpa Menghafal Berlebihan</h3>
-          <p>Cara belajar kosakata lewat konteks supaya kata baru terasa lebih natural dan lebih mudah diingat.</p>
-          <a class="article-link" href="#">Coming Soon</a>
-        </div>
-      </article>
+      </section>
     </div>
   </div>
 </main>
@@ -596,7 +624,31 @@
   function renderArticles(articles) {
     if (!Array.isArray(articles) || articles.length === 0) return;
 
-    articleGrid.innerHTML = articles.map(article => {
+    const categoryOrder = ['News', 'Learning Tips', 'Grammar', 'Speaking', 'Vocabulary', 'Korean', 'TOEFL'];
+    const groupedArticles = articles.reduce((groups, article) => {
+      const category = article.category || 'Artikel';
+      if (!groups.has(category)) groups.set(category, []);
+      groups.get(category).push(article);
+      return groups;
+    }, new Map());
+    const orderedCategories = [
+      ...categoryOrder.filter(category => groupedArticles.has(category)),
+      ...[...groupedArticles.keys()]
+        .filter(category => !categoryOrder.includes(category))
+        .sort((a, b) => a.localeCompare(b))
+    ];
+
+    articleGrid.innerHTML = orderedCategories.map(category => `
+      <section class="article-category-section">
+        <h3 class="article-category-title">${escapeHTML(category)}</h3>
+        <div class="article-grid">
+          ${groupedArticles.get(category).map(renderArticleCard).join('')}
+        </div>
+      </section>
+    `).join('');
+  }
+
+  function renderArticleCard(article) {
       const image = article.image || '../assets/optimized/1.jpg';
       const title = escapeHTML(article.title || 'Untitled Article');
       const category = escapeHTML(article.category || 'Artikel');
@@ -616,7 +668,6 @@
           </div>
         </a>
       `;
-    }).join('');
   }
 
   function fetchSupabaseArticles() {
