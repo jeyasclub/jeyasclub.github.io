@@ -679,7 +679,10 @@
     if (format === 'bold') document.execCommand('bold');
     if (format === 'italic') document.execCommand('italic');
     if (format === 'underline') document.execCommand('underline');
-    if (format === 'subtitle') document.execCommand('formatBlock', false, 'h2');
+    if (format === 'subtitle') {
+      const isSubtitle = document.queryCommandValue('formatBlock').toLowerCase().replace(/[<>]/g, '') === 'h2';
+      document.execCommand('formatBlock', false, isSubtitle ? 'p' : 'h2');
+    }
     if (format === 'bullet') document.execCommand('insertUnorderedList');
     if (format === 'quote') document.execCommand('formatBlock', false, 'blockquote');
 
