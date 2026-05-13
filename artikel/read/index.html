@@ -175,6 +175,7 @@
     font-weight: 900;
     line-height: 1.08;
     margin-bottom: 14px;
+    overflow-wrap: anywhere;
   }
 
   .article-meta {
@@ -185,8 +186,9 @@
 
   .article-cover {
     width: 100%;
+    max-width: 760px;
     aspect-ratio: 16 / 9;
-    margin: 0 0 30px;
+    margin: 0 auto 30px;
     border-radius: 22px;
     background: var(--blue-light);
     overflow: hidden;
@@ -204,10 +206,13 @@
     color: #334155;
     font-size: 16px;
     line-height: 1.95;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .article-body p {
     margin-bottom: 18px;
+    max-width: 100%;
   }
 
   .article-body h2 {
@@ -216,6 +221,7 @@
     line-height: 1.25;
     font-weight: 900;
     margin: 34px 0 14px;
+    overflow-wrap: anywhere;
   }
 
   .article-body ul {
@@ -227,6 +233,7 @@
 
   .article-body li {
     padding-left: 4px;
+    overflow-wrap: anywhere;
   }
 
   .article-body blockquote {
@@ -237,6 +244,7 @@
     background: var(--blue-light);
     color: #102a43;
     font-weight: 600;
+    overflow-wrap: anywhere;
   }
 
   .article-empty {
