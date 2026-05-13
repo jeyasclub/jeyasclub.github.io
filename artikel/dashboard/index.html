@@ -190,6 +190,42 @@
     line-height: 1.7;
   }
 
+  .editor-wrap {
+    display: grid;
+    gap: 8px;
+  }
+
+  .editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    background: #fbfdff;
+  }
+
+  .editor-tool {
+    min-width: 38px;
+    min-height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    padding: 8px 10px;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+
+  .editor-tool:hover {
+    background: var(--blue-light);
+    border-color: rgba(26, 111, 232, 0.28);
+    transform: translateY(-1px);
+  }
+
   input:focus,
   select:focus,
   textarea:focus {
@@ -448,7 +484,17 @@
 
           <label>
             Isi Artikel
-            <textarea id="articleBody" placeholder="Tulis isi artikel di sini..." required></textarea>
+            <div class="editor-wrap">
+              <div class="editor-toolbar" aria-label="Article formatting toolbar">
+                <button class="editor-tool" type="button" data-format="bold" title="Bold"><strong>B</strong></button>
+                <button class="editor-tool" type="button" data-format="italic" title="Italic"><em>I</em></button>
+                <button class="editor-tool" type="button" data-format="underline" title="Underline"><u>U</u></button>
+                <button class="editor-tool" type="button" data-format="subtitle" title="Subtitle">H2</button>
+                <button class="editor-tool" type="button" data-format="bullet" title="Bullet list">• List</button>
+                <button class="editor-tool" type="button" data-format="quote" title="Quote">Quote</button>
+              </div>
+              <textarea id="articleBody" placeholder="Tulis isi artikel di sini..." required></textarea>
+            </div>
           </label>
 
           <div class="button-row">
@@ -549,6 +595,46 @@
     updatePreview();
   }
 
+  function insertFormat(format) {
+    const start = bodyInput.selectionStart;
+    const end = bodyInput.selectionEnd;
+    const value = bodyInput.value;
+    const selected = value.slice(start, end);
+    const fallback = {
+      bold: 'teks bold',
+      italic: 'teks italic',
+      underline: 'teks underline',
+      subtitle: 'Subtitle artikel',
+      bullet: 'Poin artikel',
+      quote: 'Kutipan artikel'
+    }[format] || 'teks';
+    const text = selected || fallback;
+    const before = value.slice(0, start);
+    const after = value.slice(end);
+    let replacement = text;
+
+    if (format === 'bold') replacement = `**${text}**`;
+    if (format === 'italic') replacement = `*${text}*`;
+    if (format === 'underline') replacement = `<u>${text}</u>`;
+    if (format === 'subtitle') replacement = `\n## ${text}\n`;
+    if (format === 'bullet') {
+      replacement = text
+        .split('\n')
+        .map(line => `- ${line.replace(/^[-*]\s+/, '')}`)
+        .join('\n');
+    }
+    if (format === 'quote') {
+      replacement = text
+        .split('\n')
+        .map(line => `> ${line.replace(/^>\s?/, '')}`)
+        .join('\n');
+    }
+
+    bodyInput.value = `${before}${replacement}${after}`;
+    bodyInput.focus();
+    bodyInput.setSelectionRange(start, start + replacement.length);
+  }
+
   function renderDrafts() {
     const drafts = getDrafts();
     articleList.innerHTML = '';
@@ -609,6 +695,10 @@
   [titleInput, categoryInput, imageInput, excerptInput].forEach(input => {
     input.addEventListener('input', updatePreview);
     input.addEventListener('change', updatePreview);
+  });
+
+  document.querySelectorAll('[data-format]').forEach(button => {
+    button.addEventListener('click', () => insertFormat(button.dataset.format));
   });
 
   articleForm.addEventListener('submit', async event => {
