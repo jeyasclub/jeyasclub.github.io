@@ -525,10 +525,11 @@
   }
 
   function updateArticleMeta(article) {
-    const title = `${article.title || 'Artikel'} - Jeya's Club`;
+    const title = article.title || 'Artikel';
     const description = article.excerpt || stripHTML(article.body).slice(0, 155) || 'Baca artikel Jeya\'s Club seputar tips belajar bahasa.';
     const image = absoluteUrl(article.image);
-    const url = window.location.href;
+    const url = new URL('/artikel/share', 'https://www.jeyasclub.com');
+    url.searchParams.set('id', article.id || articleId);
 
     document.title = title;
     setMeta('meta[name="description"]', description);
@@ -537,7 +538,7 @@
     setMeta('meta[property="og:image"]', image);
     setMeta('meta[property="og:image:secure_url"]', image);
     setMeta('meta[property="og:image:alt"]', article.title || 'Jeya\'s Club article cover');
-    setMeta('meta[property="og:url"]', url);
+    setMeta('meta[property="og:url"]', url.href);
     setMeta('meta[name="twitter:title"]', title);
     setMeta('meta[name="twitter:description"]', description);
     setMeta('meta[name="twitter:image"]', image);
