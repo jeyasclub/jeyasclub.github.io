@@ -489,14 +489,14 @@
 
       <form class="form" id="loginForm">
         <label>
-          Username
-          <input id="username" type="text" autocomplete="username" placeholder="@username" required>
+          Username / Email
+          <input id="username" type="text" autocomplete="username" placeholder="@sourvive atau email admin" required>
         </label>
         <label>
           Password
           <input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
         </label>
-        <p class="error" id="loginError">Username atau password salah.</p>
+        <p class="error" id="loginError">Login gagal. Pastikan akun admin Supabase sudah benar.</p>
         <button class="primary-btn" type="submit">Login</button>
       </form>
     </div>
@@ -600,9 +600,11 @@
   </main>
 
 <script>
-  const allowedUsername = '@sourvive';
-  const allowedPassword = '123123';
-  const sessionKey = 'jeyaArticleDashboardSession';
+  const adminUsers = {
+    '@sourvive': 'jeyasclub@gmail.com'
+  };
+  const adminEmails = Object.values(adminUsers).map(email => email.toLowerCase());
+  const sessionKey = 'jeyaArticleDashboardAuth';
   const storageKey = 'jeyaArticleDrafts';
   const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
   const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
@@ -644,6 +646,79 @@
 
   function setDrafts(drafts) {
     localStorage.setItem(storageKey, JSON.stringify(drafts));
+  }
+
+  function getAuthSession() {
+    try {
+      const session = JSON.parse(sessionStorage.getItem(sessionKey));
+      if (!session || !session.access_token || !session.expires_at) return null;
+      if (Date.now() >= session.expires_at) {
+        sessionStorage.removeItem(sessionKey);
+        return null;
+      }
+      return session;
+    } catch {
+      return null;
+    }
+  }
+
+  function setAuthSession(payload) {
+    sessionStorage.setItem(sessionKey, JSON.stringify({
+      access_token: payload.access_token,
+      refresh_token: payload.refresh_token,
+      expires_at: Date.now() + ((payload.expires_in || 3600) * 1000),
+      user: payload.user
+    }));
+  }
+
+  function getAdminEmail(value) {
+    const loginValue = value.trim().toLowerCase();
+    if (adminUsers[loginValue]) return adminUsers[loginValue];
+    return loginValue;
+  }
+
+  function isAdminEmail(email) {
+    return adminEmails.includes(String(email || '').toLowerCase());
+  }
+
+  function getAuthHeaders() {
+    const session = getAuthSession();
+    if (!session) throw new Error('Sesi login sudah habis. Silakan login ulang.');
+
+    return {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${session.access_token}`
+    };
+  }
+
+  async function loginAdmin(username, password) {
+    const email = getAdminEmail(username);
+
+    if (!isAdminEmail(email)) {
+      throw new Error('Akun ini tidak punya akses admin.');
+    }
+
+    const response = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        apikey: supabaseAnonKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!response.ok) {
+      throw new Error('Login gagal.');
+    }
+
+    const payload = await response.json();
+    const loggedInEmail = payload.user && payload.user.email ? payload.user.email.toLowerCase() : '';
+
+    if (!isAdminEmail(loggedInEmail)) {
+      throw new Error('Akun ini tidak punya akses admin.');
+    }
+
+    setAuthSession(payload);
   }
 
   function showDashboard() {
@@ -747,8 +822,7 @@
     return fetch(`${supabaseUrl}/rest/v1/articles`, {
       method: 'POST',
       headers: {
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
+        ...getAuthHeaders(),
         'Content-Type': 'application/json',
         Prefer: 'return=representation'
       },
@@ -807,8 +881,7 @@
     const response = await fetch(`${supabaseUrl}/storage/v1/object/${imageBucket}/${encodedPath}`, {
       method: 'POST',
       headers: {
-        apikey: supabaseAnonKey,
-        Authorization: `Bearer ${supabaseAnonKey}`,
+        ...getAuthHeaders(),
         'Content-Type': file.type || 'application/octet-stream',
         'cache-control': '3600',
         'x-upsert': 'true'
@@ -823,19 +896,27 @@
     return `${supabaseUrl}/storage/v1/object/public/${imageBucket}/${encodedPath}`;
   }
 
-  loginForm.addEventListener('submit', event => {
+  loginForm.addEventListener('submit', async event => {
     event.preventDefault();
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
+    const loginButton = loginForm.querySelector('button[type="submit"]');
 
-    if (username === allowedUsername && password === allowedPassword) {
-      sessionStorage.setItem(sessionKey, 'true');
+    loginButton.disabled = true;
+    loginButton.textContent = 'Login...';
+    loginError.classList.remove('show');
+
+    try {
+      await loginAdmin(username, password);
       loginError.classList.remove('show');
       showDashboard();
-      return;
+    } catch (error) {
+      loginError.textContent = error.message || 'Login gagal. Pastikan akun admin Supabase sudah benar.';
+      loginError.classList.add('show');
+    } finally {
+      loginButton.disabled = false;
+      loginButton.textContent = 'Login';
     }
-
-    loginError.classList.add('show');
   });
 
   logoutBtn.addEventListener('click', () => {
@@ -978,7 +1059,7 @@
     previewImage.src = '../../assets/optimized/1.jpg';
   });
 
-  if (sessionStorage.getItem(sessionKey) === 'true') {
+  if (getAuthSession()) {
     showDashboard();
   } else {
     showLogin();
