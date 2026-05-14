@@ -307,6 +307,14 @@
     font-weight: 600;
   }
 
+  .field-note.is-success {
+    color: #15803d;
+  }
+
+  .field-note.is-error {
+    color: var(--danger);
+  }
+
   .dashboard {
     display: none;
     width: min(1180px, 100%);
@@ -531,7 +539,7 @@
 
           <label>
             URL Gambar
-            <input id="articleImage" type="url" placeholder="https://... atau ../../assets/optimized/1.jpg">
+            <input id="articleImage" type="text" placeholder="https://... atau ../../assets/optimized/1.jpg">
           </label>
 
           <label>
@@ -658,9 +666,14 @@
     previewImage.src = imageInput.value.trim() || '../../assets/optimized/1.jpg';
   }
 
+  function updatePreviewImage(src) {
+    previewImage.src = src || imageInput.value.trim() || '../../assets/optimized/1.jpg';
+  }
+
   function clearForm() {
     articleForm.reset();
     articleEditor.innerHTML = '';
+    setImageUploadStatus('Upload akan mengisi URL gambar otomatis.', '');
     syncEditorBody();
     updatePreview();
   }
@@ -748,28 +761,66 @@
 
   function getImageExtension(file) {
     const fromName = file.name.split('.').pop();
-    if (fromName && fromName !== file.name) return fromName.toLowerCase();
-    return (file.type.split('/')[1] || 'jpg').toLowerCase();
+    const extension = fromName && fromName !== file.name ? fromName.toLowerCase() : (file.type.split('/')[1] || 'jpg').toLowerCase();
+    return extension.replace('jpeg', 'jpg').replace(/[^a-z0-9]/g, '') || 'jpg';
   }
 
-  function uploadCoverImage(file) {
-    const extension = getImageExtension(file);
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
-    const filePath = `covers/${fileName}`;
+  function slugify(value) {
+    return String(value || 'artikel')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 72) || 'artikel';
+  }
 
-    return fetch(`${supabaseUrl}/storage/v1/object/${imageBucket}/${filePath}`, {
+  function setImageUploadStatus(message, status) {
+    imageUploadStatus.textContent = message;
+    imageUploadStatus.classList.toggle('is-success', status === 'success');
+    imageUploadStatus.classList.toggle('is-error', status === 'error');
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => resolve(reader.result));
+      reader.addEventListener('error', reject);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function getUploadErrorMessage(response) {
+    try {
+      const payload = await response.json();
+      return payload.message || payload.error || response.statusText;
+    } catch {
+      return response.statusText;
+    }
+  }
+
+  async function uploadCoverImage(file) {
+    const extension = getImageExtension(file);
+    const titleSlug = slugify(titleInput.value);
+    const fileName = `${Date.now()}-${titleSlug}.${extension}`;
+    const filePath = `covers/${fileName}`;
+    const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
+
+    const response = await fetch(`${supabaseUrl}/storage/v1/object/${imageBucket}/${encodedPath}`, {
       method: 'POST',
       headers: {
         apikey: supabaseAnonKey,
         Authorization: `Bearer ${supabaseAnonKey}`,
         'Content-Type': file.type || 'application/octet-stream',
-        'x-upsert': 'false'
+        'cache-control': '3600',
+        'x-upsert': 'true'
       },
       body: file
-    }).then(response => {
-      if (!response.ok) throw new Error('Gambar gagal diupload');
-      return `${supabaseUrl}/storage/v1/object/public/${imageBucket}/${filePath}`;
     });
+
+    if (!response.ok) {
+      throw new Error(await getUploadErrorMessage(response));
+    }
+
+    return `${supabaseUrl}/storage/v1/object/public/${imageBucket}/${encodedPath}`;
   }
 
   loginForm.addEventListener('submit', event => {
@@ -801,15 +852,20 @@
     const file = imageUploadInput.files && imageUploadInput.files[0];
     if (!file) return;
 
-    imageUploadStatus.textContent = 'Mengupload gambar...';
+    setImageUploadStatus('Menyiapkan preview gambar...', '');
 
     try {
+      const localPreviewUrl = await readFileAsDataUrl(file);
+      updatePreviewImage(localPreviewUrl);
+      setImageUploadStatus('Mengupload gambar ke Supabase...', '');
+
       const imageUrl = await uploadCoverImage(file);
       imageInput.value = imageUrl;
       updatePreview();
-      imageUploadStatus.textContent = 'Gambar berhasil diupload. URL cover sudah terisi.';
+      setImageUploadStatus('Gambar berhasil diupload. URL cover publik sudah terisi.', 'success');
     } catch (error) {
-      imageUploadStatus.textContent = 'Upload gagal. Pastikan bucket Supabase article-images sudah dibuat dan public.';
+      imageInput.value = '';
+      setImageUploadStatus(`Upload gagal: ${error.message}. Jalankan policy Storage untuk bucket article-images.`, 'error');
     }
   });
 
@@ -827,6 +883,12 @@
       articleError.textContent = 'Isi artikel wajib diisi.';
       articleError.classList.add('show');
       articleEditor.focus();
+      return;
+    }
+
+    if (imageUploadInput.files.length && !imageInput.value.trim()) {
+      articleError.textContent = 'Cover image belum berhasil diupload. Cek pesan Upload Gambar dulu.';
+      articleError.classList.add('show');
       return;
     }
 
