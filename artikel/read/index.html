@@ -545,7 +545,7 @@
   }
 
   function copyArticleUrl(button, article) {
-    const url = new URL('/artikel/share', window.location.origin);
+    const url = new URL('/artikel/share', 'https://www.jeyasclub.com');
     url.searchParams.set('id', article.id || articleId);
     const originalText = button.textContent;
 
