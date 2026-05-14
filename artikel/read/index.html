@@ -544,8 +544,9 @@
     setMeta('meta[name="twitter:image:alt"]', article.title || 'Jeya\'s Club article cover');
   }
 
-  function copyArticleUrl(button) {
-    const url = window.location.href;
+  function copyArticleUrl(button, article) {
+    const url = new URL('/artikel/share', window.location.origin);
+    url.searchParams.set('id', article.id || articleId);
     const originalText = button.textContent;
 
     function showCopied() {
@@ -556,12 +557,12 @@
     }
 
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(url).then(showCopied).catch(() => {});
+      navigator.clipboard.writeText(url.href).then(showCopied).catch(() => {});
       return;
     }
 
     const input = document.createElement('input');
-    input.value = url;
+    input.value = url.href;
     document.body.appendChild(input);
     input.select();
     document.execCommand('copy');
@@ -594,7 +595,7 @@
     `;
 
     const shareButton = articleDetail.querySelector('[data-share-article]');
-    shareButton.addEventListener('click', () => copyArticleUrl(shareButton));
+    shareButton.addEventListener('click', () => copyArticleUrl(shareButton, article));
   }
 
   function renderNotFound() {
