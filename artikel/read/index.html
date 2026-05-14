@@ -385,6 +385,12 @@
       .replace(/(^|[^*])\*([^*\n]+?)\*/g, '$1<em>$2</em>');
   }
 
+  function decodeHTML(value) {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = String(value || '');
+    return textarea.value;
+  }
+
   function sanitizeEditorHTML(value) {
     const template = document.createElement('template');
     const allowedTags = new Set(['P', 'DIV', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'H2', 'UL', 'OL', 'LI', 'BLOCKQUOTE']);
@@ -419,11 +425,13 @@
   }
 
   function renderBody(body) {
-    if (/<\/?(p|div|br|strong|b|em|i|u|h2|ul|ol|li|blockquote)\b/i.test(String(body || ''))) {
-      return sanitizeEditorHTML(body);
+    const decodedBody = decodeHTML(body);
+
+    if (/<\/?(p|div|br|strong|b|em|i|u|h2|ul|ol|li|blockquote|span)\b/i.test(decodedBody)) {
+      return sanitizeEditorHTML(decodedBody);
     }
 
-    const lines = String(body || '').split('\n');
+    const lines = decodedBody.split('\n');
     const blocks = [];
     let paragraph = [];
     let list = [];
@@ -510,7 +518,7 @@
 
   function stripHTML(value) {
     const template = document.createElement('template');
-    template.innerHTML = String(value || '');
+    template.innerHTML = decodeHTML(value);
     return template.content.textContent || template.content.innerText || '';
   }
 
