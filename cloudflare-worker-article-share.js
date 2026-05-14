@@ -24,11 +24,15 @@ export default {
       });
     }
 
+    if (requestUrl.pathname.includes('/artikel/share-image')) {
+      return renderShareImage(article);
+    }
+
     const title = cleanText(article.title || 'Artikel');
     const description = cleanText(
       article.excerpt || stripHtml(article.body || '').slice(0, 155) || 'Baca artikel Jeya\'s Club.'
     );
-    const image = absoluteUrl(article.image || DEFAULT_IMAGE);
+    const image = `${SITE_URL}/artikel/share-image?id=${encodeURIComponent(id)}`;
     const shareUrl = `${SITE_URL}/artikel/share?id=${encodeURIComponent(id)}`;
     const articleUrl = `${SITE_URL}/artikel/read/?id=${encodeURIComponent(id)}`;
 
@@ -46,6 +50,28 @@ export default {
     });
   },
 };
+
+async function renderShareImage(article) {
+  const imageUrl = absoluteUrl(article.image || DEFAULT_IMAGE);
+  const imageResponse = await fetch(imageUrl, {
+    headers: {
+      accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+    },
+  });
+
+  if (!imageResponse.ok) {
+    return Response.redirect(DEFAULT_IMAGE, 302);
+  }
+
+  const contentType = imageResponse.headers.get('content-type') || 'image/jpeg';
+
+  return new Response(imageResponse.body, {
+    headers: {
+      'content-type': contentType,
+      'cache-control': 'public, max-age=86400',
+    },
+  });
+}
 
 async function getArticle(id) {
   const apiUrl = new URL(`${SUPABASE_URL}/rest/v1/articles`);
