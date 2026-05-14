@@ -332,6 +332,41 @@
     margin-bottom: 24px;
   }
 
+  .profile-panel {
+    margin-bottom: 18px;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    margin-top: 18px;
+  }
+
+  .profile-avatar-preview {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--blue-light);
+    overflow: hidden;
+  }
+
+  .profile-avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .profile-stats {
+    margin-top: 14px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
   .dashboard-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.75fr);
@@ -448,7 +483,8 @@
 
   @media (max-width: 900px) {
     .dashboard-grid,
-    .form-row {
+    .form-row,
+    .profile-grid {
       grid-template-columns: 1fr;
     }
   }
@@ -511,6 +547,43 @@
       </div>
       <button class="ghost-btn" type="button" id="exportBtn">Export JSON</button>
     </div>
+
+    <section class="panel profile-panel">
+      <h2 class="panel-title">Profil Penulis</h2>
+      <p class="muted">Profil ini akan tampil di artikel yang dipublish dari akun admin ini.</p>
+
+      <div class="profile-grid">
+        <div>
+          <div class="profile-avatar-preview">
+            <img id="profileAvatarPreview" src="../../assets/logo.jpg" alt="">
+          </div>
+          <div class="profile-stats" id="profileArticleCount">0 artikel ditulis</div>
+        </div>
+
+        <form class="form" id="profileForm">
+          <div class="form-row">
+            <label>
+              Nama Penulis
+              <input id="profileName" type="text" placeholder="Contoh: Jeya's Club Team" required>
+            </label>
+            <label>
+              URL Foto Profil
+              <input id="profileAvatar" type="url" placeholder="https://..." autocomplete="off">
+            </label>
+          </div>
+          <label>
+            Upload Foto Profil
+            <input id="profileAvatarUpload" type="file" accept="image/*">
+            <span class="field-note" id="profileAvatarStatus">Upload akan mengisi URL foto profil otomatis.</span>
+          </label>
+          <div class="button-row">
+            <button class="primary-btn" type="submit" id="saveProfileBtn">Simpan Profil</button>
+          </div>
+          <p class="success" id="profileSuccess">Profil penulis berhasil disimpan.</p>
+          <p class="error" id="profileError">Profil gagal disimpan. Pastikan policy Supabase sudah dijalankan.</p>
+        </form>
+      </div>
+    </section>
 
     <div class="dashboard-grid">
       <section class="panel">
@@ -630,11 +703,22 @@
   const excerptInput = document.getElementById('articleExcerpt');
   const bodyInput = document.getElementById('articleBody');
   const articleEditor = document.getElementById('articleEditor');
+  const profileForm = document.getElementById('profileForm');
+  const profileNameInput = document.getElementById('profileName');
+  const profileAvatarInput = document.getElementById('profileAvatar');
+  const profileAvatarUploadInput = document.getElementById('profileAvatarUpload');
+  const profileAvatarPreview = document.getElementById('profileAvatarPreview');
+  const profileAvatarStatus = document.getElementById('profileAvatarStatus');
+  const profileArticleCount = document.getElementById('profileArticleCount');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const profileSuccess = document.getElementById('profileSuccess');
+  const profileError = document.getElementById('profileError');
 
   const previewImage = document.getElementById('previewImage');
   const previewCategory = document.getElementById('previewCategory');
   const previewTitle = document.getElementById('previewTitle');
   const previewExcerpt = document.getElementById('previewExcerpt');
+  let currentProfile = null;
 
   function getDrafts() {
     try {
@@ -691,6 +775,107 @@
     };
   }
 
+  function getCurrentAdminEmail() {
+    const session = getAuthSession();
+    return session && session.user && session.user.email ? session.user.email.toLowerCase() : '';
+  }
+
+  function setProfileAvatarStatus(message, status) {
+    profileAvatarStatus.textContent = message;
+    profileAvatarStatus.classList.toggle('is-success', status === 'success');
+    profileAvatarStatus.classList.toggle('is-error', status === 'error');
+  }
+
+  function updateProfileAvatarPreview() {
+    profileAvatarPreview.src = profileAvatarInput.value.trim() || '../../assets/logo.jpg';
+  }
+
+  function renderProfile(profile, articleCount) {
+    currentProfile = profile || null;
+    profileNameInput.value = profile && profile.display_name ? profile.display_name : '';
+    profileAvatarInput.value = profile && profile.avatar_url ? profile.avatar_url : '';
+    profileArticleCount.textContent = `${articleCount || 0} artikel ditulis`;
+    updateProfileAvatarPreview();
+  }
+
+  async function fetchAdminProfile() {
+    const email = getCurrentAdminEmail();
+    if (!email) return null;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/article_admin_profiles?select=email,username,display_name,avatar_url&email=eq.${encodeURIComponent(email)}&limit=1`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) return null;
+
+    const profiles = await response.json();
+    return Array.isArray(profiles) ? profiles[0] : null;
+  }
+
+  async function fetchAdminArticleCount() {
+    const email = getCurrentAdminEmail();
+    if (!email) return 0;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?select=id&author_email=eq.${encodeURIComponent(email)}`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) return 0;
+
+    const articles = await response.json();
+    return Array.isArray(articles) ? articles.length : 0;
+  }
+
+  async function loadAdminProfile() {
+    try {
+      const [profile, articleCount] = await Promise.all([
+        fetchAdminProfile(),
+        fetchAdminArticleCount()
+      ]);
+      renderProfile(profile, articleCount);
+    } catch {
+      renderProfile(null, 0);
+    }
+  }
+
+  function getCurrentAuthor() {
+    const email = getCurrentAdminEmail();
+    return {
+      email,
+      name: profileNameInput.value.trim() || (currentProfile && currentProfile.display_name) || email || 'Jeya\'s Club Team',
+      avatar: profileAvatarInput.value.trim() || (currentProfile && currentProfile.avatar_url) || null
+    };
+  }
+
+  async function saveAdminProfile() {
+    const email = getCurrentAdminEmail();
+    if (!email) throw new Error('Sesi login sudah habis. Silakan login ulang.');
+
+    const username = Object.keys(adminUsers).find(key => adminUsers[key].toLowerCase() === email) || email;
+    const profile = {
+      email,
+      username,
+      display_name: profileNameInput.value.trim(),
+      avatar_url: profileAvatarInput.value.trim() || null
+    };
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/article_admin_profiles`, {
+      method: 'POST',
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=representation'
+      },
+      body: JSON.stringify(profile)
+    });
+
+    if (!response.ok) throw new Error(await getUploadErrorMessage(response));
+
+    const [savedProfile] = await response.json();
+    currentProfile = savedProfile;
+    return savedProfile;
+  }
+
   async function loginAdmin(username, password) {
     const email = getAdminEmail(username);
 
@@ -731,6 +916,7 @@
     dashboard.classList.add('open');
     logoutBtn.classList.remove('hidden');
     renderDrafts();
+    loadAdminProfile();
   }
 
   function showLogin() {
@@ -901,6 +1087,31 @@
     return `${supabaseUrl}/storage/v1/object/public/${imageBucket}/${encodedPath}`;
   }
 
+  async function uploadProfileAvatar(file) {
+    const extension = getImageExtension(file);
+    const emailSlug = slugify(getCurrentAdminEmail());
+    const fileName = `${emailSlug}-${Date.now()}.${extension}`;
+    const filePath = `profiles/${fileName}`;
+    const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
+
+    const response = await fetch(`${supabaseUrl}/storage/v1/object/${imageBucket}/${encodedPath}`, {
+      method: 'POST',
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': file.type || 'application/octet-stream',
+        'cache-control': '3600',
+        'x-upsert': 'true'
+      },
+      body: file
+    });
+
+    if (!response.ok) {
+      throw new Error(await getUploadErrorMessage(response));
+    }
+
+    return `${supabaseUrl}/storage/v1/object/public/${imageBucket}/${encodedPath}`;
+  }
+
   loginForm.addEventListener('submit', async event => {
     event.preventDefault();
     const username = document.getElementById('username').value.trim();
@@ -926,7 +1137,51 @@
 
   logoutBtn.addEventListener('click', () => {
     sessionStorage.removeItem(sessionKey);
+    currentProfile = null;
     showLogin();
+  });
+
+  profileAvatarInput.addEventListener('input', updateProfileAvatarPreview);
+  profileAvatarInput.addEventListener('change', updateProfileAvatarPreview);
+
+  profileAvatarUploadInput.addEventListener('change', async () => {
+    const file = profileAvatarUploadInput.files && profileAvatarUploadInput.files[0];
+    if (!file) return;
+
+    setProfileAvatarStatus('Menyiapkan preview foto...', '');
+
+    try {
+      const localPreviewUrl = await readFileAsDataUrl(file);
+      profileAvatarPreview.src = localPreviewUrl;
+      setProfileAvatarStatus('Mengupload foto profil...', '');
+
+      const avatarUrl = await uploadProfileAvatar(file);
+      profileAvatarInput.value = avatarUrl;
+      updateProfileAvatarPreview();
+      setProfileAvatarStatus('Foto profil berhasil diupload.', 'success');
+    } catch (error) {
+      setProfileAvatarStatus(`Upload gagal: ${error.message}.`, 'error');
+    }
+  });
+
+  profileForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    profileSuccess.classList.remove('show');
+    profileError.classList.remove('show');
+    saveProfileBtn.disabled = true;
+    saveProfileBtn.textContent = 'Menyimpan...';
+
+    try {
+      await saveAdminProfile();
+      await loadAdminProfile();
+      profileSuccess.classList.add('show');
+    } catch (error) {
+      profileError.textContent = error.message || 'Profil gagal disimpan. Pastikan policy Supabase sudah dijalankan.';
+      profileError.classList.add('show');
+    } finally {
+      saveProfileBtn.disabled = false;
+      saveProfileBtn.textContent = 'Simpan Profil';
+    }
   });
 
   [titleInput, categoryInput, imageInput, excerptInput].forEach(input => {
@@ -978,12 +1233,16 @@
       return;
     }
 
+    const author = getCurrentAuthor();
     const article = {
       title: titleInput.value.trim(),
       category: categoryInput.value,
       image: imageInput.value.trim() || null,
       excerpt: excerptInput.value.trim(),
       body: bodyInput.value,
+      author_email: author.email,
+      author_name: author.name,
+      author_avatar: author.avatar,
       published: true
     };
 
@@ -1002,6 +1261,9 @@
         image: publishedArticle.image,
         excerpt: publishedArticle.excerpt,
         body: publishedArticle.body,
+        author_email: publishedArticle.author_email,
+        author_name: publishedArticle.author_name,
+        author_avatar: publishedArticle.author_avatar,
         created_at: publishedArticle.created_at,
         published: publishedArticle.published,
         createdAt: new Date(publishedArticle.created_at).toLocaleDateString('id-ID', {
@@ -1013,6 +1275,7 @@
       setDrafts(drafts);
       clearForm();
       renderDrafts();
+      loadAdminProfile();
       articleSuccess.classList.add('show');
     } catch (error) {
       articleError.textContent = 'Artikel gagal dipublish. Pastikan tabel dan policy Supabase sudah benar.';

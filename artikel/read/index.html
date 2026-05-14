@@ -225,6 +225,25 @@
     line-height: 1.7;
   }
 
+  .article-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .article-author img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--border);
+    background: var(--blue-light);
+  }
+
   .article-cover {
     width: 100%;
     max-width: 760px;
@@ -366,7 +385,7 @@
   const articleId = params.get('id');
   const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
   const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
-  const articleFields = 'id,title,category,image,excerpt,body,created_at,published';
+  const articleFields = 'id,title,category,image,excerpt,body,author_name,author_avatar,author_email,created_at,published';
 
   function escapeHTML(value) {
     return String(value || '').replace(/[&<>"']/g, char => ({
@@ -584,6 +603,8 @@
     const category = escapeHTML(article.category || 'Artikel');
     const image = escapeHTML(article.image || '../../assets/optimized/1.jpg');
     const createdAt = formatDate(article.created_at || article.createdAt);
+    const authorName = escapeHTML(article.author_name || 'Jeya\'s Club Team');
+    const authorAvatar = escapeHTML(article.author_avatar || '../../assets/logo.jpg');
 
     updateArticleMeta(article);
 
@@ -596,6 +617,10 @@
           <button class="share-btn" type="button" data-share-article>Share</button>
         </div>
         <div class="article-meta">${createdAt ? `Dipublikasikan ${createdAt}` : "Jeya's Club Article"}</div>
+        <div class="article-author">
+          <img src="${authorAvatar}" alt="${authorName}" loading="lazy" decoding="async">
+          <span>Ditulis oleh ${authorName}</span>
+        </div>
       </header>
       <figure class="article-cover">
         <img src="${image}" alt="${title}" loading="eager" decoding="async">

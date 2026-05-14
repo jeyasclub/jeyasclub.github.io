@@ -330,6 +330,25 @@
     margin-bottom: 18px;
   }
 
+  .article-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 12.5px;
+    font-weight: 700;
+    margin: auto 0 12px;
+  }
+
+  .article-author img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    background: var(--blue-light);
+  }
+
   .article-link {
     margin-top: auto;
     color: var(--blue);
@@ -616,7 +635,7 @@
   const articleGrid = document.getElementById('articleGrid');
   const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
   const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
-  const articleFields = 'id,title,category,image,excerpt,body,created_at,published';
+  const articleFields = 'id,title,category,image,excerpt,body,author_name,author_avatar,created_at,published';
 
   function escapeHTML(value) {
     return String(value || '').replace(/[&<>"']/g, char => ({
@@ -660,6 +679,8 @@
       const title = escapeHTML(article.title || 'Untitled Article');
       const category = escapeHTML(article.category || 'Artikel');
       const excerpt = escapeHTML(article.excerpt || '');
+      const authorName = escapeHTML(article.author_name || 'Jeya\'s Club Team');
+      const authorAvatar = escapeHTML(article.author_avatar || '../assets/logo.jpg');
       const id = encodeURIComponent(article.id || article.title || '');
 
       return `
@@ -671,6 +692,10 @@
             <span class="article-label">${category}</span>
             <h3>${title}</h3>
             <p>${excerpt}</p>
+            <span class="article-author">
+              <img src="${authorAvatar}" alt="${authorName}" loading="lazy" decoding="async">
+              ${authorName}
+            </span>
             <span class="article-link">Baca Artikel</span>
           </div>
         </a>
