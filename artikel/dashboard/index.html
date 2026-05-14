@@ -708,7 +708,12 @@
     });
 
     if (!response.ok) {
-      throw new Error('Login gagal.');
+      let message = 'Login gagal.';
+      try {
+        const payload = await response.json();
+        message = payload.msg || payload.message || payload.error_description || message;
+      } catch {}
+      throw new Error(message);
     }
 
     const payload = await response.json();
