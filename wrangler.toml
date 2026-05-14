@@ -1,0 +1,8 @@
+name = "jeyasclub-article-share"
+main = "cloudflare-worker-article-share.js"
+compatibility_date = "2026-05-14"
+
+routes = [
+  { pattern = "www.jeyasclub.com/artikel/share*", zone_name = "jeyasclub.com" },
+  { pattern = "jeyasclub.com/artikel/share*", zone_name = "jeyasclub.com" }
+]
