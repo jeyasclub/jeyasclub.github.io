@@ -873,7 +873,28 @@
 
     const [savedProfile] = await response.json();
     currentProfile = savedProfile;
+    await updatePublishedAuthorProfile(savedProfile);
     return savedProfile;
+  }
+
+  async function updatePublishedAuthorProfile(profile) {
+    const email = getCurrentAdminEmail();
+    if (!email) return;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?author_email=eq.${encodeURIComponent(email)}`, {
+      method: 'PATCH',
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal'
+      },
+      body: JSON.stringify({
+        author_name: profile.display_name,
+        author_avatar: profile.avatar_url || null
+      })
+    });
+
+    if (!response.ok) throw new Error(await getUploadErrorMessage(response));
   }
 
   async function loginAdmin(username, password) {
