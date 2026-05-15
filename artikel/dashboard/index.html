@@ -587,7 +587,7 @@
       <div class="profile-grid">
         <div>
           <div class="profile-avatar-preview">
-            <img id="profileAvatarPreview" src="../../assets/logo.jpg" alt="">
+            <img id="profileAvatarPreview" src="../../assets/blank.png" alt="">
           </div>
           <div class="profile-stats" id="profileArticleCount">0 artikel ditulis</div>
           <div class="profile-achievement">
@@ -598,21 +598,16 @@
         </div>
 
         <form class="form" id="profileForm">
-          <div class="form-row">
-            <label>
-              Nama Penulis
-              <input id="profileName" type="text" placeholder="Contoh: Jeya's Club Team" required>
-            </label>
-            <label>
-              URL Foto Profil
-              <input id="profileAvatar" type="url" placeholder="https://..." autocomplete="off">
-            </label>
-          </div>
+          <label>
+            Nama Penulis
+            <input id="profileName" type="text" placeholder="Contoh: Jeya's Club Team" required>
+          </label>
           <label>
             Upload Foto Profil
             <input id="profileAvatarUpload" type="file" accept="image/*">
             <span class="field-note" id="profileAvatarStatus">Upload akan mengisi URL foto profil otomatis.</span>
           </label>
+          <input id="profileAvatar" type="hidden">
           <div class="button-row">
             <button class="primary-btn" type="submit" id="saveProfileBtn">Simpan Profil</button>
           </div>
@@ -841,7 +836,7 @@
   }
 
   function updateProfileAvatarPreview() {
-    profileAvatarPreview.src = profileAvatarInput.value.trim() || '../../assets/logo.jpg';
+    profileAvatarPreview.src = profileAvatarInput.value.trim() || '../../assets/blank.png';
   }
 
   function renderProfile(profile, articleCount) {
@@ -1263,9 +1258,6 @@
     currentProfile = null;
     showLogin();
   });
-
-  profileAvatarInput.addEventListener('input', updateProfileAvatarPreview);
-  profileAvatarInput.addEventListener('change', updateProfileAvatarPreview);
 
   profileAvatarUploadInput.addEventListener('change', async () => {
     const file = profileAvatarUploadInput.files && profileAvatarUploadInput.files[0];
