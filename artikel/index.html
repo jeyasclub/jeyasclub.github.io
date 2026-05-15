@@ -274,6 +274,56 @@
     margin-bottom: 16px;
   }
 
+  .article-category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .article-category-header .article-category-title {
+    margin-bottom: 0;
+  }
+
+  .article-slider-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+
+  .article-slider-btn {
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+  }
+
+  .article-slider-btn:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+
+  .article-slider-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+
   .article-card {
     min-height: 100%;
     background: var(--white);
@@ -285,6 +335,7 @@
     color: inherit;
     text-decoration: none;
     flex: 0 0 min(330px, 82vw);
+    max-width: min(330px, 82vw);
     scroll-snap-align: start;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
@@ -629,12 +680,37 @@
 
     articleGrid.innerHTML = orderedCategories.map(category => `
       <section class="article-category-section">
-        <h3 class="article-category-title">${escapeHTML(category)}</h3>
-        <div class="article-grid">
+        <div class="article-category-header">
+          <h3 class="article-category-title">${escapeHTML(category)}</h3>
+          <div class="article-slider-actions" aria-label="Navigasi artikel ${escapeHTML(category)}">
+            <button class="article-slider-btn" type="button" data-scroll-category="${escapeHTML(category)}" data-scroll-direction="-1" aria-label="Artikel sebelumnya">‹</button>
+            <button class="article-slider-btn" type="button" data-scroll-category="${escapeHTML(category)}" data-scroll-direction="1" aria-label="Artikel berikutnya">›</button>
+          </div>
+        </div>
+        <div class="article-grid" data-category-grid="${escapeHTML(category)}">
           ${groupedArticles.get(category).map(renderArticleCard).join('')}
         </div>
       </section>
     `).join('');
+    bindArticleSliders();
+  }
+
+  function bindArticleSliders() {
+    document.querySelectorAll('[data-scroll-category]').forEach(button => {
+      button.addEventListener('click', () => {
+        const direction = Number(button.dataset.scrollDirection || 1);
+        const section = button.closest('.article-category-section');
+        const grid = section ? section.querySelector('.article-grid') : null;
+        if (!grid) return;
+
+        const firstCard = grid.querySelector('.article-card');
+        const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320;
+        grid.scrollBy({
+          left: direction * (cardWidth + 18),
+          behavior: 'smooth'
+        });
+      });
+    });
   }
 
   function renderArticleCard(article) {
