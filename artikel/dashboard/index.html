@@ -336,9 +336,69 @@
     margin-bottom: 18px;
   }
 
+  .profile-panel .panel-title {
+    letter-spacing: 0.2px;
+  }
+
+  .license-card {
+    position: relative;
+    overflow: hidden;
+    margin-top: 18px;
+    padding: 18px;
+    border: 1.5px solid rgba(26, 111, 232, 0.2);
+    border-radius: 20px;
+    background:
+      linear-gradient(90deg, rgba(26, 111, 232, 0.1) 0 1px, transparent 1px 100%),
+      linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+    background-size: 28px 100%, auto;
+  }
+
+  .license-card::after {
+    content: "JEYA'S CLUB";
+    position: absolute;
+    right: -18px;
+    bottom: 18px;
+    color: rgba(26, 111, 232, 0.06);
+    font-size: clamp(42px, 8vw, 86px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .license-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(26, 111, 232, 0.16);
+  }
+
+  .license-kicker {
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  .license-id {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   .profile-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
-    grid-template-columns: minmax(150px, 0.28fr) minmax(0, 1fr);
+    grid-template-columns: minmax(150px, 0.32fr) minmax(0, 1fr);
     gap: 24px;
     align-items: start;
     margin-top: 18px;
@@ -352,12 +412,13 @@
   }
 
   .profile-avatar-preview {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    background: var(--blue-light);
+    width: 120px;
+    aspect-ratio: 3 / 4;
+    border-radius: 14px;
+    border: 1.5px solid rgba(26, 111, 232, 0.22);
+    background: #eef5ff;
     overflow: hidden;
+    box-shadow: 0 12px 26px rgba(26, 111, 232, 0.12);
   }
 
   .profile-avatar-preview img {
@@ -368,10 +429,23 @@
   }
 
   .profile-stats {
-    color: var(--text);
+    color: var(--text-muted);
     font-size: 13px;
     font-weight: 800;
     line-height: 1.45;
+  }
+
+  .license-field {
+    min-width: 0;
+  }
+
+  .license-field-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
   }
 
   .profile-achievement {
@@ -383,14 +457,14 @@
     align-items: center;
     padding: 12px;
     border: 1.5px solid rgba(242, 183, 27, 0.35);
-    border-radius: 16px;
+    border-radius: 14px;
     background: linear-gradient(135deg, #fff9db 0%, #ffffff 72%);
   }
 
   .achievement-icon {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: 10px;
     display: grid;
     place-items: center;
     background: #fff3bf;
@@ -613,42 +687,57 @@
     </div>
 
     <section class="panel profile-panel">
-      <h2 class="panel-title">Profil Penulis</h2>
-      <p class="muted">Profil ini akan tampil di artikel yang dipublish dari akun admin ini.</p>
+      <h2 class="panel-title">Writer License</h2>
+      <p class="muted">Profil resmi penulis yang akan tampil di artikel yang dipublish dari akun admin ini.</p>
 
-      <div class="profile-grid">
-        <div class="profile-summary">
-          <div class="profile-avatar-preview">
-            <img id="profileAvatarPreview" src="../../assets/blank.png" alt="">
+      <div class="license-card">
+        <div class="license-header">
+          <div>
+            <div class="license-kicker">Jeya's Club Writer Permit</div>
+            <div class="profile-stats" id="profileArticleCount">0 published artikel</div>
           </div>
-          <div class="profile-stats" id="profileArticleCount">0 artikel ditulis</div>
-          <div class="profile-achievement">
-            <div class="achievement-icon" aria-hidden="true">🏆</div>
-            <div class="achievement-copy">
-              <div class="achievement-label">Achievement</div>
-              <div class="achievement-value" id="profilePublishedCount">0</div>
-              <div class="achievement-caption">Published artikel sedang tayang</div>
-            </div>
-          </div>
+          <div class="license-id">Valid Admin</div>
         </div>
 
-        <form class="form" id="profileForm">
-          <label>
-            Nama Penulis
-            <input id="profileName" type="text" placeholder="Contoh: Jeya's Club Team" required>
-          </label>
-          <label>
-            Upload Foto Profil
-            <input id="profileAvatarUpload" type="file" accept="image/*">
-            <span class="field-note" id="profileAvatarStatus">Upload akan mengisi URL foto profil otomatis.</span>
-          </label>
-          <input id="profileAvatar" type="hidden">
-          <div class="button-row">
-            <button class="primary-btn" type="submit" id="saveProfileBtn">Simpan Profil</button>
+        <div class="profile-grid">
+          <div class="profile-summary">
+            <div class="profile-avatar-preview">
+              <img id="profileAvatarPreview" src="../../assets/blank.png" alt="">
+            </div>
+            <div class="profile-achievement">
+              <div class="achievement-icon" aria-hidden="true">🏆</div>
+              <div class="achievement-copy">
+                <div class="achievement-label">Achievement</div>
+                <div class="achievement-value" id="profilePublishedCount">0</div>
+                <div class="achievement-caption">Published artikel sedang tayang</div>
+              </div>
+            </div>
           </div>
-          <p class="success" id="profileSuccess">Profil penulis berhasil disimpan.</p>
-          <p class="error" id="profileError">Profil gagal disimpan. Pastikan policy Supabase sudah dijalankan.</p>
-        </form>
+
+          <form class="form" id="profileForm">
+            <div class="license-field">
+              <div class="license-field-label">Writer Name</div>
+              <label>
+                Nama Penulis
+                <input id="profileName" type="text" placeholder="Contoh: Jeya's Club Team" required>
+              </label>
+            </div>
+            <div class="license-field">
+              <div class="license-field-label">Photo</div>
+              <label>
+                Upload Foto Profil
+                <input id="profileAvatarUpload" type="file" accept="image/*">
+                <span class="field-note" id="profileAvatarStatus">Upload akan mengisi foto license otomatis.</span>
+              </label>
+            </div>
+            <input id="profileAvatar" type="hidden">
+            <div class="button-row">
+              <button class="primary-btn" type="submit" id="saveProfileBtn">Simpan License</button>
+            </div>
+            <p class="success" id="profileSuccess">Writer License berhasil disimpan.</p>
+            <p class="error" id="profileError">Writer License gagal disimpan. Pastikan policy Supabase sudah dijalankan.</p>
+          </form>
+        </div>
       </div>
     </section>
 
@@ -1326,11 +1415,11 @@
       await loadAdminProfile();
       profileSuccess.classList.add('show');
     } catch (error) {
-      profileError.textContent = error.message || 'Profil gagal disimpan. Pastikan policy Supabase sudah dijalankan.';
+      profileError.textContent = error.message || 'Writer License gagal disimpan. Pastikan policy Supabase sudah dijalankan.';
       profileError.classList.add('show');
     } finally {
       saveProfileBtn.disabled = false;
-      saveProfileBtn.textContent = 'Simpan Profil';
+      saveProfileBtn.textContent = 'Simpan License';
     }
   });
 
