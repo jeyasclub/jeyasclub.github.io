@@ -667,7 +667,7 @@
         </div>
 
         <div class="article-list" id="articleList"></div>
-        <div class="empty-state" id="emptyState">Belum ada artikel yang dipublish dari browser ini.</div>
+        <div class="empty-state" id="emptyState">Belum ada artikel yang dipublish.</div>
       </aside>
     </div>
   </main>
@@ -730,6 +730,16 @@
 
   function setDrafts(drafts) {
     localStorage.setItem(storageKey, JSON.stringify(drafts));
+  }
+
+  function escapeHTML(value) {
+    return String(value || '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    }[char]));
   }
 
   function getAuthSession() {
@@ -936,7 +946,7 @@
     loginScreen.classList.add('hidden');
     dashboard.classList.add('open');
     logoutBtn.classList.remove('hidden');
-    renderDrafts();
+    renderAdminArticles();
     loadAdminProfile();
   }
 
@@ -1009,25 +1019,70 @@
     syncEditorBody();
   }
 
-  function renderDrafts() {
-    const drafts = getDrafts();
+  async function fetchAdminArticles() {
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?select=id,title,category,excerpt,created_at,author_email&published=eq.true&order=created_at.desc`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) throw new Error('Artikel gagal dimuat.');
+    return response.json();
+  }
+
+  function formatDashboardDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+
+    return date.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+
+  async function renderAdminArticles() {
+    articleList.innerHTML = '';
+    emptyState.textContent = 'Memuat artikel...';
+    emptyState.style.display = 'block';
+
+    let drafts = [];
+    try {
+      drafts = await fetchAdminArticles();
+    } catch (error) {
+      emptyState.textContent = error.message || 'Artikel gagal dimuat.';
+      return;
+    }
+
     articleList.innerHTML = '';
     emptyState.style.display = drafts.length ? 'none' : 'block';
+    emptyState.textContent = 'Belum ada artikel yang dipublish.';
 
     drafts.forEach(draft => {
       const item = document.createElement('article');
       item.className = 'article-item';
+      const id = escapeHTML(draft.id);
       item.innerHTML = `
-        <h3>${draft.title}</h3>
-        <div class="article-meta">${draft.category} • ${draft.createdAt}</div>
-        <p class="muted">${draft.excerpt}</p>
+        <h3>${escapeHTML(draft.title)}</h3>
+        <div class="article-meta">${escapeHTML(draft.category)} • ${escapeHTML(formatDashboardDate(draft.created_at))}</div>
+        <p class="muted">${escapeHTML(draft.excerpt)}</p>
         <div class="button-row">
-          <button class="ghost-btn" type="button" data-edit="${draft.id}">Edit</button>
-          <button class="danger-btn" type="button" data-delete="${draft.id}">Hapus</button>
+          <a class="ghost-btn" href="/artikel/read/?id=${id}" target="_blank" rel="noopener">Lihat</a>
+          <button class="danger-btn" type="button" data-delete="${id}">Hapus</button>
         </div>
       `;
       articleList.appendChild(item);
     });
+  }
+
+  async function deleteArticle(articleId) {
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?id=eq.${encodeURIComponent(articleId)}`, {
+      method: 'DELETE',
+      headers: {
+        ...getAuthHeaders(),
+        Prefer: 'return=minimal'
+      }
+    });
+
+    if (!response.ok) throw new Error(await getUploadErrorMessage(response));
   }
 
   function publishArticle(article) {
@@ -1295,7 +1350,7 @@
       });
       setDrafts(drafts);
       clearForm();
-      renderDrafts();
+      renderAdminArticles();
       loadAdminProfile();
       articleSuccess.classList.add('show');
     } catch (error) {
@@ -1309,28 +1364,27 @@
 
   document.getElementById('clearFormBtn').addEventListener('click', clearForm);
 
-  articleList.addEventListener('click', event => {
-    const editId = event.target.dataset.edit;
+  articleList.addEventListener('click', async event => {
     const deleteId = event.target.dataset.delete;
     const drafts = getDrafts();
 
-    if (editId) {
-      const draft = drafts.find(item => item.id === editId);
-      if (!draft) return;
-      titleInput.value = draft.title;
-      categoryInput.value = draft.category;
-      imageInput.value = draft.image;
-      excerptInput.value = draft.excerpt;
-      articleEditor.innerHTML = draft.body || '';
-      syncEditorBody();
-      setDrafts(drafts.filter(item => item.id !== editId));
-      updatePreview();
-      renderDrafts();
-    }
-
     if (deleteId) {
-      setDrafts(drafts.filter(item => item.id !== deleteId));
-      renderDrafts();
+      const confirmed = window.confirm('Hapus artikel ini dari website? Tindakan ini tidak bisa dibatalkan.');
+      if (!confirmed) return;
+
+      event.target.disabled = true;
+      event.target.textContent = 'Menghapus...';
+
+      try {
+        await deleteArticle(deleteId);
+        setDrafts(drafts.filter(item => item.id !== deleteId));
+        await renderAdminArticles();
+        await loadAdminProfile();
+      } catch (error) {
+        event.target.disabled = false;
+        event.target.textContent = 'Hapus';
+        window.alert(error.message || 'Artikel gagal dihapus.');
+      }
     }
   });
 
