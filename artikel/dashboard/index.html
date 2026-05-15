@@ -347,10 +347,20 @@
     padding: 18px;
     border: 1.5px solid rgba(26, 111, 232, 0.2);
     border-radius: 20px;
-    background:
-      linear-gradient(90deg, rgba(26, 111, 232, 0.1) 0 1px, transparent 1px 100%),
-      linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
-    background-size: 28px 100%, auto;
+    background: linear-gradient(180deg, rgba(248, 251, 255, 0.92) 0%, rgba(255, 255, 255, 0.94) 100%);
+  }
+
+  .license-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(26, 111, 232, 0.11) 0 1px, transparent 1px 100%),
+      url('../../assets/optimized/bg.jpg');
+    background-size: 28px 100%, cover;
+    background-position: left top, center;
+    opacity: 0.32;
+    pointer-events: none;
   }
 
   .license-card::after {
