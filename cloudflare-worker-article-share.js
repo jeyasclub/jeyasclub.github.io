@@ -6,6 +6,11 @@ const DEFAULT_IMAGE = `${SITE_URL}/assets/cover.png`;
 export default {
   async fetch(request) {
     const requestUrl = new URL(request.url);
+
+    if (requestUrl.pathname === '/sitemap-articles.xml') {
+      return renderArticleSitemap();
+    }
+
     const id = requestUrl.searchParams.get('id');
 
     if (!id) {
@@ -51,6 +56,33 @@ export default {
   },
 };
 
+async function renderArticleSitemap() {
+  const articles = await getPublishedArticlesForSitemap();
+  const urls = articles.map(article => {
+    const loc = `${SITE_URL}/artikel/read/?id=${encodeURIComponent(article.id)}`;
+    const lastmod = formatSitemapDate(article.created_at);
+
+    return `  <url>
+    <loc>${escapeXml(loc)}</loc>
+    ${lastmod ? `<lastmod>${escapeXml(lastmod)}</lastmod>` : ''}
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>`;
+  }).join('\n');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`;
+
+  return new Response(xml, {
+    headers: {
+      'content-type': 'application/xml; charset=utf-8',
+      'cache-control': 'public, max-age=300',
+    },
+  });
+}
+
 async function renderShareImage(article) {
   const imageUrl = absoluteUrl(article.image || DEFAULT_IMAGE);
   const imageResponse = await fetch(imageUrl, {
@@ -91,6 +123,26 @@ async function getArticle(id) {
 
   const articles = await response.json();
   return Array.isArray(articles) ? articles[0] : null;
+}
+
+async function getPublishedArticlesForSitemap() {
+  const apiUrl = new URL(`${SUPABASE_URL}/rest/v1/articles`);
+  apiUrl.searchParams.set('select', 'id,created_at');
+  apiUrl.searchParams.set('published', 'eq.true');
+  apiUrl.searchParams.set('order', 'created_at.desc');
+  apiUrl.searchParams.set('limit', '1000');
+
+  const response = await fetch(apiUrl.href, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+  });
+
+  if (!response.ok) return [];
+
+  const articles = await response.json();
+  return Array.isArray(articles) ? articles.filter(article => article && article.id) : [];
 }
 
 function renderSharePage({ title, description, image, shareUrl, articleUrl }) {
@@ -146,6 +198,12 @@ function stripHtml(value) {
   return String(value || '').replace(/<[^>]*>/g, ' ');
 }
 
+function formatSitemapDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : date.toISOString();
+}
+
 function escapeHtml(value) {
   return String(value || '').replace(/[&<>"']/g, character => ({
     '&': '&amp;',
@@ -153,5 +211,15 @@ function escapeHtml(value) {
     '>': '&gt;',
     '"': '&quot;',
     "'": '&#039;',
+  }[character]));
+}
+
+function escapeXml(value) {
+  return String(value || '').replace(/[<>&'"]/g, character => ({
+    '<': '&lt;',
+    '>': '&gt;',
+    '&': '&amp;',
+    "'": '&apos;',
+    '"': '&quot;',
   }[character]));
 }
