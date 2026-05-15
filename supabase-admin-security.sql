@@ -8,7 +8,8 @@ stable
 as $$
   select (auth.jwt() ->> 'email') in (
     'jeyasclub@gmail.com',
-    'jihamalia@gmail.com'
+    'jihamalia@gmail.com',
+    'ainworks234@gmail.com'
   );
 $$;
 
