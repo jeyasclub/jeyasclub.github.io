@@ -1,7 +1,7 @@
 const SUPABASE_URL = 'https://ingeqwcpfuugcyafbecl.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
 const SITE_URL = 'https://www.jeyasclub.com';
-const DEFAULT_IMAGE = `${SITE_URL}/assets/optimized/banner-thumbnail.jpg`;
+const DEFAULT_IMAGE = `${SITE_URL}/assets/cover.png`;
 
 export default {
   async fetch(request) {

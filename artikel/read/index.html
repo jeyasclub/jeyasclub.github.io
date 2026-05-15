@@ -9,14 +9,14 @@
 <meta property="og:site_name" content="Jeya's Club">
 <meta property="og:title" content="Baca Artikel - Jeya's Club" id="metaOgTitle">
 <meta property="og:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaOgDescription">
-<meta property="og:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaOgImage">
-<meta property="og:image:secure_url" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaOgImageSecure">
+<meta property="og:image" content="https://www.jeyasclub.com/assets/cover.png" id="metaOgImage">
+<meta property="og:image:secure_url" content="https://www.jeyasclub.com/assets/cover.png" id="metaOgImageSecure">
 <meta property="og:image:alt" content="Jeya's Club article cover" id="metaOgImageAlt">
 <meta property="og:url" content="https://www.jeyasclub.com/artikel/read/" id="metaOgUrl">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Baca Artikel - Jeya's Club" id="metaTwitterTitle">
 <meta name="twitter:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaTwitterDescription">
-<meta name="twitter:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg" id="metaTwitterImage">
+<meta name="twitter:image" content="https://www.jeyasclub.com/assets/cover.png" id="metaTwitterImage">
 <meta name="twitter:image:alt" content="Jeya's Club article cover" id="metaTwitterImageAlt">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -692,7 +692,7 @@
   }
 
   function absoluteUrl(value) {
-    return new URL(value || '/assets/optimized/banner-thumbnail.jpg', window.location.origin).href;
+    return new URL(value || '/assets/cover.png', window.location.origin).href;
   }
 
   function setMeta(selector, value) {
@@ -751,7 +751,7 @@
   function renderArticle(article) {
     const title = escapeHTML(article.title || 'Untitled Article');
     const category = escapeHTML(article.category || 'Artikel');
-    const image = escapeHTML(article.image || '../../assets/optimized/1.jpg');
+    const image = escapeHTML(article.image || '../../assets/cover.png');
     const createdAt = formatDate(article.created_at || article.createdAt);
     const authorName = escapeHTML(article.author_name || 'Jeya\'s Club Team');
     const authorAvatar = escapeHTML(article.author_avatar || '../../assets/blank.png');

@@ -791,7 +791,7 @@
 
           <label>
             URL Gambar
-            <input id="articleImage" type="text" placeholder="https://... atau ../../assets/optimized/1.jpg">
+            <input id="articleImage" type="text" placeholder="https://... atau ../../assets/cover.png">
           </label>
 
           <label>
@@ -836,7 +836,7 @@
 
         <div class="preview-card">
           <div class="preview-thumb">
-            <img id="previewImage" src="../../assets/optimized/1.jpg" alt="">
+            <img id="previewImage" src="../../assets/cover.png" alt="">
           </div>
           <div class="preview-body">
             <div class="preview-label" id="previewCategory">Learning Tips</div>
@@ -1159,11 +1159,11 @@
     previewCategory.textContent = categoryInput.value || 'Learning Tips';
     previewTitle.textContent = titleInput.value.trim() || 'Judul artikel akan muncul di sini';
     previewExcerpt.textContent = excerptInput.value.trim() || 'Ringkasan artikel akan muncul di sini.';
-    previewImage.src = imageInput.value.trim() || '../../assets/optimized/1.jpg';
+    previewImage.src = imageInput.value.trim() || '../../assets/cover.png';
   }
 
   function updatePreviewImage(src) {
-    previewImage.src = src || imageInput.value.trim() || '../../assets/optimized/1.jpg';
+    previewImage.src = src || imageInput.value.trim() || '../../assets/cover.png';
   }
 
   function clearForm() {
@@ -1676,7 +1676,7 @@
   });
 
   previewImage.addEventListener('error', () => {
-    previewImage.src = '../../assets/optimized/1.jpg';
+    previewImage.src = '../../assets/cover.png';
   });
 
   if (getAuthSession()) {
