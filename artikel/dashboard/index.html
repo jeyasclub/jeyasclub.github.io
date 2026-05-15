@@ -784,6 +784,7 @@
                 <option value="Vocabulary">Vocabulary</option>
                 <option value="Korean">Korean</option>
                 <option value="TOEFL">TOEFL</option>
+                <option value="Lainnya">Lainnya</option>
               </select>
             </label>
           </div>
@@ -911,6 +912,7 @@
   const previewTitle = document.getElementById('previewTitle');
   const previewExcerpt = document.getElementById('previewExcerpt');
   let currentProfile = null;
+  let editingArticleId = null;
 
   function getDrafts() {
     try {
@@ -1167,6 +1169,8 @@
   function clearForm() {
     articleForm.reset();
     articleEditor.innerHTML = '';
+    editingArticleId = null;
+    submitArticleBtn.textContent = 'Submit & Publish';
     setImageUploadStatus('Upload akan mengisi URL gambar otomatis.', '');
     syncEditorBody();
     updatePreview();
@@ -1272,11 +1276,38 @@
         <p class="muted">${escapeHTML(draft.excerpt)}</p>
         <div class="button-row">
           <a class="ghost-btn" href="/artikel/read/?id=${id}" target="_blank" rel="noopener">Lihat</a>
+          <button class="ghost-btn" type="button" data-edit="${id}">Edit</button>
           <button class="danger-btn" type="button" data-delete="${id}">Hapus</button>
         </div>
       `;
       articleList.appendChild(item);
     });
+  }
+
+  async function fetchArticleForEdit(articleId) {
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?select=id,title,category,image,excerpt,body,author_email,published&id=eq.${encodeURIComponent(articleId)}&limit=1`, {
+      headers: getAuthHeaders()
+    });
+
+    if (!response.ok) throw new Error('Artikel gagal dimuat untuk diedit.');
+
+    const articles = await response.json();
+    return Array.isArray(articles) ? articles[0] : null;
+  }
+
+  function startEditArticle(article) {
+    editingArticleId = article.id;
+    titleInput.value = article.title || '';
+    categoryInput.value = article.category || 'Lainnya';
+    imageInput.value = article.image || '';
+    excerptInput.value = article.excerpt || '';
+    articleEditor.innerHTML = article.body || '';
+    syncEditorBody();
+    updatePreview();
+    submitArticleBtn.textContent = 'Update Artikel';
+    articleError.classList.remove('show');
+    articleSuccess.classList.remove('show');
+    articleForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   async function deleteArticle(articleId) {
@@ -1289,6 +1320,21 @@
     });
 
     if (!response.ok) throw new Error(await getUploadErrorMessage(response));
+  }
+
+  function updateArticle(articleId, article) {
+    return fetch(`${supabaseUrl}/rest/v1/articles?id=eq.${encodeURIComponent(articleId)}`, {
+      method: 'PATCH',
+      headers: {
+        ...getAuthHeaders(),
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(article)
+    }).then(response => {
+      if (!response.ok) throw new Error('Artikel gagal diupdate');
+      return response.json();
+    });
   }
 
   function publishArticle(article) {
@@ -1519,57 +1565,85 @@
       image: imageInput.value.trim() || null,
       excerpt: excerptInput.value.trim(),
       body: bodyInput.value,
-      author_email: author.email,
       author_name: author.name,
       author_avatar: author.avatar,
       published: true
     };
 
+    if (!editingArticleId) {
+      article.author_email = author.email;
+    }
+
     submitArticleBtn.disabled = true;
-    submitArticleBtn.textContent = 'Publishing...';
+    submitArticleBtn.textContent = editingArticleId ? 'Updating...' : 'Publishing...';
     articleError.classList.remove('show');
     articleSuccess.classList.remove('show');
 
     try {
-      const [publishedArticle] = await publishArticle(article);
-      const drafts = getDrafts();
-      drafts.unshift({
-        id: publishedArticle.id,
-        title: publishedArticle.title,
-        category: publishedArticle.category,
-        image: publishedArticle.image,
-        excerpt: publishedArticle.excerpt,
-        body: publishedArticle.body,
-        author_email: publishedArticle.author_email,
-        author_name: publishedArticle.author_name,
-        author_avatar: publishedArticle.author_avatar,
-        created_at: publishedArticle.created_at,
-        published: publishedArticle.published,
-        createdAt: new Date(publishedArticle.created_at).toLocaleDateString('id-ID', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        })
-      });
-      setDrafts(drafts);
+      if (editingArticleId) {
+        await updateArticle(editingArticleId, article);
+        articleSuccess.textContent = 'Artikel berhasil diupdate dan perubahan sudah tayang.';
+      } else {
+        const [publishedArticle] = await publishArticle(article);
+        const drafts = getDrafts();
+        drafts.unshift({
+          id: publishedArticle.id,
+          title: publishedArticle.title,
+          category: publishedArticle.category,
+          image: publishedArticle.image,
+          excerpt: publishedArticle.excerpt,
+          body: publishedArticle.body,
+          author_email: publishedArticle.author_email,
+          author_name: publishedArticle.author_name,
+          author_avatar: publishedArticle.author_avatar,
+          created_at: publishedArticle.created_at,
+          published: publishedArticle.published,
+          createdAt: new Date(publishedArticle.created_at).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+          })
+        });
+        setDrafts(drafts);
+        articleSuccess.textContent = 'Artikel berhasil dipublish dan sudah bisa tayang di halaman artikel.';
+      }
       clearForm();
       renderAdminArticles();
       loadAdminProfile();
       articleSuccess.classList.add('show');
     } catch (error) {
-      articleError.textContent = 'Artikel gagal dipublish. Pastikan tabel dan policy Supabase sudah benar.';
+      articleError.textContent = editingArticleId
+        ? 'Artikel gagal diupdate. Pastikan policy Supabase sudah benar.'
+        : 'Artikel gagal dipublish. Pastikan tabel dan policy Supabase sudah benar.';
       articleError.classList.add('show');
     } finally {
       submitArticleBtn.disabled = false;
-      submitArticleBtn.textContent = 'Submit & Publish';
+      submitArticleBtn.textContent = editingArticleId ? 'Update Artikel' : 'Submit & Publish';
     }
   });
 
   document.getElementById('clearFormBtn').addEventListener('click', clearForm);
 
   articleList.addEventListener('click', async event => {
+    const editId = event.target.dataset.edit;
     const deleteId = event.target.dataset.delete;
     const drafts = getDrafts();
+
+    if (editId) {
+      event.target.disabled = true;
+      event.target.textContent = 'Memuat...';
+
+      try {
+        const article = await fetchArticleForEdit(editId);
+        if (!article) throw new Error('Artikel tidak ditemukan.');
+        startEditArticle(article);
+      } catch (error) {
+        window.alert(error.message || 'Artikel gagal dimuat untuk diedit.');
+      } finally {
+        event.target.disabled = false;
+        event.target.textContent = 'Edit';
+      }
+    }
 
     if (deleteId) {
       const confirmed = window.confirm('Hapus artikel ini dari website? Tindakan ini tidak bisa dibatalkan.');

@@ -611,7 +611,7 @@
   function renderArticles(articles) {
     if (!Array.isArray(articles) || articles.length === 0) return;
 
-    const categoryOrder = ['News', 'Learning Tips', 'Grammar', 'Speaking', 'Vocabulary', 'Korean', 'TOEFL'];
+    const categoryOrder = ['News', 'Learning Tips', 'Grammar', 'Speaking', 'Vocabulary', 'Korean', 'TOEFL', 'Lainnya'];
     const groupedArticles = articles.reduce((groups, article) => {
       const category = article.category || 'Artikel';
       if (!groups.has(category)) groups.set(category, []);
