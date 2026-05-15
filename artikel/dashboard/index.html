@@ -507,6 +507,18 @@
     align-items: start;
   }
 
+  .my-articles-panel {
+    margin-top: 18px;
+  }
+
+  .my-articles-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
   .panel {
     padding: 24px;
   }
@@ -822,10 +834,19 @@
           </div>
         </div>
 
-        <div class="article-list" id="articleList"></div>
-        <div class="empty-state" id="emptyState">Belum ada artikel yang dipublish.</div>
       </aside>
     </div>
+
+    <section class="panel my-articles-panel">
+      <div class="my-articles-header">
+        <div>
+          <h2 class="panel-title" id="myArticlesTitle">My Articles</h2>
+          <p class="muted" id="myArticlesDescription">Artikel yang ditulis dan sedang tayang dari akun ini.</p>
+        </div>
+      </div>
+      <div class="article-list" id="articleList"></div>
+      <div class="empty-state" id="emptyState">Belum ada artikel yang dipublish.</div>
+    </section>
   </main>
 
 <script>
@@ -849,6 +870,8 @@
   const articleForm = document.getElementById('articleForm');
   const articleList = document.getElementById('articleList');
   const emptyState = document.getElementById('emptyState');
+  const myArticlesTitle = document.getElementById('myArticlesTitle');
+  const myArticlesDescription = document.getElementById('myArticlesDescription');
   const submitArticleBtn = document.getElementById('submitArticleBtn');
   const articleError = document.getElementById('articleError');
   const articleSuccess = document.getElementById('articleSuccess');
@@ -1207,6 +1230,13 @@
 
   async function renderAdminArticles() {
     articleList.innerHTML = '';
+    if (isCurrentSuperAdmin()) {
+      myArticlesTitle.textContent = 'All Articles';
+      myArticlesDescription.textContent = 'Semua artikel yang sedang tayang. Super admin bisa menghapus artikel dari semua penulis.';
+    } else {
+      myArticlesTitle.textContent = 'My Articles';
+      myArticlesDescription.textContent = 'Artikel yang ditulis dan sedang tayang dari akun ini.';
+    }
     emptyState.textContent = 'Memuat artikel...';
     emptyState.style.display = 'block';
 
