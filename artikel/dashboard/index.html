@@ -674,8 +674,10 @@
 
 <script>
   const adminUsers = {
-    '@sourvive': 'jeyasclub@gmail.com'
+    '@sourvive': 'jeyasclub@gmail.com',
+    '@jihamalia': 'jihamalia@gmail.com'
   };
+  const superAdminEmail = 'jeyasclub@gmail.com';
   const adminEmails = Object.values(adminUsers).map(email => email.toLowerCase());
   const sessionKey = 'jeyaArticleDashboardAuth';
   const storageKey = 'jeyaArticleDrafts';
@@ -788,6 +790,10 @@
   function getCurrentAdminEmail() {
     const session = getAuthSession();
     return session && session.user && session.user.email ? session.user.email.toLowerCase() : '';
+  }
+
+  function isCurrentSuperAdmin() {
+    return getCurrentAdminEmail() === superAdminEmail;
   }
 
   function setProfileAvatarStatus(message, status) {
@@ -1020,7 +1026,9 @@
   }
 
   async function fetchAdminArticles() {
-    const response = await fetch(`${supabaseUrl}/rest/v1/articles?select=id,title,category,excerpt,created_at,author_email&published=eq.true&order=created_at.desc`, {
+    const email = getCurrentAdminEmail();
+    const authorFilter = isCurrentSuperAdmin() ? '' : `&author_email=eq.${encodeURIComponent(email)}`;
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?select=id,title,category,excerpt,created_at,author_email&published=eq.true${authorFilter}&order=created_at.desc`, {
       headers: getAuthHeaders()
     });
 

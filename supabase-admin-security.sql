@@ -7,8 +7,17 @@ language sql
 stable
 as $$
   select (auth.jwt() ->> 'email') in (
-    'jeyasclub@gmail.com'
+    'jeyasclub@gmail.com',
+    'jihamalia@gmail.com'
   );
+$$;
+
+create or replace function public.is_article_super_admin()
+returns boolean
+language sql
+stable
+as $$
+  select (auth.jwt() ->> 'email') = 'jeyasclub@gmail.com';
 $$;
 
 alter table public.articles enable row level security;
@@ -86,14 +95,32 @@ create policy "Admin can update articles"
 on public.articles
 for update
 to authenticated
-using (public.is_article_admin())
-with check (public.is_article_admin());
+using (
+  public.is_article_super_admin()
+  or (
+    public.is_article_admin()
+    and author_email = (auth.jwt() ->> 'email')
+  )
+)
+with check (
+  public.is_article_super_admin()
+  or (
+    public.is_article_admin()
+    and author_email = (auth.jwt() ->> 'email')
+  )
+);
 
 create policy "Admin can delete articles"
 on public.articles
 for delete
 to authenticated
-using (public.is_article_admin());
+using (
+  public.is_article_super_admin()
+  or (
+    public.is_article_admin()
+    and author_email = (auth.jwt() ->> 'email')
+  )
+);
 
 drop policy if exists "Public can read article images" on storage.objects;
 drop policy if exists "Public can upload article images" on storage.objects;
