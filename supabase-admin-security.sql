@@ -9,8 +9,11 @@ as $$
   select (auth.jwt() ->> 'email') in (
     'jeyasclub@gmail.com',
     'jihamalia@gmail.com',
-    'ainworks234@gmail.com'
-    'novahida@gmail.com'
+    'ainworks234@gmail.com',
+    'novahida@gmail.com',
+    'thatonefatchicken@gmail.com',
+    'nikola.tieko@gmail.com'
+'
   );
 $$;
 
