@@ -13,7 +13,6 @@ as $$
     'novahida@gmail.com',
     'thatonefatchicken@gmail.com',
     'nikola.tieko@gmail.com'
-'
   );
 $$;
 
