@@ -37,7 +37,7 @@ export default {
     const description = cleanText(
       article.excerpt || stripHtml(article.body || '').slice(0, 155) || 'Baca artikel Jeya\'s Club.'
     );
-    const image = `${SITE_URL}/artikel/share-image?id=${encodeURIComponent(id)}`;
+    const image = `${SITE_URL}/artikel/share-image?id=${encodeURIComponent(id)}&v=${encodeURIComponent(getImageVersion(article.image || DEFAULT_IMAGE))}`;
     const shareUrl = `${SITE_URL}/artikel/share?id=${encodeURIComponent(id)}`;
     const articleUrl = `${SITE_URL}/artikel/read/?id=${encodeURIComponent(id)}`;
 
@@ -84,7 +84,7 @@ ${urls}
 }
 
 async function renderShareImage(article) {
-  const imageUrl = absoluteUrl(article.image || DEFAULT_IMAGE);
+  const imageUrl = getShareImageSource(article.image || DEFAULT_IMAGE);
   const imageResponse = await fetch(imageUrl, {
     headers: {
       accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
@@ -165,6 +165,9 @@ function renderSharePage({ title, description, image, shareUrl, articleUrl }) {
   <meta property="og:description" content="${safeDescription}">
   <meta property="og:image" content="${safeImage}">
   <meta property="og:image:secure_url" content="${safeImage}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="${safeTitle}">
   <meta property="og:url" content="${safeShareUrl}">
   <meta name="twitter:card" content="summary_large_image">
@@ -188,6 +191,36 @@ function absoluteUrl(value) {
   } catch {
     return DEFAULT_IMAGE;
   }
+}
+
+function getShareImageSource(value) {
+  try {
+    const url = new URL(value || DEFAULT_IMAGE, SITE_URL);
+
+    if (url.hostname === 'images.pexels.com') {
+      url.searchParams.set('auto', 'compress');
+      url.searchParams.set('cs', 'tinysrgb');
+      url.searchParams.set('w', '1200');
+      url.searchParams.set('h', '630');
+      url.searchParams.set('fit', 'crop');
+    }
+
+    return url.href;
+  } catch {
+    return DEFAULT_IMAGE;
+  }
+}
+
+function getImageVersion(value) {
+  let hash = 0;
+  const text = String(value || DEFAULT_IMAGE);
+
+  for (let index = 0; index < text.length; index += 1) {
+    hash = ((hash << 5) - hash) + text.charCodeAt(index);
+    hash |= 0;
+  }
+
+  return Math.abs(hash).toString(36);
 }
 
 function cleanText(value) {
