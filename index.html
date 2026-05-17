@@ -464,10 +464,17 @@
   }
 
   .program-card {
-    background: #1558c0;
-    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    --program-bg: #315f7d;
+    --program-ink: #ffffff;
+    --program-muted: rgba(255,255,255,0.78);
+    --program-accent: #fff1a8;
+    --program-border: rgba(255,255,255,0.22);
+    position: relative;
+    overflow: hidden;
+    background: var(--program-bg);
+    border: 1.5px solid var(--program-border);
     border-radius: 22px;
-    padding: 24px;
+    padding: 22px 22px 24px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -475,26 +482,93 @@
     text-align: left;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    color: var(--white);
+    color: var(--program-ink);
     flex: 0 0 min(280px, 82vw);
-    min-height: 260px;
+    min-height: 310px;
     scroll-snap-align: start;
-    box-shadow: 0 18px 42px rgba(21, 88, 192, 0.28);
+    box-shadow: 0 18px 42px rgba(22, 63, 122, 0.18);
+  }
+
+  .program-card::before {
+    content: "Program";
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    color: var(--program-accent);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .program-card::after {
+    content: "";
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    width: 88px;
+    height: 88px;
+    border: 2px solid rgba(255,255,255,0.22);
+    border-radius: 22px;
+    transform: rotate(12deg);
+    pointer-events: none;
   }
 
   .program-card:hover,
   .program-card:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 24px 54px rgba(11, 43, 99, 0.34);
-    border-color: rgba(255, 255, 255, 0.34);
+    box-shadow: 0 24px 54px rgba(22, 63, 122, 0.28);
+    border-color: rgba(255,255,255,0.42);
     outline: none;
   }
 
+  .program-card[data-program="basic"] {
+    --program-bg: #315f7d;
+    --program-accent: #ffe58a;
+  }
+
+  .program-card[data-program="speaking"] {
+    --program-bg: #1558c0;
+    --program-accent: #bde7ff;
+  }
+
+  .program-card[data-program="writing"] {
+    --program-bg: #5d5aa8;
+    --program-accent: #ffd9f0;
+  }
+
+  .program-card[data-program="kids"] {
+    --program-bg: #f2b84b;
+    --program-ink: #271a04;
+    --program-muted: rgba(39, 26, 4, 0.72);
+    --program-accent: #1558c0;
+    --program-border: rgba(119, 74, 0, 0.22);
+  }
+
+  .program-card[data-program="korean-basic"] {
+    --program-bg: #b96f8a;
+    --program-accent: #ffe3ed;
+  }
+
+  .program-card[data-program="basic"]::before { content: "Grammar"; }
+  .program-card[data-program="speaking"]::before { content: "Speaking"; }
+  .program-card[data-program="writing"]::before { content: "Writing"; }
+  .program-card[data-program="kids"]::before { content: "Kids"; }
+  .program-card[data-program="korean-basic"]::before { content: "Korean"; }
+
   .program-card .feature-img {
-    width: 93px;
-    height: 93px;
-    flex: 0 0 93px;
-    margin: 0 auto 18px;
+    position: relative;
+    z-index: 1;
+    width: 122px;
+    height: 122px;
+    flex: 0 0 122px;
+    margin: 0 auto 20px;
     border-radius: 16px;
     background: transparent;
     border: 0;
@@ -502,23 +576,29 @@
   }
 
   .program-card .feature-name {
+    position: relative;
+    z-index: 1;
     font-size: 18px;
     line-height: 1.25;
     margin-bottom: 12px;
-    color: var(--white);
+    color: var(--program-ink);
   }
 
   .program-card .feature-desc {
+    position: relative;
+    z-index: 1;
     margin-bottom: 0;
     font-size: 13.5px;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--program-muted);
   }
 
   .program-card .program-card-action {
+    position: relative;
+    z-index: 1;
     margin-top: auto;
     padding-top: 22px;
-    color: #ffe58a;
+    color: var(--program-accent);
     font-size: 13px;
     font-weight: 800;
   }
@@ -2161,15 +2241,6 @@
           <span class="program-card-action">Lihat Detail →</span>
         </button>
 
-        <button class="program-card" data-program="korean-basic" aria-haspopup="dialog">
-          <div class="feature-img bg-purple"><img src="assets/korea.png" alt="Kursus Dasar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async"></div>
-          <div>
-            <div class="feature-name">Kursus Dasar Bahasa Korea</div>
-            <div class="feature-desc">Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!</div>
-          </div>
-          <span class="program-card-action">Lihat Detail →</span>
-        </button>
-
         <button class="program-card" data-program="speaking" aria-haspopup="dialog">
           <div class="feature-img bg-green"><img src="assets/optimized/laptop.png" alt="Private Speaking Practice" width="208" height="260" loading="lazy" decoding="async"></div>
           <div>
@@ -2193,6 +2264,15 @@
           <div>
             <div class="feature-name">English Course for Kids</div>
             <div class="feature-desc">Kursus private anak dengan materi fun dan personalized sesuai kemampuan.</div>
+          </div>
+          <span class="program-card-action">Lihat Detail →</span>
+        </button>
+
+        <button class="program-card" data-program="korean-basic" aria-haspopup="dialog">
+          <div class="feature-img bg-purple"><img src="assets/korea.png" alt="Kursus Dasar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async"></div>
+          <div>
+            <div class="feature-name">Kursus Dasar Bahasa Korea</div>
+            <div class="feature-desc">Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!</div>
           </div>
           <span class="program-card-action">Lihat Detail →</span>
         </button>
