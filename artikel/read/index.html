@@ -249,6 +249,137 @@
     background: var(--blue-light);
   }
 
+  .writer-license {
+    position: relative;
+    overflow: hidden;
+    margin-top: 42px;
+    padding: 20px;
+    border: 1.5px solid rgba(26, 111, 232, 0.2);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(248, 251, 255, 0.92) 0%, rgba(255,255,255,0.96) 100%);
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+  }
+
+  .writer-license::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(26, 111, 232, 0.11) 0 1px, transparent 1px 100%),
+      url('../../assets/optimized/bg.jpg');
+    background-size: 28px 100%, cover;
+    background-position: left top, center;
+    opacity: 0.32;
+    pointer-events: none;
+  }
+
+  .writer-license::after {
+    content: "WRITER";
+    position: absolute;
+    right: -12px;
+    bottom: 16px;
+    color: rgba(26, 111, 232, 0.06);
+    font-size: clamp(48px, 10vw, 92px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    pointer-events: none;
+  }
+
+  .writer-license-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .writer-license-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(26, 111, 232, 0.16);
+  }
+
+  .writer-license-kicker {
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  .writer-license-id {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .writer-license-body {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 20px;
+    align-items: center;
+    margin-top: 18px;
+  }
+
+  .writer-license-photo {
+    width: 112px;
+    aspect-ratio: 3 / 4;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--blue-light);
+    border: 1.5px solid rgba(26, 111, 232, 0.22);
+    box-shadow: 0 12px 26px rgba(26, 111, 232, 0.12);
+  }
+
+  .writer-license-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .writer-license-info {
+    min-width: 0;
+  }
+
+  .writer-license-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .writer-license-name {
+    color: var(--text);
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.05;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+
+  .writer-license-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .writer-license-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    border-radius: 999px;
+    background: var(--blue-light);
+    color: var(--blue);
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
   .article-cover {
     width: 100%;
     max-width: 760px;
@@ -445,6 +576,13 @@
       gap: 14px;
     }
     .article-cover { border-radius: 16px; }
+    .writer-license { border-radius: 16px; padding: 18px; }
+    .writer-license-header { flex-direction: column; }
+    .writer-license-body {
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 14px;
+    }
+    .writer-license-photo { width: 88px; }
     .footer-top { grid-template-columns: 1fr; gap: 24px; }
     .footer-logo-icon { width: 112px; height: 76px; }
     .footer-tagline { max-width: none; }
@@ -753,13 +891,92 @@
     showCopied();
   }
 
-  function renderArticle(article) {
+  function renderWriterLicense(profile, article, articleCount) {
+    const fallbackName = article.author_name || 'Jeya\'s Club Team';
+    const writerName = escapeHTML((profile && profile.display_name) || fallbackName);
+    const writerAvatar = escapeHTML((profile && profile.avatar_url) || article.author_avatar || '../../assets/blank.png');
+    const writerId = escapeHTML((profile && profile.username) || article.author_email || 'Jeya\'s Club Writer');
+    const publishedCount = Number(articleCount) || 0;
+
+    return `
+      <section class="writer-license" aria-label="Profil penulis artikel">
+        <div class="writer-license-inner">
+          <div class="writer-license-header">
+            <div>
+              <div class="writer-license-kicker">Jeya's Club Writer License</div>
+              <div class="writer-license-id">${writerId}</div>
+            </div>
+            <div class="writer-license-id">Verified Writer</div>
+          </div>
+          <div class="writer-license-body">
+            <div class="writer-license-photo">
+              <img src="${writerAvatar}" alt="${writerName}" loading="lazy" decoding="async">
+            </div>
+            <div class="writer-license-info">
+              <div class="writer-license-label">Writer Name</div>
+              <div class="writer-license-name">${writerName}</div>
+              <div class="writer-license-meta">
+                <span class="writer-license-pill">${publishedCount} published artikel</span>
+                <span class="writer-license-pill">Jeya's Club Journal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  async function fetchWriterProfile(email) {
+    if (!email) return null;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/article_admin_profiles?select=email,username,display_name,avatar_url&email=eq.${encodeURIComponent(email)}&limit=1`, {
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`
+      }
+    });
+
+    if (!response.ok) return null;
+
+    const profiles = await response.json();
+    return Array.isArray(profiles) ? profiles[0] : null;
+  }
+
+  async function fetchWriterPublishedCount(email) {
+    if (!email) return 0;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/articles?select=id&author_email=eq.${encodeURIComponent(email)}&published=eq.true`, {
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${supabaseAnonKey}`
+      }
+    });
+
+    if (!response.ok) return 0;
+
+    const articles = await response.json();
+    return Array.isArray(articles) ? articles.length : 0;
+  }
+
+  async function getWriterLicenseData(article) {
+    const email = article.author_email || '';
+    const [profile, articleCount] = await Promise.all([
+      fetchWriterProfile(email),
+      fetchWriterPublishedCount(email)
+    ]);
+
+    return { profile, articleCount };
+  }
+
+  async function renderArticle(article) {
     const title = escapeHTML(article.title || 'Untitled Article');
     const category = escapeHTML(article.category || 'Artikel');
     const image = escapeHTML(article.image || '../../assets/cover.png');
     const createdAt = formatDate(article.created_at || article.createdAt);
-    const authorName = escapeHTML(article.author_name || 'Jeya\'s Club Team');
-    const authorAvatar = escapeHTML(article.author_avatar || '../../assets/blank.png');
+    const writerData = await getWriterLicenseData(article);
+    const profile = writerData.profile;
+    const authorName = escapeHTML((profile && profile.display_name) || article.author_name || 'Jeya\'s Club Team');
+    const authorAvatar = escapeHTML((profile && profile.avatar_url) || article.author_avatar || '../../assets/blank.png');
 
     updateArticleMeta(article);
 
@@ -781,6 +998,7 @@
         <img src="${image}" alt="${title}" loading="eager" decoding="async">
       </figure>
       <div class="article-body">${renderBody(article.body)}</div>
+      ${renderWriterLicense(profile, article, writerData.articleCount)}
     `;
 
     const shareButton = articleDetail.querySelector('[data-share-article]');
@@ -821,9 +1039,9 @@
 
   fetchSupabaseArticle()
     .catch(fetchLocalArticle)
-    .then(article => {
+    .then(async article => {
       if (article) {
-        renderArticle(article);
+        await renderArticle(article);
       } else {
         renderNotFound();
       }
