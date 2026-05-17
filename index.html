@@ -906,29 +906,55 @@
     font-weight: 900;
   }
 
-  .program-register-btn {
+  .program-modal-actions {
     position: sticky;
     bottom: 0;
     z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px;
+    border-top: 1px solid color-mix(in srgb, var(--detail-accent) 12%, #e5e7eb);
+    border-radius: 0 0 24px 24px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -10px 24px color-mix(in srgb, var(--detail-accent) 14%, transparent);
+  }
+
+  .program-action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 54px;
     margin: 0;
     padding: 15px 22px;
-    border-radius: 0 0 24px 24px;
-    background: var(--detail-accent);
-    color: var(--white);
+    border: 1px solid var(--detail-accent);
+    border-radius: 16px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 800;
-    box-shadow: 0 -10px 24px color-mix(in srgb, var(--detail-accent) 18%, transparent);
-    transition: background 0.2s, box-shadow 0.2s;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  }
+
+  .program-register-btn {
+    background: var(--detail-accent);
+    color: var(--white);
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--detail-accent) 18%, transparent);
+  }
+
+  .program-question-btn {
+    background: var(--white);
+    color: var(--detail-accent-dark);
   }
 
   .program-register-btn:hover {
     background: var(--detail-accent-dark);
-    box-shadow: 0 -12px 28px color-mix(in srgb, var(--detail-accent) 22%, transparent);
+    box-shadow: 0 12px 26px color-mix(in srgb, var(--detail-accent) 22%, transparent);
+  }
+
+  .program-question-btn:hover {
+    background: color-mix(in srgb, var(--detail-accent) 10%, white);
+    color: var(--detail-accent-dark);
   }
 
   .module-modal-body {
@@ -1240,6 +1266,11 @@
       display: block;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+    }
+
+    .program-modal-actions {
+      grid-template-columns: 1fr;
+      padding: 12px;
     }
 
     .module-modal-body {
@@ -3033,7 +3064,10 @@
           </table>
         </section>
       </div>
-      <a class="program-register-btn" href="${program.registerUrl}" target="_blank" rel="noreferrer noopener">Daftar Program</a>
+      <div class="program-modal-actions">
+        <a class="program-action-btn program-question-btn" href="${program.registerUrl}" target="_blank" rel="noreferrer noopener">Tanya-tanya dulu</a>
+        <a class="program-action-btn program-register-btn" href="${program.registerUrl}" target="_blank" rel="noreferrer noopener">Daftar Program</a>
+      </div>
     `;
   }
 
