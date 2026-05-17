@@ -2291,6 +2291,35 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   }
+
+  .testimonials-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+  }
+
+  .testimonials-more-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 13px 24px;
+    border-radius: 14px;
+    background: var(--blue);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 12px 24px rgba(26,111,232,0.22);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .testimonials-more-btn:hover {
+    background: var(--blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 28px rgba(26,111,232,0.28);
+  }
+
   @media (max-width: 768px) {
     .testimonials-grid {
       grid-template-columns: 1fr;
@@ -2684,6 +2713,9 @@
       <div class="penguin-main">
         <img src="assets/optimized/normal-min.png" alt="Main penguin" width="570" height="760" decoding="async" fetchpriority="high">
       </div>
+    </div>
+    <div class="testimonials-more">
+      <a class="testimonials-more-btn" href="/testimoni/">Lihat lebih banyak</a>
     </div>
   </div>
 </section>
