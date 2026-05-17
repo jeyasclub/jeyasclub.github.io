@@ -396,6 +396,7 @@
 
   .features-bg,
   .trending-program,
+  .learning-preview,
   .digital-products,
   .menfess-teaser,
   #communities,
@@ -1211,6 +1212,40 @@
     pointer-events: none;
   }
 
+  /* ── LEARNING PREVIEW ── */
+  .learning-preview {
+    background: linear-gradient(180deg, var(--white) 0%, #eef5ff 100%);
+  }
+
+  .learning-video-shell {
+    position: relative;
+    width: min(920px, 100%);
+    margin: 0 auto;
+    border-radius: 24px;
+    padding: 10px;
+    background:
+      linear-gradient(135deg, rgba(26, 111, 232, 0.16), rgba(255, 255, 255, 0.9)),
+      var(--white);
+    border: 1px solid rgba(26, 111, 232, 0.16);
+    box-shadow: 0 24px 56px rgba(22, 63, 122, 0.14);
+  }
+
+  .learning-video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 18px;
+    background: var(--text);
+  }
+
+  .learning-video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
   /* ── DIGITAL PRODUCTS ── */
   .digital-products {
     background: var(--bg);
@@ -1538,6 +1573,15 @@
 
     .trending-benefits {
       grid-template-columns: 1fr;
+    }
+
+    .learning-video-shell {
+      padding: 7px;
+      border-radius: 18px;
+    }
+
+    .learning-video-frame {
+      border-radius: 13px;
     }
 
     .whatsapp-float {
@@ -2215,6 +2259,24 @@
             <img src="assets/optimized/ok.png" alt="ok" width="203" height="260" loading="lazy" decoding="async">
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING PREVIEW -->
+<section class="learning-preview" id="learning-preview">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Bocoran Suasana Belajar <span class="snow-icon"></span></h2>
+    <p class="section-sub">Intip suasana belajar bareng Jeya's Club yang santai, interaktif, dan supportive.</p>
+    <div class="learning-video-shell">
+      <div class="learning-video-frame">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/7URKS7B1ZAo"
+          title="Bocoran suasana belajar di Jeya's Club"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen></iframe>
       </div>
     </div>
   </div>
