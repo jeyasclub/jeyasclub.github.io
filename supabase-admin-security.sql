@@ -12,7 +12,8 @@ as $$
     'ainworks234@gmail.com',
     'novahida@gmail.com',
     'thatonefatchicken@gmail.com',
-    'nikola.tieko@gmail.com'
+    'nikola.tieko@gmail.com',
+    'luckysnow246@gmail.com'
   );
 $$;
 
