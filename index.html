@@ -611,10 +611,55 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
+    --detail-accent: #1a6fe8;
+    --detail-accent-dark: #1558c0;
+    --detail-soft: #edf6ff;
+    --detail-tint: #f8fbff;
+    --detail-warm: #ffe58a;
   }
 
   .program-modal.open {
     display: flex;
+  }
+
+  .program-modal[data-program="basic"] {
+    --detail-accent: #315f7d;
+    --detail-accent-dark: #254a63;
+    --detail-soft: #eaf4fa;
+    --detail-tint: #f6fbff;
+    --detail-warm: #d7ecf6;
+  }
+
+  .program-modal[data-program="speaking"] {
+    --detail-accent: #1558c0;
+    --detail-accent-dark: #0e4192;
+    --detail-soft: #e8f1ff;
+    --detail-tint: #f7faff;
+    --detail-warm: #cfe4ff;
+  }
+
+  .program-modal[data-program="writing"] {
+    --detail-accent: #5d5aa8;
+    --detail-accent-dark: #454283;
+    --detail-soft: #efefff;
+    --detail-tint: #faf9ff;
+    --detail-warm: #ddd9ff;
+  }
+
+  .program-modal[data-program="kids"] {
+    --detail-accent: #d8901d;
+    --detail-accent-dark: #a86c0e;
+    --detail-soft: #fff4d8;
+    --detail-tint: #fffbf1;
+    --detail-warm: #ffe3a3;
+  }
+
+  .program-modal[data-program="korean-basic"] {
+    --detail-accent: #b96f8a;
+    --detail-accent-dark: #8d4d66;
+    --detail-soft: #fff0f5;
+    --detail-tint: #fff8fb;
+    --detail-warm: #ffd8e6;
   }
 
   .program-modal-backdrop {
@@ -626,7 +671,7 @@
 
   .program-modal-panel {
     position: relative;
-    width: min(760px, 100%);
+    width: min(860px, 100%);
     max-height: min(86vh, 780px);
     overflow: auto;
     background: var(--white);
@@ -639,13 +684,13 @@
   }
 
   .program-modal-close {
-    position: sticky;
+    position: absolute;
     top: 14px;
-    float: right;
-    z-index: 2;
+    right: 14px;
+    z-index: 5;
     width: 42px;
     height: 42px;
-    margin: 14px 14px 0 0;
+    margin: 0;
     border: 1px solid var(--border);
     border-radius: 50%;
     background: var(--white);
@@ -661,72 +706,189 @@
     border-color: rgba(26, 111, 232, 0.32);
   }
 
-  .program-modal-body {
+  .program-modal-body { padding: 0; }
+
+  .program-detail-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 260px;
     padding: 34px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.58fr);
+    gap: 28px;
+    align-items: center;
+    background:
+      radial-gradient(circle at 88% 22%, color-mix(in srgb, var(--detail-warm) 78%, transparent), transparent 30%),
+      linear-gradient(135deg, var(--detail-soft) 0%, #ffffff 54%, var(--detail-tint) 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .program-detail-hero::after {
+    content: "";
+    position: absolute;
+    right: 24px;
+    bottom: 20px;
+    width: 110px;
+    height: 110px;
+    border: 2px solid color-mix(in srgb, var(--detail-accent) 18%, transparent);
+    border-radius: 28px;
+    transform: rotate(12deg);
+    pointer-events: none;
+  }
+
+  .program-detail-hero::before {
+    content: "";
+    position: absolute;
+    right: -44px;
+    top: -54px;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--detail-accent) 13%, transparent);
+    pointer-events: none;
+  }
+
+  .program-detail-copy,
+  .program-detail-visual {
+    position: relative;
+    z-index: 1;
+  }
+
+  .program-detail-visual {
+    display: flex;
+    justify-content: center;
   }
 
   .program-modal-body h3 {
     font-size: clamp(24px, 4vw, 34px);
     line-height: 1.15;
     color: #102a43;
-    margin-bottom: 16px;
-    padding-right: 42px;
+    margin-bottom: 14px;
+    padding-right: 0;
   }
 
   .program-modal-body p {
     font-size: 15px;
     line-height: 1.8;
     color: #334155;
-    margin-bottom: 20px;
+    margin-bottom: 0;
   }
 
   .program-modal-img {
     display: block;
-    width: min(260px, 72vw);
+    width: min(250px, 100%);
     height: auto;
-    margin: 0 auto 22px;
+    margin: 0 auto;
     object-fit: contain;
+    filter: drop-shadow(0 20px 30px color-mix(in srgb, var(--detail-accent) 22%, transparent));
+  }
+
+  .program-detail-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    padding: 7px 12px;
+    margin-bottom: 14px;
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--detail-accent-dark);
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--detail-accent) 13%, transparent);
+  }
+
+  .program-detail-kicker::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--detail-accent);
   }
 
   .program-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 18px;
   }
 
   .program-tag {
     display: inline-flex;
-    padding: 10px 14px;
-    border-radius: 14px;
-    background: #eff6ff;
-    color: #0f172a;
-    font-size: 13px;
-    font-weight: 700;
+    align-items: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--detail-accent) 11%, white);
+    color: var(--detail-accent-dark);
+    font-size: 12px;
+    font-weight: 900;
   }
 
   .program-modal-body h4 {
-    color: #334155;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 12px;
+    color: #102a43;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 14px;
+  }
+
+  .program-detail-content {
+    padding: 28px 34px 34px;
+    display: grid;
+    gap: 22px;
+  }
+
+  .program-detail-panel {
+    border: 1px solid color-mix(in srgb, var(--detail-accent) 13%, #e5e7eb);
+    border-radius: 18px;
+    background: var(--detail-tint);
+    padding: 22px;
+    box-shadow: 0 14px 34px color-mix(in srgb, var(--detail-accent) 10%, transparent);
+  }
+
+  .program-detail-panel:nth-child(1) {
+    border-left: 6px solid var(--detail-accent);
   }
 
   .program-modal-body ul {
-    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+    padding-left: 0;
     color: #334155;
-    line-height: 1.8;
-    margin: 0 0 24px;
+    line-height: 1.7;
+    margin: 0;
+    list-style: none;
   }
 
   .program-modal-body li {
-    margin-bottom: 8px;
+    position: relative;
+    padding-left: 28px;
+    font-size: 14px;
+  }
+
+  .program-modal-body li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--detail-accent) 13%, white);
+    color: var(--detail-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
   }
 
   .program-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 18px;
+    margin-top: 0;
+    overflow: hidden;
+    border-radius: 14px;
   }
 
   .program-table th,
@@ -739,29 +901,34 @@
   }
 
   .program-table th {
-    background: #eef2ff;
+    background: color-mix(in srgb, var(--detail-accent) 12%, white);
+    color: var(--detail-accent-dark);
+    font-weight: 900;
   }
 
   .program-register-btn {
-    display: inline-flex;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 46px;
-    margin-top: 22px;
-    padding: 13px 22px;
-    border-radius: 14px;
-    background: var(--blue);
+    min-height: 54px;
+    margin: 0;
+    padding: 15px 22px;
+    border-radius: 0 0 24px 24px;
+    background: var(--detail-accent);
     color: var(--white);
     text-decoration: none;
     font-size: 14px;
     font-weight: 800;
-    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.24);
-    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 -10px 24px color-mix(in srgb, var(--detail-accent) 18%, transparent);
+    transition: background 0.2s, box-shadow 0.2s;
   }
 
   .program-register-btn:hover {
-    background: var(--blue-dark);
-    transform: translateY(-2px);
+    background: var(--detail-accent-dark);
+    box-shadow: 0 -12px 28px color-mix(in srgb, var(--detail-accent) 22%, transparent);
   }
 
   .module-modal-body {
@@ -1043,8 +1210,36 @@
       border-radius: 20px;
     }
 
-    .program-modal-body {
-      padding: 28px 20px;
+    .program-detail-hero {
+      grid-template-columns: 1fr;
+      padding: 28px 20px 22px;
+      text-align: left;
+    }
+
+    .program-detail-visual {
+      order: -1;
+    }
+
+    .program-modal-img {
+      width: min(220px, 68vw);
+    }
+
+    .program-detail-content {
+      padding: 22px 20px 26px;
+    }
+
+    .program-detail-panel {
+      padding: 18px;
+    }
+
+    .program-modal-body h3 {
+      padding-right: 0;
+    }
+
+    .program-table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .module-modal-body {
@@ -2629,6 +2824,7 @@
   const programDetails = {
     basic: {
       title: 'Kursus Dasar Bahasa Inggris',
+      label: 'Grammar Starter',
       description: 'Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.',
       registerUrl: 'https://wa.link/1djjlj',
       tags: ['8 Pertemuan Online - Durasi @90 Menit', 'Bebas Tentukan Jadwalmu, 2x Seminggu'],
@@ -2650,6 +2846,7 @@
     },
     'korean-basic': {
       title: 'Kursus Dasar Bahasa Korea',
+      label: 'Korean Starter',
       description: 'Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!',
       registerUrl: 'https://wa.link/tzb2ce',
       tags: ['Pemula', '8 Pertemuan Online - Durasi @90 Menit', 'Bebas Tentukan Jadwalmu, 2x Seminggu'],
@@ -2669,6 +2866,7 @@
     },
     speaking: {
       title: 'Private Speaking Practice',
+      label: 'Confidence Builder',
       description: 'Program speaking interaktif pribadi dengan tutor via Zoom untuk meningkatkan percaya diri dan kelancaran bicara.',
       registerUrl: 'https://wa.link/dely2z',
       tags: ['Private Online Course'],
@@ -2688,6 +2886,7 @@
     },
     writing: {
       title: 'Private Writing Practice',
+      label: 'Writing Lab',
       description: 'Sesi private writing dan reading comprehension interaktif dengan tutor via Zoom Meeting.',
       registerUrl: 'https://wa.link/tlksi2',
       tags: ['Private Online Course'],
@@ -2707,6 +2906,7 @@
     },
     kids: {
       title: 'English Course for Kids',
+      label: 'Kids Learning Club',
       description: 'Kursus bahasa Inggris sesuai kemampuan anak dengan pendekatan private dan fun.',
       registerUrl: 'https://wa.link/w7q6d0',
       tags: ['Private Online Course'],
@@ -2809,16 +3009,30 @@
     const rows = program.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('');
 
     return `
-      <h3 id="programModalTitle">${program.title}</h3>
-      <p>${program.description}</p>
-      <img class="program-modal-img" src="assets/laptop1.png" alt="" width="1016" height="879" loading="lazy" decoding="async">
-      <div class="program-tags">${tags}</div>
-      <h4>Fasilitas</h4>
-      <ul>${facilities}</ul>
-      <table class="program-table">
-        <thead><tr>${tableHead}</tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="program-detail-hero">
+        <div class="program-detail-copy">
+          <span class="program-detail-kicker">${program.label || 'Program Belajar'}</span>
+          <div class="program-tags">${tags}</div>
+          <h3 id="programModalTitle">${program.title}</h3>
+          <p>${program.description}</p>
+        </div>
+        <div class="program-detail-visual" aria-hidden="true">
+          <img class="program-modal-img" src="assets/laptop1.png" alt="" width="1016" height="879" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="program-detail-content">
+        <section class="program-detail-panel">
+          <h4>Fasilitas</h4>
+          <ul>${facilities}</ul>
+        </section>
+        <section class="program-detail-panel">
+          <h4>Pilihan Paket</h4>
+          <table class="program-table">
+            <thead><tr>${tableHead}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </section>
+      </div>
       <a class="program-register-btn" href="${program.registerUrl}" target="_blank" rel="noreferrer noopener">Daftar Program</a>
     `;
   }
@@ -2828,6 +3042,7 @@
     if (!program) return;
 
     lastProgramTrigger = trigger;
+    programModal.dataset.program = programKey;
     programModalBody.innerHTML = renderProgramDetails(program);
     programModal.classList.add('open');
     programModal.setAttribute('aria-hidden', 'false');
@@ -2838,6 +3053,7 @@
   function closeProgramModal() {
     programModal.classList.remove('open');
     programModal.setAttribute('aria-hidden', 'true');
+    delete programModal.dataset.program;
     document.body.style.overflow = '';
     if (lastProgramTrigger) lastProgramTrigger.focus();
   }
