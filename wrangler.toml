@@ -4,5 +4,9 @@ compatibility_date = "2026-05-14"
 
 routes = [
   { pattern = "www.jeyasclub.com/artikel/share*", zone_name = "jeyasclub.com" },
-  { pattern = "jeyasclub.com/artikel/share*", zone_name = "jeyasclub.com" }
+  { pattern = "jeyasclub.com/artikel/share*", zone_name = "jeyasclub.com" },
+  { pattern = "www.jeyasclub.com/artikel/share-image*", zone_name = "jeyasclub.com" },
+  { pattern = "jeyasclub.com/artikel/share-image*", zone_name = "jeyasclub.com" },
+  { pattern = "www.jeyasclub.com/sitemap-articles.xml", zone_name = "jeyasclub.com" },
+  { pattern = "jeyasclub.com/sitemap-articles.xml", zone_name = "jeyasclub.com" }
 ]

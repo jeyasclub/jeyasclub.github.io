@@ -40,6 +40,7 @@ export default {
     const image = `${SITE_URL}/artikel/share-image?id=${encodeURIComponent(id)}&v=${encodeURIComponent(getImageVersion(article.image || DEFAULT_IMAGE))}`;
     const shareUrl = `${SITE_URL}/artikel/share?id=${encodeURIComponent(id)}`;
     const articleUrl = `${SITE_URL}/artikel/read/?id=${encodeURIComponent(id)}`;
+    const shouldRedirect = !isCrawler(request.headers.get('user-agent') || '');
 
     return new Response(renderSharePage({
       title,
@@ -47,6 +48,7 @@ export default {
       image,
       shareUrl,
       articleUrl,
+      shouldRedirect,
     }), {
       headers: {
         'content-type': 'text/html; charset=utf-8',
@@ -59,7 +61,7 @@ export default {
 async function renderArticleSitemap() {
   const articles = await getPublishedArticlesForSitemap();
   const urls = articles.map(article => {
-    const loc = `${SITE_URL}/artikel/read/?id=${encodeURIComponent(article.id)}`;
+    const loc = `${SITE_URL}/artikel/share?id=${encodeURIComponent(article.id)}`;
     const lastmod = formatSitemapDate(article.created_at);
 
     return `  <url>
@@ -145,12 +147,16 @@ async function getPublishedArticlesForSitemap() {
   return Array.isArray(articles) ? articles.filter(article => article && article.id) : [];
 }
 
-function renderSharePage({ title, description, image, shareUrl, articleUrl }) {
+function renderSharePage({ title, description, image, shareUrl, articleUrl, shouldRedirect }) {
   const safeTitle = escapeHtml(title);
   const safeDescription = escapeHtml(description);
   const safeImage = escapeHtml(image);
   const safeShareUrl = escapeHtml(shareUrl);
   const safeArticleUrl = escapeHtml(articleUrl);
+  const redirectTags = shouldRedirect
+    ? `  <meta http-equiv="refresh" content="0;url=${safeArticleUrl}">
+  <script>window.location.replace(${JSON.stringify(articleUrl)});</script>`
+    : '';
 
   return `<!doctype html>
 <html lang="id">
@@ -175,12 +181,15 @@ function renderSharePage({ title, description, image, shareUrl, articleUrl }) {
   <meta name="twitter:description" content="${safeDescription}">
   <meta name="twitter:image" content="${safeImage}">
   <meta name="twitter:image:alt" content="${safeTitle}">
-  <link rel="canonical" href="${safeArticleUrl}">
-  <meta http-equiv="refresh" content="0;url=${safeArticleUrl}">
-  <script>window.location.replace(${JSON.stringify(articleUrl)});</script>
+  <link rel="canonical" href="${safeShareUrl}">
+${redirectTags}
 </head>
 <body>
-  <a href="${safeArticleUrl}">Baca artikel</a>
+  <main>
+    <h1>${safeTitle}</h1>
+    <p>${safeDescription}</p>
+    <p><a href="${safeArticleUrl}">Baca artikel lengkap</a></p>
+  </main>
 </body>
 </html>`;
 }
@@ -221,6 +230,10 @@ function getImageVersion(value) {
   }
 
   return Math.abs(hash).toString(36);
+}
+
+function isCrawler(userAgent) {
+  return /bot|crawler|spider|google|bing|yandex|duckduckgo|baidu|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|discordbot/i.test(userAgent);
 }
 
 function cleanText(value) {
