@@ -895,7 +895,6 @@
     const fallbackName = article.author_name || 'Jeya\'s Club Team';
     const writerName = escapeHTML((profile && profile.display_name) || fallbackName);
     const writerAvatar = escapeHTML((profile && profile.avatar_url) || article.author_avatar || '../../assets/blank.png');
-    const writerId = escapeHTML((profile && profile.username) || 'Jeya\'s Club Writer');
     const publishedCount = Number(articleCount) || 0;
 
     return `
@@ -904,7 +903,6 @@
           <div class="writer-license-header">
             <div>
               <div class="writer-license-kicker">Jeya's Club Writer License</div>
-              <div class="writer-license-id">${writerId}</div>
             </div>
             <div class="writer-license-id">Verified Writer</div>
           </div>
