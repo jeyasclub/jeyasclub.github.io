@@ -465,8 +465,8 @@
 
   .program-card {
     background:
-      linear-gradient(145deg, rgba(255, 251, 238, 0.98) 0%, rgba(255, 241, 194, 0.96) 52%, rgba(226, 177, 80, 0.92) 100%);
-    border: 1.5px solid rgba(185, 120, 21, 0.26);
+      linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(239,246,255,0.98) 58%, rgba(220,232,247,0.95) 100%);
+    border: 1.5px solid rgba(26, 111, 232, 0.14);
     border-radius: 22px;
     padding: 24px;
     display: flex;
@@ -476,18 +476,18 @@
     text-align: left;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    color: #1f1a12;
+    color: var(--text);
     flex: 0 0 min(280px, 82vw);
     min-height: 260px;
     scroll-snap-align: start;
-    box-shadow: 0 14px 34px rgba(165, 106, 23, 0.12);
+    box-shadow: 0 14px 34px rgba(22, 63, 122, 0.08);
   }
 
   .program-card:hover,
   .program-card:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 20px 42px rgba(165, 106, 23, 0.2);
-    border-color: rgba(185, 120, 21, 0.42);
+    box-shadow: 0 20px 42px rgba(22, 63, 122, 0.13);
+    border-color: rgba(26, 111, 232, 0.28);
     outline: none;
   }
 
@@ -506,20 +506,20 @@
     font-size: 18px;
     line-height: 1.25;
     margin-bottom: 12px;
-    color: #241a08;
+    color: var(--text);
   }
 
   .program-card .feature-desc {
     margin-bottom: 0;
     font-size: 13.5px;
     line-height: 1.7;
-    color: rgba(48, 34, 12, 0.74);
+    color: var(--text-muted);
   }
 
   .program-card .program-card-action {
     margin-top: auto;
     padding-top: 22px;
-    color: #6b4304;
+    color: var(--blue);
     font-size: 13px;
     font-weight: 800;
   }
