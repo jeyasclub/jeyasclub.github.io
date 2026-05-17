@@ -683,6 +683,27 @@
     width: min(1060px, 100%);
   }
 
+  .program-modal[data-product="english-journey"] {
+    --product-accent: #315f7d;
+    --product-accent-dark: #244a62;
+    --product-soft: #eaf4fa;
+    --product-warm: #d8ecf7;
+  }
+
+  .program-modal[data-product="korea-module"] {
+    --product-accent: #b96f8a;
+    --product-accent-dark: #8d4d66;
+    --product-soft: #fff0f5;
+    --product-warm: #ffd8e6;
+  }
+
+  .program-modal[data-product="toefl-package"] {
+    --product-accent: #1558c0;
+    --product-accent-dark: #0e4192;
+    --product-soft: #e8f1ff;
+    --product-warm: #cfe4ff;
+  }
+
   .program-modal-close {
     position: absolute;
     top: 14px;
@@ -959,7 +980,209 @@
 
   .module-modal-body {
     font-family: 'Poppins', sans-serif;
-    padding: 40px 46px 44px;
+    padding: 0;
+  }
+
+  .product-detail {
+    position: relative;
+    overflow: hidden;
+    color: #182033;
+  }
+
+  .product-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(230px, 0.7fr) minmax(0, 1fr);
+    gap: 34px;
+    align-items: center;
+    padding: 38px 46px 34px;
+    background:
+      radial-gradient(circle at 15% 12%, color-mix(in srgb, var(--product-warm, #cfe4ff) 76%, transparent), transparent 30%),
+      linear-gradient(135deg, var(--product-soft, #edf6ff) 0%, #ffffff 58%, #f8fbff 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .product-hero::after {
+    content: "";
+    position: absolute;
+    right: 38px;
+    bottom: 28px;
+    width: 130px;
+    height: 130px;
+    border: 2px solid color-mix(in srgb, var(--product-accent, var(--blue)) 14%, transparent);
+    border-radius: 34px;
+    transform: rotate(-10deg);
+    pointer-events: none;
+  }
+
+  .product-cover-stage,
+  .product-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .product-cover-stage {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+  }
+
+  .product-cover-img {
+    width: auto;
+    max-width: min(320px, 100%);
+    max-height: 390px;
+    object-fit: contain;
+    border-radius: 0;
+    display: block;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .program-modal[data-product="korea-module"] .product-cover-img,
+  .program-modal[data-product="toefl-package"] .product-cover-img {
+    width: auto;
+    max-width: min(390px, 100%);
+    max-height: 330px;
+  }
+
+  .product-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--product-accent-dark, var(--blue-dark));
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--product-accent, var(--blue)) 14%, transparent);
+  }
+
+  .product-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    padding: 7px 12px;
+    margin-bottom: 16px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--product-accent, var(--blue)) 10%, white);
+    color: var(--product-accent-dark, var(--blue-dark));
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .product-kicker::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--product-accent, var(--blue));
+  }
+
+  .product-title {
+    padding-right: 48px;
+    margin-bottom: 12px;
+    font-size: clamp(25px, 4vw, 38px);
+    line-height: 1.1;
+    font-weight: 900;
+    color: #102a43;
+  }
+
+  .product-subtitle {
+    max-width: 620px;
+    margin: 0;
+    font-size: clamp(15px, 1.9vw, 18px);
+    line-height: 1.7;
+    color: #334155;
+  }
+
+  .product-content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.62fr);
+    gap: 22px;
+    padding: 30px 46px 38px;
+  }
+
+  .product-panel {
+    border: 1px solid color-mix(in srgb, var(--product-accent, var(--blue)) 13%, #e5e7eb);
+    border-radius: 20px;
+    background: #fbfdff;
+    padding: 24px;
+    box-shadow: 0 14px 34px color-mix(in srgb, var(--product-accent, var(--blue)) 9%, transparent);
+  }
+
+  .product-panel h4 {
+    margin: 0 0 16px;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.25;
+    font-weight: 900;
+    color: #102a43;
+  }
+
+  .product-panel p {
+    margin: 0 0 16px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #334155;
+  }
+
+  .product-panel p:last-child {
+    margin-bottom: 0;
+  }
+
+  .product-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .product-list li {
+    position: relative;
+    padding-left: 28px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #334155;
+  }
+
+  .product-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--product-accent, var(--blue)) 12%, white);
+    color: var(--product-accent, var(--blue));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .product-steps {
+    counter-reset: product-step;
+  }
+
+  .product-steps li {
+    counter-increment: product-step;
+    padding-left: 40px;
+  }
+
+  .product-steps li::before {
+    content: counter(product-step);
+    width: 26px;
+    height: 26px;
+    background: var(--product-accent, var(--blue));
+    color: var(--white);
+  }
+
+  .product-cta-row {
+    padding: 0 46px 40px;
   }
 
   .module-detail-title {
@@ -1130,18 +1353,19 @@
     min-height: 48px;
     padding: 13px 24px;
     border-radius: 16px;
-    background: linear-gradient(90deg, #7f8191 0%, #2d314d 100%);
+    background: var(--product-accent, var(--blue));
     color: var(--white);
     text-decoration: none;
     font-size: 15px;
     line-height: 1.1;
-    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.24);
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--product-accent, var(--blue)) 22%, transparent);
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
   .module-claim-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 24px rgba(15, 23, 42, 0.3);
+    background: var(--product-accent-dark, var(--blue-dark));
+    box-shadow: 0 16px 28px color-mix(in srgb, var(--product-accent, var(--blue)) 28%, transparent);
   }
 
   .module-claim-icon {
@@ -1274,7 +1498,47 @@
     }
 
     .module-modal-body {
-      padding: 34px 20px;
+      padding: 0;
+    }
+
+    .product-hero {
+      grid-template-columns: 1fr;
+      gap: 22px;
+      padding: 34px 20px 28px;
+    }
+
+    .product-cover-stage {
+      order: -1;
+    }
+
+    .product-cover-img {
+      width: auto;
+      max-width: min(280px, 76vw);
+      max-height: 330px;
+    }
+
+    .program-modal[data-product="korea-module"] .product-cover-img,
+    .program-modal[data-product="toefl-package"] .product-cover-img {
+      width: auto;
+      max-width: min(320px, 82vw);
+      max-height: 280px;
+    }
+
+    .product-title {
+      padding-right: 0;
+    }
+
+    .product-content-grid {
+      grid-template-columns: 1fr;
+      padding: 24px 20px 28px;
+    }
+
+    .product-panel {
+      padding: 20px;
+    }
+
+    .product-cta-row {
+      padding: 0 20px 30px;
     }
 
     .module-detail-title,
@@ -2967,68 +3231,111 @@
 
   const productDetails = {
     'english-journey': `
-      <h3 class="module-detail-title" id="productModalTitle">30-DAY ENGLISH JOURNEY (E-MODUL)</h3>
-      <p class="module-detail-subtitle">Belajar bahasa Inggris dari dasar secara mandiri dalam 30 hari!</p>
-
-      <div class="module-detail-layout">
-        <div class="module-cover-wrap">
-          <img class="module-cover-img" src="assets/moduleng.jpg" alt="30-Day English Journey module cover" width="422" height="596" loading="lazy" decoding="async">
-          <div class="module-sold">Terjual 100+</div>
+      <div class="product-detail">
+        <div class="product-hero">
+          <div class="product-cover-stage">
+            <img class="product-cover-img" src="assets/moduleng.jpg" alt="30-Day English Journey module cover" width="422" height="596" loading="lazy" decoding="async">
+            <span class="product-badge">Terjual 100+</span>
+          </div>
+          <div class="product-copy">
+            <span class="product-kicker">E-Modul Bahasa Inggris</span>
+            <h3 class="product-title" id="productModalTitle">30-Day English Journey</h3>
+            <p class="product-subtitle">Belajar bahasa Inggris dari dasar secara mandiri dalam 30 hari dengan alur harian yang ringan, rapi, dan mudah diikuti.</p>
+          </div>
         </div>
-
-        <div class="module-detail-content">
-          <h4>Modul 30-Day English Journey berisi:</h4>
-          <ul class="module-detail-list">
-            <li>Materi harian bahasa Inggris dari dasar</li>
-            <li>Latihan soal harian dalam setiap materi</li>
-            <li>Kuis evaluasi materi mingguan</li>
-            <li>Kunci jawaban latihan soal harian</li>
-            <li>Kunci jawaban kuis evaluasi mingguan</li>
-            <li>Tips belajar bahasa Inggris otodidak</li>
-          </ul>
+        <div class="product-content-grid">
+          <section class="product-panel">
+            <h4>Yang kamu dapatkan</h4>
+            <ul class="product-list">
+              <li>Materi harian bahasa Inggris dari dasar</li>
+              <li>Latihan soal harian dalam setiap materi</li>
+              <li>Kuis evaluasi materi mingguan</li>
+              <li>Kunci jawaban latihan soal harian</li>
+              <li>Kunci jawaban kuis evaluasi mingguan</li>
+              <li>Tips belajar bahasa Inggris otodidak</li>
+            </ul>
+          </section>
+          <section class="product-panel">
+            <h4>Cocok untuk</h4>
+            <p>Kamu yang ingin mulai belajar bahasa Inggris dari nol dengan panduan mandiri yang tidak membingungkan.</p>
+          </section>
+        </div>
+        <div class="product-cta-row">
           <a href="https://forms.gle/hRqaRN8WFtXt4fS48" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
         </div>
       </div>
     `,
     'korea-module': `
-      <div class="korea-detail">
-        <img class="korea-detail-img" src="assets/modulkorea.png" alt="Modul 30 Hari Belajar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async">
-        <h3 id="productModalTitle">Modul 30 Hari Belajar Bahasa Korea</h3>
-        <p><em>Modul 30 Hari Belajar Bahasa Korea bareng Jeya's Club</em> adalah buku penuntun untuk kamu yang mau otodidak belajar Bahasa Korea dari dasar. Modul ini berisi:</p>
-        <ul>
-          <li>Materi belajar Day 1 - Day 30, lengkap dengan tabel dan ilustrasi untuk belajar Bahasa Korea secara interaktif. <strong>FULL COLOR!</strong></li>
-          <li>Akses Quizlet untuk menambah kosakata Bahasa Korea</li>
-          <li>Latihan soal setiap hari beserta kunci jawabannya</li>
-        </ul>
-        <p>Dengan modul ini, kamu bisa belajar Bahasa Korea secara konsisten setiap harinya tanpa takut kehabisan bahan belajar atau bingung mau belajar apa. <strong>Hanya dengan Rp45.000</strong> kamu udah bisa dapetin <em>Modul 30 Hari Belajar Bahasa Korea ini.</em></p>
-        <h4>Cara aksesnya gimana?</h4>
-        <ol>
-          <li>Isi form ini dengan mengisikan email kamu (jangan sampai typo ya)</li>
-          <li>Email kamu akan diberikan akses link untuk membuka PDF modul</li>
-          <li>Kamu bisa mengakses modul kapanpun dengan email tersebut</li>
-        </ol>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLDVFwIIB_xmc_U7DVQSAD-MFwe1LV_NjfB7GNeaOLAs6bMg/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+      <div class="product-detail">
+        <div class="product-hero">
+          <div class="product-cover-stage">
+            <img class="product-cover-img" src="assets/modulkorea.png" alt="Modul 30 Hari Belajar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async">
+            <span class="product-badge">Rp45.000</span>
+          </div>
+          <div class="product-copy">
+            <span class="product-kicker">E-Modul Bahasa Korea</span>
+            <h3 class="product-title" id="productModalTitle">Modul 30 Hari Belajar Bahasa Korea</h3>
+            <p class="product-subtitle">Buku penuntun untuk kamu yang mau otodidak belajar Bahasa Korea dari dasar secara konsisten selama 30 hari.</p>
+          </div>
+        </div>
+        <div class="product-content-grid">
+          <section class="product-panel">
+            <h4>Yang kamu dapatkan</h4>
+            <ul class="product-list">
+              <li>Materi belajar Day 1 - Day 30, lengkap dengan tabel dan ilustrasi interaktif. <strong>FULL COLOR!</strong></li>
+              <li>Akses Quizlet untuk menambah kosakata Bahasa Korea</li>
+              <li>Latihan soal setiap hari beserta kunci jawabannya</li>
+            </ul>
+          </section>
+          <section class="product-panel">
+            <h4>Cara akses</h4>
+            <ol class="product-list product-steps">
+              <li>Isi form dengan email kamu, pastikan tidak typo</li>
+              <li>Email kamu akan diberikan akses link untuk membuka PDF modul</li>
+              <li>Kamu bisa mengakses modul kapanpun dengan email tersebut</li>
+            </ol>
+          </section>
+        </div>
+        <div class="product-cta-row">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLDVFwIIB_xmc_U7DVQSAD-MFwe1LV_NjfB7GNeaOLAs6bMg/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+        </div>
       </div>
     `,
 	  'toefl-package': `
-	    <div class="korea-detail">
-	      <img class="korea-detail-img" src="assets/toefl.jpeg" alt="Folder Video dan PPT Belajar TOEFL ITP" width="1080" height="1080" loading="lazy" decoding="async">
-	      <h3 id="productModalTitle">Folder Video &amp; PPT Belajar TOEFL ITP - Jeya's English Club</h3>
-	      <p>Folder Video &amp; PPT Belajar TOEFL ITP berisi:</p>
-        <ul>
-          <li>PPT Materi Belajar TOEFL ITP 8 Pertemuan</li>
-          <li>Video Rekaman Zoom Penjelasan Materi 8 Pertemuan</li>
-          <li>Latihan Soal di Tiap Pertemuan</li>
-          <li>Cara Menghitung Skor TOEFL</li>
-        </ul>
-        <p>Dengan folder belajar ini, kamu bisa belajar TOEFL secara konsisten tanpa takut kehabisan bahan belajar atau bingung mau belajar apa. <strong>Hanya dengan Rp50.000</strong> kamu udah bisa dapetin akses folder belajar ini sepuasnya!</p>
-        <h4>Cara aksesnya gimana?</h4>
-        <ol>
-          <li>Isi form ini dengan mengisikan email kamu (jangan sampai typo ya)</li>
-          <li>Email kamu akan diberikan akses link untuk membuka folder</li>
-	      <li>Kamu bisa mengakses modul kapanpun dengan email tersebut (atau bisa juga melalui link <a href="https://bit.ly/folderTOEFLjeya2" target="_blank" rel="noreferrer noopener">bit.ly/folderTOEFLjeya2</a>)</li>
-        </ol>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+	    <div class="product-detail">
+        <div class="product-hero">
+          <div class="product-cover-stage">
+            <img class="product-cover-img" src="assets/toefl.jpeg" alt="Folder Video dan PPT Belajar TOEFL ITP" width="1080" height="1080" loading="lazy" decoding="async">
+            <span class="product-badge">Rp50.000</span>
+          </div>
+          <div class="product-copy">
+            <span class="product-kicker">TOEFL Study Pack</span>
+            <h3 class="product-title" id="productModalTitle">Folder Video &amp; PPT Belajar TOEFL ITP</h3>
+            <p class="product-subtitle">Paket belajar TOEFL yang berisi materi, rekaman, dan latihan agar kamu bisa belajar lebih terarah.</p>
+          </div>
+        </div>
+        <div class="product-content-grid">
+          <section class="product-panel">
+            <h4>Isi folder belajar</h4>
+            <ul class="product-list">
+              <li>PPT Materi Belajar TOEFL ITP 8 Pertemuan</li>
+              <li>Video Rekaman Zoom Penjelasan Materi 8 Pertemuan</li>
+              <li>Latihan soal di tiap pertemuan</li>
+              <li>Cara menghitung skor TOEFL</li>
+            </ul>
+          </section>
+          <section class="product-panel">
+            <h4>Cara akses</h4>
+            <ol class="product-list product-steps">
+              <li>Isi form dengan email kamu, pastikan tidak typo</li>
+              <li>Email kamu akan diberikan akses link untuk membuka folder</li>
+              <li>Kamu bisa mengakses folder kapanpun dengan email tersebut atau melalui link <a href="https://bit.ly/folderTOEFLjeya2" target="_blank" rel="noreferrer noopener">bit.ly/folderTOEFLjeya2</a></li>
+            </ol>
+          </section>
+        </div>
+        <div class="product-cta-row">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
+        </div>
       </div>
     `
   };
@@ -3097,6 +3404,7 @@
     if (!product) return;
 
     lastProductTrigger = trigger;
+    productModal.dataset.product = productKey;
     productModalBody.innerHTML = product;
     productModal.classList.add('open');
     productModal.setAttribute('aria-hidden', 'false');
@@ -3108,6 +3416,7 @@
     if (event) event.preventDefault();
     productModal.classList.remove('open');
     productModal.setAttribute('aria-hidden', 'true');
+    delete productModal.dataset.product;
     document.body.style.overflow = '';
     if (lastProductTrigger) lastProductTrigger.focus();
   }
