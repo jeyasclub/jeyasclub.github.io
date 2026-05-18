@@ -400,6 +400,7 @@
   .menfess-teaser,
   #communities,
   .testimonials,
+  .home-faq,
   .gallery,
   footer {
     content-visibility: auto;
@@ -416,6 +417,38 @@
   .section-sub {
     text-align: center; color: var(--text-muted);
     font-size: 15px; margin-bottom: 48px;
+  }
+
+  .home-faq {
+    background: #f8fbff;
+  }
+
+  .home-faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .home-faq-item {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 14px 30px rgba(26,111,232,0.07);
+  }
+
+  .home-faq-item h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    line-height: 1.35;
+    color: var(--text);
+  }
+
+  .home-faq-item p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
   }
 
   /* ── FEATURES ── */
@@ -1416,6 +1449,10 @@
   }
 
   @media (max-width: 768px) {
+    .home-faq-grid {
+      grid-template-columns: 1fr;
+    }
+
     .program-shell {
       margin: 0 -20px;
     }
@@ -2725,13 +2762,14 @@
 <section class="features-bg" id="features">
   <div class="container">
     <h2 class="section-title"><span class="snow-icon"></span> Program Belajar <span class="snow-icon"></span></h2>
+    <p class="section-sub">Pilih kursus bahasa Inggris online sesuai kebutuhanmu, mulai dari grammar dasar, speaking practice, writing practice, hingga kelas bahasa Inggris untuk anak.</p>
     <div class="program-shell">
       <div class="program-list">
         <button class="program-card" data-program="basic" aria-haspopup="dialog">
           <div class="feature-img bg-blue"><img src="assets/optimized/ok.png" alt="Kursus Dasar Bahasa Inggris" width="203" height="260" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">Kursus Dasar Bahasa Inggris (Grammar)</div>
-            <div class="feature-desc">Belajar bahasa Inggris dari dasar, supaya paham sampai ke akarnya!</div>
+            <div class="feature-desc">Kursus bahasa Inggris online untuk pemula yang ingin memahami grammar dari dasar sampai lebih percaya diri.</div>
           </div>
           <span class="program-card-action">Lihat Detail →</span>
         </button>
@@ -2740,7 +2778,7 @@
           <div class="feature-img bg-green"><img src="assets/optimized/laptop.png" alt="Private Speaking Practice" width="208" height="260" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">Private Speaking Practice</div>
-            <div class="feature-desc">Program speaking interaktif dengan tutor melalui Zoom untuk meningkatkan percaya diri.</div>
+            <div class="feature-desc">Latihan speaking online secara private dengan tutor melalui Zoom untuk melatih kelancaran bicara.</div>
           </div>
           <span class="program-card-action">Lihat Detail →</span>
         </button>
@@ -2749,7 +2787,7 @@
           <div class="feature-img bg-purple"><img src="assets/optimized/book.png" alt="Private Writing Practice" width="218" height="220" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">Private Writing Practice</div>
-            <div class="feature-desc">Sesi writing dan reading comprehension interaktif untuk memperkuat kemampuan bahasa Inggris.</div>
+            <div class="feature-desc">Kelas writing dan reading comprehension online untuk memperkuat struktur kalimat dan pemahaman bacaan.</div>
           </div>
           <span class="program-card-action">Lihat Detail →</span>
         </button>
@@ -2758,7 +2796,7 @@
           <div class="feature-img bg-yellow"><img src="assets/optimized/kids.png" alt="English Course for Kids" width="208" height="260" loading="lazy" decoding="async"></div>
           <div>
             <div class="feature-name">English Course for Kids</div>
-            <div class="feature-desc">Kursus private anak dengan materi yang menyenangkan dan disesuaikan dengan kemampuan.</div>
+            <div class="feature-desc">Kursus bahasa Inggris online untuk anak dengan materi private yang menyenangkan dan sesuai kemampuan.</div>
           </div>
           <span class="program-card-action">Lihat Detail →</span>
         </button>
@@ -3012,6 +3050,41 @@
 </section>
 
 
+<!-- HOMEPAGE FAQ -->
+<section class="home-faq" id="kursus-bahasa-inggris-online-faq">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> FAQ Kursus Bahasa Inggris Online <span class="snow-icon"></span></h2>
+    <p class="section-sub">Jawaban singkat untuk pertanyaan yang sering ditanyakan sebelum memilih program belajar di Jeya's Club.</p>
+    <div class="home-faq-grid">
+      <article class="home-faq-item">
+        <h3>Apa itu kursus bahasa Inggris online Jeya's Club?</h3>
+        <p>Kursus bahasa Inggris online Jeya's Club adalah kelas interaktif bersama tutor melalui Zoom untuk belajar grammar, speaking, writing, reading comprehension, atau kelas anak sesuai kebutuhan peserta.</p>
+      </article>
+      <article class="home-faq-item">
+        <h3>Apakah kelas dilakukan secara online?</h3>
+        <p>Ya. Kelas dilakukan online melalui Zoom, sehingga kamu bisa belajar dari rumah dengan jadwal yang lebih fleksibel.</p>
+      </article>
+      <article class="home-faq-item">
+        <h3>Apakah kursus ini cocok untuk pemula?</h3>
+        <p>Cocok. Pemula bisa mulai dari Kursus Dasar Bahasa Inggris untuk memahami grammar, kosakata, dan pola kalimat dari awal.</p>
+      </article>
+      <article class="home-faq-item">
+        <h3>Apakah jadwal kursus bisa disesuaikan?</h3>
+        <p>Bisa. Program private memiliki jadwal fleksibel, jadi peserta dapat menentukan hari dan jam belajar sesuai ketersediaan tutor.</p>
+      </article>
+      <article class="home-faq-item">
+        <h3>Program apa saja yang tersedia?</h3>
+        <p>Program yang tersedia meliputi Kursus Dasar Bahasa Inggris, Private Speaking Practice, Private Writing Practice, dan English Course for Kids.</p>
+      </article>
+      <article class="home-faq-item">
+        <h3>Berapa biaya kursus bahasa Inggris online?</h3>
+        <p>Biaya kursus bergantung pada program dan jumlah pertemuan. Kamu bisa melihat detail harga dengan menekan tombol Lihat Detail di setiap kartu program.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
 <!-- GALLERY -->
 <section class="gallery" id="gallery">
   <div class="container">
@@ -3110,7 +3183,7 @@
     basic: {
       title: 'Kursus Dasar Bahasa Inggris',
       label: 'Grammar Starter',
-      description: 'Belajar bahasa Inggris dari dasar dengan pendekatan yang sistematis dan mudah dipahami.',
+      description: 'Kursus bahasa Inggris online untuk pemula yang ingin memahami grammar dari dasar dengan pendekatan yang sistematis dan mudah dipahami.',
       registerUrl: 'https://wa.link/1djjlj',
       tags: ['8 Pertemuan Online - Durasi @90 Menit', 'Bebas Tentukan Jadwal, 2x Seminggu'],
       facilities: [
@@ -3132,7 +3205,7 @@
     speaking: {
       title: 'Private Speaking Practice',
       label: 'Confidence Builder',
-      description: 'Program speaking private yang interaktif dengan tutor melalui Zoom untuk meningkatkan percaya diri dan kelancaran bicara.',
+      description: 'Kursus speaking bahasa Inggris online secara private dengan tutor melalui Zoom untuk meningkatkan percaya diri dan kelancaran bicara.',
       registerUrl: 'https://wa.link/dely2z',
       tags: ['Private Online Course'],
       facilities: [
@@ -3152,7 +3225,7 @@
     writing: {
       title: 'Private Writing Practice',
       label: 'Writing Lab',
-      description: 'Sesi private writing dan reading comprehension yang interaktif bersama tutor melalui Zoom.',
+      description: 'Kursus writing bahasa Inggris online dengan sesi private untuk melatih writing, reading comprehension, dan struktur kalimat.',
       registerUrl: 'https://wa.link/tlksi2',
       tags: ['Private Online Course'],
       facilities: [
@@ -3172,7 +3245,7 @@
     kids: {
       title: 'English Course for Kids',
       label: 'Kids Learning Club',
-      description: 'Kursus bahasa Inggris sesuai kemampuan anak dengan pendekatan private yang menyenangkan.',
+      description: 'Kursus bahasa Inggris online untuk anak dengan pendekatan private yang menyenangkan dan disesuaikan dengan kemampuan siswa.',
       registerUrl: 'https://wa.link/w7q6d0',
       tags: ['Private Online Course'],
       facilities: [
