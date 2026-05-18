@@ -550,16 +550,10 @@
     --program-border: rgba(119, 74, 0, 0.22);
   }
 
-  .program-card[data-program="korean-basic"] {
-    --program-bg: #b96f8a;
-    --program-accent: #ffe3ed;
-  }
-
   .program-card[data-program="basic"]::before { content: "Grammar"; }
   .program-card[data-program="speaking"]::before { content: "Speaking"; }
   .program-card[data-program="writing"]::before { content: "Writing"; }
   .program-card[data-program="kids"]::before { content: "Kids"; }
-  .program-card[data-program="korean-basic"]::before { content: "Korean"; }
 
   .program-card .feature-img {
     position: relative;
@@ -653,14 +647,6 @@
     --detail-warm: #ffe3a3;
   }
 
-  .program-modal[data-program="korean-basic"] {
-    --detail-accent: #b96f8a;
-    --detail-accent-dark: #8d4d66;
-    --detail-soft: #fff0f5;
-    --detail-tint: #fff8fb;
-    --detail-warm: #ffd8e6;
-  }
-
   .program-modal-backdrop {
     position: absolute;
     inset: 0;
@@ -687,13 +673,6 @@
     --product-accent-dark: #244a62;
     --product-soft: #eaf4fa;
     --product-warm: #d8ecf7;
-  }
-
-  .program-modal[data-product="korea-module"] {
-    --product-accent: #b96f8a;
-    --product-accent-dark: #8d4d66;
-    --product-soft: #fff0f5;
-    --product-warm: #ffd8e6;
   }
 
   .program-modal[data-product="toefl-package"] {
@@ -1037,7 +1016,6 @@
     box-shadow: none;
   }
 
-  .program-modal[data-product="korea-module"] .product-cover-img,
   .program-modal[data-product="toefl-package"] .product-cover-img {
     width: auto;
     max-width: min(390px, 100%);
@@ -1516,7 +1494,6 @@
       max-height: 330px;
     }
 
-    .program-modal[data-product="korea-module"] .product-cover-img,
     .program-modal[data-product="toefl-package"] .product-cover-img {
       width: auto;
       max-width: min(320px, 82vw);
@@ -2789,14 +2766,6 @@
           <span class="program-card-action">Lihat Detail →</span>
         </button>
 
-        <button class="program-card" data-program="korean-basic" aria-haspopup="dialog">
-          <div class="feature-img bg-purple"><img src="assets/korea.png" alt="Kursus Dasar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async"></div>
-          <div>
-            <div class="feature-name">Kursus Dasar Bahasa Korea</div>
-            <div class="feature-desc">Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!</div>
-          </div>
-          <span class="program-card-action">Lihat Detail →</span>
-        </button>
       </div>
 
     </div>
@@ -2919,17 +2888,6 @@
         <a href="#" class="product-link" data-product="toefl-package" aria-haspopup="dialog">Lihat Produk</a>
       </article>
 
-      <article class="product-card">
-        <div class="product-icon pink">🇰🇷</div>
-        <h3>Modul Otodidak Bahasa Korea</h3>
-        <p>Modul belajar mandiri untuk mengenal dasar bahasa Korea dari hangul, kosakata, hingga kalimat sehari-hari.</p>
-        <ul class="product-points">
-          <li>Pengenalan hangul dan pelafalan dasar</li>
-          <li>Kosakata dan ekspresi sehari-hari</li>
-          <li>Latihan singkat untuk belajar mandiri</li>
-        </ul>
-        <a href="#" class="product-link" data-product="korea-module" aria-haspopup="dialog">Lihat Produk</a>
-      </article>
     </div>
   </div>
 </section>
@@ -3171,26 +3129,6 @@
         ['4 Orang', 'Rp250.000 / siswa']
       ]
     },
-    'korean-basic': {
-      title: 'Kursus Dasar Bahasa Korea',
-      label: 'Korean Starter',
-      description: 'Belajar bahasa Korea dari dasar, cocok untuk kamu yang masih pemula!',
-      registerUrl: 'https://wa.link/tzb2ce',
-      tags: ['Pemula', '8 Pertemuan Online - Durasi @90 Menit', 'Bebas Tentukan Jadwalmu, 2x Seminggu'],
-      facilities: [
-        'Kelas online via Zoom masing-masing 90 menit per pertemuan',
-        'Interaksi & tanya jawab langsung dengan tutor',
-        'Rekaman kelas',
-        'Sertifikat kepesertaan kursus'
-      ],
-      tableHead: ['Kapasitas', 'Harga'],
-      rows: [
-        ['1 Orang', 'Rp600.000'],
-        ['2 Orang', 'Rp350.000 / siswa'],
-        ['3 Orang', 'Rp300.000 / siswa'],
-        ['4 Orang', 'Rp250.000 / siswa']
-      ]
-    },
     speaking: {
       title: 'Private Speaking Practice',
       label: 'Confidence Builder',
@@ -3294,42 +3232,6 @@
         </div>
         <div class="product-cta-row">
           <a href="https://forms.gle/hRqaRN8WFtXt4fS48" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-    `,
-    'korea-module': `
-      <div class="product-detail">
-        <div class="product-hero">
-          <div class="product-cover-stage">
-            <img class="product-cover-img" src="assets/modulkorea.png" alt="Modul 30 Hari Belajar Bahasa Korea" width="1482" height="1050" loading="lazy" decoding="async">
-            <span class="product-badge">Rp45.000</span>
-          </div>
-          <div class="product-copy">
-            <span class="product-kicker">E-Modul Bahasa Korea</span>
-            <h3 class="product-title" id="productModalTitle">Modul 30 Hari Belajar Bahasa Korea</h3>
-            <p class="product-subtitle">Buku penuntun untuk kamu yang mau otodidak belajar Bahasa Korea dari dasar secara konsisten selama 30 hari.</p>
-          </div>
-        </div>
-        <div class="product-content-grid">
-          <section class="product-panel">
-            <h4>Yang kamu dapatkan</h4>
-            <ul class="product-list">
-              <li>Materi belajar Day 1 - Day 30, lengkap dengan tabel dan ilustrasi interaktif. <strong>FULL COLOR!</strong></li>
-              <li>Akses Quizlet untuk menambah kosakata Bahasa Korea</li>
-              <li>Latihan soal setiap hari beserta kunci jawabannya</li>
-            </ul>
-          </section>
-          <section class="product-panel">
-            <h4>Cara akses</h4>
-            <ol class="product-list product-steps">
-              <li>Isi form dengan email kamu, pastikan tidak typo</li>
-              <li>Email kamu akan diberikan akses link untuk membuka PDF modul</li>
-              <li>Kamu bisa mengakses modul kapanpun dengan email tersebut</li>
-            </ol>
-          </section>
-        </div>
-        <div class="product-cta-row">
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfLDVFwIIB_xmc_U7DVQSAD-MFwe1LV_NjfB7GNeaOLAs6bMg/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang <span class="module-claim-icon" aria-hidden="true">↗</span></a>
         </div>
       </div>
     `,
