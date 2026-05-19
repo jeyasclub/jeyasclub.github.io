@@ -2842,7 +2842,7 @@
     <li class="nav-dropdown">
       <button class="nav-dropdown-button" type="button">Quiz</button>
       <div class="nav-dropdown-menu">
-        <a href="/account/?redirect=https%3A%2F%2Fvocaquiz.jeyasclub.com%2F" data-vocaquiz-link>Vocabulary Test</a>
+        <a href="/vocabulary-test/" data-vocaquiz-link>Vocabulary Test</a>
       </div>
     </li>
     <li><a href="#gallery">Galeri</a></li>
@@ -2875,7 +2875,7 @@
   <a href="/artikel/">Artikel</a>
   <a href="/testimoni/">Testimoni</a>
   <a href="#communities">Komunitas</a>
-  <a href="/account/?redirect=https%3A%2F%2Fvocaquiz.jeyasclub.com%2F" data-vocaquiz-link>Vocabulary Test</a>
+  <a href="/vocabulary-test/" data-vocaquiz-link>Vocabulary Test</a>
   <a href="#gallery">Galeri</a>
   <a href="/faq/">FAQ</a>
   <a href="/account/?redirect=/" class="mobile-test-link" id="mobileLoginLink">Login / Sign Up</a>
@@ -3397,9 +3397,7 @@
     if (navUser) navUser.classList.toggle('hidden', !isLoggedIn);
     if (mobileUser) mobileUser.classList.toggle('hidden', !isLoggedIn);
     vocaquizLinks.forEach(link => {
-      link.href = isLoggedIn
-        ? `/account/?redirect=${encodeURIComponent('https://vocaquiz.jeyasclub.com/')}`
-        : 'https://vocaquiz.jeyasclub.com/';
+      link.href = '/vocabulary-test/';
     });
 
     if (!isLoggedIn) {

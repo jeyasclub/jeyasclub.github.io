@@ -504,7 +504,7 @@
               </div>
             </div>
             <div class="account-actions">
-              <a class="primary-button" id="continueButton" href="https://vocaquiz.jeyasclub.com/#quiz">Lanjutkan</a>
+              <a class="primary-button" id="continueButton" href="/vocabulary-test/#quiz">Lanjutkan</a>
               <button class="primary-button secondary" type="button" id="logoutButton">Logout</button>
             </div>
           </div>
@@ -581,14 +581,14 @@
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
-    const value = params.get("redirect") || "https://vocaquiz.jeyasclub.com/#quiz";
+    const value = params.get("redirect") || "/vocabulary-test/#quiz";
 
     try {
       const target = new URL(value, window.location.origin);
       const allowedHost = target.hostname === window.location.hostname || target.hostname.endsWith(".jeyasclub.com");
-      return allowedHost ? target.href : "https://vocaquiz.jeyasclub.com/#quiz";
+      return allowedHost ? target.href : `${window.location.origin}/vocabulary-test/#quiz`;
     } catch {
-      return "https://vocaquiz.jeyasclub.com/#quiz";
+      return `${window.location.origin}/vocabulary-test/#quiz`;
     }
   }
 
