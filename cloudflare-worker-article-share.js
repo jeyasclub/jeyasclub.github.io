@@ -2,6 +2,8 @@ const SUPABASE_URL = 'https://ingeqwcpfuugcyafbecl.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
 const SITE_URL = 'https://www.jeyasclub.com';
 const DEFAULT_IMAGE = `${SITE_URL}/assets/cover.png`;
+const OG_IMAGE_WIDTH = 768;
+const OG_IMAGE_HEIGHT = 402;
 
 export default {
   async fetch(request) {
@@ -171,16 +173,17 @@ function renderSharePage({ title, description, image, shareUrl, articleUrl, shou
   <meta property="og:description" content="${safeDescription}">
   <meta property="og:image" content="${safeImage}">
   <meta property="og:image:secure_url" content="${safeImage}">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image:width" content="${OG_IMAGE_WIDTH}">
+  <meta property="og:image:height" content="${OG_IMAGE_HEIGHT}">
   <meta property="og:image:alt" content="${safeTitle}">
   <meta property="og:url" content="${safeShareUrl}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${safeTitle}">
   <meta name="twitter:description" content="${safeDescription}">
   <meta name="twitter:image" content="${safeImage}">
+  <meta name="twitter:image:src" content="${safeImage}">
   <meta name="twitter:image:alt" content="${safeTitle}">
+  <link rel="image_src" href="${safeImage}">
   <link rel="canonical" href="${safeShareUrl}">
 ${redirectTags}
 </head>
@@ -206,11 +209,18 @@ function getShareImageSource(value) {
   try {
     const url = new URL(value || DEFAULT_IMAGE, SITE_URL);
 
+    if (url.hostname === 'ingeqwcpfuugcyafbecl.supabase.co' && url.pathname.includes('/storage/v1/object/public/')) {
+      url.pathname = url.pathname.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/');
+      url.searchParams.set('width', String(OG_IMAGE_WIDTH));
+      url.searchParams.set('height', String(OG_IMAGE_HEIGHT));
+      url.searchParams.set('resize', 'cover');
+    }
+
     if (url.hostname === 'images.pexels.com') {
       url.searchParams.set('auto', 'compress');
       url.searchParams.set('cs', 'tinysrgb');
-      url.searchParams.set('w', '1200');
-      url.searchParams.set('h', '630');
+      url.searchParams.set('w', String(OG_IMAGE_WIDTH));
+      url.searchParams.set('h', String(OG_IMAGE_HEIGHT));
       url.searchParams.set('fit', 'crop');
     }
 
