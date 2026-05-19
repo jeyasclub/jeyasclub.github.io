@@ -1262,103 +1262,40 @@
     updateArticleContentPreview();
   }
 
-  function getEditorSelection() {
+  function getCurrentBlockName() {
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
+    if (!selection || selection.rangeCount === 0) return '';
 
-    const range = selection.getRangeAt(0);
-    if (!articleEditor.contains(range.commonAncestorContainer)) return null;
+    let node = selection.getRangeAt(0).startContainer;
+    if (!articleEditor.contains(node)) return '';
+    if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
 
-    return { selection, range };
-  }
-
-  function getSelectedEditorBlocks(range) {
-    const blocks = [];
-    const walker = document.createTreeWalker(
-      articleEditor,
-      NodeFilter.SHOW_ELEMENT,
-      {
-        acceptNode(node) {
-          if (!['P', 'DIV', 'H2', 'BLOCKQUOTE', 'LI'].includes(node.nodeName)) {
-            return NodeFilter.FILTER_SKIP;
-          }
-
-          return range.intersectsNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-        }
+    while (node && node !== articleEditor) {
+      if (['P', 'DIV', 'H2', 'BLOCKQUOTE', 'LI'].includes(node.nodeName)) {
+        return node.nodeName.toLowerCase();
       }
-    );
-
-    let node = walker.nextNode();
-    while (node) {
-      blocks.push(node);
-      node = walker.nextNode();
+      node = node.parentElement;
     }
 
-    if (blocks.length) return blocks;
-
-    let current = range.commonAncestorContainer;
-    if (current.nodeType === Node.TEXT_NODE) current = current.parentElement;
-
-    while (current && current !== articleEditor) {
-      if (['P', 'DIV', 'H2', 'BLOCKQUOTE', 'LI'].includes(current.nodeName)) return [current];
-      current = current.parentElement;
-    }
-
-    return [];
-  }
-
-  function unwrapBlockquote(blockquote) {
-    const paragraph = document.createElement('p');
-    paragraph.innerHTML = blockquote.innerHTML || '<br>';
-    blockquote.replaceWith(paragraph);
-  }
-
-  function setCaretAtEditorEnd() {
-    articleEditor.focus();
-
-    const range = document.createRange();
-    range.selectNodeContents(articleEditor);
-    range.collapse(false);
-
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
-  function ensureEditorCaret(event) {
-    const selection = window.getSelection();
-    const clickedEditorSurface = event.target === articleEditor;
-    const hasSelection = selection && selection.rangeCount > 0 && !selection.isCollapsed;
-
-    if (hasSelection) return;
-    if (clickedEditorSurface || !articleEditor.textContent.trim()) {
-      setCaretAtEditorEnd();
-    }
+    return '';
   }
 
   function insertFormat(format) {
-    const editorSelection = getEditorSelection();
-    if (!editorSelection) return;
+    articleEditor.focus();
 
     if (format === 'bold' || format === 'italic' || format === 'underline') {
       document.execCommand(format);
     }
     if (format === 'subtitle') {
-      const blocks = getSelectedEditorBlocks(editorSelection.range);
-      const shouldUnformat = blocks.length > 0 && blocks.every(block => block.nodeName === 'H2');
-      document.execCommand('formatBlock', false, shouldUnformat ? '<p>' : '<h2>');
+      const blockName = getCurrentBlockName() || document.queryCommandValue('formatBlock').toLowerCase().replace(/[<>]/g, '');
+      document.execCommand('formatBlock', false, blockName === 'h2' ? '<p>' : '<h2>');
     }
     if (format === 'bullet') {
       document.execCommand('insertUnorderedList');
     }
     if (format === 'quote') {
-      const blocks = getSelectedEditorBlocks(editorSelection.range);
-      const quotes = blocks.filter(block => block.nodeName === 'BLOCKQUOTE');
-      if (quotes.length && quotes.length === blocks.length) {
-        quotes.forEach(unwrapBlockquote);
-      } else {
-        document.execCommand('formatBlock', false, '<blockquote>');
-      }
+      const blockName = getCurrentBlockName() || document.queryCommandValue('formatBlock').toLowerCase().replace(/[<>]/g, '');
+      document.execCommand('formatBlock', false, blockName === 'blockquote' ? '<p>' : '<blockquote>');
     }
 
     syncEditorBody();
@@ -1689,7 +1626,6 @@
   articleEditor.addEventListener('input', () => {
     syncEditorBody();
   });
-  articleEditor.addEventListener('click', ensureEditorCaret);
   articleEditor.addEventListener('blur', syncEditorBody);
 
   articleForm.addEventListener('submit', async event => {
