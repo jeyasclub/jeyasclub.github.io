@@ -938,6 +938,120 @@
     font-weight: 800;
   }
 
+  .answer-review-card {
+    display: grid;
+    gap: 14px;
+  }
+
+  .answer-review {
+    display: grid;
+    gap: 10px;
+    max-height: 560px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .answer-review-empty {
+    margin-top: 4px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .answer-review-item {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-left-width: 5px;
+    border-radius: 14px;
+    background: #fff;
+  }
+
+  .answer-review-item.is-correct {
+    border-left-color: var(--green);
+    background: linear-gradient(145deg, #fff, var(--green-light));
+  }
+
+  .answer-review-item.is-wrong {
+    border-left-color: var(--red);
+    background: linear-gradient(145deg, #fff, #fff5f4);
+  }
+
+  .answer-review-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .answer-review-word {
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 900;
+  }
+
+  .answer-review-status {
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .answer-review-item.is-correct .answer-review-status {
+    background: var(--green-light);
+    color: var(--green);
+  }
+
+  .answer-review-item.is-wrong .answer-review-status {
+    background: #fff0ef;
+    color: var(--red);
+  }
+
+  .answer-review-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .answer-review-meta span {
+    min-height: 26px;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: var(--blue-light);
+    color: var(--blue);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .answer-review-lines {
+    display: grid;
+    gap: 7px;
+  }
+
+  .answer-review-line {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .answer-review-line strong {
+    color: var(--text);
+    font-weight: 900;
+  }
+
   body.is-taking .hero {
     min-height: calc(100vh - 68px);
     padding: 32px 0;
@@ -1194,6 +1308,10 @@
               <span>Breakdown benar per level</span>
               <div class="breakdown" id="breakdown"></div>
             </div>
+            <div class="result-card answer-review-card">
+              <span>Rincian jawaban</span>
+              <div class="answer-review" id="answerReview"></div>
+            </div>
             <p class="save-status" id="saveStatus"></p>
           </div>
 
@@ -1403,6 +1521,7 @@
   const correctCount = document.getElementById("correctCount");
   const accuracyText = document.getElementById("accuracyText");
   const breakdown = document.getElementById("breakdown");
+  const answerReview = document.getElementById("answerReview");
   const saveStatus = document.getElementById("saveStatus");
 
   function shuffle(items) {
@@ -1663,9 +1782,12 @@
 
     selectedButton.classList.add("selected");
     state.answers[state.index] = {
+      number: state.index + 1,
       word: current.word,
       level: current.level,
       point: current.point,
+      selected_answer: selectedButton.querySelector(".answer-text").textContent,
+      correct_answer: current.correct,
       correct: isCorrect
     };
 
@@ -1720,7 +1842,70 @@
     authMessage.textContent = `Hasil terakhir: ${latestResult.category}, ${latestResult.score}/${latestResult.total_point} poin.`;
   }
 
-  function renderResultDetails({ result, score, correct, accuracy, levelBreakdown, statusText }) {
+  function renderAnswerReview(answerItems = []) {
+    answerReview.innerHTML = "";
+
+    if (!Array.isArray(answerItems) || answerItems.length === 0 || !answerItems.some((item) => item && item.correct_answer)) {
+      const empty = document.createElement("p");
+      empty.className = "answer-review-empty";
+      empty.textContent = "Rincian jawaban belum tersedia untuk hasil ini. Mulai hasil berikutnya, daftar soal benar dan salah akan tersimpan di sini.";
+      answerReview.appendChild(empty);
+      return;
+    }
+
+    answerItems.forEach((item, index) => {
+      if (!item) return;
+
+      const row = document.createElement("article");
+      row.className = `answer-review-item ${item.correct ? "is-correct" : "is-wrong"}`;
+
+      const top = document.createElement("div");
+      top.className = "answer-review-top";
+
+      const word = document.createElement("strong");
+      word.className = "answer-review-word";
+      word.textContent = `${item.number || index + 1}. ${item.word || "Question"}`;
+
+      const status = document.createElement("span");
+      status.className = "answer-review-status";
+      status.textContent = item.correct ? "Benar" : "Salah";
+
+      top.append(word, status);
+
+      const meta = document.createElement("div");
+      meta.className = "answer-review-meta";
+
+      const level = document.createElement("span");
+      level.textContent = item.level || "Level";
+      const point = document.createElement("span");
+      point.textContent = `${item.point || 0} poin`;
+      meta.append(level, point);
+
+      const lines = document.createElement("div");
+      lines.className = "answer-review-lines";
+
+      const selectedLine = document.createElement("p");
+      selectedLine.className = "answer-review-line";
+      const selectedLabel = document.createElement("strong");
+      selectedLabel.textContent = "Jawaban kamu: ";
+      selectedLine.append(selectedLabel, document.createTextNode(item.selected_answer || "-"));
+      lines.appendChild(selectedLine);
+
+      if (!item.correct) {
+        const correctLine = document.createElement("p");
+        correctLine.className = "answer-review-line";
+        const correctLabel = document.createElement("strong");
+        correctLabel.textContent = "Jawaban benar: ";
+        correctLine.append(correctLabel, document.createTextNode(item.correct_answer || "-"));
+        lines.appendChild(correctLine);
+      }
+
+      row.append(top, meta, lines);
+      answerReview.appendChild(row);
+    });
+  }
+
+  function renderResultDetails({ result, score, correct, accuracy, levelBreakdown, answerItems, statusText }) {
     scoreNumber.textContent = `${score}/${totalPoint}`;
     scoreCategory.textContent = result.name;
     resultCopy.textContent = result.copy;
@@ -1753,6 +1938,8 @@
       breakdown.appendChild(row);
     });
 
+    renderAnswerReview(answerItems);
+
     if (statusText) {
       saveStatus.className = "save-status good";
       saveStatus.textContent = statusText;
@@ -1782,6 +1969,7 @@
       correct: latestResult.correct_count,
       accuracy: latestResult.accuracy,
       levelBreakdown: latestResult.level_breakdown || {},
+      answerItems: latestResult.answers || [],
       statusText: `Hasil ini tersimpan pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`
     });
   }
@@ -1827,7 +2015,8 @@
       score: state.score,
       correct: state.correct,
       accuracy,
-      levelBreakdown
+      levelBreakdown,
+      answerItems: state.answers
     });
 
     saveQuizResult(result, accuracy, levelBreakdown);
