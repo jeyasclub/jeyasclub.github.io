@@ -1455,7 +1455,10 @@
       ? supabaseClient.auth.signUp({
           email,
           password,
-          options: { data: { username: email.split("@")[0] } }
+          options: {
+            data: { username: email.split("@")[0] },
+            emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+          }
         })
       : supabaseClient.auth.signInWithPassword({ email, password });
 
