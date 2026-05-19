@@ -2842,7 +2842,7 @@
     <li class="nav-dropdown">
       <button class="nav-dropdown-button" type="button">Quiz</button>
       <div class="nav-dropdown-menu">
-        <a href="https://vocaquiz.jeyasclub.com/">Vocabulary Test</a>
+        <a href="/account/?redirect=https%3A%2F%2Fvocaquiz.jeyasclub.com%2F" data-vocaquiz-link>Vocabulary Test</a>
       </div>
     </li>
     <li><a href="#gallery">Galeri</a></li>
@@ -2875,7 +2875,7 @@
   <a href="/artikel/">Artikel</a>
   <a href="/testimoni/">Testimoni</a>
   <a href="#communities">Komunitas</a>
-  <a href="https://vocaquiz.jeyasclub.com/">Vocabulary Test</a>
+  <a href="/account/?redirect=https%3A%2F%2Fvocaquiz.jeyasclub.com%2F" data-vocaquiz-link>Vocabulary Test</a>
   <a href="#gallery">Galeri</a>
   <a href="/faq/">FAQ</a>
   <a href="/account/?redirect=/" class="mobile-test-link" id="mobileLoginLink">Login / Sign Up</a>
@@ -3368,6 +3368,7 @@
   const mobileUserAvatar = document.getElementById('mobileUserAvatar');
   const mobileUserName = document.getElementById('mobileUserName');
   const mobileLogoutButton = document.getElementById('mobileLogoutButton');
+  const vocaquizLinks = document.querySelectorAll('[data-vocaquiz-link]');
 
   function getMainLoginUrl() {
     const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/';
@@ -3395,6 +3396,11 @@
     if (mobileLoginLink) mobileLoginLink.classList.toggle('hidden', isLoggedIn);
     if (navUser) navUser.classList.toggle('hidden', !isLoggedIn);
     if (mobileUser) mobileUser.classList.toggle('hidden', !isLoggedIn);
+    vocaquizLinks.forEach(link => {
+      link.href = isLoggedIn
+        ? `/account/?redirect=${encodeURIComponent('https://vocaquiz.jeyasclub.com/')}`
+        : 'https://vocaquiz.jeyasclub.com/';
+    });
 
     if (!isLoggedIn) {
       if (navUser) navUser.classList.remove('open');

@@ -597,6 +597,30 @@
     return params.has("redirect");
   }
 
+  function buildRedirectUrl(session = currentSession) {
+    const redirectTarget = getRedirectTarget();
+    if (!session || !session.access_token || !session.refresh_token) return redirectTarget;
+
+    try {
+      const target = new URL(redirectTarget, window.location.origin);
+      const isCrossOriginJeyasClub = target.origin !== window.location.origin && target.hostname.endsWith(".jeyasclub.com");
+      if (!isCrossOriginJeyasClub) return target.href;
+
+      const existingHash = target.hash ? target.hash.slice(1) : "";
+      const authParams = new URLSearchParams();
+      authParams.set("access_token", session.access_token);
+      authParams.set("refresh_token", session.refresh_token);
+      authParams.set("token_type", session.token_type || "bearer");
+      if (session.expires_at) authParams.set("expires_at", String(session.expires_at));
+      if (session.expires_in) authParams.set("expires_in", String(session.expires_in));
+      if (existingHash) authParams.set("auth_redirect_hash", existingHash);
+      target.hash = authParams.toString();
+      return target.href;
+    } catch {
+      return redirectTarget;
+    }
+  }
+
   function setAuthMode(mode) {
     authMode = mode;
     authTabs.forEach((tab) => {
@@ -628,7 +652,7 @@
 
     authControls.classList.toggle("hidden", isLoggedIn);
     accountSession.classList.toggle("hidden", !isLoggedIn);
-    continueButton.href = getRedirectTarget();
+    continueButton.href = buildRedirectUrl();
 
     if (isLoggedIn) {
       cardTitle.textContent = "Akun Aktif";
@@ -700,7 +724,8 @@
 
     passwordInput.value = "";
     if (data.session && hasRedirectTarget()) {
-      window.location.href = getRedirectTarget();
+      currentSession = data.session;
+      window.location.href = buildRedirectUrl(data.session);
       return;
     }
 
@@ -721,6 +746,11 @@
     const { data } = await supabaseClient.auth.getSession();
     currentSession = data.session;
     renderAuthState();
+
+    if (currentSession && hasRedirectTarget()) {
+      window.location.href = buildRedirectUrl(currentSession);
+      return;
+    }
 
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       currentSession = session;

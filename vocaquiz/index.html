@@ -1331,6 +1331,24 @@
   let authMode = "login";
   let latestResult = null;
 
+  function getSessionBridgePayload() {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = hashParams.get("access_token");
+    const refreshToken = hashParams.get("refresh_token");
+    if (!accessToken || !refreshToken) return null;
+
+    return {
+      accessToken,
+      refreshToken,
+      redirectHash: hashParams.get("auth_redirect_hash") || ""
+    };
+  }
+
+  function cleanSessionBridgeUrl(redirectHash = "") {
+    const cleanUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${redirectHash ? `#${redirectHash}` : ""}`;
+    window.history.replaceState(null, "", cleanUrl);
+  }
+
   const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
   const totalPoint = questions.reduce((sum, item) => sum + item.point, 0);
   const state = {
@@ -1519,6 +1537,20 @@
       authMessage.className = "save-status bad";
       authMessage.textContent = "Auth belum bisa dimuat. Coba refresh halaman.";
       return;
+    }
+
+    const bridgePayload = getSessionBridgePayload();
+    if (bridgePayload) {
+      const { data, error } = await supabaseClient.auth.setSession({
+        access_token: bridgePayload.accessToken,
+        refresh_token: bridgePayload.refreshToken
+      });
+      cleanSessionBridgeUrl(bridgePayload.redirectHash);
+
+      if (!error) {
+        currentSession = data.session;
+        renderAuthState();
+      }
     }
 
     const { data } = await supabaseClient.auth.getSession();
