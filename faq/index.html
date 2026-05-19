@@ -109,6 +109,95 @@
     padding-bottom: 2px;
   }
 
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+  .nav-auth-link {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: var(--blue);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 10px 22px rgba(26, 111, 232, 0.22);
+  }
+
+  .nav-user { position: relative; }
+  .nav-auth-link.hidden,
+  .nav-user.hidden,
+  .mobile-auth-link.hidden,
+  .mobile-user.hidden { display: none; }
+
+  .nav-user-button {
+    min-height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px 5px 5px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .nav-user-button img,
+  .mobile-user img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--blue-light);
+    border: 1px solid var(--border);
+  }
+
+  .nav-user-name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .nav-user-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 150px;
+    display: none;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16);
+  }
+
+  .nav-user.open .nav-user-menu { display: block; }
+
+  .nav-logout-button,
+  .mobile-logout-button {
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .nav-logout-button:hover,
+  .mobile-logout-button:hover { background: var(--blue-light); }
+
   .nav-hamburger {
     display: none;
     flex-direction: column;
@@ -155,6 +244,45 @@
   }
 
   .mobile-menu.open { display: flex; }
+
+  .mobile-auth-link {
+    margin: auto 16px 10px;
+    border: none;
+    border-radius: 12px;
+    background: var(--blue);
+    color: var(--white) !important;
+    box-shadow: 0 12px 26px rgba(26, 111, 232, 0.24);
+    text-align: center;
+    font-weight: 800 !important;
+  }
+
+  .mobile-user {
+    margin: auto 16px 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.1);
+  }
+
+  .mobile-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-user-name {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-logout-button {
+    border: 1px solid var(--border);
+    text-align: center;
+  }
 
   .faq-hero {
     position: relative;
@@ -439,7 +567,8 @@
 
   @media (max-width: 768px) {
     nav { padding: 0 16px; }
-    .nav-links { display: none; }
+    .nav-links,
+    .nav-actions { display: none; }
     .nav-hamburger { display: flex; }
     .faq-hero { padding: 48px 16px 36px; }
     .faq-hero-inner {
@@ -589,8 +718,22 @@
       <li><a href="https://jeyasclub.com">Home</a></li>
       <li><a href="https://jeyasclub.com/english_menfess">English Menfess</a></li>
       <li><a href="https://jeyasclub.com/artikel">Artikel</a></li>
+      <li><a href="/vocabulary-test/">Quiz</a></li>
       <li><a class="active" href="https://jeyasclub.com/faq">FAQ</a></li>
     </ul>
+
+    <div class="nav-actions">
+      <a href="/account/?redirect=/faq/" class="nav-auth-link" id="navLoginLink">Login / Sign Up</a>
+      <div class="nav-user hidden" id="navUser">
+        <button class="nav-user-button" type="button" id="navUserButton" aria-expanded="false" aria-haspopup="true">
+          <img id="navUserAvatar" src="/assets/blank.png" alt="">
+          <span class="nav-user-name" id="navUserName">User</span>
+        </button>
+        <div class="nav-user-menu">
+          <button class="nav-logout-button" type="button" id="navLogoutButton">Logout</button>
+        </div>
+      </div>
+    </div>
 
     <button class="nav-hamburger" type="button" aria-label="Open mobile menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
       <span></span><span></span><span></span>
@@ -601,7 +744,16 @@
     <a href="https://jeyasclub.com">Home</a>
     <a href="https://jeyasclub.com/english_menfess">English Menfess</a>
     <a href="https://jeyasclub.com/artikel">Artikel</a>
+    <a href="/vocabulary-test/">Quiz</a>
     <a href="https://jeyasclub.com/faq">FAQ</a>
+    <a href="/account/?redirect=/faq/" class="mobile-auth-link" id="mobileLoginLink">Login / Sign Up</a>
+    <div class="mobile-user hidden" id="mobileUser">
+      <div class="mobile-user-row">
+        <img id="mobileUserAvatar" src="/assets/blank.png" alt="">
+        <span class="mobile-user-name" id="mobileUserName">User</span>
+      </div>
+      <button class="mobile-logout-button" type="button" id="mobileLogoutButton">Logout</button>
+    </div>
   </div>
 
   <section class="faq-hero">
@@ -732,12 +884,114 @@
   </div>
 </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const navSupabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+    const navSupabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+    const navSupabaseClient = window.supabase ? window.supabase.createClient(navSupabaseUrl, navSupabaseAnonKey) : null;
+    let navCurrentSession = null;
+
+    const navLoginLink = document.getElementById('navLoginLink');
+    const mobileLoginLink = document.getElementById('mobileLoginLink');
+    const navUser = document.getElementById('navUser');
+    const navUserButton = document.getElementById('navUserButton');
+    const navUserAvatar = document.getElementById('navUserAvatar');
+    const navUserName = document.getElementById('navUserName');
+    const navLogoutButton = document.getElementById('navLogoutButton');
+    const mobileUser = document.getElementById('mobileUser');
+    const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+    const mobileUserName = document.getElementById('mobileUserName');
+    const mobileLogoutButton = document.getElementById('mobileLogoutButton');
+
+    function getNavLoginUrl() {
+      const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/';
+      return `/account/?redirect=${encodeURIComponent(redirect)}`;
+    }
+
+    function getNavUserProfile() {
+      const user = navCurrentSession && navCurrentSession.user;
+      const metadata = (user && user.user_metadata) || {};
+      const emailName = user && user.email ? user.email.split('@')[0] : '';
+      return {
+        name: metadata.username || metadata.full_name || metadata.name || emailName || 'User',
+        avatar: metadata.avatar_url || metadata.picture || '/assets/blank.png'
+      };
+    }
+
+    function renderNavAuthState() {
+      const isLoggedIn = Boolean(navCurrentSession && navCurrentSession.user);
+      const profile = getNavUserProfile();
+      const loginUrl = getNavLoginUrl();
+
+      if (navLoginLink) navLoginLink.href = loginUrl;
+      if (mobileLoginLink) mobileLoginLink.href = loginUrl;
+      if (navLoginLink) navLoginLink.classList.toggle('hidden', isLoggedIn);
+      if (mobileLoginLink) mobileLoginLink.classList.toggle('hidden', isLoggedIn);
+      if (navUser) navUser.classList.toggle('hidden', !isLoggedIn);
+      if (mobileUser) mobileUser.classList.toggle('hidden', !isLoggedIn);
+
+      if (!isLoggedIn) {
+        if (navUser) navUser.classList.remove('open');
+        if (navUserButton) navUserButton.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      if (navUserAvatar) {
+        navUserAvatar.src = profile.avatar;
+        navUserAvatar.alt = profile.name;
+      }
+      if (mobileUserAvatar) {
+        mobileUserAvatar.src = profile.avatar;
+        mobileUserAvatar.alt = profile.name;
+      }
+      if (navUserName) navUserName.textContent = profile.name;
+      if (mobileUserName) mobileUserName.textContent = profile.name;
+    }
+
+    async function initNavAuth() {
+      renderNavAuthState();
+      if (!navSupabaseClient) return;
+
+      const { data } = await navSupabaseClient.auth.getSession();
+      navCurrentSession = data.session;
+      renderNavAuthState();
+
+      navSupabaseClient.auth.onAuthStateChange((_event, session) => {
+        navCurrentSession = session;
+        renderNavAuthState();
+      });
+    }
+
+    async function logoutNavUser() {
+      if (!navSupabaseClient) return;
+      await navSupabaseClient.auth.signOut();
+      navCurrentSession = null;
+      renderNavAuthState();
+    }
+
+    if (navUserButton) {
+      navUserButton.addEventListener('click', event => {
+        event.stopPropagation();
+        const isOpen = navUser.classList.toggle('open');
+        navUserButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (!navUser || navUser.contains(event.target)) return;
+      navUser.classList.remove('open');
+      if (navUserButton) navUserButton.setAttribute('aria-expanded', 'false');
+    });
+
     document.querySelectorAll('.mobile-menu a').forEach(link => {
       link.addEventListener('click', () => {
         document.getElementById('mobileMenu').classList.remove('open');
       });
     });
+
+    if (navLogoutButton) navLogoutButton.addEventListener('click', logoutNavUser);
+    if (mobileLogoutButton) mobileLogoutButton.addEventListener('click', logoutNavUser);
+    initNavAuth();
   </script>
 </body>
 </html>
