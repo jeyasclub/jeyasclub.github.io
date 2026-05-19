@@ -592,6 +592,11 @@
     }
   }
 
+  function hasRedirectTarget() {
+    const params = new URLSearchParams(window.location.search);
+    return params.has("redirect");
+  }
+
   function setAuthMode(mode) {
     authMode = mode;
     authTabs.forEach((tab) => {
@@ -694,6 +699,11 @@
     }
 
     passwordInput.value = "";
+    if (data.session && hasRedirectTarget()) {
+      window.location.href = getRedirectTarget();
+      return;
+    }
+
     if (authMode === "signup" && !data.session) {
       authMessage.className = "status good";
       authMessage.textContent = "Akun dibuat. Cek email kamu lalu klik link konfirmasi sebelum login.";

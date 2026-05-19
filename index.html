@@ -207,6 +207,87 @@
     box-shadow: 0 14px 28px rgba(26, 111, 232, 0.28);
   }
 
+  .nav-test-link.hidden,
+  .mobile-test-link.hidden,
+  .nav-user.hidden,
+  .mobile-user.hidden {
+    display: none;
+  }
+
+  .nav-user {
+    position: relative;
+  }
+
+  .nav-user-button {
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px 6px 6px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .nav-user-button img,
+  .mobile-user img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--blue-light);
+    border: 1px solid var(--border);
+  }
+
+  .nav-user-name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .nav-user-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 160px;
+    display: none;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16);
+  }
+
+  .nav-user.open .nav-user-menu {
+    display: block;
+  }
+
+  .nav-logout-button,
+  .mobile-logout-button {
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  .nav-logout-button:hover,
+  .mobile-logout-button:hover {
+    background: var(--blue-light);
+  }
+
   .btn-login {
     font-family: 'Poppins', sans-serif;
     font-size: 14px; font-weight: 500;
@@ -269,6 +350,34 @@
     box-shadow: 0 12px 26px rgba(26, 111, 232, 0.24);
     text-align: center;
     font-weight: 700;
+  }
+
+  .mobile-user {
+    margin: auto 16px 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.1);
+  }
+
+  .mobile-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-user-name {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-logout-button {
+    border: 1px solid var(--border);
+    text-align: center;
   }
   .mobile-menu.open { display: flex; }
 
@@ -2741,7 +2850,16 @@
   </ul>
 
   <div class="nav-actions">
-    <a href="/account/" class="nav-test-link">Login / Sign Up</a>
+    <a href="/account/?redirect=/" class="nav-test-link" id="navLoginLink">Login / Sign Up</a>
+    <div class="nav-user hidden" id="navUser">
+      <button class="nav-user-button" type="button" id="navUserButton" aria-expanded="false" aria-haspopup="true">
+        <img id="navUserAvatar" src="/assets/blank.png" alt="">
+        <span class="nav-user-name" id="navUserName">User</span>
+      </button>
+      <div class="nav-user-menu" id="navUserMenu">
+        <button class="nav-logout-button" type="button" id="navLogoutButton">Logout</button>
+      </div>
+    </div>
   </div>
 
   <button class="nav-hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
@@ -2760,7 +2878,14 @@
   <a href="https://vocaquiz.jeyasclub.com/">Vocabulary Test</a>
   <a href="#gallery">Galeri</a>
   <a href="/faq/">FAQ</a>
-  <a href="/account/" class="mobile-test-link">Login / Sign Up</a>
+  <a href="/account/?redirect=/" class="mobile-test-link" id="mobileLoginLink">Login / Sign Up</a>
+  <div class="mobile-user hidden" id="mobileUser">
+    <div class="mobile-user-row">
+      <img id="mobileUserAvatar" src="/assets/blank.png" alt="">
+      <span class="mobile-user-name" id="mobileUserName">User</span>
+    </div>
+    <button class="mobile-logout-button" type="button" id="mobileLogoutButton">Logout</button>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -3218,6 +3343,7 @@
   </svg>
 </a>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // Close mobile menu on nav link click
   document.querySelectorAll('.mobile-menu a').forEach(link => {
@@ -3225,6 +3351,107 @@
       document.getElementById('mobileMenu').classList.remove('open');
     });
   });
+
+  const mainSupabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const mainSupabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const mainSupabaseClient = window.supabase ? window.supabase.createClient(mainSupabaseUrl, mainSupabaseAnonKey) : null;
+  let mainCurrentSession = null;
+
+  const navLoginLink = document.getElementById('navLoginLink');
+  const mobileLoginLink = document.getElementById('mobileLoginLink');
+  const navUser = document.getElementById('navUser');
+  const navUserButton = document.getElementById('navUserButton');
+  const navUserAvatar = document.getElementById('navUserAvatar');
+  const navUserName = document.getElementById('navUserName');
+  const navLogoutButton = document.getElementById('navLogoutButton');
+  const mobileUser = document.getElementById('mobileUser');
+  const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+  const mobileUserName = document.getElementById('mobileUserName');
+  const mobileLogoutButton = document.getElementById('mobileLogoutButton');
+
+  function getMainLoginUrl() {
+    const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/';
+    return `/account/?redirect=${encodeURIComponent(redirect)}`;
+  }
+
+  function getMainUserProfile() {
+    const user = mainCurrentSession && mainCurrentSession.user;
+    const metadata = (user && user.user_metadata) || {};
+    const emailName = user && user.email ? user.email.split('@')[0] : '';
+    return {
+      name: metadata.username || metadata.full_name || metadata.name || emailName || 'User',
+      avatar: metadata.avatar_url || metadata.picture || '/assets/blank.png'
+    };
+  }
+
+  function renderMainAuthState() {
+    const isLoggedIn = Boolean(mainCurrentSession && mainCurrentSession.user);
+    const profile = getMainUserProfile();
+    const loginUrl = getMainLoginUrl();
+
+    if (navLoginLink) navLoginLink.href = loginUrl;
+    if (mobileLoginLink) mobileLoginLink.href = loginUrl;
+    if (navLoginLink) navLoginLink.classList.toggle('hidden', isLoggedIn);
+    if (mobileLoginLink) mobileLoginLink.classList.toggle('hidden', isLoggedIn);
+    if (navUser) navUser.classList.toggle('hidden', !isLoggedIn);
+    if (mobileUser) mobileUser.classList.toggle('hidden', !isLoggedIn);
+
+    if (!isLoggedIn) {
+      if (navUser) navUser.classList.remove('open');
+      if (navUserButton) navUserButton.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    if (navUserAvatar) {
+      navUserAvatar.src = profile.avatar;
+      navUserAvatar.alt = profile.name;
+    }
+    if (mobileUserAvatar) {
+      mobileUserAvatar.src = profile.avatar;
+      mobileUserAvatar.alt = profile.name;
+    }
+    if (navUserName) navUserName.textContent = profile.name;
+    if (mobileUserName) mobileUserName.textContent = profile.name;
+  }
+
+  async function initMainAuth() {
+    renderMainAuthState();
+    if (!mainSupabaseClient) return;
+
+    const { data } = await mainSupabaseClient.auth.getSession();
+    mainCurrentSession = data.session;
+    renderMainAuthState();
+
+    mainSupabaseClient.auth.onAuthStateChange((_event, session) => {
+      mainCurrentSession = session;
+      renderMainAuthState();
+    });
+  }
+
+  async function logoutMainUser() {
+    if (!mainSupabaseClient) return;
+    await mainSupabaseClient.auth.signOut();
+    mainCurrentSession = null;
+    renderMainAuthState();
+  }
+
+  if (navUserButton) {
+    navUserButton.addEventListener('click', event => {
+      event.stopPropagation();
+      const isOpen = navUser.classList.toggle('open');
+      navUserButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+
+  document.addEventListener('click', event => {
+    if (!navUser || navUser.contains(event.target)) return;
+    navUser.classList.remove('open');
+    if (navUserButton) navUserButton.setAttribute('aria-expanded', 'false');
+  });
+
+  if (navLogoutButton) navLogoutButton.addEventListener('click', logoutMainUser);
+  if (mobileLogoutButton) mobileLogoutButton.addEventListener('click', logoutMainUser);
+  initMainAuth();
 
   // Animate XP bar on scroll into view
   const xpBar = document.querySelector('.xp-bar-fill');
