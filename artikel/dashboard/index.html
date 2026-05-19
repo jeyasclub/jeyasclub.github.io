@@ -254,6 +254,7 @@
   .rich-editor:empty::before {
     content: attr(data-placeholder);
     color: #9ca3af;
+    pointer-events: none;
   }
 
   .rich-editor:focus {
@@ -1312,6 +1313,29 @@
     blockquote.replaceWith(paragraph);
   }
 
+  function setCaretAtEditorEnd() {
+    articleEditor.focus();
+
+    const range = document.createRange();
+    range.selectNodeContents(articleEditor);
+    range.collapse(false);
+
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function ensureEditorCaret(event) {
+    const selection = window.getSelection();
+    const clickedEditorSurface = event.target === articleEditor;
+    const hasSelection = selection && selection.rangeCount > 0 && !selection.isCollapsed;
+
+    if (hasSelection) return;
+    if (clickedEditorSurface || !articleEditor.textContent.trim()) {
+      setCaretAtEditorEnd();
+    }
+  }
+
   function insertFormat(format) {
     const editorSelection = getEditorSelection();
     if (!editorSelection) return;
@@ -1665,6 +1689,7 @@
   articleEditor.addEventListener('input', () => {
     syncEditorBody();
   });
+  articleEditor.addEventListener('click', ensureEditorCaret);
   articleEditor.addEventListener('blur', syncEditorBody);
 
   articleForm.addEventListener('submit', async event => {
