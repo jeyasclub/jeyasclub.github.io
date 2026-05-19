@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Test by Jeya's Club</title>
+<meta name="description" content="Ikuti Vocabulary Test by Jeya's Club untuk mengetahui sejauh mana kemampuan vocabulary bahasa Inggrismu melalui 50 pertanyaan singkat.">
+<meta name="keywords" content="vocabulary quiz, kuis vocabulary, tes kosakata bahasa Inggris, Jeya's Club, English quiz">
+<link rel="canonical" href="https://vocaquiz.jeyasclub.com/">
+<meta property="og:title" content="Vocabulary Test by Jeya's Club">
+<meta property="og:description" content="Tes kemampuan vocabulary bahasa Inggrismu dan lihat hasilnya setelah submit.">
+<meta property="og:url" content="https://vocaquiz.jeyasclub.com/">
+<meta property="og:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vocabulary Test by Jeya's Club">
+<meta name="twitter:image" content="https://www.jeyasclub.com/assets/optimized/banner-thumbnail.jpg">
+<link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A6FE8;
+    --blue-dark: #1558c0;
+    --blue-light: #E8F1FD;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --white: #ffffff;
+    --bg: #f7f9fc;
+    --border: #e5e7eb;
+    --snow: #dce8f7;
+    --green: #16a46c;
+    --green-light: #EDFAF3;
+    --red: #e15b54;
+    --red-light: #FDE6E0;
+    --gold: #f9b233;
+    --shadow: 0 14px 34px rgba(26, 111, 232, 0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Poppins', Arial, sans-serif;
+    color: var(--text);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  button, input { font: inherit; }
+
+  .page-shell {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    padding: 0 24px;
+  }
+
+  .topbar-inner {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+    text-decoration: none;
+    min-width: 0;
+  }
+
+  .brand img {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
+    object-fit: contain;
+  }
+
+  .brand-copy {
+    display: grid;
+    line-height: 1.08;
+  }
+
+  .brand-copy strong {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+  }
+
+  .brand-copy span {
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-chip {
+    min-height: 44px;
+    display: none;
+    position: relative;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .user-chip.show {
+    display: inline-flex;
+  }
+
+  .user-chip img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 150;
+    min-width: 160px;
+    display: none;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+  }
+
+  .user-chip.open .user-menu {
+    display: grid;
+  }
+
+  .menu-button {
+    min-height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    padding: 9px 10px;
+    text-align: left;
+    font-weight: 700;
+  }
+
+  .menu-button:hover {
+    background: var(--blue-light);
+    color: var(--blue);
+  }
+
+  .ghost-link,
+  .primary-link,
+  .quiz-button {
+    min-height: 44px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .ghost-link {
+    padding: 10px 16px;
+    color: var(--text);
+    background: var(--white);
+    border-color: var(--border);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .primary-link,
+  .quiz-button {
+    padding: 10px 20px;
+    color: var(--white);
+    background: var(--blue);
+    box-shadow: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .ghost-link:hover,
+  .primary-link:hover,
+  .quiz-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .ghost-link:hover {
+    border-color: var(--blue);
+    background: var(--blue-light);
+  }
+
+  .primary-link:hover,
+  .quiz-button:hover {
+    background: var(--blue-dark);
+  }
+
+  .hero {
+    min-height: calc(100vh - 68px);
+    display: grid;
+    align-items: center;
+    padding: 46px 0 78px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #dce8f7 0%, #eaf2fd 50%, #f0f6ff 80%, #ffffff 100%);
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/assets/optimized/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.22;
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: -8%;
+    right: -8%;
+    bottom: -70px;
+    height: 180px;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #ffffff 68%);
+    pointer-events: none;
+  }
+
+  .hero > .page-shell {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.78fr);
+    gap: 34px;
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 24px;
+  }
+
+  h1 {
+    max-width: 760px;
+    font-size: clamp(42px, 7vw, 86px);
+    line-height: 0.95;
+    letter-spacing: 0;
+    color: var(--text);
+  }
+
+  .hero-copy p {
+    max-width: 660px;
+    color: var(--text-muted);
+    font-size: clamp(15px, 1.8vw, 18px);
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .quiz-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .panel-top {
+    display: grid;
+    gap: 16px;
+    padding: 22px;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .quiz-panel.is-intro .pill,
+  .quiz-panel.is-intro .progress-track {
+    display: none;
+  }
+
+  .panel-title-row h2 {
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .pill {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--blue);
+    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .progress-track {
+    height: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e7eef7;
+  }
+
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), #4fa3f7);
+    border-radius: inherit;
+    transition: width 0.25s ease;
+  }
+
+  .quiz-body {
+    padding: 24px;
+    display: grid;
+    gap: 22px;
+  }
+
+  .question-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .level-chip {
+    min-height: 30px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: var(--blue-dark);
+    background: var(--blue-light);
+    border: 1px solid rgba(26, 111, 232, 0.14);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .question-meta.clean {
+    min-height: 30px;
+  }
+
+  .question-meta.clean .level-chip {
+    display: none;
+  }
+
+  .word-card {
+    display: grid;
+    gap: 8px;
+  }
+
+  .word-card span {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .word-card h3 {
+    color: var(--text);
+    font-size: clamp(36px, 6vw, 62px);
+    line-height: 1;
+  }
+
+  .answers {
+    display: grid;
+    gap: 12px;
+  }
+
+  .answer-button {
+    width: 100%;
+    min-height: 72px;
+    padding: 15px 16px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fff;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    transition: border 0.18s, background 0.18s, transform 0.18s;
+  }
+
+  .answer-button:hover:not(:disabled) {
+    border-color: var(--blue);
+    background: #f8fbff;
+    transform: translateY(-1px);
+  }
+
+  .answer-button:disabled { cursor: default; }
+  .answer-button.selected {
+    border-color: var(--blue);
+    background: var(--blue-light);
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.12);
+  }
+
+  .answer-key {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: #EEF4FF;
+    border: 1px solid rgba(26, 111, 232, 0.14);
+    color: var(--blue);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+  }
+
+  .answer-text {
+    font-size: 15px;
+    line-height: 1.48;
+    font-weight: 600;
+  }
+
+  .answer-button.correct {
+    border-color: rgba(22, 164, 108, 0.48);
+    background: var(--green-light);
+  }
+
+  .answer-button.wrong {
+    border-color: rgba(225, 91, 84, 0.44);
+    background: var(--red-light);
+  }
+
+  .panel-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    padding: 18px 24px;
+    background: #fbfdff;
+  }
+
+  .small-note {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .auth-box {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  }
+
+  .auth-box.hidden {
+    display: none;
+  }
+
+  .auth-profile {
+    display: none;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .auth-profile.show {
+    display: flex;
+  }
+
+  .auth-profile img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--blue-light);
+  }
+
+  .auth-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .auth-tab {
+    min-height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 800;
+  }
+
+  .auth-tab.active {
+    border-color: var(--blue);
+    background: var(--blue-light);
+    color: var(--blue);
+  }
+
+  .auth-form {
+    display: grid;
+    gap: 10px;
+  }
+
+  .auth-form input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: var(--white);
+    color: var(--text);
+    outline: none;
+  }
+
+  .auth-form input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(26, 111, 232, 0.12);
+  }
+
+  .auth-form input.hidden {
+    display: none;
+  }
+
+  .auth-session-actions {
+    display: none;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .auth-session-actions.show {
+    display: flex;
+  }
+
+  .auth-profile strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+  }
+
+  .auth-profile span,
+  .save-status {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .save-status {
+    min-height: 18px;
+  }
+
+  .save-status.good { color: var(--green); }
+  .save-status.bad { color: var(--red); }
+
+  footer {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 44px 24px;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.2fr) repeat(3, minmax(150px, 1fr));
+    gap: 32px;
+    align-items: start;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .footer-logo-icon {
+    width: 128px;
+    height: 86px;
+    border-radius: 18px;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-logo-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .footer-tagline {
+    max-width: 280px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-col h4 {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover {
+    color: var(--blue);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 12px;
+  }
+
+  .social-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .social-link img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .social-link:hover {
+    background: var(--blue-light);
+    transform: translateY(-2px);
+  }
+
+  .quiz-button.secondary {
+    color: var(--text);
+    background: #fff;
+    border-color: var(--border);
+    box-shadow: none;
+  }
+
+  .quiz-button:disabled {
+    opacity: 0.52;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .result-view {
+    display: none;
+    padding: 24px;
+    gap: 22px;
+  }
+
+  .result-view.active {
+    display: grid;
+  }
+
+  .score-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 260px);
+    gap: 28px;
+    align-items: stretch;
+    min-height: 330px;
+    padding: 28px;
+    border: 1px solid rgba(26, 111, 232, 0.14);
+    border-radius: 24px;
+    background:
+      linear-gradient(120deg, rgba(255,255,255,0.95) 0%, rgba(245,249,255,0.94) 52%, rgba(232,241,253,0.88) 100%),
+      linear-gradient(180deg, #dce8f7 0%, #ffffff 100%);
+    color: var(--text);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 18px 42px rgba(26, 111, 232, 0.14);
+  }
+
+  .score-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/assets/optimized/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  .score-hero::after {
+    content: "";
+    position: absolute;
+    right: -72px;
+    top: -72px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: rgba(26, 111, 232, 0.12);
+    pointer-events: none;
+  }
+
+  .score-art {
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .score-art.hidden {
+    display: none;
+  }
+
+  .score-icon {
+    width: min(100%, 250px);
+    height: auto;
+    max-height: 290px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 26px rgba(26, 111, 232, 0.2));
+  }
+
+  .score-icon.hidden {
+    display: none;
+  }
+
+  .score-identity {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+    max-width: 100%;
+    align-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .score-label {
+    width: fit-content;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 12px;
+    border: 1px solid rgba(26, 111, 232, 0.16);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .score-number {
+    width: fit-content;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 14px;
+    background: var(--blue);
+    color: var(--white);
+    font-size: clamp(24px, 4vw, 38px);
+    line-height: 1;
+    font-weight: 800;
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.18);
+  }
+
+  .score-category {
+    color: var(--text);
+    max-width: 100%;
+    font-size: clamp(50px, 6.8vw, 78px);
+    line-height: 0.96;
+    font-weight: 900;
+    overflow-wrap: break-word;
+  }
+
+  .result-copy {
+    max-width: 520px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .result-card {
+    min-height: 98px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #fff;
+  }
+
+  .result-card span {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .result-card strong {
+    display: block;
+    margin-top: 7px;
+    color: var(--text);
+    font-size: 24px;
+    line-height: 1.1;
+  }
+
+  .breakdown {
+    display: grid;
+    gap: 10px;
+  }
+
+  .breakdown-row {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 54px;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .breakdown-bar {
+    height: 10px;
+    background: #e7eef7;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .breakdown-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), #4fa3f7);
+    border-radius: inherit;
+    transition: width 0.7s ease;
+  }
+
+  body.is-taking .hero {
+    min-height: calc(100vh - 68px);
+    padding: 32px 0;
+  }
+
+  body.is-taking .hero-grid,
+  body.has-result .hero-grid {
+    grid-template-columns: minmax(0, 760px);
+    justify-content: center;
+  }
+
+  body.is-taking .hero-copy,
+  body.has-result .hero-copy,
+  body.is-taking footer,
+  body.has-result footer {
+    display: none;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 940px) {
+    .hero {
+      min-height: auto;
+      padding-top: 34px;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+  }
+
+  @media (max-width: 680px) {
+    .page-shell {
+      width: min(100% - 24px, 1180px);
+    }
+
+    .topbar-inner {
+      height: 64px;
+    }
+
+    .brand img {
+      width: 58px;
+      height: 58px;
+    }
+
+    .brand-copy strong {
+      font-size: 15px;
+    }
+
+    .brand-copy span {
+      font-size: 10px;
+    }
+
+    .topbar-actions .ghost-link {
+      display: none;
+    }
+
+    .primary-link {
+      min-height: 40px;
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+
+    .result-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .score-hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding: 22px;
+      min-height: auto;
+    }
+
+    .score-icon {
+      width: min(280px, 92%);
+      height: auto;
+      min-height: 0;
+      max-height: 260px;
+    }
+
+    .score-art {
+      order: -1;
+      min-height: 240px;
+    }
+
+    .score-label,
+    .score-number {
+      justify-self: center;
+    }
+
+    .panel-title-row,
+    .panel-footer {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .quiz-body,
+    .result-view,
+    .panel-top {
+      padding: 18px;
+    }
+
+    .panel-footer {
+      padding: 16px 18px;
+    }
+
+    .answer-button {
+      grid-template-columns: 30px minmax(0, 1fr);
+      min-height: 84px;
+    }
+
+    .answer-key {
+      width: 30px;
+      height: 30px;
+    }
+
+    .footer-top {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .footer-logo-icon {
+      width: 112px;
+      height: 76px;
+    }
+
+    .footer-tagline {
+      max-width: none;
+    }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="page-shell topbar-inner">
+      <a class="brand" href="https://www.jeyasclub.com/" aria-label="Kembali ke Jeya's Club">
+        <img src="/assets/logo.jpg" alt="Jeya's Club">
+        <span class="brand-copy">
+          <strong>Vocabulary Test</strong>
+          <span>Jeya's Club</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <span class="user-chip" id="topUserChip">
+          <img id="topUserAvatar" src="/assets/blank.png" alt="">
+          <span id="topUserName">User</span>
+          <span class="user-menu" id="topUserMenu">
+            <button class="menu-button" type="button" id="topLogoutButton">Logout</button>
+          </span>
+        </span>
+        <a class="ghost-link" href="https://www.jeyasclub.com/">Jeya's Club</a>
+        <a class="primary-link" href="#quiz" data-start>Mulai Quiz</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="page-shell hero-grid">
+        <div class="hero-copy">
+          <h1>Vocabulary Test by Jeya's Club</h1>
+          <p>Jawab 50 pertanyaan singkat untuk membaca peta kosakata bahasa Inggrismu. Hasil lengkapnya baru muncul setelah semua jawaban kamu submit.</p>
+          <div class="hero-actions">
+            <button class="quiz-button" type="button" data-start>Mulai Sekarang</button>
+          </div>
+        </div>
+
+        <section class="quiz-panel is-intro" id="quiz" aria-live="polite">
+          <div class="panel-top">
+            <div class="panel-title-row">
+              <h2 id="panelTitle">Siap cek vocabulary kamu?</h2>
+              <span class="pill" id="questionCounter">0/50</span>
+            </div>
+            <div class="progress-track" aria-label="Progres kuis">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+
+          <div class="quiz-body" id="introView">
+            <div class="auth-box" id="authBox">
+              <div class="auth-profile" id="authProfile">
+                <img id="authAvatar" src="/assets/blank.png" alt="">
+                <div>
+                  <strong id="authName">Sudah login</strong>
+                  <span id="authEmail">Siap mulai quiz.</span>
+                </div>
+              </div>
+              <div id="authControls">
+                <div class="auth-tabs">
+                  <button class="auth-tab active" type="button" data-auth-mode="login">Login</button>
+                  <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
+                </div>
+                <form class="auth-form" id="authForm">
+                  <input id="emailInput" name="email" type="email" autocomplete="email" placeholder="Email" required>
+                  <input id="passwordInput" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="6" required>
+                  <button class="quiz-button" type="submit" id="authSubmitButton">Login</button>
+                </form>
+              </div>
+              <div class="auth-session-actions" id="authSessionActions">
+                <button class="quiz-button secondary hidden" type="button" id="latestResultButton">Lihat Hasil Terakhir</button>
+                <button class="quiz-button secondary" type="button" id="logoutButton">Logout</button>
+              </div>
+              <p class="save-status" id="authMessage">Buat akun atau login untuk mulai. Hasil akan tersimpan di akunmu.</p>
+            </div>
+          </div>
+
+          <div class="quiz-body hidden" id="questionView">
+            <div class="question-meta clean">
+              <span class="level-chip" id="levelChip">Vocabulary check</span>
+              <span class="level-chip" id="pointChip">Hasil di akhir</span>
+            </div>
+            <div class="word-card">
+              <span>Pilih definisi paling tepat untuk kata:</span>
+              <h3 id="wordText">Run</h3>
+            </div>
+            <div class="answers" id="answers"></div>
+          </div>
+
+          <div class="result-view" id="resultView">
+            <div class="score-hero">
+              <div class="score-identity">
+                <span class="score-label">Skor akhir</span>
+                <strong class="score-category" id="scoreCategory">Ghost</strong>
+                <strong class="score-number" id="scoreNumber">0</strong>
+                <p class="result-copy" id="resultCopy"></p>
+              </div>
+              <div class="score-art hidden" id="scoreArt">
+                <img class="score-icon hidden" id="scoreIcon" src="" alt="">
+              </div>
+            </div>
+            <div class="result-grid">
+              <div class="result-card">
+                <span>Jawaban benar</span>
+                <strong id="correctCount">0/50</strong>
+              </div>
+              <div class="result-card">
+                <span>Akurasi</span>
+                <strong id="accuracyText">0%</strong>
+              </div>
+            </div>
+            <div class="result-card">
+              <span>Breakdown benar per level</span>
+              <div class="breakdown" id="breakdown"></div>
+            </div>
+            <p class="save-status" id="saveStatus"></p>
+          </div>
+
+          <div class="panel-footer">
+            <span class="small-note" id="footerNote">Hasil dan kategori baru akan muncul setelah submit terakhir.</span>
+            <div class="hero-actions">
+              <button class="quiz-button secondary hidden" type="button" id="restartButton">Ulangi</button>
+              <button class="quiz-button" type="button" id="nextButton">Mulai</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="footer-logo-icon"><img src="/assets/logo.jpg" alt="Logo Jeya's Club" width="500" height="208" loading="lazy" decoding="async"></div>
+          </div>
+          <p class="footer-tagline">Platform belajar bahasa dan bersosialisasi untuk siapa pun yang ingin berkembang.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a></li>
+            <li><a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">+62 851 8330 5497</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Media Sosial</h4>
+          <div class="social-links">
+            <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="/assets/mail.png" alt="email" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="/assets/ig.png" alt="ig" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="/assets/x.png" alt="x" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="/assets/linkedin.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Tautan</h4>
+          <ul class="footer-links">
+            <li><a href="/english_menfess/">English Menfess</a></li>
+            <li><a href="/english_menfess/#paid-promote">Kerja Sama</a></li>
+            <li><a href="/testimoni/">Testimoni</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const questions = [
+    { word: "Run", correct: "To move quickly on foot", wrong: "To sit down slowly", level: "A1", point: 1 },
+    { word: "Ambivalent", correct: "Having mixed or contradictory feelings", wrong: "Being completely certain about something", level: "C1", point: 9 },
+    { word: "Negotiate", correct: "To discuss to reach an agreement", wrong: "To refuse all conversation", level: "B1", point: 5 },
+    { word: "Ephemeral", correct: "Lasting for a very short time", wrong: "Permanent and long-lasting", level: "C2", point: 11 },
+    { word: "Tired", correct: "Feeling a need to rest or sleep", wrong: "Feeling very energetic", level: "A2", point: 3 },
+    { word: "Paradox", correct: "A statement that contradicts itself but may be true", wrong: "A simple truth with one clear meaning", level: "C1", point: 9 },
+    { word: "Sufficient", correct: "Enough for a purpose", wrong: "Too much or excessive", level: "B1", point: 5 },
+    { word: "Vicarious", correct: "Experienced through another person's actions", wrong: "Experienced directly by yourself", level: "C2", point: 11 },
+    { word: "Food", correct: "Things we eat for nourishment", wrong: "Things we use to clean", level: "A1", point: 1 },
+    { word: "Elaborate", correct: "Detailed and carefully developed", wrong: "Simple and basic in design", level: "B2", point: 7 },
+    { word: "Proliferate", correct: "To increase rapidly in number", wrong: "To decrease slowly over time", level: "C1", point: 9 },
+    { word: "Dangerous", correct: "Likely to cause harm or injury", wrong: "Completely safe", level: "A2", point: 3 },
+    { word: "Integrity", correct: "The quality of being honest and having moral principles", wrong: "The desire to gain wealth at any cost", level: "B2", point: 7 },
+    { word: "Laconic", correct: "Using very few words to express something", wrong: "Speaking at great length about everything", level: "C2", point: 11 },
+    { word: "Establish", correct: "To set up or create something formally", wrong: "To destroy or remove something", level: "B1", point: 5 },
+    { word: "Cynical", correct: "Believing people act only from selfish motives", wrong: "Trusting others with pure intentions", level: "C1", point: 9 },
+    { word: "Happy", correct: "Feeling pleased or joyful", wrong: "Feeling tired or bored", level: "A1", point: 1 },
+    { word: "Alleviate", correct: "To make something less severe or painful", wrong: "To make a situation much worse", level: "B2", point: 7 },
+    { word: "Sycophant", correct: "A person who uses flattery to gain favor", wrong: "Someone who speaks truth without flattery", level: "C2", point: 11 },
+    { word: "Predict", correct: "To say what will happen in the future", wrong: "To forget what happened before", level: "B1", point: 5 },
+    { word: "Tangible", correct: "Clear and definite, able to be touched or felt", wrong: "Vague and difficult to define", level: "C1", point: 9 },
+    { word: "Improve", correct: "To make or become better", wrong: "To make worse", level: "A2", point: 3 },
+    { word: "Obfuscate", correct: "To make something unclear or confusing", wrong: "To explain something with great clarity", level: "C2", point: 11 },
+    { word: "Consequence", correct: "A result or effect of an action", wrong: "The cause or beginning of something", level: "B1", point: 5 },
+    { word: "Big", correct: "Large in size", wrong: "Small and tiny", level: "A1", point: 1 },
+    { word: "Reinforce", correct: "To strengthen or support something", wrong: "To weaken or remove support", level: "B2", point: 7 },
+    { word: "Equivocate", correct: "To use vague language to avoid commitment", wrong: "To speak directly and clearly", level: "C2", point: 11 },
+    { word: "Ancient", correct: "Very old, from long ago", wrong: "Very new and modern", level: "B1", point: 5 },
+    { word: "Friendly", correct: "Kind and pleasant to others", wrong: "Rude and unfriendly", level: "A2", point: 3 },
+    { word: "Nuance", correct: "A subtle difference in meaning or expression", wrong: "An obvious and major distinction", level: "C1", point: 9 },
+    { word: "Cold", correct: "Low in temperature", wrong: "Bright and shiny", level: "A1", point: 1 },
+    { word: "Reluctant", correct: "Unwilling or hesitant to do something", wrong: "Eager and enthusiastic to act", level: "B2", point: 7 },
+    { word: "Insidious", correct: "Proceeding gradually in a harmful way", wrong: "Openly and obviously harmful", level: "C2", point: 11 },
+    { word: "Obstacle", correct: "Something that blocks progress", wrong: "Something that helps you move forward", level: "B1", point: 5 },
+    { word: "Pragmatic", correct: "Dealing with things sensibly and practically", wrong: "Focused only on ideals and theory", level: "C1", point: 9 },
+    { word: "Travel", correct: "To go from one place to another", wrong: "To stay in one place", level: "A2", point: 3 },
+    { word: "Controversial", correct: "Causing strong public disagreement", wrong: "Accepted by everyone without debate", level: "B2", point: 7 },
+    { word: "Pellucid", correct: "Translucently clear and easy to understand", wrong: "Dense, dark, and hard to understand", level: "C2", point: 11 },
+    { word: "Confident", correct: "Feeling sure of oneself", wrong: "Feeling nervous and unsure", level: "B1", point: 5 },
+    { word: "Scrutinize", correct: "To examine something very carefully", wrong: "To ignore or overlook something", level: "C1", point: 9 },
+    { word: "Generous", correct: "Willing to give more than expected", wrong: "Unwilling to share anything", level: "B1", point: 5 },
+    { word: "Implication", correct: "A conclusion that can be drawn indirectly", wrong: "A direct and obvious statement", level: "B2", point: 7 },
+    { word: "Loquacious", correct: "Tending to talk a great deal", wrong: "Preferring silence and few words", level: "C2", point: 11 },
+    { word: "Flexible", correct: "Able to change or adapt easily", wrong: "Unable to move or change", level: "B1", point: 5 },
+    { word: "Mitigate", correct: "To lessen the severity of something", wrong: "To intensify or worsen something", level: "C1", point: 9 },
+    { word: "Ambiguous", correct: "Having more than one possible meaning", wrong: "Perfectly clear and easy to understand", level: "B2", point: 7 },
+    { word: "Persevere", correct: "To continue despite difficulty", wrong: "To give up when things get hard", level: "B2", point: 7 },
+    { word: "Eloquent", correct: "Fluent and persuasive in speaking or writing", wrong: "Unable to express ideas clearly", level: "C1", point: 9 },
+    { word: "Inevitable", correct: "Certain to happen, cannot be avoided", wrong: "Unlikely to ever happen", level: "B2", point: 7 },
+    { word: "Perfidious", correct: "Deceitful and untrustworthy", wrong: "Extremely loyal and faithful", level: "C2", point: 11 }
+  ];
+
+  const resultRanges = [
+    { min: 280, max: 340, name: "Legend", copy: "Vocabulary kamu sudah kuat di banyak level, termasuk kata-kata akademik dan advanced. Pertahankan dengan membaca teks panjang, diskusi, dan latihan writing yang lebih menantang." },
+    { min: 230, max: 279, name: "Master", copy: "Kamu punya fondasi vocabulary yang luas. Beberapa kata advanced mungkin masih perlu dipoles, tapi kamu sudah nyaman membaca banyak konteks bahasa Inggris." },
+    { min: 200, max: 229, name: "Scholar", copy: "Vocabulary kamu sudah berkembang rapi. Kamu kemungkinan cukup nyaman dengan level intermediate dan mulai masuk ke kata-kata advanced." },
+    { min: 150, max: 199, name: "Freshman", copy: "Kamu punya bekal vocabulary yang cukup untuk berkembang cepat. Fokus berikutnya adalah memperluas kata B1-B2 dan membiasakan definisi dalam bahasa Inggris." },
+    { min: 1, max: 149, name: "Explorer", copy: "Kamu sedang di fase eksplorasi. Mulai dari kata harian, frasa pendek, dan latihan membaca singkat akan membuat progresmu terasa lebih stabil." },
+    { min: 0, max: 0, name: "Ghost", copy: "Skor ini bisa terjadi kalau kamu belum sempat menjawab benar. Coba ulangi dengan pelan-pelan, baca definisinya, lalu pilih yang paling masuk akal." }
+  ];
+
+  const testName = "Vocabulary Test by Jeya's Club";
+
+  const categoryIcons = {
+    Legend: "/assets/king.png",
+    Master: "/assets/master.png",
+    Scholar: "/assets/piala.png",
+    Freshman: "/assets/freshman.png",
+    Explorer: "/assets/explorer.png"
+  };
+
+  const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  let currentSession = null;
+  let authMode = "login";
+  let latestResult = null;
+
+  const levels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+  const totalPoint = questions.reduce((sum, item) => sum + item.point, 0);
+  const state = {
+    order: [...questions],
+    index: 0,
+    score: 0,
+    correct: 0,
+    answered: false,
+    answers: [],
+    levelCorrect: Object.fromEntries(levels.map((level) => [level, 0])),
+    levelTotal: Object.fromEntries(levels.map((level) => [level, questions.filter((item) => item.level === level).length]))
+  };
+
+  const introView = document.getElementById("introView");
+  const quizPanel = document.getElementById("quiz");
+  const questionView = document.getElementById("questionView");
+  const resultView = document.getElementById("resultView");
+  const panelTitle = document.getElementById("panelTitle");
+  const questionCounter = document.getElementById("questionCounter");
+  const progressFill = document.getElementById("progressFill");
+  const levelChip = document.getElementById("levelChip");
+  const pointChip = document.getElementById("pointChip");
+  const wordText = document.getElementById("wordText");
+  const answers = document.getElementById("answers");
+  const nextButton = document.getElementById("nextButton");
+  const restartButton = document.getElementById("restartButton");
+  const footerNote = document.getElementById("footerNote");
+  const topUserChip = document.getElementById("topUserChip");
+  const topUserAvatar = document.getElementById("topUserAvatar");
+  const topUserName = document.getElementById("topUserName");
+  const topUserMenu = document.getElementById("topUserMenu");
+  const topLogoutButton = document.getElementById("topLogoutButton");
+  const authControls = document.getElementById("authControls");
+  const authForm = document.getElementById("authForm");
+  const authTabs = document.querySelectorAll("[data-auth-mode]");
+  const emailInput = document.getElementById("emailInput");
+  const passwordInput = document.getElementById("passwordInput");
+  const authSubmitButton = document.getElementById("authSubmitButton");
+  const authSessionActions = document.getElementById("authSessionActions");
+  const latestResultButton = document.getElementById("latestResultButton");
+  const logoutButton = document.getElementById("logoutButton");
+  const authProfile = document.getElementById("authProfile");
+  const authAvatar = document.getElementById("authAvatar");
+  const authName = document.getElementById("authName");
+  const authEmail = document.getElementById("authEmail");
+  const authMessage = document.getElementById("authMessage");
+  const scoreArt = document.getElementById("scoreArt");
+  const scoreIcon = document.getElementById("scoreIcon");
+  const scoreNumber = document.getElementById("scoreNumber");
+  const scoreCategory = document.getElementById("scoreCategory");
+  const resultCopy = document.getElementById("resultCopy");
+  const correctCount = document.getElementById("correctCount");
+  const accuracyText = document.getElementById("accuracyText");
+  const breakdown = document.getElementById("breakdown");
+  const saveStatus = document.getElementById("saveStatus");
+
+  function shuffle(items) {
+    return [...items].sort(() => Math.random() - 0.5);
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    authTabs.forEach((tab) => {
+      tab.classList.toggle("active", tab.dataset.authMode === mode);
+    });
+    emailInput.placeholder = mode === "signup" ? "Email aktif untuk konfirmasi" : "Email";
+    authSubmitButton.textContent = mode === "signup" ? "Buat Akun" : "Login";
+    passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
+    authMessage.className = "save-status";
+    authMessage.textContent = mode === "signup"
+      ? "Masukkan email aktif. Link konfirmasi akan dikirim ke email kamu."
+      : "Login dengan email dan password yang sudah kamu buat.";
+  }
+
+  function getUserProfile() {
+    const user = currentSession && currentSession.user;
+    const metadata = (user && user.user_metadata) || {};
+    const emailName = user && user.email ? user.email.split("@")[0] : "";
+    return {
+      id: user ? user.id : "",
+      email: user ? user.email : "",
+      username: metadata.username || emailName,
+      name: metadata.username || metadata.full_name || metadata.name || emailName || "User",
+      avatar: metadata.avatar_url || metadata.picture || "/assets/blank.png"
+    };
+  }
+
+  function renderAuthState() {
+    const profile = getUserProfile();
+    const isLoggedIn = Boolean(currentSession && currentSession.user);
+
+    topUserChip.classList.toggle("show", isLoggedIn);
+    authControls.classList.toggle("hidden", isLoggedIn);
+    authProfile.classList.toggle("show", isLoggedIn);
+    authSessionActions.classList.toggle("show", isLoggedIn);
+    nextButton.textContent = isLoggedIn ? "Mulai" : "Login";
+    footerNote.textContent = isLoggedIn
+      ? "Klik mulai untuk mengerjakan quiz. Hasil akan tersimpan otomatis."
+      : "Buat akun atau login dulu supaya hasil quiz bisa disimpan.";
+
+    if (isLoggedIn) {
+      topUserAvatar.src = profile.avatar;
+      topUserAvatar.alt = profile.name;
+      topUserName.textContent = profile.name;
+      authAvatar.src = profile.avatar;
+      authAvatar.alt = profile.name;
+      authName.textContent = profile.name;
+      authEmail.textContent = "Siap mulai quiz.";
+      authMessage.className = "save-status good";
+      authMessage.textContent = "Login berhasil. Kamu bisa mulai tes.";
+      panelTitle.textContent = "Siap cek vocabulary kamu?";
+      loadLatestResult();
+    } else {
+      latestResult = null;
+      latestResultButton.classList.add("hidden");
+      authSessionActions.classList.remove("show");
+      topUserAvatar.src = "/assets/blank.png";
+      topUserAvatar.alt = "";
+      topUserName.textContent = "User";
+      authMessage.className = "save-status";
+      authMessage.textContent = "Buat akun atau login untuk mulai. Hasil akan tersimpan di akunmu.";
+      panelTitle.textContent = "Login untuk mulai tes";
+    }
+  }
+
+  async function handleAuthSubmit(event) {
+    event.preventDefault();
+
+    if (!supabaseClient) {
+      authMessage.className = "save-status bad";
+      authMessage.textContent = "Login belum bisa dimuat. Coba refresh halaman.";
+      return;
+    }
+
+    const email = emailInput.value.trim().toLowerCase();
+    const password = passwordInput.value;
+
+    if (!email.includes("@")) {
+      authMessage.className = "save-status bad";
+      authMessage.textContent = "Masukkan email yang valid.";
+      return;
+    }
+
+    if (password.length < 6) {
+      authMessage.className = "save-status bad";
+      authMessage.textContent = "Password minimal 6 karakter.";
+      return;
+    }
+
+    authSubmitButton.disabled = true;
+    authMessage.className = "save-status";
+    authMessage.textContent = authMode === "signup" ? "Membuat akun..." : "Login...";
+
+    const authRequest = authMode === "signup"
+      ? supabaseClient.auth.signUp({
+          email,
+          password,
+          options: { data: { username: email.split("@")[0] } }
+        })
+      : supabaseClient.auth.signInWithPassword({ email, password });
+
+    const { data, error } = await authRequest;
+    authSubmitButton.disabled = false;
+
+    if (error) {
+      authMessage.className = "save-status bad";
+      authMessage.textContent = authMode === "signup"
+        ? "Sign up gagal. Email mungkin sudah dipakai atau format email belum valid."
+        : "Login gagal. Cek email dan password kamu.";
+      return;
+    }
+
+    passwordInput.value = "";
+    if (authMode === "signup" && !data.session) {
+      authMessage.className = "save-status good";
+      authMessage.textContent = "Akun dibuat. Cek email kamu lalu klik link konfirmasi sebelum login.";
+    }
+  }
+
+  async function initAuth() {
+    if (!supabaseClient) {
+      renderAuthState();
+      authMessage.className = "save-status bad";
+      authMessage.textContent = "Auth belum bisa dimuat. Coba refresh halaman.";
+      return;
+    }
+
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    renderAuthState();
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentSession = session;
+      renderAuthState();
+    });
+  }
+
+  async function logout() {
+    if (!supabaseClient) return;
+
+    topUserChip.classList.remove("open");
+    await supabaseClient.auth.signOut();
+    currentSession = null;
+    latestResult = null;
+    document.body.classList.remove("is-taking", "has-result");
+    quizPanel.classList.add("is-intro");
+    introView.classList.remove("hidden");
+    questionView.classList.add("hidden");
+    resultView.classList.remove("active");
+    restartButton.classList.add("hidden");
+    nextButton.classList.remove("hidden");
+    questionCounter.textContent = "0/50";
+    progressFill.style.width = "0%";
+    setAuthMode("login");
+    renderAuthState();
+  }
+
+  function toggleUserMenu(event) {
+    event.stopPropagation();
+    if (!currentSession) return;
+    topUserChip.classList.toggle("open");
+  }
+
+  function resetState() {
+    state.order = shuffle(questions);
+    state.index = 0;
+    state.score = 0;
+    state.correct = 0;
+    state.answered = false;
+    state.answers = [];
+    state.levelCorrect = Object.fromEntries(levels.map((level) => [level, 0]));
+  }
+
+  function startQuiz() {
+    if (!currentSession) {
+      authMessage.className = "save-status bad";
+      authMessage.textContent = "Login atau buat akun dulu sebelum mulai quiz.";
+      document.getElementById("quiz").scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    resetState();
+    quizPanel.classList.remove("is-intro");
+    document.body.classList.add("is-taking");
+    document.body.classList.remove("has-result");
+    introView.classList.add("hidden");
+    resultView.classList.remove("active");
+    questionView.classList.remove("hidden");
+    restartButton.classList.add("hidden");
+    nextButton.classList.add("hidden");
+    footerNote.textContent = "Klik salah satu jawaban untuk otomatis lanjut ke soal berikutnya.";
+    renderQuestion();
+    document.getElementById("quiz").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function renderQuestion() {
+    const current = state.order[state.index];
+    const progress = (state.index / questions.length) * 100;
+
+    state.answered = false;
+    panelTitle.textContent = "Pertanyaan vocabulary";
+    questionCounter.textContent = `${state.index + 1}/${questions.length}`;
+    progressFill.style.width = `${progress}%`;
+    levelChip.textContent = `Soal ${state.index + 1}`;
+    pointChip.textContent = "";
+    wordText.textContent = current.word;
+    answers.innerHTML = "";
+
+    shuffle([
+      { text: current.correct, correct: true },
+      { text: current.wrong, correct: false }
+    ]).forEach((option, optionIndex) => {
+      const button = document.createElement("button");
+      button.className = "answer-button";
+      button.type = "button";
+      button.dataset.correct = option.correct ? "true" : "false";
+      button.innerHTML = `<span class="answer-key">${optionIndex === 0 ? "A" : "B"}</span><span class="answer-text"></span>`;
+      button.querySelector(".answer-text").textContent = option.text;
+      button.addEventListener("click", () => selectAnswer(button, current));
+      answers.appendChild(button);
+    });
+  }
+
+  function selectAnswer(selectedButton, current) {
+    if (state.answered) return;
+
+    state.answered = true;
+    const isCorrect = selectedButton.dataset.correct === "true";
+    const allButtons = [...answers.querySelectorAll(".answer-button")];
+
+    allButtons.forEach((button) => {
+      button.classList.remove("selected");
+      button.disabled = true;
+    });
+
+    selectedButton.classList.add("selected");
+    state.answers[state.index] = {
+      word: current.word,
+      level: current.level,
+      point: current.point,
+      correct: isCorrect
+    };
+
+    if (state.index < questions.length - 1) {
+      state.index += 1;
+      renderQuestion();
+      return;
+    }
+
+    showResult();
+  }
+
+  function nextStep() {
+    if (introView.classList.contains("hidden") === false) {
+      startQuiz();
+      return;
+    }
+
+    if (!state.answered) return;
+
+    if (state.index < questions.length - 1) {
+      state.index += 1;
+      renderQuestion();
+      return;
+    }
+
+    showResult();
+  }
+
+  function getCategory(score) {
+    return resultRanges.find((range) => score >= range.min && score <= range.max) || resultRanges[resultRanges.length - 1];
+  }
+
+  async function loadLatestResult() {
+    if (!supabaseClient || !currentSession) return;
+
+    const { data, error } = await supabaseClient
+      .from("vocaquiz_results")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (error || !data || !data.length) {
+      latestResult = null;
+      latestResultButton.classList.add("hidden");
+      return;
+    }
+
+    latestResult = data[0];
+    latestResultButton.classList.remove("hidden");
+    authMessage.className = "save-status good";
+    authMessage.textContent = `Hasil terakhir: ${latestResult.category}, ${latestResult.score}/${latestResult.total_point} poin.`;
+  }
+
+  function renderResultDetails({ result, score, correct, accuracy, levelBreakdown, statusText }) {
+    scoreNumber.textContent = `${score}/${totalPoint}`;
+    scoreCategory.textContent = result.name;
+    resultCopy.textContent = result.copy;
+
+    if (categoryIcons[result.name]) {
+      scoreIcon.src = categoryIcons[result.name];
+      scoreIcon.alt = `Icon kategori ${result.name}`;
+      scoreArt.classList.remove("hidden");
+      scoreIcon.classList.remove("hidden");
+    } else {
+      scoreIcon.removeAttribute("src");
+      scoreIcon.alt = "";
+      scoreArt.classList.add("hidden");
+      scoreIcon.classList.add("hidden");
+    }
+
+    correctCount.textContent = `${correct}/${questions.length}`;
+    accuracyText.textContent = `${accuracy}%`;
+    breakdown.innerHTML = "";
+
+    levels.forEach((level) => {
+      const item = levelBreakdown[level] || { correct: 0, total: state.levelTotal[level], percent: 0 };
+      const row = document.createElement("div");
+      row.className = "breakdown-row";
+      row.innerHTML = `<strong>${level}</strong><span class="breakdown-bar"><span class="breakdown-fill" data-percent="${item.percent || 0}"></span></span><span>${item.correct || 0}/${item.total || state.levelTotal[level]}</span>`;
+      breakdown.appendChild(row);
+    });
+
+    requestAnimationFrame(() => {
+      breakdown.querySelectorAll(".breakdown-fill").forEach((bar) => {
+        bar.style.width = `${bar.dataset.percent}%`;
+      });
+    });
+
+    if (statusText) {
+      saveStatus.className = "save-status good";
+      saveStatus.textContent = statusText;
+    }
+  }
+
+  function showStoredResult() {
+    if (!latestResult) return;
+
+    const result = getCategory(latestResult.score);
+    document.body.classList.remove("is-taking");
+    document.body.classList.add("has-result");
+    quizPanel.classList.remove("is-intro");
+    introView.classList.add("hidden");
+    questionView.classList.add("hidden");
+    resultView.classList.add("active");
+    panelTitle.textContent = "Hasil Terakhir";
+    questionCounter.textContent = "Tersimpan";
+    progressFill.style.width = "100%";
+    nextButton.classList.add("hidden");
+    restartButton.classList.remove("hidden");
+    footerNote.textContent = "Ini hasil terakhir yang tersimpan di akunmu.";
+
+    renderResultDetails({
+      result,
+      score: latestResult.score,
+      correct: latestResult.correct_count,
+      accuracy: latestResult.accuracy,
+      levelBreakdown: latestResult.level_breakdown || {},
+      statusText: `Hasil ini tersimpan pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`
+    });
+  }
+
+  function showResult() {
+    state.score = 0;
+    state.correct = 0;
+    state.levelCorrect = Object.fromEntries(levels.map((level) => [level, 0]));
+    state.answers.forEach((answer) => {
+      if (!answer || !answer.correct) return;
+      state.score += answer.point;
+      state.correct += 1;
+      state.levelCorrect[answer.level] += 1;
+    });
+
+    const result = getCategory(state.score);
+    const accuracy = Math.round((state.correct / questions.length) * 100);
+    const levelBreakdown = Object.fromEntries(levels.map((level) => [
+      level,
+      {
+        correct: state.levelCorrect[level],
+        total: state.levelTotal[level],
+        percent: state.levelTotal[level] ? Math.round((state.levelCorrect[level] / state.levelTotal[level]) * 100) : 0
+      }
+    ]));
+
+    document.body.classList.remove("is-taking");
+    document.body.classList.add("has-result");
+    quizPanel.classList.remove("is-intro");
+    questionView.classList.add("hidden");
+    resultView.classList.add("active");
+    panelTitle.textContent = "Hasil Vocabulary Test";
+    questionCounter.textContent = "Selesai";
+    progressFill.style.width = "100%";
+    nextButton.classList.add("hidden");
+    restartButton.classList.remove("hidden");
+    footerNote.textContent = "Kamu bisa mengulang kuis untuk latihan, urutan pertanyaan dan jawaban akan diacak lagi.";
+    saveStatus.className = "save-status";
+    saveStatus.textContent = "Menyimpan hasil quiz...";
+
+    renderResultDetails({
+      result,
+      score: state.score,
+      correct: state.correct,
+      accuracy,
+      levelBreakdown
+    });
+
+    saveQuizResult(result, accuracy, levelBreakdown);
+  }
+
+  async function saveQuizResult(result, accuracy, levelBreakdown) {
+    if (!supabaseClient || !currentSession) {
+      saveStatus.className = "save-status bad";
+      saveStatus.textContent = "Hasil belum tersimpan karena sesi login tidak ditemukan.";
+      return;
+    }
+
+    const profile = getUserProfile();
+    const payload = {
+      user_id: profile.id,
+      email: profile.email,
+      username: profile.username,
+      full_name: profile.name,
+      avatar_url: profile.avatar,
+      test_name: testName,
+      score: state.score,
+      total_point: totalPoint,
+      category: result.name,
+      correct_count: state.correct,
+      total_questions: questions.length,
+      accuracy,
+      level_breakdown: levelBreakdown,
+      answers: state.answers
+    };
+
+    const { error } = await supabaseClient
+      .from("vocaquiz_results")
+      .insert(payload);
+
+    if (error) {
+      console.error("Vocabulary Test result save failed:", error);
+      saveStatus.className = "save-status bad";
+      saveStatus.textContent = `Hasil tampil, tapi belum tersimpan: ${error.message}`;
+      return;
+    }
+
+    saveStatus.className = "save-status good";
+    saveStatus.textContent = "Hasil berhasil disimpan ke akun kamu.";
+    loadLatestResult();
+  }
+
+  document.querySelectorAll("[data-start]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      startQuiz();
+    });
+  });
+
+  nextButton.addEventListener("click", nextStep);
+  restartButton.addEventListener("click", startQuiz);
+  authForm.addEventListener("submit", handleAuthSubmit);
+  authTabs.forEach((tab) => {
+    tab.addEventListener("click", () => setAuthMode(tab.dataset.authMode));
+  });
+  latestResultButton.addEventListener("click", showStoredResult);
+  logoutButton.addEventListener("click", logout);
+  topUserChip.addEventListener("click", toggleUserMenu);
+  topUserMenu.addEventListener("click", (event) => event.stopPropagation());
+  topLogoutButton.addEventListener("click", logout);
+  document.addEventListener("click", () => topUserChip.classList.remove("open"));
+  setAuthMode("login");
+  initAuth();
+</script>
+</body>
+</html>
