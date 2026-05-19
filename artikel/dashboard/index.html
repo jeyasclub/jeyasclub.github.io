@@ -1268,155 +1268,94 @@
     if (!selection || selection.rangeCount === 0) return;
 
     const range = selection.getRangeAt(0);
-    if (articleEditor.contains(range.commonAncestorContainer)) {
+    if (!range.collapsed && articleEditor.contains(range.commonAncestorContainer)) {
       savedEditorRange = range.cloneRange();
     }
   }
 
   function restoreEditorSelection() {
+    if (!savedEditorRange || savedEditorRange.collapsed) return false;
+
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(savedEditorRange);
     articleEditor.focus();
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-
-    if (savedEditorRange) {
-      selection.addRange(savedEditorRange);
-      return;
-    }
-
-    const range = document.createRange();
-    range.selectNodeContents(articleEditor);
-    range.collapse(false);
-    selection.addRange(range);
+    return true;
   }
 
-  function getCurrentEditorBlock() {
+  function getSelectedEditorBlocks() {
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return null;
-
-    let node = selection.getRangeAt(0).startContainer;
-    if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
-
-    while (node && node !== articleEditor) {
-      if (['P', 'DIV', 'H2', 'BLOCKQUOTE', 'LI'].includes(node.nodeName)) return node;
-      node = node.parentElement;
-    }
-
-    return null;
-  }
-
-  function getClosestEditorNode(nodeName) {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return null;
-
-    let node = selection.getRangeAt(0).startContainer;
-    if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
-
-    while (node && node !== articleEditor) {
-      if (node.nodeName === nodeName) return node;
-      node = node.parentElement;
-    }
-
-    return null;
-  }
-
-  function placeCursorAfter(node) {
-    const range = document.createRange();
-    range.setStartAfter(node);
-    range.collapse(true);
-
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    saveEditorSelection();
-  }
-
-  function placeCursorAtEditorEnd() {
-    const range = document.createRange();
-    range.selectNodeContents(articleEditor);
-    range.collapse(false);
-
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-    saveEditorSelection();
-  }
-
-  function insertHtmlAtCursor(html) {
-    restoreEditorSelection();
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return [];
 
     const range = selection.getRangeAt(0);
-    range.deleteContents();
+    const blocks = [];
+    const walker = document.createTreeWalker(
+      articleEditor,
+      NodeFilter.SHOW_ELEMENT,
+      {
+        acceptNode(node) {
+          if (!['P', 'DIV', 'H2', 'BLOCKQUOTE', 'LI'].includes(node.nodeName)) {
+            return NodeFilter.FILTER_SKIP;
+          }
 
-    const template = document.createElement('template');
-    template.innerHTML = html;
-    const fragment = template.content;
-    const lastNode = fragment.lastChild;
-    range.insertNode(fragment);
+          return range.intersectsNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      }
+    );
 
-    if (lastNode) placeCursorAfter(lastNode);
+    let node = walker.nextNode();
+    while (node) {
+      blocks.push(node);
+      node = walker.nextNode();
+    }
+
+    if (blocks.length) return blocks;
+
+    let current = range.commonAncestorContainer;
+    if (current.nodeType === Node.TEXT_NODE) current = current.parentElement;
+
+    while (current && current !== articleEditor) {
+      if (['P', 'DIV', 'H2', 'BLOCKQUOTE', 'LI'].includes(current.nodeName)) return [current];
+      current = current.parentElement;
+    }
+
+    return [];
   }
 
   function unwrapBlockquote(blockquote) {
     const paragraph = document.createElement('p');
     paragraph.innerHTML = blockquote.innerHTML || '<br>';
     blockquote.replaceWith(paragraph);
-    placeCursorAfter(paragraph);
-  }
-
-  function formatInline(format) {
-    const fallbackHtml = {
-      bold: '<strong>teks bold</strong>&nbsp;',
-      italic: '<em>teks italic</em>&nbsp;',
-      underline: '<u>teks underline</u>&nbsp;'
-    }[format];
-
-    restoreEditorSelection();
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
-      insertHtmlAtCursor(fallbackHtml);
-      if (document.queryCommandState(format)) document.execCommand(format);
-      return;
-    }
-
-    document.execCommand(format);
-    saveEditorSelection();
   }
 
   function insertFormat(format) {
-    restoreEditorSelection();
+    if (!restoreEditorSelection()) return;
+
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
 
     if (format === 'bold' || format === 'italic' || format === 'underline') {
-      formatInline(format);
+      document.execCommand(format);
     }
     if (format === 'subtitle') {
-      if (!articleEditor.textContent.trim()) {
-        articleEditor.innerHTML = '<h2>Subtitle artikel</h2><p><br></p>';
-        placeCursorAtEditorEnd();
-      } else {
-        const block = getCurrentEditorBlock();
-        document.execCommand('formatBlock', false, block && block.nodeName === 'H2' ? '<p>' : '<h2>');
-        saveEditorSelection();
-      }
+      const blocks = getSelectedEditorBlocks();
+      const shouldUnformat = blocks.length > 0 && blocks.every(block => block.nodeName === 'H2');
+      document.execCommand('formatBlock', false, shouldUnformat ? '<p>' : '<h2>');
     }
     if (format === 'bullet') {
-      if (!articleEditor.textContent.trim()) insertHtmlAtCursor('<ul><li>Poin artikel</li></ul><p><br></p>');
-      else document.execCommand('insertUnorderedList');
-      saveEditorSelection();
+      document.execCommand('insertUnorderedList');
     }
     if (format === 'quote') {
-      if (!articleEditor.textContent.trim()) {
-        articleEditor.innerHTML = '<blockquote>Kutipan artikel</blockquote><p><br></p>';
-        placeCursorAtEditorEnd();
+      const blocks = getSelectedEditorBlocks();
+      const quotes = blocks.filter(block => block.nodeName === 'BLOCKQUOTE');
+      if (quotes.length && quotes.length === blocks.length) {
+        quotes.forEach(unwrapBlockquote);
       } else {
-        const quote = getClosestEditorNode('BLOCKQUOTE');
-        if (quote) unwrapBlockquote(quote);
-        else document.execCommand('formatBlock', false, '<blockquote>');
-        saveEditorSelection();
+        document.execCommand('formatBlock', false, '<blockquote>');
       }
     }
 
+    savedEditorRange = null;
     syncEditorBody();
   }
 
@@ -1739,19 +1678,20 @@
   document.querySelectorAll('[data-format]').forEach(button => {
     button.addEventListener('mousedown', event => {
       event.preventDefault();
-      restoreEditorSelection();
     });
     button.addEventListener('click', () => insertFormat(button.dataset.format));
   });
 
   articleEditor.addEventListener('input', () => {
-    saveEditorSelection();
+    savedEditorRange = null;
     syncEditorBody();
   });
   articleEditor.addEventListener('keyup', saveEditorSelection);
   articleEditor.addEventListener('mouseup', saveEditorSelection);
-  articleEditor.addEventListener('focus', saveEditorSelection);
-  articleEditor.addEventListener('blur', syncEditorBody);
+  articleEditor.addEventListener('blur', () => {
+    saveEditorSelection();
+    syncEditorBody();
+  });
 
   articleForm.addEventListener('submit', async event => {
     event.preventDefault();
