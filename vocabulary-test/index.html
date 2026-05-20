@@ -1671,6 +1671,15 @@
       : `Login gagal: ${message || "cek email dan password kamu."}`;
   }
 
+  function updateStartButtonLabel() {
+    if (!currentSession) {
+      nextButton.textContent = "Login";
+      return;
+    }
+
+    nextButton.textContent = latestResult ? "Retake" : "Mulai";
+  }
+
   function renderAuthState() {
     const profile = getUserProfile();
     const isLoggedIn = Boolean(currentSession && currentSession.user);
@@ -1679,7 +1688,7 @@
     authControls.classList.toggle("hidden", isLoggedIn);
     authProfile.classList.toggle("show", isLoggedIn);
     authSessionActions.classList.toggle("show", isLoggedIn);
-    nextButton.textContent = isLoggedIn ? "Mulai" : "Login";
+    updateStartButtonLabel();
     footerNote.textContent = isLoggedIn
       ? "Klik mulai untuk mengerjakan quiz. Hasil akan tersimpan otomatis."
       : "Buat akun atau login dulu supaya hasil quiz bisa disimpan.";
@@ -1956,11 +1965,13 @@
     if (error || !data || !data.length) {
       latestResult = null;
       latestResultButton.classList.add("hidden");
+      updateStartButtonLabel();
       return;
     }
 
     latestResult = data[0];
     latestResultButton.classList.remove("hidden");
+    updateStartButtonLabel();
     authMessage.className = "save-status good";
     authMessage.textContent = `Hasil terakhir: ${latestResult.category}, ${latestResult.score}/${latestResult.total_point} poin.`;
   }
