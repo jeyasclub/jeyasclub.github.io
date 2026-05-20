@@ -1642,6 +1642,35 @@
     };
   }
 
+  function getAuthErrorMessage(error, mode) {
+    const message = error && error.message ? error.message : "";
+    const lowerMessage = message.toLowerCase();
+
+    if (lowerMessage.includes("already registered") || lowerMessage.includes("already exists")) {
+      return "Email ini sudah terdaftar. Coba login, atau gunakan email lain.";
+    }
+
+    if (lowerMessage.includes("invalid login credentials")) {
+      return "Login gagal. Cek email dan password kamu.";
+    }
+
+    if (lowerMessage.includes("email rate limit")) {
+      return "Terlalu banyak percobaan. Tunggu sebentar sebelum mencoba lagi.";
+    }
+
+    if (lowerMessage.includes("redirect")) {
+      return "Sign up gagal karena URL konfirmasi belum diizinkan di Supabase Auth.";
+    }
+
+    if (lowerMessage.includes("password")) {
+      return "Password belum memenuhi ketentuan. Gunakan minimal 6 karakter.";
+    }
+
+    return mode === "signup"
+      ? `Sign up gagal: ${message || "email mungkin sudah dipakai atau format email belum valid."}`
+      : `Login gagal: ${message || "cek email dan password kamu."}`;
+  }
+
   function renderAuthState() {
     const profile = getUserProfile();
     const isLoggedIn = Boolean(currentSession && currentSession.user);
@@ -1723,10 +1752,9 @@
     authSubmitButton.disabled = false;
 
     if (error) {
+      console.error("Vocabulary Test auth error:", error);
       authMessage.className = "save-status bad";
-      authMessage.textContent = authMode === "signup"
-        ? "Sign up gagal. Email mungkin sudah dipakai atau format email belum valid."
-        : "Login gagal. Cek email dan password kamu.";
+      authMessage.textContent = getAuthErrorMessage(error, authMode);
       return;
     }
 
