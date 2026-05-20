@@ -1311,7 +1311,7 @@
           <h1>Vocabulary Test by Jeya's Club</h1>
           <p>Jawab 50 pertanyaan singkat untuk membaca peta kosakata bahasa Inggrismu. Hasil lengkapnya baru muncul setelah semua jawaban kamu submit.</p>
           <div class="hero-actions">
-            <button class="quiz-button" type="button" data-start>Mulai Sekarang</button>
+            <button class="quiz-button" type="button" data-start id="heroStartButton">Mulai Sekarang</button>
           </div>
         </div>
 
@@ -1599,6 +1599,7 @@
   const authName = document.getElementById("authName");
   const authEmail = document.getElementById("authEmail");
   const authMessage = document.getElementById("authMessage");
+  const heroStartButton = document.getElementById("heroStartButton");
   const scoreArt = document.getElementById("scoreArt");
   const scoreIcon = document.getElementById("scoreIcon");
   const scoreNumber = document.getElementById("scoreNumber");
@@ -1673,10 +1674,12 @@
   function updateStartButtonLabel() {
     if (!currentSession) {
       nextButton.textContent = "Login";
+      heroStartButton.textContent = "Mulai Sekarang";
       return;
     }
 
     nextButton.textContent = latestResult ? "Retake" : "Mulai";
+    heroStartButton.textContent = latestResult ? "Retake the quiz" : "Mulai Sekarang";
   }
 
   function renderAuthState() {
