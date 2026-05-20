@@ -22,6 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://mayarembed.r2.mayar.id/mayar-new-min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1052,6 +1053,62 @@
     font-weight: 900;
   }
 
+  .answer-review-lock {
+    display: grid;
+    gap: 14px;
+    margin-top: 4px;
+    padding: 18px;
+    border: 1px solid rgba(26, 111, 232, 0.14);
+    border-radius: 16px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.98), rgba(232,241,253,0.92));
+  }
+
+  .answer-review-lock strong {
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.25;
+  }
+
+  .answer-review-lock p {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .answer-review-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .answer-review-pay,
+  .answer-review-check {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .answer-review-pay {
+    border: 1px solid var(--blue);
+    background: var(--blue);
+    color: var(--white);
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.18);
+  }
+
+  .answer-review-check {
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--text);
+  }
+
   body.is-taking .hero {
     min-height: calc(100vh - 68px);
     padding: 32px 0;
@@ -1442,12 +1499,14 @@
     Explorer: "/assets/explorer.png"
   };
 
+  const answerReviewPaymentUrl = "https://jeyasclub.myr.id/pl/vocabulary-test-result?iframe=true";
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
   const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
   let currentSession = null;
   let authMode = "login";
   let latestResult = null;
+  let answerReviewUnlocked = false;
 
   function getSessionBridgePayload() {
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
@@ -1674,10 +1733,17 @@
 
     const { data } = await supabaseClient.auth.getSession();
     currentSession = data.session;
+    await loadAnswerReviewAccess();
     renderAuthState();
 
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       currentSession = session;
+      loadAnswerReviewAccess().then(async () => {
+        if (resultView.classList.contains("active")) {
+          const storedAnswers = latestResult ? await loadResultAnswers(latestResult.id) : [];
+          renderAnswerReview(storedAnswers.length ? storedAnswers : state.answers);
+        }
+      });
       renderAuthState();
     });
   }
@@ -1689,6 +1755,7 @@
     await supabaseClient.auth.signOut();
     currentSession = null;
     latestResult = null;
+    answerReviewUnlocked = false;
     document.body.classList.remove("is-taking", "has-result");
     quizPanel.classList.add("is-intro");
     introView.classList.remove("hidden");
@@ -1826,7 +1893,7 @@
 
     const { data, error } = await supabaseClient
       .from("vocaquiz_results")
-      .select("*")
+      .select("id,user_id,email,username,full_name,avatar_url,test_name,score,total_point,category,correct_count,total_questions,accuracy,level_breakdown,created_at")
       .order("created_at", { ascending: false })
       .limit(1);
 
@@ -1842,8 +1909,94 @@
     authMessage.textContent = `Hasil terakhir: ${latestResult.category}, ${latestResult.score}/${latestResult.total_point} poin.`;
   }
 
+  async function loadResultAnswers(resultId) {
+    if (!supabaseClient || !currentSession || !answerReviewUnlocked || !resultId) return [];
+
+    const { data, error } = await supabaseClient
+      .from("vocaquiz_result_answers")
+      .select("answers")
+      .eq("result_id", resultId)
+      .limit(1);
+
+    if (error || !data || !data.length) return [];
+    return data[0].answers || [];
+  }
+
+  async function loadAnswerReviewAccess(showStatus = false) {
+    answerReviewUnlocked = false;
+
+    if (!supabaseClient || !currentSession) {
+      renderAnswerReview();
+      return false;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("vocaquiz_review_access")
+      .select("id")
+      .limit(1);
+
+    answerReviewUnlocked = Boolean(!error && data && data.length);
+
+    if (showStatus && saveStatus) {
+      saveStatus.className = answerReviewUnlocked ? "save-status good" : "save-status";
+      saveStatus.textContent = answerReviewUnlocked
+        ? "Akses rincian jawaban sudah aktif."
+        : "Akses belum aktif. Kalau baru membayar, tunggu sebentar lalu klik cek akses lagi.";
+    }
+
+    return answerReviewUnlocked;
+  }
+
+  async function refreshAnswerReviewAccess() {
+    const unlocked = await loadAnswerReviewAccess(true);
+    if (unlocked) {
+      const storedAnswers = latestResult ? await loadResultAnswers(latestResult.id) : [];
+      renderAnswerReview(storedAnswers.length ? storedAnswers : state.answers);
+    }
+  }
+
+  function renderAnswerReviewLock() {
+    answerReview.innerHTML = "";
+
+    const lock = document.createElement("div");
+    lock.className = "answer-review-lock";
+
+    const title = document.createElement("strong");
+    title.textContent = "Rincian jawaban terkunci";
+
+    const copy = document.createElement("p");
+    copy.textContent = "Rincian soal benar/salah dan jawaban yang benar hanya bisa dibuka setelah pembayaran via Mayar.";
+
+    const actions = document.createElement("div");
+    actions.className = "answer-review-actions";
+
+    const payLink = document.createElement("a");
+    payLink.className = "answer-review-pay iframe-lightbox-link";
+    payLink.href = answerReviewPaymentUrl;
+    payLink.target = "_blank";
+    payLink.rel = "noreferrer noopener";
+    payLink.dataset.paddingBottom = "30%";
+    payLink.dataset.scrolling = "true";
+    payLink.textContent = "Bayar via Mayar";
+
+    const checkButton = document.createElement("button");
+    checkButton.className = "answer-review-check";
+    checkButton.type = "button";
+    checkButton.textContent = "Cek akses";
+    checkButton.addEventListener("click", refreshAnswerReviewAccess);
+
+    actions.append(payLink, checkButton);
+    lock.append(title, copy, actions);
+    answerReview.appendChild(lock);
+  }
+
   function renderAnswerReview(answerItems = []) {
     answerReview.innerHTML = "";
+
+    if (!answerReviewUnlocked) {
+      renderAnswerReviewLock();
+      return;
+    }
 
     if (!Array.isArray(answerItems) || answerItems.length === 0 || !answerItems.some((item) => item && item.correct_answer)) {
       const empty = document.createElement("p");
@@ -1946,10 +2099,11 @@
     }
   }
 
-  function showStoredResult() {
+  async function showStoredResult() {
     if (!latestResult) return;
 
     const result = getCategory(latestResult.score);
+    const answerItems = await loadResultAnswers(latestResult.id);
     document.body.classList.remove("is-taking");
     document.body.classList.add("has-result");
     quizPanel.classList.remove("is-intro");
@@ -1969,7 +2123,7 @@
       correct: latestResult.correct_count,
       accuracy: latestResult.accuracy,
       levelBreakdown: latestResult.level_breakdown || {},
-      answerItems: latestResult.answers || [],
+      answerItems,
       statusText: `Hasil ini tersimpan pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`
     });
   }
@@ -2043,19 +2197,32 @@
       correct_count: state.correct,
       total_questions: questions.length,
       accuracy,
-      level_breakdown: levelBreakdown,
-      answers: state.answers
+      level_breakdown: levelBreakdown
     };
 
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
       .from("vocaquiz_results")
-      .insert(payload);
+      .insert(payload)
+      .select("id")
+      .single();
 
     if (error) {
       console.error("Vocabulary Test result save failed:", error);
       saveStatus.className = "save-status bad";
       saveStatus.textContent = `Hasil tampil, tapi belum tersimpan: ${error.message}`;
       return;
+    }
+
+    const { error: answersError } = await supabaseClient
+      .from("vocaquiz_result_answers")
+      .insert({
+        result_id: data.id,
+        user_id: profile.id,
+        answers: state.answers
+      });
+
+    if (answersError) {
+      console.error("Vocabulary Test answer detail save failed:", answersError);
     }
 
     saveStatus.className = "save-status good";

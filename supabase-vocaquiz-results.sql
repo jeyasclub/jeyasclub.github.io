@@ -17,6 +17,22 @@ create table if not exists public.vocaquiz_results (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.vocaquiz_review_access (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  email text,
+  source text not null default 'mayar',
+  mayar_transaction_id text unique,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.vocaquiz_result_answers (
+  result_id uuid primary key references public.vocaquiz_results(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  answers jsonb not null default '[]'::jsonb,
+  created_at timestamptz not null default now()
+);
+
 alter table public.vocaquiz_results
 add column if not exists username text;
 
@@ -24,11 +40,39 @@ alter table public.vocaquiz_results
 add column if not exists test_name text not null default 'Vocabulary Test by Jeya''s Club';
 
 alter table public.vocaquiz_results enable row level security;
+alter table public.vocaquiz_review_access enable row level security;
+alter table public.vocaquiz_result_answers enable row level security;
 
-grant select, insert on public.vocaquiz_results to authenticated;
+revoke select on public.vocaquiz_results from authenticated;
+grant insert on public.vocaquiz_results to authenticated;
+grant select (
+  id,
+  user_id,
+  email,
+  username,
+  full_name,
+  avatar_url,
+  test_name,
+  score,
+  total_point,
+  category,
+  correct_count,
+  total_questions,
+  accuracy,
+  level_breakdown,
+  created_at
+) on public.vocaquiz_results to authenticated;
+grant select on public.vocaquiz_review_access to authenticated;
+grant select, insert on public.vocaquiz_result_answers to authenticated;
 
 create index if not exists vocaquiz_results_user_created_idx
 on public.vocaquiz_results (user_id, created_at desc);
+
+create index if not exists vocaquiz_review_access_user_idx
+on public.vocaquiz_review_access (user_id, created_at desc);
+
+create index if not exists vocaquiz_result_answers_user_idx
+on public.vocaquiz_result_answers (user_id, created_at desc);
 
 drop policy if exists "Users can insert their own vocaquiz results" on public.vocaquiz_results;
 create policy "Users can insert their own vocaquiz results"
@@ -43,3 +87,99 @@ on public.vocaquiz_results
 for select
 to authenticated
 using (user_id = auth.uid());
+
+drop policy if exists "Users can read their own vocaquiz review access" on public.vocaquiz_review_access;
+create policy "Users can read their own vocaquiz review access"
+on public.vocaquiz_review_access
+for select
+to authenticated
+using (user_id = auth.uid());
+
+drop policy if exists "Users can insert their own vocaquiz answer details" on public.vocaquiz_result_answers;
+create policy "Users can insert their own vocaquiz answer details"
+on public.vocaquiz_result_answers
+for insert
+to authenticated
+with check (
+  user_id = auth.uid()
+  and exists (
+    select 1
+    from public.vocaquiz_results result
+    where result.id = result_id
+      and result.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "Paid users can read their own vocaquiz answer details" on public.vocaquiz_result_answers;
+create policy "Paid users can read their own vocaquiz answer details"
+on public.vocaquiz_result_answers
+for select
+to authenticated
+using (
+  user_id = auth.uid()
+  and exists (
+    select 1
+    from public.vocaquiz_review_access access
+    where access.user_id = auth.uid()
+  )
+);
+
+create or replace function public.grant_vocaquiz_review_access_by_email(
+  p_email text,
+  p_transaction_id text default null,
+  p_source text default 'mayar'
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare
+  target_user_id uuid;
+  normalized_email text;
+  inserted_id uuid;
+begin
+  normalized_email := lower(trim(coalesce(p_email, '')));
+
+  if normalized_email = '' then
+    return jsonb_build_object('ok', false, 'reason', 'missing_email');
+  end if;
+
+  select id
+    into target_user_id
+  from auth.users
+  where lower(email) = normalized_email
+  order by created_at desc
+  limit 1;
+
+  if target_user_id is null then
+    return jsonb_build_object('ok', false, 'reason', 'user_not_found', 'email', normalized_email);
+  end if;
+
+  insert into public.vocaquiz_review_access (
+    user_id,
+    email,
+    source,
+    mayar_transaction_id
+  )
+  values (
+    target_user_id,
+    normalized_email,
+    coalesce(nullif(trim(p_source), ''), 'mayar'),
+    nullif(trim(coalesce(p_transaction_id, '')), '')
+  )
+  on conflict (mayar_transaction_id) do update
+  set email = excluded.email
+  returning id into inserted_id;
+
+  return jsonb_build_object(
+    'ok', true,
+    'access_id', inserted_id,
+    'user_id', target_user_id,
+    'email', normalized_email
+  );
+end;
+$$;
+
+revoke all on function public.grant_vocaquiz_review_access_by_email(text, text, text) from public;
+grant execute on function public.grant_vocaquiz_review_access_by_email(text, text, text) to service_role;

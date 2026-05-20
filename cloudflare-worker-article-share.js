@@ -4,10 +4,15 @@ const SITE_URL = 'https://www.jeyasclub.com';
 const DEFAULT_IMAGE = `${SITE_URL}/assets/cover.png`;
 const OG_IMAGE_WIDTH = 768;
 const OG_IMAGE_HEIGHT = 402;
+const VOCAQUIZ_PRODUCT_SLUG = 'vocabulary-test-result';
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const requestUrl = new URL(request.url);
+
+    if (requestUrl.pathname === '/api/mayar-vocaquiz-webhook') {
+      return handleMayarVocaquizWebhook(request, env);
+    }
 
     if (requestUrl.pathname === '/sitemap-articles.xml') {
       return renderArticleSitemap();
@@ -59,6 +64,114 @@ export default {
     });
   },
 };
+
+async function handleMayarVocaquizWebhook(request, env = {}) {
+  if (request.method !== 'POST') {
+    return jsonResponse({ ok: false, error: 'method_not_allowed' }, 405);
+  }
+
+  const configuredSecret = env.MAYAR_WEBHOOK_SECRET || '';
+  if (configuredSecret) {
+    const requestUrl = new URL(request.url);
+    const providedSecret = request.headers.get('x-webhook-secret') || requestUrl.searchParams.get('secret') || '';
+
+    if (providedSecret !== configuredSecret) {
+      return jsonResponse({ ok: false, error: 'unauthorized' }, 401);
+    }
+  }
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return jsonResponse({ ok: false, error: 'invalid_json' }, 400);
+  }
+
+  const eventName = payload && payload.event;
+  const data = payload && payload.data ? payload.data : {};
+  const transactionId = data.transactionId || data.id || '';
+  const customerEmail = cleanText(data.customerEmail || data.email || '').toLowerCase();
+  const productName = cleanText(data.productName || '');
+  const productUrl = cleanText(data.productUrl || data.url || '');
+  const productId = cleanText(data.productId || '');
+  const status = String(data.status || data.transactionStatus || '').toLowerCase();
+
+  if (eventName !== 'payment.received') {
+    return jsonResponse({ ok: true, ignored: true, reason: 'unsupported_event' });
+  }
+
+  if (status && !['success', 'paid', 'settlement', 'settled', 'completed', 'created', 'true'].includes(status)) {
+    return jsonResponse({ ok: true, ignored: true, reason: 'unpaid_status', status });
+  }
+
+  if (!isVocaquizPayment({ productName, productUrl, productId }, env)) {
+    return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
+  }
+
+  if (!customerEmail || !customerEmail.includes('@')) {
+    return jsonResponse({ ok: false, error: 'missing_customer_email' }, 400);
+  }
+
+  const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    return jsonResponse({ ok: false, error: 'missing_supabase_service_role_key' }, 500);
+  }
+
+  const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/grant_vocaquiz_review_access_by_email`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      p_email: customerEmail,
+      p_transaction_id: transactionId || null,
+      p_source: 'mayar',
+    }),
+  });
+
+  const rpcText = await rpcResponse.text();
+  let rpcData = null;
+  try {
+    rpcData = rpcText ? JSON.parse(rpcText) : null;
+  } catch {
+    rpcData = rpcText;
+  }
+
+  if (!rpcResponse.ok) {
+    return jsonResponse({
+      ok: false,
+      error: 'supabase_rpc_failed',
+      status: rpcResponse.status,
+      detail: rpcData,
+    }, 500);
+  }
+
+  return jsonResponse({
+    ok: Boolean(rpcData && rpcData.ok),
+    result: rpcData,
+  });
+}
+
+function isVocaquizPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_VOCAQUIZ_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(VOCAQUIZ_PRODUCT_SLUG)
+    || (haystack.includes('vocabulary') && haystack.includes('test') && haystack.includes('result'));
+}
+
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+    },
+  });
+}
 
 async function renderArticleSitemap() {
   const articles = await getPublishedArticlesForSitemap();
