@@ -1076,6 +1076,34 @@
     line-height: 1.7;
   }
 
+  .answer-review-benefits {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .answer-review-benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.55;
+    font-weight: 700;
+  }
+
+  .answer-review-benefits li::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--blue);
+    flex: 0 0 auto;
+  }
+
   .answer-review-actions {
     display: flex;
     flex-wrap: wrap;
@@ -1962,10 +1990,18 @@
     lock.className = "answer-review-lock";
 
     const title = document.createElement("strong");
-    title.textContent = "Rincian jawaban terkunci";
+    title.textContent = "Unlock Rincian Hanya dengan Rp5.000";
 
     const copy = document.createElement("p");
-    copy.textContent = "Rincian soal benar/salah dan jawaban yang benar hanya bisa dibuka setelah pembayaran via Mayar.";
+    copy.textContent = "Dapatkan akses ke detail hasil Vocabulary Test kamu setelah pembayaran via Mayar.";
+
+    const benefits = document.createElement("ul");
+    benefits.className = "answer-review-benefits";
+    ["Cek rincian jawaban yang salah dan benar", "Kunci jawaban soal"].forEach((text) => {
+      const item = document.createElement("li");
+      item.textContent = text;
+      benefits.appendChild(item);
+    });
 
     const actions = document.createElement("div");
     actions.className = "answer-review-actions";
@@ -1986,7 +2022,7 @@
     checkButton.addEventListener("click", refreshAnswerReviewAccess);
 
     actions.append(payLink, checkButton);
-    lock.append(title, copy, actions);
+    lock.append(title, copy, benefits, actions);
     answerReview.appendChild(lock);
   }
 
