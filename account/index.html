@@ -1068,6 +1068,30 @@
                   href="/vocabulary-test/"
                 >Unlock</a>
               </div>
+              <div class="mission-card" id="vocaquizScore200MissionCard">
+                <div class="mission-star" aria-hidden="true">★</div>
+                <div class="mission-copy">
+                  <strong>Score at least 200 on vocabulary test</strong>
+                  <span id="vocaquizScore200MissionStatus">Belum tercapai</span>
+                </div>
+                <a
+                  class="mission-join-button"
+                  id="vocaquizScore200MissionButton"
+                  href="/vocabulary-test/"
+                >Take Test</a>
+              </div>
+              <div class="mission-card" id="vocaquizScore300MissionCard">
+                <div class="mission-star" aria-hidden="true">★</div>
+                <div class="mission-copy">
+                  <strong>Score at least 300 on vocabulary test</strong>
+                  <span id="vocaquizScore300MissionStatus">Belum tercapai</span>
+                </div>
+                <a
+                  class="mission-join-button"
+                  id="vocaquizScore300MissionButton"
+                  href="/vocabulary-test/"
+                >Take Test</a>
+              </div>
             </section>
 
             <section class="test-results-section" aria-labelledby="testResultsTitle">
@@ -1163,6 +1187,12 @@
   const vocaquizUnlockMissionCard = document.getElementById("vocaquizUnlockMissionCard");
   const vocaquizUnlockMissionStatus = document.getElementById("vocaquizUnlockMissionStatus");
   const vocaquizUnlockMissionButton = document.getElementById("vocaquizUnlockMissionButton");
+  const vocaquizScore200MissionCard = document.getElementById("vocaquizScore200MissionCard");
+  const vocaquizScore200MissionStatus = document.getElementById("vocaquizScore200MissionStatus");
+  const vocaquizScore200MissionButton = document.getElementById("vocaquizScore200MissionButton");
+  const vocaquizScore300MissionCard = document.getElementById("vocaquizScore300MissionCard");
+  const vocaquizScore300MissionStatus = document.getElementById("vocaquizScore300MissionStatus");
+  const vocaquizScore300MissionButton = document.getElementById("vocaquizScore300MissionButton");
   const HANGOUT_COURSE_KEY = "english-hangout-club";
 
   function getRedirectTarget() {
@@ -1385,6 +1415,57 @@
     renderVocaquizUnlockMission(Boolean(data && data.length));
   }
 
+  function renderVocaquizScoreMission(card, statusEl, buttonEl, isComplete = false, threshold = 0, bestScore = null) {
+    card.classList.toggle("is-complete", isComplete);
+    statusEl.textContent = isComplete
+      ? `Tercapai${bestScore === null ? "" : ` - skor terbaik ${bestScore}`}`
+      : `Belum tercapai${bestScore === null ? "" : ` - skor terbaik ${bestScore}`}`;
+    buttonEl.textContent = isComplete ? "Achieved" : "Take Test";
+    buttonEl.setAttribute("aria-label", isComplete
+      ? `Mission skor minimal ${threshold} Vocabulary Test sudah tercapai`
+      : `Ambil Vocabulary Test untuk mencapai skor minimal ${threshold}`);
+  }
+
+  function renderVocaquizScoreMissions(bestScore = null) {
+    const score = Number.isFinite(bestScore) ? bestScore : null;
+    renderVocaquizScoreMission(
+      vocaquizScore200MissionCard,
+      vocaquizScore200MissionStatus,
+      vocaquizScore200MissionButton,
+      score !== null && score >= 200,
+      200,
+      score
+    );
+    renderVocaquizScoreMission(
+      vocaquizScore300MissionCard,
+      vocaquizScore300MissionStatus,
+      vocaquizScore300MissionButton,
+      score !== null && score >= 300,
+      300,
+      score
+    );
+  }
+
+  async function loadVocaquizScoreMissions() {
+    renderVocaquizScoreMissions(null);
+
+    if (!supabaseClient || !currentSession || !currentSession.user) return;
+
+    const { data, error } = await supabaseClient
+      .from("vocaquiz_results")
+      .select("score")
+      .order("score", { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error("Load vocabulary score missions failed:", error);
+      return;
+    }
+
+    const bestScore = data && data.length ? Number(data[0].score) : null;
+    renderVocaquizScoreMissions(Number.isFinite(bestScore) ? bestScore : null);
+  }
+
   function getAuthErrorMessage(error, mode) {
     const message = error && error.message ? error.message : "";
     const lowerMessage = message.toLowerCase();
@@ -1430,6 +1511,7 @@
       authMessage.textContent = "Akun Jeya's Club siap digunakan.";
       loadHangoutMission();
       loadVocaquizUnlockMission();
+      loadVocaquizScoreMissions();
       loadTestResults();
       return;
     }
@@ -1440,6 +1522,7 @@
     authMessage.textContent = "Login atau buat akun Jeya's Club untuk mulai.";
     renderHangoutMission(false);
     renderVocaquizUnlockMission(false);
+    renderVocaquizScoreMissions(null);
     testResultsList.innerHTML = "";
   }
 
