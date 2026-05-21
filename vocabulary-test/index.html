@@ -1113,6 +1113,33 @@
     gap: 10px;
   }
 
+  .result-profile-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .result-profile-link {
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 13px;
+    background: var(--blue);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 900;
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.18);
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .result-profile-link:hover {
+    background: var(--blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(26, 111, 232, 0.24);
+  }
+
   .answer-review-pay,
   .answer-review-check {
     min-height: 42px;
@@ -2084,6 +2111,9 @@
                   </button>
                 </div>
               </div>
+            </div>
+            <div class="result-profile-actions">
+              <a class="result-profile-link" href="/account/">Cek Profile</a>
             </div>
             <p class="save-status" id="saveStatus"></p>
           </div>
