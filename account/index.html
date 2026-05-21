@@ -1112,7 +1112,8 @@
     const { data, error } = await supabaseClient
       .from("vocaquiz_results")
       .select("id,test_name,score,total_point,category,correct_count,total_questions,accuracy,created_at")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(1);
 
     if (error) {
       console.error("Load test results failed:", error);
