@@ -1202,7 +1202,11 @@
     border: 1px solid var(--border);
     border-radius: 14px;
     background: var(--white);
+    color: inherit;
+    font: inherit;
+    text-align: left;
     text-decoration: none;
+    cursor: pointer;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   }
 
@@ -1252,6 +1256,450 @@
     color: var(--blue);
     font-size: 12px;
     font-weight: 900;
+  }
+
+  .program-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    --detail-accent: #1a6fe8;
+    --detail-accent-dark: #1558c0;
+    --detail-soft: #edf6ff;
+    --detail-tint: #f8fbff;
+    --detail-warm: #cfe4ff;
+  }
+
+  .program-modal.open {
+    display: flex;
+  }
+
+  .program-modal[data-program="basic"] {
+    --detail-accent: #315f7d;
+    --detail-accent-dark: #254a63;
+    --detail-soft: #eaf4fa;
+    --detail-tint: #f6fbff;
+    --detail-warm: #d7ecf6;
+  }
+
+  .program-modal[data-program="speaking"] {
+    --detail-accent: #1558c0;
+    --detail-accent-dark: #0e4192;
+    --detail-soft: #e8f1ff;
+    --detail-tint: #f7faff;
+  }
+
+  .program-modal[data-program="writing"] {
+    --detail-accent: #5d5aa8;
+    --detail-accent-dark: #454283;
+    --detail-soft: #efefff;
+    --detail-tint: #faf9ff;
+    --detail-warm: #ddd9ff;
+  }
+
+  .program-modal[data-program="kids"] {
+    --detail-accent: #d8901d;
+    --detail-accent-dark: #a86c0e;
+    --detail-soft: #fff4d8;
+    --detail-tint: #fffbf1;
+    --detail-warm: #ffe3a3;
+  }
+
+  .program-modal[data-product="english-journey"] {
+    --product-accent: #315f7d;
+    --product-accent-dark: #244a62;
+    --product-soft: #eaf4fa;
+    --product-warm: #d8ecf7;
+  }
+
+  .program-modal[data-product="toefl-package"] {
+    --product-accent: #1558c0;
+    --product-accent-dark: #0e4192;
+    --product-soft: #e8f1ff;
+    --product-warm: #cfe4ff;
+  }
+
+  .program-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(5px);
+  }
+
+  .program-modal-panel {
+    position: relative;
+    width: min(860px, 100%);
+    max-height: min(86vh, 780px);
+    overflow: auto;
+    background: var(--white);
+    border-radius: 24px;
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
+  }
+
+  .module-modal-panel {
+    width: min(1060px, 100%);
+  }
+
+  .program-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 5;
+    width: 42px;
+    height: 42px;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--text);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+  }
+
+  .program-modal-close:hover {
+    color: var(--blue);
+    border-color: rgba(26, 111, 232, 0.32);
+  }
+
+  .program-modal-body {
+    padding: 0;
+  }
+
+  .program-detail-hero,
+  .product-hero {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .program-detail-hero {
+    min-height: 260px;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.58fr);
+    gap: 28px;
+    padding: 34px;
+    background:
+      radial-gradient(circle at 88% 22%, color-mix(in srgb, var(--detail-warm) 78%, transparent), transparent 30%),
+      linear-gradient(135deg, var(--detail-soft) 0%, #ffffff 54%, var(--detail-tint) 100%);
+  }
+
+  .product-hero {
+    grid-template-columns: minmax(210px, 0.65fr) minmax(0, 1fr);
+    gap: 30px;
+    padding: 38px 46px 34px;
+    background:
+      radial-gradient(circle at 15% 12%, color-mix(in srgb, var(--product-warm, #cfe4ff) 76%, transparent), transparent 30%),
+      linear-gradient(135deg, var(--product-soft, #edf6ff) 0%, #ffffff 58%, #f8fbff 100%);
+  }
+
+  .program-detail-copy,
+  .program-detail-visual,
+  .product-cover-stage,
+  .product-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .program-detail-visual,
+  .product-cover-stage {
+    display: flex;
+    justify-content: center;
+  }
+
+  .program-modal-img {
+    display: block;
+    width: min(250px, 100%);
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 30px color-mix(in srgb, var(--detail-accent) 22%, transparent));
+  }
+
+  .product-cover-stage {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+  }
+
+  .product-cover-img {
+    width: auto;
+    max-width: min(300px, 100%);
+    max-height: 360px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .program-modal[data-product="toefl-package"] .product-cover-img {
+    max-width: min(360px, 100%);
+    max-height: 310px;
+  }
+
+  .program-detail-kicker,
+  .product-kicker,
+  .product-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .program-detail-kicker,
+  .product-kicker {
+    gap: 8px;
+    padding: 7px 12px;
+    margin-bottom: 14px;
+  }
+
+  .program-detail-kicker {
+    background: var(--white);
+    color: var(--detail-accent-dark);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--detail-accent) 13%, transparent);
+  }
+
+  .product-kicker {
+    background: color-mix(in srgb, var(--product-accent, var(--blue)) 10%, white);
+    color: var(--product-accent-dark, var(--blue-dark));
+  }
+
+  .program-detail-kicker::before,
+  .product-kicker::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--detail-accent);
+  }
+
+  .product-kicker::before {
+    background: var(--product-accent, var(--blue));
+  }
+
+  .product-badge {
+    padding: 8px 13px;
+    background: var(--white);
+    color: var(--product-accent-dark, var(--blue-dark));
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--product-accent, var(--blue)) 14%, transparent);
+  }
+
+  .program-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .program-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--detail-accent) 11%, white);
+    color: var(--detail-accent-dark);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .program-modal-body h3,
+  .product-title {
+    color: #102a43;
+    font-size: clamp(24px, 4vw, 34px);
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .product-title {
+    padding-right: 48px;
+    font-size: clamp(25px, 4vw, 38px);
+  }
+
+  .program-modal-body p,
+  .product-subtitle {
+    color: #334155;
+    font-size: 15px;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .product-subtitle {
+    max-width: 620px;
+    font-size: clamp(15px, 1.9vw, 18px);
+  }
+
+  .program-detail-content,
+  .product-content-grid {
+    display: grid;
+    gap: 22px;
+    padding: 28px 34px 34px;
+  }
+
+  .product-content-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.62fr);
+    padding: 30px 46px 38px;
+  }
+
+  .program-detail-panel,
+  .product-panel {
+    border: 1px solid color-mix(in srgb, var(--detail-accent) 13%, #e5e7eb);
+    border-radius: 18px;
+    background: var(--detail-tint);
+    padding: 22px;
+    box-shadow: 0 14px 34px color-mix(in srgb, var(--detail-accent) 10%, transparent);
+  }
+
+  .product-panel {
+    border-color: color-mix(in srgb, var(--product-accent, var(--blue)) 13%, #e5e7eb);
+    background: #fbfdff;
+  }
+
+  .program-detail-panel:first-child {
+    border-left: 6px solid var(--detail-accent);
+  }
+
+  .program-modal-body h4,
+  .product-panel h4 {
+    color: #102a43;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 14px;
+  }
+
+  .program-modal-body ul,
+  .product-list {
+    display: grid;
+    gap: 10px;
+    padding-left: 0;
+    color: #334155;
+    line-height: 1.7;
+    margin: 0;
+    list-style: none;
+  }
+
+  .program-modal-body li,
+  .product-list li {
+    position: relative;
+    padding-left: 28px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .program-modal-body li::before,
+  .product-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--detail-accent) 13%, white);
+    color: var(--detail-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .product-list li::before {
+    background: color-mix(in srgb, var(--product-accent, var(--blue)) 12%, white);
+    color: var(--product-accent, var(--blue));
+  }
+
+  .product-steps {
+    counter-reset: product-step;
+  }
+
+  .product-steps li {
+    counter-increment: product-step;
+    padding-left: 40px;
+  }
+
+  .product-steps li::before {
+    content: counter(product-step);
+    width: 26px;
+    height: 26px;
+    background: var(--product-accent, var(--blue));
+    color: var(--white);
+  }
+
+  .program-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 14px;
+  }
+
+  .program-table th,
+  .program-table td {
+    padding: 12px 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    text-align: left;
+    color: #102a43;
+    font-size: 14px;
+  }
+
+  .program-table th {
+    background: color-mix(in srgb, var(--detail-accent) 12%, white);
+    color: var(--detail-accent-dark);
+    font-weight: 900;
+  }
+
+  .program-modal-actions,
+  .product-cta-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 14px;
+    border-top: 1px solid color-mix(in srgb, var(--detail-accent) 12%, #e5e7eb);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+  }
+
+  .product-cta-row {
+    display: block;
+    padding: 0 46px 40px;
+    border-top: 0;
+  }
+
+  .program-action-btn,
+  .module-claim-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 15px 22px;
+    border: 1px solid var(--detail-accent);
+    border-radius: 16px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .program-register-btn,
+  .module-claim-btn {
+    background: var(--detail-accent);
+    color: var(--white);
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--detail-accent) 18%, transparent);
+  }
+
+  .module-claim-btn {
+    display: inline-flex;
+    min-width: min(100%, 360px);
+    background: var(--product-accent, var(--blue));
+    border-color: var(--product-accent, var(--blue));
+  }
+
+  .program-question-btn {
+    background: var(--white);
+    color: var(--detail-accent-dark);
   }
 
   body.is-taking .hero {
@@ -1329,6 +1777,39 @@
 
     .recommendation-list {
       grid-template-columns: 1fr;
+    }
+
+    .program-modal {
+      padding: 14px;
+    }
+
+    .program-detail-hero,
+    .product-hero,
+    .product-content-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .program-detail-hero,
+    .product-hero,
+    .program-detail-content,
+    .product-content-grid {
+      padding: 24px;
+    }
+
+    .program-detail-visual {
+      display: none;
+    }
+
+    .product-title {
+      padding-right: 42px;
+    }
+
+    .program-modal-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .product-cta-row {
+      padding: 0 24px 28px;
     }
 
     .breakdown {
@@ -1534,60 +2015,60 @@
               <div class="recommendation-section">
                 <div class="recommendation-section-title">Rekomendasi program belajar</div>
                 <div class="recommendation-list">
-                  <a class="recommendation-item" href="/#features">
+                  <button class="recommendation-item" type="button" data-program="basic">
                     <span class="recommendation-media"><img src="/assets/optimized/ok.png" alt="" width="203" height="260" loading="lazy" decoding="async"></span>
                     <span>
                       <strong>Kursus Dasar Bahasa Inggris</strong>
                       <small>Mulai dari grammar dan kosakata dasar dengan tutor online.</small>
                       <span class="recommendation-action">Lihat program</span>
                     </span>
-                  </a>
-                  <a class="recommendation-item" href="https://wa.link/dely2z" target="_blank" rel="noreferrer noopener">
+                  </button>
+                  <button class="recommendation-item" type="button" data-program="speaking">
                     <span class="recommendation-media"><img src="/assets/optimized/laptop.png" alt="" width="208" height="260" loading="lazy" decoding="async"></span>
                     <span>
                       <strong>Private Speaking Practice</strong>
                       <small>Latihan speaking private supaya lebih lancar dan percaya diri.</small>
-                      <span class="recommendation-action">Tanya kelas</span>
+                      <span class="recommendation-action">Lihat program</span>
                     </span>
-                  </a>
-                  <a class="recommendation-item" href="https://wa.link/tlksi2" target="_blank" rel="noreferrer noopener">
+                  </button>
+                  <button class="recommendation-item" type="button" data-program="writing">
                     <span class="recommendation-media"><img src="/assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async"></span>
                     <span>
                       <strong>Private Writing Practice</strong>
                       <small>Perkuat struktur kalimat, writing, dan reading comprehension.</small>
-                      <span class="recommendation-action">Tanya kelas</span>
+                      <span class="recommendation-action">Lihat program</span>
                     </span>
-                  </a>
-                  <a class="recommendation-item" href="https://wa.link/w7q6d0" target="_blank" rel="noreferrer noopener">
+                  </button>
+                  <button class="recommendation-item" type="button" data-program="kids">
                     <span class="recommendation-media"><img src="/assets/optimized/kids.png" alt="" width="208" height="260" loading="lazy" decoding="async"></span>
                     <span>
                       <strong>English Course for Kids</strong>
                       <small>Kelas bahasa Inggris online untuk anak dengan materi yang menyenangkan.</small>
-                      <span class="recommendation-action">Tanya kelas</span>
+                      <span class="recommendation-action">Lihat program</span>
                     </span>
-                  </a>
+                  </button>
                 </div>
               </div>
 
               <div class="recommendation-section">
                 <div class="recommendation-section-title">Rekomendasi produk digital</div>
                 <div class="recommendation-list">
-                  <a class="recommendation-item" href="https://forms.gle/hRqaRN8WFtXt4fS48" target="_blank" rel="noreferrer noopener">
+                  <button class="recommendation-item" type="button" data-product="english-journey">
                     <span class="recommendation-media"><img src="/assets/moduleng.jpg" alt="" width="422" height="596" loading="lazy" decoding="async"></span>
                     <span>
                       <strong>E-Modul 30-Day English Journey</strong>
                       <small>Materi harian ringan untuk belajar bahasa Inggris mandiri selama 30 hari.</small>
                       <span class="recommendation-action">Lihat produk</span>
                     </span>
-                  </a>
-                  <a class="recommendation-item" href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" target="_blank" rel="noreferrer noopener">
+                  </button>
+                  <button class="recommendation-item" type="button" data-product="toefl-package">
                     <span class="recommendation-media"><img src="/assets/toefl.jpeg" alt="" width="1080" height="1080" loading="lazy" decoding="async"></span>
                     <span>
                       <strong>Paket Belajar TOEFL</strong>
                       <small>Video, PPT, strategi, dan latihan untuk persiapan TOEFL ITP.</small>
                       <span class="recommendation-action">Lihat produk</span>
                     </span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1646,6 +2127,22 @@
     </div>
   </div>
 </footer>
+
+<div class="program-modal" id="programModal" role="dialog" aria-modal="true" aria-labelledby="programModalTitle" aria-hidden="true">
+  <div class="program-modal-backdrop" data-close-program></div>
+  <div class="program-modal-panel">
+    <button class="program-modal-close" type="button" aria-label="Tutup detail program" data-close-program>&times;</button>
+    <div class="program-modal-body" id="programModalBody"></div>
+  </div>
+</div>
+
+<div class="program-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle" aria-hidden="true">
+  <div class="program-modal-backdrop" data-close-product></div>
+  <div class="program-modal-panel module-modal-panel">
+    <button class="program-modal-close" type="button" aria-label="Tutup detail produk" data-close-product>&times;</button>
+    <div class="program-modal-body" id="productModalBody"></div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1722,6 +2219,169 @@
   };
 
   const answerReviewPaymentUrl = "https://jeyasclub.myr.id/pl/vocabulary-test-result?iframe=true";
+  const programDetails = {
+    basic: {
+      title: "Kursus Dasar Bahasa Inggris",
+      label: "Grammar Starter",
+      description: "Kursus bahasa Inggris online untuk pemula yang ingin memahami grammar dari dasar dengan pendekatan yang sistematis dan mudah dipahami.",
+      registerUrl: "https://wa.link/1djjlj",
+      image: "/assets/laptop1.png",
+      tags: ["8 Pertemuan Online - Durasi @90 Menit", "Bebas Tentukan Jadwal, 2x Seminggu"],
+      facilities: [
+        "Kelas interaktif dengan tutor melalui Zoom",
+        "Bisa memesan kursus bareng teman",
+        "Jadwal fleksibel, bisa tentukan hari dan jam sendiri",
+        "Dapat rekaman kelas",
+        "Bebas tanya jawab",
+        "Sertifikat kepesertaan kursus"
+      ],
+      tableHead: ["Kapasitas", "Harga"],
+      rows: [
+        ["1 Orang", "Rp600.000"],
+        ["2 Orang", "Rp350.000 / siswa"],
+        ["3 Orang", "Rp300.000 / siswa"],
+        ["4 Orang", "Rp250.000 / siswa"]
+      ]
+    },
+    speaking: {
+      title: "Private Speaking Practice",
+      label: "Confidence Builder",
+      description: "Kursus speaking bahasa Inggris online secara private dengan tutor melalui Zoom untuk meningkatkan percaya diri dan kelancaran bicara.",
+      registerUrl: "https://wa.link/dely2z",
+      image: "/assets/laptop1.png",
+      tags: ["Private Online Course"],
+      facilities: [
+        "Sesi private speaking interaktif dengan tutor melalui Zoom",
+        "Bisa memesan kursus bareng teman",
+        "Jadwal fleksibel, bisa tentukan hari dan jam sendiri",
+        "Topik disediakan, bisa juga pilih sendiri",
+        "Sertifikat kepesertaan kursus dari Jeya's English Club"
+      ],
+      tableHead: ["Pertemuan", "Harga"],
+      rows: [
+        ["2 Pertemuan/Bulan", "Rp180.000"],
+        ["4 Pertemuan/Bulan", "Rp300.000"],
+        ["8 Pertemuan/Bulan", "Rp550.000"]
+      ]
+    },
+    writing: {
+      title: "Private Writing Practice",
+      label: "Writing Lab",
+      description: "Kursus writing bahasa Inggris online dengan sesi private untuk melatih writing, reading comprehension, dan struktur kalimat.",
+      registerUrl: "https://wa.link/tlksi2",
+      image: "/assets/laptop1.png",
+      tags: ["Private Online Course"],
+      facilities: [
+        "Sesi private writing dan reading comprehension dengan tutor melalui Zoom",
+        "Jadwal fleksibel, bisa tentukan hari dan jam sendiri",
+        "Topik dan materi beraneka ragam sesuai minat siswa",
+        "Dapat rekaman kelas",
+        "Sertifikat kepesertaan kursus dari Jeya's Club"
+      ],
+      tableHead: ["Pertemuan", "Harga"],
+      rows: [
+        ["2 Pertemuan/Bulan", "Rp200.000"],
+        ["4 Pertemuan/Bulan", "Rp350.000"],
+        ["8 Pertemuan/Bulan", "Rp650.000"]
+      ]
+    },
+    kids: {
+      title: "English Course for Kids",
+      label: "Kids Learning Club",
+      description: "Kursus bahasa Inggris online untuk anak dengan pendekatan private yang menyenangkan dan disesuaikan dengan kemampuan siswa.",
+      registerUrl: "https://wa.link/w7q6d0",
+      image: "/assets/laptop1.png",
+      tags: ["Private Online Course"],
+      facilities: [
+        "Sesi private dengan tutor melalui Zoom",
+        "Materi belajar dipersonalisasi sesuai kemampuan siswa",
+        "Jadwal fleksibel, bisa tentukan hari dan jam sendiri",
+        "Dapat rekaman kelas",
+        "Bebas tanya jawab",
+        "Sertifikat kepesertaan kursus dari Jeya's English Club"
+      ],
+      tableHead: ["Pertemuan", "Harga"],
+      rows: [
+        ["2 Pertemuan/Bulan", "Rp200.000"],
+        ["4 Pertemuan/Bulan", "Rp375.000"],
+        ["8 Pertemuan/Bulan", "Rp700.000"]
+      ]
+    }
+  };
+  const productDetails = {
+    "english-journey": `
+      <div class="product-detail">
+        <div class="product-hero">
+          <div class="product-cover-stage">
+            <img class="product-cover-img" src="/assets/moduleng.jpg" alt="Sampul modul 30-Day English Journey" width="422" height="596" loading="lazy" decoding="async">
+            <span class="product-badge">Terjual 100+</span>
+          </div>
+          <div class="product-copy">
+            <span class="product-kicker">E-Modul Bahasa Inggris</span>
+            <h3 class="product-title" id="productModalTitle">30-Day English Journey</h3>
+            <p class="product-subtitle">Belajar bahasa Inggris dari dasar secara mandiri dalam 30 hari dengan alur harian yang ringan, rapi, dan mudah diikuti.</p>
+          </div>
+        </div>
+        <div class="product-content-grid">
+          <section class="product-panel">
+            <h4>Yang kamu dapatkan</h4>
+            <ul class="product-list">
+              <li>Materi harian bahasa Inggris dari dasar</li>
+              <li>Latihan soal harian dalam setiap materi</li>
+              <li>Kuis evaluasi materi mingguan</li>
+              <li>Kunci jawaban latihan soal harian</li>
+              <li>Kunci jawaban kuis evaluasi mingguan</li>
+              <li>Tips belajar bahasa Inggris otodidak</li>
+            </ul>
+          </section>
+          <section class="product-panel">
+            <h4>Cocok untuk</h4>
+            <p>Kamu yang ingin mulai belajar bahasa Inggris dari nol dengan panduan mandiri yang tidak membingungkan.</p>
+          </section>
+        </div>
+        <div class="product-cta-row">
+          <a href="https://forms.gle/hRqaRN8WFtXt4fS48" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang</a>
+        </div>
+      </div>
+    `,
+    "toefl-package": `
+      <div class="product-detail">
+        <div class="product-hero">
+          <div class="product-cover-stage">
+            <img class="product-cover-img" src="/assets/toefl.jpeg" alt="Folder Video dan PPT Belajar TOEFL ITP" width="1080" height="1080" loading="lazy" decoding="async">
+            <span class="product-badge">Rp50.000</span>
+          </div>
+          <div class="product-copy">
+            <span class="product-kicker">Paket Belajar TOEFL</span>
+            <h3 class="product-title" id="productModalTitle">Folder Video &amp; PPT Belajar TOEFL ITP</h3>
+            <p class="product-subtitle">Paket belajar TOEFL yang berisi materi, rekaman, dan latihan agar kamu bisa belajar lebih terarah.</p>
+          </div>
+        </div>
+        <div class="product-content-grid">
+          <section class="product-panel">
+            <h4>Isi folder belajar</h4>
+            <ul class="product-list">
+              <li>PPT Materi Belajar TOEFL ITP 8 Pertemuan</li>
+              <li>Video Rekaman Zoom Penjelasan Materi 8 Pertemuan</li>
+              <li>Latihan soal di tiap pertemuan</li>
+              <li>Cara menghitung skor TOEFL</li>
+            </ul>
+          </section>
+          <section class="product-panel">
+            <h4>Cara akses</h4>
+            <ol class="product-list product-steps">
+              <li>Isi form dengan email kamu dan pastikan tidak ada typo</li>
+              <li>Email kamu akan diberi akses link untuk membuka folder</li>
+              <li>Kamu bisa mengakses folder kapan saja dengan email tersebut atau melalui link <a href="https://bit.ly/folderTOEFLjeya2" target="_blank" rel="noreferrer noopener">bit.ly/folderTOEFLjeya2</a></li>
+            </ol>
+          </section>
+        </div>
+        <div class="product-cta-row">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" class="module-claim-btn" target="_blank" rel="noreferrer noopener">Klaim Sekarang</a>
+        </div>
+      </div>
+    `
+  };
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
   const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
@@ -1729,6 +2389,8 @@
   let authMode = "login";
   let latestResult = null;
   let answerReviewUnlocked = false;
+  let lastProgramTrigger = null;
+  let lastProductTrigger = null;
 
   function getSessionBridgePayload() {
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
@@ -1805,6 +2467,10 @@
   const breakdown = document.getElementById("breakdown");
   const answerReview = document.getElementById("answerReview");
   const saveStatus = document.getElementById("saveStatus");
+  const programModal = document.getElementById("programModal");
+  const programModalBody = document.getElementById("programModalBody");
+  const productModal = document.getElementById("productModal");
+  const productModalBody = document.getElementById("productModalBody");
 
   function shuffle(items) {
     return [...items].sort(() => Math.random() - 0.5);
@@ -2502,11 +3168,108 @@
     loadLatestResult();
   }
 
+  function renderProgramDetails(program) {
+    const tags = program.tags.map((tag) => `<span class="program-tag">${tag}</span>`).join("");
+    const facilities = program.facilities.map((item) => `<li>${item}</li>`).join("");
+    const tableHead = program.tableHead.map((item) => `<th>${item}</th>`).join("");
+    const rows = program.rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("");
+
+    return `
+      <div class="program-detail-hero">
+        <div class="program-detail-copy">
+          <span class="program-detail-kicker">${program.label || "Program Belajar"}</span>
+          <div class="program-tags">${tags}</div>
+          <h3 id="programModalTitle">${program.title}</h3>
+          <p>${program.description}</p>
+        </div>
+        <div class="program-detail-visual" aria-hidden="true">
+          <img class="program-modal-img" src="${program.image}" alt="" width="1016" height="879" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="program-detail-content">
+        <section class="program-detail-panel">
+          <h4>Fasilitas</h4>
+          <ul>${facilities}</ul>
+        </section>
+        <section class="program-detail-panel">
+          <h4>Pilihan Paket</h4>
+          <table class="program-table">
+            <thead><tr>${tableHead}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </section>
+      </div>
+      <div class="program-modal-actions">
+        <a class="program-action-btn program-question-btn" href="${program.registerUrl}" target="_blank" rel="noreferrer noopener">Tanya-tanya dulu</a>
+        <a class="program-action-btn program-register-btn" href="${program.registerUrl}" target="_blank" rel="noreferrer noopener">Daftar Program</a>
+      </div>
+    `;
+  }
+
+  function openProgramModal(programKey, trigger) {
+    const program = programDetails[programKey];
+    if (!program) return;
+
+    lastProgramTrigger = trigger;
+    programModal.dataset.program = programKey;
+    programModalBody.innerHTML = renderProgramDetails(program);
+    programModal.classList.add("open");
+    programModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    programModal.querySelector(".program-modal-close").focus();
+  }
+
+  function closeProgramModal() {
+    programModal.classList.remove("open");
+    programModal.setAttribute("aria-hidden", "true");
+    delete programModal.dataset.program;
+    document.body.style.overflow = "";
+    if (lastProgramTrigger) lastProgramTrigger.focus();
+  }
+
+  function openProductModal(productKey, trigger) {
+    const product = productDetails[productKey];
+    if (!product) return;
+
+    lastProductTrigger = trigger;
+    productModal.dataset.product = productKey;
+    productModalBody.innerHTML = product;
+    productModal.classList.add("open");
+    productModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    productModal.querySelector(".program-modal-close").focus();
+  }
+
+  function closeProductModal(event) {
+    if (event) event.preventDefault();
+    productModal.classList.remove("open");
+    productModal.setAttribute("aria-hidden", "true");
+    delete productModal.dataset.product;
+    document.body.style.overflow = "";
+    if (lastProductTrigger) lastProductTrigger.focus();
+  }
+
   document.querySelectorAll("[data-start]").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.preventDefault();
       startQuiz();
     });
+  });
+
+  document.querySelectorAll("[data-program]").forEach((button) => {
+    button.addEventListener("click", () => openProgramModal(button.dataset.program, button));
+  });
+
+  document.querySelectorAll("[data-product]").forEach((button) => {
+    button.addEventListener("click", () => openProductModal(button.dataset.product, button));
+  });
+
+  document.querySelectorAll("[data-close-program]").forEach((button) => {
+    button.addEventListener("click", closeProgramModal);
+  });
+
+  document.querySelectorAll("[data-close-product]").forEach((button) => {
+    button.addEventListener("click", closeProductModal);
   });
 
   nextButton.addEventListener("click", nextStep);
@@ -2521,6 +3284,11 @@
   topUserMenu.addEventListener("click", (event) => event.stopPropagation());
   topLogoutButton.addEventListener("click", logout);
   document.addEventListener("click", () => topUserChip.classList.remove("open"));
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (programModal.classList.contains("open")) closeProgramModal();
+    if (productModal.classList.contains("open")) closeProductModal(event);
+  });
   setAuthMode("login");
   initAuth();
 </script>
