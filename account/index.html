@@ -490,7 +490,31 @@
     background: var(--white);
   }
 
+  .test-result-card {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(181, 129, 24, 0.26);
+    background:
+      radial-gradient(circle at 92% 10%, rgba(255, 237, 170, 0.8), transparent 30%),
+      linear-gradient(135deg, #fff9e8 0%, #ffffff 46%, #f9efd0 100%);
+    box-shadow: 0 16px 34px rgba(181, 129, 24, 0.12);
+  }
+
+  .test-result-card::after {
+    content: "";
+    position: absolute;
+    right: -34px;
+    bottom: -40px;
+    width: 130px;
+    height: 130px;
+    border: 18px solid rgba(181, 129, 24, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
   .test-result-top {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: space-between;
     gap: 12px;
@@ -515,20 +539,24 @@
   }
 
   .test-result-category {
+    position: relative;
+    z-index: 1;
     min-height: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 6px 10px;
     border-radius: 999px;
-    background: var(--blue-light);
-    color: var(--blue);
+    background: rgba(255, 238, 176, 0.88);
+    color: #8a5d0a;
     font-size: 11px;
     font-weight: 900;
     white-space: nowrap;
   }
 
   .test-result-metrics {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
@@ -538,8 +566,8 @@
     min-height: 58px;
     padding: 9px;
     border-radius: 12px;
-    background: #f8fbff;
-    border: 1px solid rgba(26, 111, 232, 0.1);
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(181, 129, 24, 0.16);
   }
 
   .test-result-metric span {
@@ -561,6 +589,8 @@
 
   .test-result-link,
   .test-results-empty a {
+    position: relative;
+    z-index: 1;
     width: fit-content;
     min-height: 38px;
     display: inline-flex;
@@ -568,7 +598,7 @@
     justify-content: center;
     padding: 9px 12px;
     border-radius: 10px;
-    background: var(--blue);
+    background: linear-gradient(135deg, #b58118, #e3b94c);
     color: var(--white);
     text-decoration: none;
     font-size: 12px;
@@ -577,7 +607,7 @@
 
   .test-result-link:hover,
   .test-results-empty a:hover {
-    background: var(--blue-dark);
+    background: linear-gradient(135deg, #8a5d0a, #c99927);
   }
 
   .test-results-note {
