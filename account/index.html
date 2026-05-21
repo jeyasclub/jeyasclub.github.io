@@ -447,10 +447,8 @@
   .status.bad { color: var(--red); }
 
   .account-actions {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .account-actions .primary-button {
@@ -741,10 +739,6 @@
       gap: 6px;
     }
 
-    .account-actions {
-      grid-template-columns: 1fr;
-    }
-
     .account-actions .primary-button {
       width: 100%;
     }
@@ -863,7 +857,6 @@
             </div>
 
             <div class="account-actions">
-              <a class="primary-button" id="continueButton" href="/vocabulary-test/#quiz">Lanjutkan</a>
               <button class="primary-button secondary" type="button" id="logoutButton">Logout</button>
             </div>
 
@@ -954,7 +947,6 @@
   const profileSummaryName = document.getElementById("profileSummaryName");
   const profileSummaryEmail = document.getElementById("profileSummaryEmail");
   const profileSummaryCreatedAt = document.getElementById("profileSummaryCreatedAt");
-  const continueButton = document.getElementById("continueButton");
   const logoutButton = document.getElementById("logoutButton");
   const testResultsList = document.getElementById("testResultsList");
 
@@ -1157,7 +1149,6 @@
 
     authControls.classList.toggle("hidden", isLoggedIn);
     accountSession.classList.toggle("hidden", !isLoggedIn);
-    continueButton.href = buildRedirectUrl();
 
     if (isLoggedIn) {
       cardTitle.textContent = "Akun Aktif";
