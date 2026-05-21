@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login | Jeya's Club</title>
-<meta name="description" content="Login atau sign up akun Jeya's Club untuk mengikuti quiz dan tes bahasa Inggris.">
+<meta name="description" content="Login atau daftar akun Jeya's Club untuk mengikuti quiz dan tes bahasa Inggris.">
 <link rel="canonical" href="https://www.jeyasclub.com/account/">
 <meta property="og:title" content="Akun Jeya's Club">
 <meta property="og:description" content="Satu akun Jeya's Club untuk mengikuti quiz dan tes bahasa Inggris.">
@@ -824,11 +824,11 @@
         </div>
 
         <section class="account-card" aria-live="polite">
-          <h2 id="cardTitle">Login atau Sign Up</h2>
+          <h2 id="cardTitle">Login atau Daftar</h2>
           <div id="authControls">
             <div class="auth-tabs">
               <button class="auth-tab active" type="button" data-auth-mode="login">Login</button>
-              <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
+              <button class="auth-tab" type="button" data-auth-mode="signup">Daftar</button>
             </div>
             <form class="auth-form" id="authForm">
               <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama" disabled>
@@ -1010,7 +1010,7 @@
     nameInput.disabled = mode !== "signup";
     nameInput.required = mode === "signup";
     emailInput.placeholder = mode === "signup" ? "Email aktif untuk konfirmasi" : "Email";
-    authSubmitButton.textContent = mode === "signup" ? "Buat Akun" : "Login";
+    authSubmitButton.textContent = mode === "signup" ? "Daftar" : "Login";
     passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
     authMessage.className = "status";
     authMessage.textContent = mode === "signup"
@@ -1141,7 +1141,7 @@
     }
 
     if (lowerMessage.includes("redirect")) {
-      return "Sign up gagal karena URL konfirmasi belum diizinkan di Supabase Auth.";
+      return "Daftar gagal karena URL konfirmasi belum diizinkan di Supabase Auth.";
     }
 
     if (lowerMessage.includes("password")) {
@@ -1149,7 +1149,7 @@
     }
 
     return mode === "signup"
-      ? `Sign up gagal: ${message || "email mungkin sudah dipakai atau format email belum valid."}`
+      ? `Daftar gagal: ${message || "email mungkin sudah dipakai atau format email belum valid."}`
       : `Login gagal: ${message || "cek email dan password kamu."}`;
   }
 
@@ -1171,7 +1171,7 @@
       return;
     }
 
-    cardTitle.textContent = "Login atau Sign Up";
+    cardTitle.textContent = "Login atau Daftar";
     memberSince.textContent = "-";
     authMessage.className = "status";
     authMessage.textContent = "Login atau buat akun Jeya's Club untuk mulai.";
@@ -1211,7 +1211,7 @@
 
     authSubmitButton.disabled = true;
     authMessage.className = "status";
-    authMessage.textContent = authMode === "signup" ? "Membuat akun..." : "Login...";
+    authMessage.textContent = authMode === "signup" ? "Mendaftarkan akun..." : "Login...";
 
     const request = authMode === "signup"
       ? supabaseClient.auth.signUp({

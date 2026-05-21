@@ -1949,7 +1949,7 @@
               <div id="authControls">
                 <div class="auth-tabs">
                   <button class="auth-tab active" type="button" data-auth-mode="login">Login</button>
-                  <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
+                  <button class="auth-tab" type="button" data-auth-mode="signup">Daftar</button>
                 </div>
                 <form class="auth-form" id="authForm">
                   <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama" disabled>
@@ -2491,7 +2491,7 @@
     nameInput.disabled = mode !== "signup";
     nameInput.required = mode === "signup";
     emailInput.placeholder = mode === "signup" ? "Email aktif untuk konfirmasi" : "Email";
-    authSubmitButton.textContent = mode === "signup" ? "Buat Akun" : "Login";
+    authSubmitButton.textContent = mode === "signup" ? "Daftar" : "Login";
     passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
     authMessage.className = "save-status";
     authMessage.textContent = mode === "signup"
@@ -2529,7 +2529,7 @@
     }
 
     if (lowerMessage.includes("redirect")) {
-      return "Sign up gagal karena URL konfirmasi belum diizinkan di Supabase Auth.";
+      return "Daftar gagal karena URL konfirmasi belum diizinkan di Supabase Auth.";
     }
 
     if (lowerMessage.includes("password")) {
@@ -2537,7 +2537,7 @@
     }
 
     return mode === "signup"
-      ? `Sign up gagal: ${message || "email mungkin sudah dipakai atau format email belum valid."}`
+      ? `Daftar gagal: ${message || "email mungkin sudah dipakai atau format email belum valid."}`
       : `Login gagal: ${message || "cek email dan password kamu."}`;
   }
 
@@ -2623,7 +2623,7 @@
 
     authSubmitButton.disabled = true;
     authMessage.className = "save-status";
-    authMessage.textContent = authMode === "signup" ? "Membuat akun..." : "Login...";
+    authMessage.textContent = authMode === "signup" ? "Mendaftarkan akun..." : "Login...";
 
     const authRequest = authMode === "signup"
       ? supabaseClient.auth.signUp({
