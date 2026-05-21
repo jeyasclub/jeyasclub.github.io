@@ -510,6 +510,7 @@
 
   .features-bg,
   .english-test,
+  .course-reasons,
   .trending-program,
   .learning-preview,
   .digital-products,
@@ -540,6 +541,56 @@
 
   .english-test {
     background: var(--white);
+  }
+
+  .course-reasons {
+    background:
+      linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  }
+
+  .reason-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .reason-card {
+    min-height: 190px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    border: 1.5px solid rgba(26, 111, 232, 0.12);
+    border-radius: 20px;
+    background: var(--white);
+    box-shadow: 0 16px 34px rgba(26, 111, 232, 0.07);
+  }
+
+  .reason-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    font-size: 24px;
+  }
+
+  .reason-icon.blue { background: #eef4ff; }
+  .reason-icon.green { background: #edfaf3; }
+  .reason-icon.purple { background: #f3eeff; }
+  .reason-icon.gold { background: #fff8e6; }
+
+  .reason-card h3 {
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .reason-card p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    line-height: 1.7;
   }
 
   .test-grid {
@@ -2882,6 +2933,32 @@
     .features-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
     .feature-img { width: 80px; height: 80px; font-size: 34px; }
 
+    .reason-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .reason-card {
+      min-height: 170px;
+      padding: 18px;
+      border-radius: 16px;
+    }
+
+    .reason-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      font-size: 21px;
+    }
+
+    .reason-card h3 {
+      font-size: 15px;
+    }
+
+    .reason-card p {
+      font-size: 12.5px;
+    }
+
     .test-card {
       grid-template-columns: 1fr;
       padding: 22px;
@@ -2930,6 +3007,8 @@
     .hero-title { font-size: 32px; }
     .features-grid { grid-template-columns: 1fr 1fr; }
     .feature-card { padding: 20px 14px 18px; }
+    .reason-grid { grid-template-columns: 1fr; }
+    .reason-card { min-height: auto; }
     .stats {
       grid-template-columns: 1fr;
       margin-left: 12px;
@@ -3078,6 +3157,40 @@
         <div class="test-card-visual" aria-hidden="true">
           <img src="assets/optimized/king-test.png" alt="" width="360" height="360" loading="lazy" decoding="async">
         </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- COURSE REASONS -->
+<section class="course-reasons" id="kenapa-kursus">
+  <div class="container">
+    <h2 class="section-title"><span class="snow-icon"></span> Kenapa Kursus di Jeya's Club? <span class="snow-icon"></span></h2>
+    <p class="section-sub">Belajar bahasa Inggris online yang tetap nyaman, fleksibel, dan ditemani tutor yang bikin prosesnya lebih hidup.</p>
+
+    <div class="reason-grid">
+      <article class="reason-card">
+        <div class="reason-icon blue" aria-hidden="true">🗓️</div>
+        <h3>Jadwal fleksibel</h3>
+        <p>Atur waktu belajar yang lebih sesuai dengan rutinitasmu.</p>
+      </article>
+
+      <article class="reason-card">
+        <div class="reason-icon green" aria-hidden="true">✨</div>
+        <h3>Tutor seru dan ga kaku</h3>
+        <p>Belajar bareng tutor yang ramah, suportif, dan enak diajak diskusi.</p>
+      </article>
+
+      <article class="reason-card">
+        <div class="reason-icon purple" aria-hidden="true">💻</div>
+        <h3>Online bisa dari mana aja</h3>
+        <p>Ikut kelas dari rumah, kos, kampus, atau tempat nyaman lainnya.</p>
+      </article>
+
+      <article class="reason-card">
+        <div class="reason-icon gold" aria-hidden="true">🏆</div>
+        <h3>Trusted!</h3>
+        <p>Dipercaya komunitas pelajar bahasa dengan pengalaman kelas yang terus berkembang.</p>
       </article>
     </div>
   </div>
