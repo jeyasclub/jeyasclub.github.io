@@ -1027,8 +1027,8 @@
                   <strong id="memberSince">-</strong>
                 </div>
                 <div class="member-card-field">
-                  <span>Status</span>
-                  <strong>Active Member</strong>
+                  <span>Badges Earned</span>
+                  <strong id="badgesEarnedCount">0</strong>
                 </div>
               </div>
             </div>
@@ -1179,6 +1179,7 @@
   const profileName = document.getElementById("profileName");
   const profileEmail = document.getElementById("profileEmail");
   const memberSince = document.getElementById("memberSince");
+  const badgesEarnedCount = document.getElementById("badgesEarnedCount");
   const logoutButton = document.getElementById("logoutButton");
   const testResultsList = document.getElementById("testResultsList");
   const hangoutMissionCard = document.getElementById("hangoutMissionCard");
@@ -1194,6 +1195,7 @@
   const vocaquizScore300MissionStatus = document.getElementById("vocaquizScore300MissionStatus");
   const vocaquizScore300MissionButton = document.getElementById("vocaquizScore300MissionButton");
   const HANGOUT_COURSE_KEY = "english-hangout-club";
+  const BADGE_TOTAL = 4;
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
@@ -1333,6 +1335,11 @@
     `).join("");
   }
 
+  function updateBadgesEarnedCount() {
+    const earned = document.querySelectorAll(".mission-card.is-complete").length;
+    badgesEarnedCount.textContent = `${earned}/${BADGE_TOTAL}`;
+  }
+
   async function loadTestResults() {
     if (!supabaseClient || !currentSession || !currentSession.user) {
       renderEmptyTestResults("Login dulu supaya hasil tes bisa ditampilkan.");
@@ -1367,6 +1374,7 @@
     hangoutMissionButton.setAttribute("aria-label", isComplete
       ? "English Hangout Club sudah aktif"
       : "Join English Hangout Club");
+    updateBadgesEarnedCount();
   }
 
   async function loadHangoutMission() {
@@ -1395,6 +1403,7 @@
     vocaquizUnlockMissionButton.setAttribute("aria-label", isComplete
       ? "Rincian hasil Vocabulary Test sudah aktif"
       : "Unlock rincian hasil Vocabulary Test");
+    updateBadgesEarnedCount();
   }
 
   async function loadVocaquizUnlockMission() {
@@ -1424,6 +1433,7 @@
     buttonEl.setAttribute("aria-label", isComplete
       ? `Mission skor minimal ${threshold} Vocabulary Test sudah tercapai`
       : `Ambil Vocabulary Test untuk mencapai skor minimal ${threshold}`);
+    updateBadgesEarnedCount();
   }
 
   function renderVocaquizScoreMissions(bestScore = null) {
@@ -1523,6 +1533,7 @@
     renderHangoutMission(false);
     renderVocaquizUnlockMission(false);
     renderVocaquizScoreMissions(null);
+    updateBadgesEarnedCount();
     testResultsList.innerHTML = "";
   }
 
