@@ -1952,7 +1952,7 @@
                   <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
                 </div>
                 <form class="auth-form" id="authForm">
-                  <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama untuk member card" disabled>
+                  <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama" disabled>
                   <input id="emailInput" name="email" type="email" autocomplete="email" placeholder="Email" required>
                   <input id="passwordInput" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="6" required>
                   <button class="quiz-button" type="submit" id="authSubmitButton">Login</button>
@@ -2617,7 +2617,7 @@
 
     if (authMode === "signup" && displayName.length < 2) {
       authMessage.className = "save-status bad";
-      authMessage.textContent = "Masukkan nama untuk member card kamu.";
+      authMessage.textContent = "Masukkan nama kamu.";
       return;
     }
 

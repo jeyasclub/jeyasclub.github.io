@@ -354,19 +354,8 @@
   }
 
   .member-card-profile {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .member-card-profile img {
-    width: 74px;
-    height: 74px;
-    border-radius: 22px;
-    object-fit: cover;
-    border: 3px solid rgba(255,255,255,0.78);
-    background: var(--white);
-    box-shadow: 0 12px 22px rgba(15,23,42,0.2);
+    display: grid;
+    gap: 6px;
   }
 
   .member-card-profile strong {
@@ -603,16 +592,6 @@
       align-items: center;
     }
 
-    .member-card-profile {
-      align-items: flex-start;
-    }
-
-    .member-card-profile img {
-      width: 62px;
-      height: 62px;
-      border-radius: 18px;
-    }
-
     .member-card-profile strong {
       font-size: 18px;
     }
@@ -658,7 +637,7 @@
               <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
             </div>
             <form class="auth-form" id="authForm">
-              <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama untuk member card" disabled>
+              <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama" disabled>
               <input id="emailInput" name="email" type="email" autocomplete="email" placeholder="Email" required>
               <input id="passwordInput" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="6" required>
               <button class="primary-button" type="submit" id="authSubmitButton">Login</button>
@@ -676,7 +655,6 @@
               </div>
 
               <div class="member-card-profile">
-                <img id="profileAvatar" src="/assets/blank.png" alt="">
                 <div>
                   <strong id="profileName">Akun Jeya's Club</strong>
                   <span id="profileEmail">Siap digunakan.</span>
@@ -781,7 +759,6 @@
   const authSubmitButton = document.getElementById("authSubmitButton");
   const authMessage = document.getElementById("authMessage");
   const cardTitle = document.getElementById("cardTitle");
-  const profileAvatar = document.getElementById("profileAvatar");
   const profileName = document.getElementById("profileName");
   const profileEmail = document.getElementById("profileEmail");
   const memberSince = document.getElementById("memberSince");
@@ -913,8 +890,6 @@
 
     if (isLoggedIn) {
       cardTitle.textContent = "Akun Aktif";
-      profileAvatar.src = profile.avatar;
-      profileAvatar.alt = profile.name;
       profileName.textContent = profile.name;
       profileEmail.textContent = profile.email;
       memberSince.textContent = formatMemberDate(profile.createdAt);
@@ -927,8 +902,6 @@
     }
 
     cardTitle.textContent = "Login atau Sign Up";
-    profileAvatar.src = "/assets/blank.png";
-    profileAvatar.alt = "";
     memberSince.textContent = "-";
     profileSummaryName.textContent = "-";
     profileSummaryEmail.textContent = "-";
@@ -964,7 +937,7 @@
 
     if (authMode === "signup" && displayName.length < 2) {
       authMessage.className = "status bad";
-      authMessage.textContent = "Masukkan nama untuk member card kamu.";
+      authMessage.textContent = "Masukkan nama kamu.";
       return;
     }
 
