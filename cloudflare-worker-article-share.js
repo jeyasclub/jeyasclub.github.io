@@ -5,6 +5,8 @@ const DEFAULT_IMAGE = `${SITE_URL}/assets/cover.png`;
 const OG_IMAGE_WIDTH = 768;
 const OG_IMAGE_HEIGHT = 402;
 const VOCAQUIZ_PRODUCT_SLUG = 'vocabulary-test-result';
+const ENGLISH_HANGOUT_PRODUCT_SLUG = 'english-hangout-club-by-jeyas-club-may-2026-di9e';
+const ENGLISH_HANGOUT_COURSE_KEY = 'english-hangout-club';
 
 export default {
   async fetch(request, env) {
@@ -104,7 +106,10 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unpaid_status', status });
   }
 
-  if (!isVocaquizPayment({ productName, productUrl, productId }, env)) {
+  const isVocaquiz = isVocaquizPayment({ productName, productUrl, productId }, env);
+  const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
+
+  if (!isVocaquiz && !isEnglishHangout) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -117,18 +122,30 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     return jsonResponse({ ok: false, error: 'missing_supabase_service_role_key' }, 500);
   }
 
-  const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/grant_vocaquiz_review_access_by_email`, {
+  const rpcName = isEnglishHangout
+    ? 'grant_jeyasclub_course_access_by_email'
+    : 'grant_vocaquiz_review_access_by_email';
+  const rpcBody = isEnglishHangout
+    ? {
+        p_email: customerEmail,
+        p_course_key: ENGLISH_HANGOUT_COURSE_KEY,
+        p_transaction_id: transactionId || null,
+        p_source: 'mayar',
+      }
+    : {
+        p_email: customerEmail,
+        p_transaction_id: transactionId || null,
+        p_source: 'mayar',
+      };
+
+  const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${rpcName}`, {
     method: 'POST',
     headers: {
       apikey: serviceRoleKey,
       Authorization: `Bearer ${serviceRoleKey}`,
       'content-type': 'application/json',
     },
-    body: JSON.stringify({
-      p_email: customerEmail,
-      p_transaction_id: transactionId || null,
-      p_source: 'mayar',
-    }),
+    body: JSON.stringify(rpcBody),
   });
 
   const rpcText = await rpcResponse.text();
@@ -150,6 +167,7 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
+    product: isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : 'vocaquiz-review',
     result: rpcData,
   });
 }
@@ -161,6 +179,15 @@ function isVocaquizPayment({ productName, productUrl, productId }, env = {}) {
   const haystack = `${productName} ${productUrl}`.toLowerCase();
   return haystack.includes(VOCAQUIZ_PRODUCT_SLUG)
     || (haystack.includes('vocabulary') && haystack.includes('test') && haystack.includes('result'));
+}
+
+function isEnglishHangoutPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_ENGLISH_HANGOUT_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(ENGLISH_HANGOUT_PRODUCT_SLUG)
+    || (haystack.includes('english') && haystack.includes('hangout') && haystack.includes('club'));
 }
 
 function jsonResponse(body, status = 200) {
