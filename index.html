@@ -2944,15 +2944,28 @@
     .test-card {
       grid-template-columns: 1fr;
       padding: 22px;
+      text-align: center;
     }
 
     .test-card-visual {
       order: -1;
-      justify-content: flex-start;
+      justify-content: center;
     }
 
     .test-card-visual img {
       width: 140px;
+    }
+
+    .test-card-content {
+      justify-items: center;
+    }
+
+    .test-card p {
+      margin: 0 auto;
+    }
+
+    .test-card-meta {
+      justify-content: center;
     }
 
     .communities-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -3125,12 +3138,7 @@
         <div class="test-card-content">
           <span class="test-card-label">Available Test</span>
           <h3>Vocabulary Test by Jeya's Club</h3>
-          <p>Jawab 50 pertanyaan singkat untuk membaca peta kosakata bahasa Inggrismu, dari level dasar sampai advanced.</p>
-          <div class="test-card-meta">
-            <span>50 soal</span>
-            <span>Skor 0-340</span>
-            <span>Hasil tersimpan</span>
-          </div>
+          <p>Jawab pertanyaan singkat untuk menguji kosakata bahasa Inggrismu.</p>
           <a class="test-card-action" href="/vocabulary-test/" data-vocaquiz-link>Mulai Vocabulary Test</a>
         </div>
         <div class="test-card-visual" aria-hidden="true">
