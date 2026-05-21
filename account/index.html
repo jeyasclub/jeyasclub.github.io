@@ -445,6 +445,57 @@
     min-height: 46px;
   }
 
+  @media (min-width: 821px) {
+    .account-grid:has(#accountSession:not(.hidden)) {
+      align-items: start;
+      padding-top: 8px;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) {
+      grid-column: 1 / -1;
+      max-width: none;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .account-session {
+      grid-template-columns: minmax(320px, 0.95fr) minmax(0, 1.05fr);
+      align-items: start;
+      gap: 18px;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .member-card {
+      grid-column: 1;
+      grid-row: 1;
+      min-height: 280px;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .account-actions {
+      grid-column: 1;
+      grid-row: 2;
+      justify-content: stretch;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .account-actions .primary-button {
+      width: 100%;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .mission-section {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .test-results-section {
+      grid-column: 1 / -1;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .mission-card {
+      min-height: 86px;
+    }
+
+    .account-card:has(#accountSession:not(.hidden)) .test-results-list {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+  }
+
   .mission-section {
     display: grid;
     gap: 14px;
