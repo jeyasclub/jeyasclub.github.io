@@ -167,6 +167,8 @@
   }
 
   .menu-button {
+    display: block;
+    width: 100%;
     min-height: 40px;
     border: none;
     border-radius: 10px;
@@ -175,6 +177,7 @@
     cursor: pointer;
     padding: 9px 10px;
     text-align: left;
+    text-decoration: none;
     font-weight: 700;
   }
 
@@ -1903,6 +1906,7 @@
           <img id="topUserAvatar" src="/assets/blank.png" alt="">
           <span id="topUserName">User</span>
           <span class="user-menu" id="topUserMenu">
+            <a class="menu-button" href="/account/">Profile</a>
             <button class="menu-button" type="button" id="topLogoutButton">Logout</button>
           </span>
         </span>
@@ -1948,6 +1952,7 @@
                   <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
                 </div>
                 <form class="auth-form" id="authForm">
+                  <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama untuk member card" disabled>
                   <input id="emailInput" name="email" type="email" autocomplete="email" placeholder="Email" required>
                   <input id="passwordInput" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="6" required>
                   <button class="quiz-button" type="submit" id="authSubmitButton">Login</button>
@@ -2445,6 +2450,7 @@
   const authControls = document.getElementById("authControls");
   const authForm = document.getElementById("authForm");
   const authTabs = document.querySelectorAll("[data-auth-mode]");
+  const nameInput = document.getElementById("nameInput");
   const emailInput = document.getElementById("emailInput");
   const passwordInput = document.getElementById("passwordInput");
   const authSubmitButton = document.getElementById("authSubmitButton");
@@ -2481,6 +2487,9 @@
     authTabs.forEach((tab) => {
       tab.classList.toggle("active", tab.dataset.authMode === mode);
     });
+    nameInput.classList.toggle("hidden", mode !== "signup");
+    nameInput.disabled = mode !== "signup";
+    nameInput.required = mode === "signup";
     emailInput.placeholder = mode === "signup" ? "Email aktif untuk konfirmasi" : "Email";
     authSubmitButton.textContent = mode === "signup" ? "Buat Akun" : "Login";
     passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
@@ -2592,6 +2601,7 @@
 
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
+    const displayName = nameInput.value.trim();
 
     if (!email.includes("@")) {
       authMessage.className = "save-status bad";
@@ -2605,6 +2615,12 @@
       return;
     }
 
+    if (authMode === "signup" && displayName.length < 2) {
+      authMessage.className = "save-status bad";
+      authMessage.textContent = "Masukkan nama untuk member card kamu.";
+      return;
+    }
+
     authSubmitButton.disabled = true;
     authMessage.className = "save-status";
     authMessage.textContent = authMode === "signup" ? "Membuat akun..." : "Login...";
@@ -2614,7 +2630,11 @@
           email,
           password,
           options: {
-            data: { username: email.split("@")[0] },
+            data: {
+              username: displayName || email.split("@")[0],
+              full_name: displayName || email.split("@")[0],
+              name: displayName || email.split("@")[0]
+            },
             emailRedirectTo: `${window.location.origin}${window.location.pathname}`
           }
         })

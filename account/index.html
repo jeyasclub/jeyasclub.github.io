@@ -269,33 +269,176 @@
 
   .account-session {
     display: grid;
+    gap: 16px;
+  }
+
+  .member-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 248px;
+    display: grid;
+    align-content: space-between;
+    gap: 22px;
+    padding: 22px;
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 88% 18%, rgba(255, 229, 138, 0.72), transparent 28%),
+      linear-gradient(135deg, #1A6FE8 0%, #1558c0 54%, #102a43 100%);
+    color: var(--white);
+    box-shadow: 0 18px 42px rgba(26, 111, 232, 0.24);
+  }
+
+  .member-card::before {
+    content: "";
+    position: absolute;
+    right: -42px;
+    bottom: -52px;
+    width: 180px;
+    height: 180px;
+    border: 26px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+  }
+
+  .member-card::after {
+    content: "";
+    position: absolute;
+    right: 28px;
+    top: 28px;
+    width: 86px;
+    height: 86px;
+    border: 2px solid rgba(255,255,255,0.16);
+    border-radius: 24px;
+    transform: rotate(12deg);
+  }
+
+  .member-card-top,
+  .member-card-profile,
+  .member-card-meta {
+    position: relative;
+    z-index: 1;
+  }
+
+  .member-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .member-card-brand {
+    display: grid;
+    gap: 5px;
+  }
+
+  .member-card-brand span {
+    color: rgba(255,255,255,0.72);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .member-card-brand strong {
+    color: var(--white);
+    font-size: 17px;
+    line-height: 1.2;
+  }
+
+  .member-card-logo {
+    width: 66px;
+    height: 46px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.92);
+    padding: 5px;
+  }
+
+  .member-card-profile {
+    display: flex;
+    align-items: center;
     gap: 14px;
   }
 
-  .profile-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .member-card-profile img {
+    width: 74px;
+    height: 74px;
+    border-radius: 22px;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.78);
+    background: var(--white);
+    box-shadow: 0 12px 22px rgba(15,23,42,0.2);
+  }
+
+  .member-card-profile strong {
+    display: block;
+    color: var(--white);
+    font-size: 22px;
+    line-height: 1.18;
+  }
+
+  .member-card-profile span {
+    display: block;
+    margin-top: 5px;
+    color: rgba(255,255,255,0.76);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .member-card-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .member-card-field {
+    min-height: 58px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.16);
+    backdrop-filter: blur(8px);
+  }
+
+  .member-card-field span {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .member-card-field strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--white);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .profile-summary {
+    display: grid;
+    gap: 8px;
     padding: 14px;
     border-radius: 18px;
     background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     border: 1px solid var(--border);
   }
 
-  .profile-row img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--blue-light);
+  .profile-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
   }
 
-  .profile-row strong {
-    display: block;
-    font-size: 15px;
+  .profile-summary-row strong {
+    color: var(--text);
+    text-align: right;
   }
 
-  .profile-row span,
   .status {
     color: var(--text-muted);
     font-size: 12px;
@@ -452,6 +595,32 @@
       padding: 18px;
     }
 
+    .member-card {
+      padding: 18px;
+    }
+
+    .member-card-top {
+      align-items: center;
+    }
+
+    .member-card-profile {
+      align-items: flex-start;
+    }
+
+    .member-card-profile img {
+      width: 62px;
+      height: 62px;
+      border-radius: 18px;
+    }
+
+    .member-card-profile strong {
+      font-size: 18px;
+    }
+
+    .member-card-meta {
+      grid-template-columns: 1fr;
+    }
+
     .footer-top {
       grid-template-columns: 1fr;
       gap: 24px;
@@ -489,6 +658,7 @@
               <button class="auth-tab" type="button" data-auth-mode="signup">Sign Up</button>
             </div>
             <form class="auth-form" id="authForm">
+              <input class="hidden" id="nameInput" name="name" type="text" autocomplete="name" placeholder="Nama untuk member card" disabled>
               <input id="emailInput" name="email" type="email" autocomplete="email" placeholder="Email" required>
               <input id="passwordInput" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="6" required>
               <button class="primary-button" type="submit" id="authSubmitButton">Login</button>
@@ -496,13 +666,50 @@
           </div>
 
           <div class="account-session hidden" id="accountSession">
-            <div class="profile-row">
-              <img id="profileAvatar" src="/assets/blank.png" alt="">
-              <div>
-                <strong id="profileName">Akun Jeya's Club</strong>
-                <span id="profileEmail">Siap digunakan.</span>
+            <div class="member-card" aria-label="Jeya's Club Member Card">
+              <div class="member-card-top">
+                <div class="member-card-brand">
+                  <span>Member Card</span>
+                  <strong>Jeya's Club</strong>
+                </div>
+                <img class="member-card-logo" src="/assets/logo.jpg" alt="">
+              </div>
+
+              <div class="member-card-profile">
+                <img id="profileAvatar" src="/assets/blank.png" alt="">
+                <div>
+                  <strong id="profileName">Akun Jeya's Club</strong>
+                  <span id="profileEmail">Siap digunakan.</span>
+                </div>
+              </div>
+
+              <div class="member-card-meta">
+                <div class="member-card-field">
+                  <span>Member Since</span>
+                  <strong id="memberSince">-</strong>
+                </div>
+                <div class="member-card-field">
+                  <span>Status</span>
+                  <strong>Active Member</strong>
+                </div>
               </div>
             </div>
+
+            <div class="profile-summary">
+              <div class="profile-summary-row">
+                <span>Nama</span>
+                <strong id="profileSummaryName">-</strong>
+              </div>
+              <div class="profile-summary-row">
+                <span>Email</span>
+                <strong id="profileSummaryEmail">-</strong>
+              </div>
+              <div class="profile-summary-row">
+                <span>Tanggal daftar</span>
+                <strong id="profileSummaryCreatedAt">-</strong>
+              </div>
+            </div>
+
             <div class="account-actions">
               <a class="primary-button" id="continueButton" href="/vocabulary-test/#quiz">Lanjutkan</a>
               <button class="primary-button secondary" type="button" id="logoutButton">Logout</button>
@@ -568,6 +775,7 @@
   const accountSession = document.getElementById("accountSession");
   const authForm = document.getElementById("authForm");
   const authTabs = document.querySelectorAll("[data-auth-mode]");
+  const nameInput = document.getElementById("nameInput");
   const emailInput = document.getElementById("emailInput");
   const passwordInput = document.getElementById("passwordInput");
   const authSubmitButton = document.getElementById("authSubmitButton");
@@ -576,6 +784,10 @@
   const profileAvatar = document.getElementById("profileAvatar");
   const profileName = document.getElementById("profileName");
   const profileEmail = document.getElementById("profileEmail");
+  const memberSince = document.getElementById("memberSince");
+  const profileSummaryName = document.getElementById("profileSummaryName");
+  const profileSummaryEmail = document.getElementById("profileSummaryEmail");
+  const profileSummaryCreatedAt = document.getElementById("profileSummaryCreatedAt");
   const continueButton = document.getElementById("continueButton");
   const logoutButton = document.getElementById("logoutButton");
 
@@ -626,6 +838,9 @@
     authTabs.forEach((tab) => {
       tab.classList.toggle("active", tab.dataset.authMode === mode);
     });
+    nameInput.classList.toggle("hidden", mode !== "signup");
+    nameInput.disabled = mode !== "signup";
+    nameInput.required = mode === "signup";
     emailInput.placeholder = mode === "signup" ? "Email aktif untuk konfirmasi" : "Email";
     authSubmitButton.textContent = mode === "signup" ? "Buat Akun" : "Login";
     passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
@@ -642,8 +857,21 @@
     return {
       email: user ? user.email : "",
       name: metadata.username || metadata.full_name || metadata.name || emailName || "User",
-      avatar: metadata.avatar_url || metadata.picture || "/assets/blank.png"
+      avatar: metadata.avatar_url || metadata.picture || "/assets/blank.png",
+      createdAt: user ? user.created_at : ""
     };
+  }
+
+  function formatMemberDate(value) {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+
+    return date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
   }
 
   function getAuthErrorMessage(error, mode) {
@@ -689,6 +917,10 @@
       profileAvatar.alt = profile.name;
       profileName.textContent = profile.name;
       profileEmail.textContent = profile.email;
+      memberSince.textContent = formatMemberDate(profile.createdAt);
+      profileSummaryName.textContent = profile.name;
+      profileSummaryEmail.textContent = profile.email;
+      profileSummaryCreatedAt.textContent = formatMemberDate(profile.createdAt);
       authMessage.className = "status good";
       authMessage.textContent = "Akun Jeya's Club siap digunakan.";
       return;
@@ -697,6 +929,10 @@
     cardTitle.textContent = "Login atau Sign Up";
     profileAvatar.src = "/assets/blank.png";
     profileAvatar.alt = "";
+    memberSince.textContent = "-";
+    profileSummaryName.textContent = "-";
+    profileSummaryEmail.textContent = "-";
+    profileSummaryCreatedAt.textContent = "-";
     authMessage.className = "status";
     authMessage.textContent = "Login atau buat akun Jeya's Club untuk mulai.";
   }
@@ -712,6 +948,7 @@
 
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
+    const displayName = nameInput.value.trim();
 
     if (!email.includes("@")) {
       authMessage.className = "status bad";
@@ -725,6 +962,12 @@
       return;
     }
 
+    if (authMode === "signup" && displayName.length < 2) {
+      authMessage.className = "status bad";
+      authMessage.textContent = "Masukkan nama untuk member card kamu.";
+      return;
+    }
+
     authSubmitButton.disabled = true;
     authMessage.className = "status";
     authMessage.textContent = authMode === "signup" ? "Membuat akun..." : "Login...";
@@ -734,7 +977,11 @@
           email,
           password,
           options: {
-            data: { username: email.split("@")[0] },
+            data: {
+              username: displayName || email.split("@")[0],
+              full_name: displayName || email.split("@")[0],
+              name: displayName || email.split("@")[0]
+            },
             emailRedirectTo: `${window.location.origin}${window.location.pathname}`
           }
         })

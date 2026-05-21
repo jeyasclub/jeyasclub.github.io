@@ -182,8 +182,10 @@
 
   .nav-user.open .nav-user-menu { display: block; }
 
+  .nav-profile-link,
   .nav-logout-button,
   .mobile-logout-button {
+    display: block;
     width: 100%;
     border: 0;
     border-radius: 8px;
@@ -195,8 +197,10 @@
     font-weight: 800;
     padding: 10px 12px;
     text-align: left;
+    text-decoration: none;
   }
 
+  .nav-profile-link:hover,
   .nav-logout-button:hover,
   .mobile-logout-button:hover { background: var(--blue-light); }
 
@@ -1109,6 +1113,7 @@
           <span class="nav-user-name" id="navUserName">User</span>
         </button>
         <div class="nav-user-menu">
+        <a class="nav-profile-link" href="/account/">Profile</a>
           <button class="nav-logout-button" type="button" id="navLogoutButton">Logout</button>
         </div>
       </div>
@@ -1132,6 +1137,7 @@
         <img id="mobileUserAvatar" src="/assets/blank.png" alt="">
         <span class="mobile-user-name" id="mobileUserName">User</span>
       </div>
+    <a class="mobile-logout-button" href="/account/">Profile</a>
       <button class="mobile-logout-button" type="button" id="mobileLogoutButton">Logout</button>
     </div>
     <a href="#paid-promote">Paid Promote</a>
