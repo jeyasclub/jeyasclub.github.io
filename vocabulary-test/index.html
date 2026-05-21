@@ -1137,6 +1137,123 @@
     color: var(--text);
   }
 
+  .result-recommendations {
+    display: grid;
+    gap: 18px;
+    padding: 18px;
+    border: 1px solid rgba(26, 111, 232, 0.12);
+    border-radius: 18px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.98), rgba(247,249,252,0.98));
+  }
+
+  .recommendation-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: flex-end;
+  }
+
+  .recommendation-head span {
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .recommendation-head h3 {
+    margin-top: 6px;
+    color: var(--text);
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .recommendation-head p {
+    max-width: 470px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .recommendation-section {
+    display: grid;
+    gap: 10px;
+  }
+
+  .recommendation-section-title {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .recommendation-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .recommendation-item {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--white);
+    text-decoration: none;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .recommendation-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(26, 111, 232, 0.28);
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+  }
+
+  .recommendation-media {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    background: var(--blue-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .recommendation-media img {
+    width: 86%;
+    height: 86%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .recommendation-item strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  .recommendation-item small {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .recommendation-action {
+    margin-top: 8px;
+    display: inline-flex;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
   body.is-taking .hero {
     min-height: calc(100vh - 68px);
     padding: 32px 0;
@@ -1202,6 +1319,15 @@
     }
 
     .result-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .recommendation-head {
+      display: grid;
+      gap: 10px;
+    }
+
+    .recommendation-list {
       grid-template-columns: 1fr;
     }
 
@@ -1395,6 +1521,75 @@
             <div class="result-card answer-review-card">
               <span>Rincian jawaban</span>
               <div class="answer-review" id="answerReview"></div>
+            </div>
+            <div class="result-recommendations">
+              <div class="recommendation-head">
+                <div>
+                  <span>Langkah berikutnya</span>
+                  <h3>Lanjut belajar bareng Jeya's Club</h3>
+                </div>
+                <p>Pakai hasil vocabulary test ini sebagai petunjuk area yang perlu dilatih lagi, lalu pilih program atau materi mandiri yang paling cocok buat target belajarmu.</p>
+              </div>
+
+              <div class="recommendation-section">
+                <div class="recommendation-section-title">Rekomendasi program belajar</div>
+                <div class="recommendation-list">
+                  <a class="recommendation-item" href="/#features">
+                    <span class="recommendation-media"><img src="/assets/optimized/ok.png" alt="" width="203" height="260" loading="lazy" decoding="async"></span>
+                    <span>
+                      <strong>Kursus Dasar Bahasa Inggris</strong>
+                      <small>Mulai dari grammar dan kosakata dasar dengan tutor online.</small>
+                      <span class="recommendation-action">Lihat program</span>
+                    </span>
+                  </a>
+                  <a class="recommendation-item" href="https://wa.link/dely2z" target="_blank" rel="noreferrer noopener">
+                    <span class="recommendation-media"><img src="/assets/optimized/laptop.png" alt="" width="208" height="260" loading="lazy" decoding="async"></span>
+                    <span>
+                      <strong>Private Speaking Practice</strong>
+                      <small>Latihan speaking private supaya lebih lancar dan percaya diri.</small>
+                      <span class="recommendation-action">Tanya kelas</span>
+                    </span>
+                  </a>
+                  <a class="recommendation-item" href="https://wa.link/tlksi2" target="_blank" rel="noreferrer noopener">
+                    <span class="recommendation-media"><img src="/assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async"></span>
+                    <span>
+                      <strong>Private Writing Practice</strong>
+                      <small>Perkuat struktur kalimat, writing, dan reading comprehension.</small>
+                      <span class="recommendation-action">Tanya kelas</span>
+                    </span>
+                  </a>
+                  <a class="recommendation-item" href="https://wa.link/w7q6d0" target="_blank" rel="noreferrer noopener">
+                    <span class="recommendation-media"><img src="/assets/optimized/kids.png" alt="" width="208" height="260" loading="lazy" decoding="async"></span>
+                    <span>
+                      <strong>English Course for Kids</strong>
+                      <small>Kelas bahasa Inggris online untuk anak dengan materi yang menyenangkan.</small>
+                      <span class="recommendation-action">Tanya kelas</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="recommendation-section">
+                <div class="recommendation-section-title">Rekomendasi produk digital</div>
+                <div class="recommendation-list">
+                  <a class="recommendation-item" href="https://forms.gle/hRqaRN8WFtXt4fS48" target="_blank" rel="noreferrer noopener">
+                    <span class="recommendation-media"><img src="/assets/moduleng.jpg" alt="" width="422" height="596" loading="lazy" decoding="async"></span>
+                    <span>
+                      <strong>E-Modul 30-Day English Journey</strong>
+                      <small>Materi harian ringan untuk belajar bahasa Inggris mandiri selama 30 hari.</small>
+                      <span class="recommendation-action">Lihat produk</span>
+                    </span>
+                  </a>
+                  <a class="recommendation-item" href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" target="_blank" rel="noreferrer noopener">
+                    <span class="recommendation-media"><img src="/assets/toefl.jpeg" alt="" width="1080" height="1080" loading="lazy" decoding="async"></span>
+                    <span>
+                      <strong>Paket Belajar TOEFL</strong>
+                      <small>Video, PPT, strategi, dan latihan untuk persiapan TOEFL ITP.</small>
+                      <span class="recommendation-action">Lihat produk</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
             </div>
             <p class="save-status" id="saveStatus"></p>
           </div>
