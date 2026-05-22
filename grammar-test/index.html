@@ -85,47 +85,51 @@
     position:relative;
     overflow:hidden;
     display:grid;
-    gap:12px;
-    padding:34px 30px 32px;
-    border-radius:10px;
-    border:1px solid var(--level-color);
+    grid-template-columns:minmax(0,1fr) minmax(210px,260px);
+    gap:28px;
+    align-items:stretch;
+    min-height:330px;
+    padding:28px;
+    border-radius:24px;
+    border:1px solid var(--level-border);
     background:
-      linear-gradient(#fff,#fff) padding-box,
-      repeating-linear-gradient(135deg,var(--level-color) 0 10px,#fff 10px 18px,var(--level-soft) 18px 28px,#fff 28px 36px) border-box;
-    box-shadow:0 18px 42px rgba(15,23,42,.08);
+      linear-gradient(120deg,rgba(255,255,255,.95) 0%,rgba(245,249,255,.94) 52%,var(--level-soft) 100%),
+      linear-gradient(180deg,#dce8f7 0%,#ffffff 100%);
+    box-shadow:0 18px 42px rgba(26,111,232,.14);
   }
   .score-box::before {
     content:"";
     position:absolute;
-    inset:12px;
-    border:1px solid var(--level-border);
-    border-radius:6px;
+    inset:0;
+    background-image:url('/assets/optimized/bg.jpg');
+    background-size:cover;
+    background-position:center;
+    opacity:.1;
     pointer-events:none;
   }
   .score-box::after {
     content:"";
     position:absolute;
-    right:24px;
-    top:24px;
-    width:54px;
-    height:54px;
-    border:2px solid var(--level-color);
+    right:-72px;
+    top:-72px;
+    width:250px;
+    height:250px;
     border-radius:50%;
-    background:
-      radial-gradient(circle at center,transparent 0 17px,var(--level-soft) 18px 20px,transparent 21px),
-      #fff;
-    opacity:.55;
-    transform:rotate(-10deg);
+    background:color-mix(in srgb,var(--level-color) 14%,transparent);
+    pointer-events:none;
   }
   .score-box.level-needs-work { --level-color:var(--red); --level-soft:#fff0ef; --level-border:rgba(225,91,84,.24); }
   .score-box.level-fair { --level-color:#d99a00; --level-soft:#fff7d7; --level-border:rgba(217,154,0,.26); }
   .score-box.level-good { --level-color:var(--blue); --level-soft:#eef6ff; --level-border:rgba(26,111,232,.22); }
   .score-box.level-excellent { --level-color:var(--green); --level-soft:#edfaf3; --level-border:rgba(22,164,108,.24); }
-  .score-box .pill { background:var(--level-soft); color:var(--level-color); border:1px solid var(--level-border); }
+  .score-identity { display:grid; gap:12px; min-width:0; max-width:100%; align-content:center; position:relative; z-index:1; }
+  .score-art { min-width:0; display:flex; align-items:flex-end; justify-content:center; position:relative; z-index:1; overflow:hidden; border-radius:0; background:transparent; }
+  .score-box .pill { width:fit-content; min-height:32px; display:inline-flex; align-items:center; padding:7px 12px; border-radius:999px; background:#fff; color:var(--level-color); border:1px solid var(--level-border); font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
   .score-box > * { position:relative; z-index:1; }
-  .score-icon { width:min(132px,34vw); height:auto; justify-self:end; align-self:end; filter:drop-shadow(0 12px 18px rgba(15,23,42,.12)); }
-  .score-level { font-size:clamp(38px,6vw,62px); line-height:1; font-weight:900; }
-  .score-num { width:fit-content; padding:8px 14px; border-radius:14px; background:var(--level-color); color:#fff; font-size:30px; font-weight:900; box-shadow:0 10px 22px rgba(15,23,42,.12); }
+  .score-icon { width:min(100%,250px); height:auto; max-height:290px; object-fit:contain; filter:drop-shadow(0 18px 26px rgba(26,111,232,.2)); }
+  .score-level { color:var(--text); max-width:100%; font-size:clamp(50px,6.8vw,78px); line-height:.96; font-weight:900; overflow-wrap:break-word; }
+  .score-num { width:fit-content; min-height:46px; display:inline-flex; align-items:center; padding:8px 14px; border-radius:14px; background:var(--level-color); color:#fff; font-size:clamp(24px,4vw,38px); line-height:1; font-weight:800; box-shadow:0 12px 24px rgba(26,111,232,.18); }
+  .score-box .tiny { max-width:520px; color:var(--muted); font-size:15px; line-height:1.75; }
   .metrics, .breakdown { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
   .metric, .locked, .paid-detail, .rec-card { padding:16px; border:1px solid var(--border); border-radius:16px; background:#fff; }
   .metric span, .locked span, .paid-detail span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
@@ -171,8 +175,7 @@
     .card:has(#resultPanel.active) .score-box {
       grid-column:1;
       grid-row:1 / span 2;
-      min-height:260px;
-      align-content:center;
+      min-height:330px;
     }
     .card:has(#resultPanel.active) .metrics,
     .card:has(#resultPanel.active) .result > .metric {
@@ -193,7 +196,7 @@
     }
   }
   @media (max-width:820px){ .grid{grid-template-columns:1fr;} .hero{padding:38px 0 60px;} }
-  @media (max-width:620px){ .shell{width:min(100% - 24px,1120px);} .brand img{width:58px;height:58px;} .top-actions .ghost{display:none;} .card-head,.panel,.result{padding:20px;} .metrics,.breakdown{grid-template-columns:1fr;} .footer{display:grid;} .primary,.ghost{width:100%;} .footer-grid{grid-template-columns:1fr;} .payment-modal{padding:10px;} .payment-panel{height:88vh;border-radius:18px;} }
+  @media (max-width:620px){ .shell{width:min(100% - 24px,1120px);} .brand img{width:58px;height:58px;} .top-actions .ghost{display:none;} .card-head,.panel,.result{padding:20px;} .score-box{grid-template-columns:1fr;min-height:auto;padding:24px;} .score-art{justify-content:flex-start;} .metrics,.breakdown{grid-template-columns:1fr;} .footer{display:grid;} .primary,.ghost{width:100%;} .footer-grid{grid-template-columns:1fr;} .payment-modal{padding:10px;} .payment-panel{height:88vh;border-radius:18px;} }
 </style>
 </head>
 <body>
@@ -261,11 +264,15 @@
 
       <div class="result" id="resultPanel">
         <div class="score-box">
-          <span class="pill">Skor akhir</span>
-          <strong class="score-level" id="scoreLevel">Needs Work</strong>
-          <strong class="score-num" id="scoreNum">0/40</strong>
-          <img class="score-icon" id="scoreIcon" src="/assets/optimized/nangis.png" alt="" width="207" height="246" loading="lazy" decoding="async">
-          <p class="tiny" id="scoreCopy"></p>
+          <div class="score-identity">
+            <span class="pill">Skor akhir</span>
+            <strong class="score-level" id="scoreLevel">Needs Work</strong>
+            <strong class="score-num" id="scoreNum">0/40</strong>
+            <p class="tiny" id="scoreCopy"></p>
+          </div>
+          <div class="score-art">
+            <img class="score-icon" id="scoreIcon" src="/assets/optimized/nangis.png" alt="" width="207" height="246" loading="lazy" decoding="async">
+          </div>
         </div>
         <div class="metrics">
           <div class="metric"><span>Jawaban benar</span><strong id="correctText">0/40</strong></div>
