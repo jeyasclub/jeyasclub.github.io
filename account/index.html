@@ -1517,6 +1517,15 @@
       : `Login gagal: ${message || "cek email dan password kamu."}`;
   }
 
+  function withTimeout(promise, timeoutMs = 15000) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("auth_timeout")), timeoutMs);
+      })
+    ]);
+  }
+
   function renderAuthState() {
     const isLoggedIn = Boolean(currentSession && currentSession.user);
     const profile = getUserProfile();
@@ -1599,13 +1608,25 @@
         })
       : supabaseClient.auth.signInWithPassword({ email, password });
 
-    const { data, error } = await request;
-    authSubmitButton.disabled = false;
+    let data;
+    let error;
+
+    try {
+      const response = await withTimeout(request);
+      data = response.data;
+      error = response.error;
+    } catch (requestError) {
+      error = requestError;
+    } finally {
+      authSubmitButton.disabled = false;
+    }
 
     if (error) {
       console.error("Jeya's Club auth error:", error);
       authMessage.className = "status bad";
-      authMessage.textContent = getAuthErrorMessage(error, authMode);
+      authMessage.textContent = error.message === "auth_timeout"
+        ? "Login terlalu lama. Cek koneksi internet kamu lalu coba lagi."
+        : getAuthErrorMessage(error, authMode);
       return;
     }
 
