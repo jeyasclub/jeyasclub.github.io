@@ -69,6 +69,13 @@ create table if not exists public.grammar_test_review_access (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.grammar_test_result_answers (
+  result_id uuid primary key references public.grammar_test_results(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  answers jsonb not null default '[]'::jsonb,
+  created_at timestamptz not null default now()
+);
+
 alter table public.vocaquiz_results
 add column if not exists username text;
 
@@ -81,6 +88,7 @@ alter table public.vocaquiz_result_answers enable row level security;
 alter table public.jeyasclub_course_access enable row level security;
 alter table public.grammar_test_results enable row level security;
 alter table public.grammar_test_review_access enable row level security;
+alter table public.grammar_test_result_answers enable row level security;
 
 revoke select on public.vocaquiz_results from authenticated;
 grant insert on public.vocaquiz_results to authenticated;
@@ -121,6 +129,7 @@ grant select (
   created_at
 ) on public.grammar_test_results to authenticated;
 grant select on public.grammar_test_review_access to authenticated;
+grant select, insert on public.grammar_test_result_answers to authenticated;
 
 create index if not exists vocaquiz_results_user_created_idx
 on public.vocaquiz_results (user_id, created_at desc);
@@ -142,6 +151,9 @@ on public.grammar_test_results (user_id, created_at desc);
 
 create index if not exists grammar_test_review_access_user_idx
 on public.grammar_test_review_access (user_id, created_at desc);
+
+create index if not exists grammar_test_result_answers_user_idx
+on public.grammar_test_result_answers (user_id, created_at desc);
 
 drop policy if exists "Users can insert their own vocaquiz results" on public.vocaquiz_results;
 create policy "Users can insert their own vocaquiz results"
@@ -220,6 +232,35 @@ on public.grammar_test_review_access
 for select
 to authenticated
 using (user_id = auth.uid());
+
+drop policy if exists "Users can insert their own grammar test answer details" on public.grammar_test_result_answers;
+create policy "Users can insert their own grammar test answer details"
+on public.grammar_test_result_answers
+for insert
+to authenticated
+with check (
+  user_id = auth.uid()
+  and exists (
+    select 1
+    from public.grammar_test_results result
+    where result.id = result_id
+      and result.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "Paid users can read their own grammar test answer details" on public.grammar_test_result_answers;
+create policy "Paid users can read their own grammar test answer details"
+on public.grammar_test_result_answers
+for select
+to authenticated
+using (
+  user_id = auth.uid()
+  and exists (
+    select 1
+    from public.grammar_test_review_access access
+    where access.user_id = auth.uid()
+  )
+);
 
 create or replace function public.grant_vocaquiz_review_access_by_email(
   p_email text,
