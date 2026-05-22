@@ -657,6 +657,12 @@
     box-shadow: 0 16px 34px rgba(181, 129, 24, 0.12);
   }
 
+  .test-result-card.is-empty {
+    border-color: var(--border);
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 52%, #f1f3f6 100%);
+    box-shadow: none;
+  }
+
   .test-result-card::after {
     content: "";
     position: absolute;
@@ -667,6 +673,10 @@
     border: 18px solid rgba(181, 129, 24, 0.08);
     border-radius: 50%;
     pointer-events: none;
+  }
+
+  .test-result-card.is-empty::after {
+    border-color: rgba(107, 114, 128, 0.08);
   }
 
   .test-result-top {
@@ -709,6 +719,11 @@
     font-size: 11px;
     font-weight: 900;
     white-space: nowrap;
+  }
+
+  .test-result-card.is-empty .test-result-category {
+    background: #eef1f5;
+    color: #6b7280;
   }
 
   .test-result-metrics {
@@ -762,9 +777,18 @@
     font-weight: 900;
   }
 
+  .test-result-card.is-empty .test-result-link {
+    background: #6b7280;
+    box-shadow: none;
+  }
+
   .test-result-link:hover,
   .test-results-empty a:hover {
     background: linear-gradient(135deg, #8a5d0a, #c99927);
+  }
+
+  .test-result-card.is-empty .test-result-link:hover {
+    background: #4b5563;
   }
 
   .test-results-note {
@@ -1070,6 +1094,18 @@
                   href="/vocabulary-test/"
                 >Take Test</a>
               </div>
+              <div class="mission-card" id="grammarPerfectMissionCard">
+                <div class="mission-star" aria-hidden="true">★</div>
+                <div class="mission-copy">
+                  <strong>Get a perfect score for grammar test</strong>
+                  <span id="grammarPerfectMissionStatus">Belum tercapai</span>
+                </div>
+                <a
+                  class="mission-join-button"
+                  id="grammarPerfectMissionButton"
+                  href="/grammar-test/"
+                >Take Test</a>
+              </div>
             </section>
 
             <section class="test-results-section" aria-labelledby="testResultsTitle">
@@ -1172,8 +1208,11 @@
   const vocaquizScore300MissionCard = document.getElementById("vocaquizScore300MissionCard");
   const vocaquizScore300MissionStatus = document.getElementById("vocaquizScore300MissionStatus");
   const vocaquizScore300MissionButton = document.getElementById("vocaquizScore300MissionButton");
+  const grammarPerfectMissionCard = document.getElementById("grammarPerfectMissionCard");
+  const grammarPerfectMissionStatus = document.getElementById("grammarPerfectMissionStatus");
+  const grammarPerfectMissionButton = document.getElementById("grammarPerfectMissionButton");
   const HANGOUT_COURSE_KEY = "english-hangout-club";
-  const BADGE_TOTAL = 4;
+  const BADGE_TOTAL = 5;
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
@@ -1287,7 +1326,7 @@
     }
 
     testResultsList.innerHTML = results.map((result) => `
-      <article class="test-result-card">
+      <article class="test-result-card${result.isTaken ? "" : " is-empty"}">
         <div class="test-result-top">
           <div class="test-result-title">
             <strong>${result.test_name}</strong>
@@ -1488,6 +1527,40 @@
     renderVocaquizScoreMissions(Number.isFinite(bestScore) ? bestScore : null);
   }
 
+  function renderGrammarPerfectMission(bestScore = null) {
+    const score = Number.isFinite(bestScore) ? bestScore : null;
+    const isComplete = score !== null && score >= 40;
+    grammarPerfectMissionCard.classList.toggle("is-complete", isComplete);
+    grammarPerfectMissionStatus.textContent = isComplete
+      ? "Tercapai - skor sempurna 40/40"
+      : `Belum tercapai${score === null ? "" : ` - skor terbaik ${score}/40`}`;
+    grammarPerfectMissionButton.textContent = isComplete ? "Achieved" : "Take Test";
+    grammarPerfectMissionButton.setAttribute("aria-label", isComplete
+      ? "Mission skor sempurna Grammar Test sudah tercapai"
+      : "Ambil Grammar Test untuk mencapai skor sempurna");
+    updateBadgesEarnedCount();
+  }
+
+  async function loadGrammarPerfectMission() {
+    renderGrammarPerfectMission(null);
+
+    if (!supabaseClient || !currentSession || !currentSession.user) return;
+
+    const { data, error } = await supabaseClient
+      .from("grammar_test_results")
+      .select("score")
+      .order("score", { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error("Load grammar perfect mission failed:", error);
+      return;
+    }
+
+    const bestScore = data && data.length ? Number(data[0].score) : null;
+    renderGrammarPerfectMission(Number.isFinite(bestScore) ? bestScore : null);
+  }
+
   function getAuthErrorMessage(error, mode) {
     const message = error && error.message ? error.message : "";
     const lowerMessage = message.toLowerCase();
@@ -1543,6 +1616,7 @@
       loadHangoutMission();
       loadVocaquizUnlockMission();
       loadVocaquizScoreMissions();
+      loadGrammarPerfectMission();
       loadTestResults();
       return;
     }
@@ -1554,6 +1628,7 @@
     renderHangoutMission(false);
     renderVocaquizUnlockMission(false);
     renderVocaquizScoreMissions(null);
+    renderGrammarPerfectMission(null);
     updateBadgesEarnedCount();
     testResultsList.innerHTML = "";
   }
