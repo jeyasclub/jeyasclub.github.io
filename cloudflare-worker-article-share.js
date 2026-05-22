@@ -5,6 +5,7 @@ const DEFAULT_IMAGE = `${SITE_URL}/assets/cover.png`;
 const OG_IMAGE_WIDTH = 768;
 const OG_IMAGE_HEIGHT = 402;
 const VOCAQUIZ_PRODUCT_SLUG = 'vocabulary-test-result';
+const GRAMMAR_TEST_PRODUCT_SLUG = 'unlock-grammar-test-recommendation';
 const ENGLISH_HANGOUT_PRODUCT_SLUG = 'english-hangout-club-by-jeyas-club-may-2026-di9e';
 const ENGLISH_HANGOUT_COURSE_KEY = 'english-hangout-club';
 
@@ -107,9 +108,10 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   }
 
   const isVocaquiz = isVocaquizPayment({ productName, productUrl, productId }, env);
+  const isGrammarTest = isGrammarTestPayment({ productName, productUrl, productId }, env);
   const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
 
-  if (!isVocaquiz && !isEnglishHangout) {
+  if (!isVocaquiz && !isGrammarTest && !isEnglishHangout) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -122,21 +124,26 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     return jsonResponse({ ok: false, error: 'missing_supabase_service_role_key' }, 500);
   }
 
-  const rpcName = isEnglishHangout
-    ? 'grant_jeyasclub_course_access_by_email'
-    : 'grant_vocaquiz_review_access_by_email';
-  const rpcBody = isEnglishHangout
-    ? {
-        p_email: customerEmail,
-        p_course_key: ENGLISH_HANGOUT_COURSE_KEY,
-        p_transaction_id: transactionId || null,
-        p_source: 'mayar',
-      }
-    : {
-        p_email: customerEmail,
-        p_transaction_id: transactionId || null,
-        p_source: 'mayar',
-      };
+  let rpcName = 'grant_vocaquiz_review_access_by_email';
+  let rpcBody = {
+    p_email: customerEmail,
+    p_transaction_id: transactionId || null,
+    p_source: 'mayar',
+  };
+
+  if (isGrammarTest) {
+    rpcName = 'grant_grammar_test_review_access_by_email';
+  }
+
+  if (isEnglishHangout) {
+    rpcName = 'grant_jeyasclub_course_access_by_email';
+    rpcBody = {
+      p_email: customerEmail,
+      p_course_key: ENGLISH_HANGOUT_COURSE_KEY,
+      p_transaction_id: transactionId || null,
+      p_source: 'mayar',
+    };
+  }
 
   const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${rpcName}`, {
     method: 'POST',
@@ -167,7 +174,7 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
-    product: isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : 'vocaquiz-review',
+    product: isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review'),
     result: rpcData,
   });
 }
@@ -179,6 +186,16 @@ function isVocaquizPayment({ productName, productUrl, productId }, env = {}) {
   const haystack = `${productName} ${productUrl}`.toLowerCase();
   return haystack.includes(VOCAQUIZ_PRODUCT_SLUG)
     || (haystack.includes('vocabulary') && haystack.includes('test') && haystack.includes('result'));
+}
+
+function isGrammarTestPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_GRAMMAR_TEST_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(GRAMMAR_TEST_PRODUCT_SLUG)
+    || (haystack.includes('grammar') && haystack.includes('test') && haystack.includes('recommendation'))
+    || (haystack.includes('grammar') && haystack.includes('test') && haystack.includes('result'));
 }
 
 function isEnglishHangoutPayment({ productName, productUrl, productId }, env = {}) {

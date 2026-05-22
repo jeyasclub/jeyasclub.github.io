@@ -1270,11 +1270,12 @@
     });
   }
 
-  function renderEmptyTestResults(message = "Belum ada hasil Vocabulary Test di akun ini.") {
+  function renderEmptyTestResults(message = "Belum ada hasil tes di akun ini.") {
     testResultsList.innerHTML = `
       <div class="test-results-empty">
         <p>${message}</p>
         <a href="/vocabulary-test/">Ambil Vocabulary Test</a>
+        <a href="/grammar-test/">Ambil Grammar Test</a>
       </div>
     `;
   }
@@ -1289,26 +1290,26 @@
       <article class="test-result-card">
         <div class="test-result-top">
           <div class="test-result-title">
-            <strong>${result.test_name || "Vocabulary Test by Jeya's Club"}</strong>
-            <span>${formatShortDate(result.created_at)}</span>
+            <strong>${result.test_name}</strong>
+            <span>${result.created_at ? formatShortDate(result.created_at) : "Belum diambil"}</span>
           </div>
-          <span class="test-result-category">${result.category || "-"}</span>
+          <span class="test-result-category">${result.category || "Ready"}</span>
         </div>
-        <div class="test-result-metrics">
+        ${result.isTaken ? `<div class="test-result-metrics">
           <div class="test-result-metric">
             <span>Score</span>
-            <strong>${result.score || 0}/${result.total_point || 340}</strong>
+            <strong>${result.score || 0}/${result.total_point}</strong>
           </div>
           <div class="test-result-metric">
             <span>Benar</span>
-            <strong>${result.correct_count || 0}/${result.total_questions || 50}</strong>
+            <strong>${result.correct_count || 0}/${result.total_questions}</strong>
           </div>
           <div class="test-result-metric">
             <span>Akurasi</span>
             <strong>${result.accuracy || 0}%</strong>
           </div>
-        </div>
-        <a class="test-result-link" href="/vocabulary-test/">Lihat / Retake Test</a>
+        </div>` : `<div class="test-results-empty"><p>${result.emptyText}</p></div>`}
+        <a class="test-result-link" href="${result.href}">${result.isTaken ? "Lihat / Retake Test" : "Ambil Test"}</a>
       </article>
     `).join("");
   }
@@ -1330,19 +1331,52 @@
       </div>
     `;
 
-    const { data, error } = await supabaseClient
+    const { data: vocabularyData, error: vocabularyError } = await supabaseClient
       .from("vocaquiz_results")
       .select("id,test_name,score,total_point,category,correct_count,total_questions,accuracy,created_at")
       .order("created_at", { ascending: false })
       .limit(1);
 
-    if (error) {
-      console.error("Load test results failed:", error);
+    const { data: grammarData, error: grammarError } = await supabaseClient
+      .from("grammar_test_results")
+      .select("id,test_name,score,total_point,category,correct_count,total_questions,accuracy,created_at")
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (vocabularyError) {
+      console.error("Load vocabulary test result failed:", vocabularyError);
       renderEmptyTestResults("Hasil tes belum bisa dimuat. Coba refresh halaman.");
       return;
     }
 
-    renderTestResults(data || []);
+    if (grammarError) {
+      console.error("Load grammar test result failed:", grammarError);
+    }
+
+    const vocabularyResult = vocabularyData && vocabularyData.length
+      ? { ...vocabularyData[0], isTaken: true, href: "/vocabulary-test/" }
+      : {
+          test_name: "Vocabulary Test by Jeya's Club",
+          category: "Ready",
+          total_point: 340,
+          total_questions: 50,
+          href: "/vocabulary-test/",
+          isTaken: false,
+          emptyText: "Vocabulary Test belum diambil."
+        };
+    const grammarResult = grammarData && grammarData.length
+      ? { ...grammarData[0], isTaken: true, href: "/grammar-test/" }
+      : {
+          test_name: "Grammar Test by Jeya's Club",
+          category: "Ready",
+          total_point: 40,
+          total_questions: 40,
+          href: "/grammar-test/",
+          isTaken: false,
+          emptyText: "Grammar Test belum diambil."
+        };
+
+    renderTestResults([vocabularyResult, grammarResult]);
   }
 
   function renderHangoutMission(isComplete = false) {
