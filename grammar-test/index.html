@@ -110,6 +110,7 @@
   .detail-item strong { display:block; margin-bottom:8px; }
   .detail-item p, .rec-card p { color:var(--muted); font-size:13px; line-height:1.65; margin-top:7px; }
   .rec-card h4 { font-size:15px; }
+  .result-actions { display:flex; flex-wrap:wrap; gap:10px; }
   .status { color:var(--muted); font-size:12px; font-weight:800; min-height:18px; }
   .status.good { color:var(--green); } .status.bad { color:var(--red); }
   .user { position:relative; display:none; }
@@ -132,6 +133,7 @@
   .footer-grid a, .footer-grid p { display:block; color:var(--muted); font-size:13px; line-height:1.8; text-decoration:none; }
   @media (min-width:821px){
     .grid:has(#resultPanel.active) { align-items:start; }
+    .grid:has(#resultPanel.active) .hero-start { display:none; }
     .card:has(#resultPanel.active) { grid-column:1 / -1; }
     .card:has(#resultPanel.active) .result.active {
       grid-template-columns:minmax(280px,.75fr) minmax(0,1.25fr);
@@ -148,6 +150,7 @@
       grid-column:2;
     }
     .card:has(#resultPanel.active) #paidArea,
+    .card:has(#resultPanel.active) .result-actions,
     .card:has(#resultPanel.active) #saveStatus {
       grid-column:1 / -1;
     }
@@ -183,7 +186,7 @@
     <div class="copy">
       <h1>Grammar Test by Jeya's Club</h1>
       <p>Jawab 40 soal grammar singkat dari 5 topik: tenses, modals, prepositions, articles & nouns, dan conditionals. Skor dasar gratis, penjelasan serta rekomendasi belajar terbuka setelah unlock.</p>
-      <a class="primary" href="#quizCard">Mulai Grammar Test</a>
+      <a class="primary hero-start" href="#quizCard">Mulai Grammar Test</a>
     </div>
 
     <section class="card" id="quizCard">
@@ -243,6 +246,10 @@
           <div class="breakdown" id="breakdown"></div>
         </div>
         <div id="paidArea"></div>
+        <div class="result-actions">
+          <button class="primary" type="button" id="resultRetakeButton">Retake Grammar Test</button>
+          <a class="ghost" href="/account/">Cek Profile</a>
+        </div>
         <p class="status" id="saveStatus"></p>
       </div>
 
@@ -337,7 +344,7 @@ const levels = [
 ];
 let session=null, authMode="login", index=0, selected=null, answers=[], paid=false, latestResult=null;
 const $=id=>document.getElementById(id);
-const els={authControls:$("authControls"),authForm:$("authForm"),tabs:document.querySelectorAll("[data-auth-mode]"),name:$("nameInput"),email:$("emailInput"),password:$("passwordInput"),authSubmit:$("authSubmit"),authMessage:$("authMessage"),profile:$("profileBox"),profileAvatar:$("profileAvatar"),profileName:$("profileName"),sessionActions:$("sessionActions"),start:$("startButton"),latest:$("latestResultButton"),logout:$("logoutButton"),topUser:$("topUser"),topUserButton:$("topUserButton"),topAvatar:$("topAvatar"),topName:$("topName"),topLogout:$("topLogout"),panelTitle:$("panelTitle"),intro:$("introPanel"),question:$("questionPanel"),result:$("resultPanel"),questionText:$("questionText"),category:$("categoryLabel"),answers:$("answers"),counter:$("counter"),bar:$("bar"),next:$("nextButton"),stepNote:$("stepNote"),scoreLevel:$("scoreLevel"),scoreNum:$("scoreNum"),scoreCopy:$("scoreCopy"),correct:$("correctText"),accuracy:$("accuracyText"),breakdown:$("breakdown"),paidArea:$("paidArea"),saveStatus:$("saveStatus"),footerNote:$("footerNote")};
+const els={authControls:$("authControls"),authForm:$("authForm"),tabs:document.querySelectorAll("[data-auth-mode]"),name:$("nameInput"),email:$("emailInput"),password:$("passwordInput"),authSubmit:$("authSubmit"),authMessage:$("authMessage"),profile:$("profileBox"),profileAvatar:$("profileAvatar"),profileName:$("profileName"),sessionActions:$("sessionActions"),start:$("startButton"),latest:$("latestResultButton"),logout:$("logoutButton"),resultRetake:$("resultRetakeButton"),topUser:$("topUser"),topUserButton:$("topUserButton"),topAvatar:$("topAvatar"),topName:$("topName"),topLogout:$("topLogout"),panelTitle:$("panelTitle"),intro:$("introPanel"),question:$("questionPanel"),result:$("resultPanel"),questionText:$("questionText"),category:$("categoryLabel"),answers:$("answers"),counter:$("counter"),bar:$("bar"),next:$("nextButton"),stepNote:$("stepNote"),scoreLevel:$("scoreLevel"),scoreNum:$("scoreNum"),scoreCopy:$("scoreCopy"),correct:$("correctText"),accuracy:$("accuracyText"),breakdown:$("breakdown"),paidArea:$("paidArea"),saveStatus:$("saveStatus"),footerNote:$("footerNote")};
 const paymentModal=$("paymentModal"), paymentFrame=$("paymentFrame");
 function setAuthMode(mode){authMode=mode; els.tabs.forEach(t=>t.classList.toggle("active",t.dataset.authMode===mode)); els.name.classList.toggle("hidden",mode!=="signup"); els.name.disabled=mode!=="signup"; els.name.required=mode==="signup"; els.authSubmit.textContent=mode==="signup"?"Daftar":"Login"; els.password.autocomplete=mode==="signup"?"new-password":"current-password"; els.authMessage.className="status"; els.authMessage.textContent=mode==="signup"?"Masukkan email aktif untuk daftar.":"Login dengan akun Jeya's Club.";}
 function profile(){const u=session&&session.user; const m=u&&u.user_metadata||{}; const emailName=u&&u.email?u.email.split("@")[0]:""; return {id:u?u.id:"",email:u?u.email:"",name:m.username||m.full_name||m.name||emailName||"User",avatar:m.avatar_url||m.picture||"/assets/blank.png"};}
@@ -350,13 +357,13 @@ async function init(){if(supabaseClient){const {data}=await supabaseClient.auth.
 async function logout(){if(supabaseClient) await supabaseClient.auth.signOut(); session=null; renderAuth(); setAuthMode("login");}
 async function loadPaidAccess(){paid=false; if(!supabaseClient||!session)return false; const {data,error}=await supabaseClient.from("grammar_test_review_access").select("id").limit(1); paid=Boolean(!error&&data&&data.length); return paid;}
 async function loadLatestResult(){if(!supabaseClient||!session)return; const {data,error}=await supabaseClient.from("grammar_test_results").select("id,score,total_point,category,correct_count,total_questions,accuracy,category_breakdown,created_at").order("created_at",{ascending:false}).limit(1); if(error||!data||!data.length){latestResult=null; els.latest.classList.add("hidden"); updateStartLabel(); return;} latestResult=data[0]; els.latest.classList.remove("hidden"); updateStartLabel(); els.authMessage.className="status good"; els.authMessage.textContent=`Hasil terakhir: ${latestResult.category}, ${latestResult.score}/${latestResult.total_point} poin.`;}
-function start(){if(!session){els.authMessage.className="status bad"; els.authMessage.textContent="Login dulu untuk mulai."; return;} index=0; selected=null; answers=[]; els.intro.classList.add("hidden"); els.result.classList.remove("active"); els.question.classList.add("active"); els.next.classList.add("hidden"); showQuestion();}
+function start(){if(!session){els.authMessage.className="status bad"; els.authMessage.textContent="Login dulu untuk mulai."; return;} index=0; selected=null; answers=[]; els.panelTitle.textContent="Grammar Test"; els.footerNote.textContent="Jawab semua soal sampai selesai."; els.intro.classList.add("hidden"); els.result.classList.remove("active"); els.question.classList.add("active"); els.next.classList.add("hidden"); showQuestion();}
 function showQuestion(){const q=questions[index]; selected=null; els.counter.textContent=`${index+1}/40`; els.bar.style.width=`${(index/questions.length)*100}%`; els.category.textContent=q[1]; els.questionText.textContent=q[2]; els.answers.innerHTML=q[3].map((opt,i)=>`<button class="answer" type="button" data-i="${i}"><strong>${"ABCD"[i]}.</strong> ${opt}</button>`).join(""); els.next.classList.add("hidden"); els.stepNote.textContent=index===questions.length-1?"Pilih jawaban untuk submit hasil.":"Pilih jawaban, lalu otomatis lanjut."; els.answers.querySelectorAll(".answer").forEach(btn=>btn.addEventListener("click",()=>{if(selected!==null)return; selected=Number(btn.dataset.i); els.answers.querySelectorAll(".answer").forEach(b=>{b.classList.remove("selected"); b.disabled=true;}); btn.classList.add("selected"); next();}));}
 function next(){if(selected===null)return; const q=questions[index]; answers.push({id:index+1,category:q[0],categoryName:q[1],question:q[2],options:q[3],selected,correct:q[4],explanation:q[5],isCorrect:selected===q[4]}); index++; if(index>=questions.length) return finish(); showQuestion();}
 function level(score){return levels.find(l=>score>=l.min)||levels[levels.length-1];}
 function byCategory(){const out={}; questions.forEach(q=>out[q[0]]={name:q[1],correct:0,total:0}); answers.forEach(a=>{out[a.category].total++; if(a.isCorrect) out[a.category].correct++;}); return out;}
 function pickRec(key,correct){const list=recs[key]||[]; if(correct<=3)return list[0]; if(correct<=6)return list[1]; return list[2];}
-async function finish(){els.question.classList.remove("active"); els.next.classList.add("hidden"); const correct=answers.filter(a=>a.isCorrect).length; const acc=Math.round((correct/questions.length)*100); const lv=level(correct); const cats=byCategory(); els.result.classList.add("active"); const scoreBox=els.result.querySelector(".score-box"); scoreBox.className=`score-box level-${lv.name.toLowerCase().replace(/\s+/g,"-")}`; els.counter.textContent="40/40"; els.bar.style.width="100%"; els.scoreLevel.textContent=lv.name; els.scoreNum.textContent=`${correct}/40`; els.scoreCopy.textContent=lv.copy; els.correct.textContent=`${correct}/40`; els.accuracy.textContent=`${acc}%`; els.breakdown.innerHTML=Object.values(cats).map(c=>`<div class="metric"><span>${c.name}</span><strong>${c.correct}/${c.total}</strong></div>`).join(""); await saveResult(correct,acc,cats,lv.name); await loadPaidAccess(); renderPaidArea(cats);}
+async function finish(){els.question.classList.remove("active"); els.next.classList.add("hidden"); const correct=answers.filter(a=>a.isCorrect).length; const acc=Math.round((correct/questions.length)*100); const lv=level(correct); const cats=byCategory(); els.panelTitle.textContent="Hasil Grammar Test"; els.result.classList.add("active"); const scoreBox=els.result.querySelector(".score-box"); scoreBox.className=`score-box level-${lv.name.toLowerCase().replace(/\s+/g,"-")}`; els.counter.textContent="40/40"; els.bar.style.width="100%"; els.scoreLevel.textContent=lv.name; els.scoreNum.textContent=`${correct}/40`; els.scoreCopy.textContent=lv.copy; els.correct.textContent=`${correct}/40`; els.accuracy.textContent=`${acc}%`; els.breakdown.innerHTML=Object.values(cats).map(c=>`<div class="metric"><span>${c.name}</span><strong>${c.correct}/${c.total}</strong></div>`).join(""); await saveResult(correct,acc,cats,lv.name); await loadPaidAccess(); renderPaidArea(cats);}
 async function saveResult(score,accuracy,cats,category){if(!supabaseClient||!session){els.saveStatus.className="status bad"; els.saveStatus.textContent="Login diperlukan untuk menyimpan hasil."; return;} const p=profile(); const payload={user_id:p.id,email:p.email,username:p.name,test_name:"Grammar Test by Jeya's Club",score,total_point:40,category,correct_count:score,total_questions:40,accuracy,category_breakdown:cats}; const {error}=await supabaseClient.from("grammar_test_results").insert(payload); if(error){console.error("Grammar Test result save failed:",error); els.saveStatus.className="status bad"; els.saveStatus.textContent=`Hasil belum tersimpan: ${error.message||"pastikan SQL grammar test sudah dijalankan."}`; return;} els.saveStatus.className="status good"; els.saveStatus.textContent="Hasil Grammar Test berhasil disimpan."; await loadLatestResult();}
 async function showLatestResult(){if(!latestResult)return; const lv=level(latestResult.score); const cats=latestResult.category_breakdown||{}; els.intro.classList.add("hidden"); els.question.classList.remove("active"); els.result.classList.add("active"); els.next.classList.add("hidden"); const scoreBox=els.result.querySelector(".score-box"); scoreBox.className=`score-box level-${lv.name.toLowerCase().replace(/\s+/g,"-")}`; els.panelTitle.textContent="Hasil Terakhir"; els.counter.textContent="Tersimpan"; els.bar.style.width="100%"; els.scoreLevel.textContent=latestResult.category||lv.name; els.scoreNum.textContent=`${latestResult.score}/${latestResult.total_point||40}`; els.scoreCopy.textContent=lv.copy; els.correct.textContent=`${latestResult.correct_count}/${latestResult.total_questions||40}`; els.accuracy.textContent=`${latestResult.accuracy}%`; els.breakdown.innerHTML=Object.values(cats).map(c=>`<div class="metric"><span>${c.name}</span><strong>${c.correct}/${c.total}</strong></div>`).join(""); await loadPaidAccess(); if(paid){els.paidArea.innerHTML=`<div class="paid-detail"><span>Catatan</span><p class="tiny">Hasil terakhir tersimpan sebagai ringkasan skor. Pembahasan jawaban lengkap tersedia untuk hasil yang baru selesai dikerjakan di perangkat ini.</p></div><div class="paid-detail"><span>Rekomendasi belajar</span><div class="rec-list">${Object.entries(cats).map(([key,c])=>{const r=pickRec(key,c.correct);return`<div class="rec-card"><h4>${c.name} (${c.correct}/${c.total})</h4><p>${r[1]}</p><p><strong>Referensi:</strong> ${r[2]}</p></div>`}).join("")}</div></div>`;}else{renderPaidArea(cats);} els.saveStatus.className="status good"; els.saveStatus.textContent=`Hasil ini tersimpan pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`; els.footerNote.textContent="Ini hasil terakhir yang tersimpan di akunmu.";}
 function openPaymentModal(){paymentFrame.src=paymentUrl; paymentModal.classList.add("open"); paymentModal.setAttribute("aria-hidden","false"); document.body.style.overflow="hidden"; paymentModal.querySelector(".payment-close").focus();}
@@ -366,6 +373,7 @@ els.tabs.forEach(t=>t.addEventListener("click",()=>setAuthMode(t.dataset.authMod
 els.authForm.addEventListener("submit",handleAuth);
 els.start.addEventListener("click",start);
 els.latest.addEventListener("click",showLatestResult);
+els.resultRetake.addEventListener("click",start);
 els.next.addEventListener("click",next);
 els.logout.addEventListener("click",logout);
 els.topLogout.addEventListener("click",logout);
