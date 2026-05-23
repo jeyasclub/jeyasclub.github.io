@@ -1113,6 +1113,47 @@
     gap: 10px;
   }
 
+  .answer-review-email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid rgba(26, 111, 232, 0.12);
+    border-radius: 12px;
+    background: var(--white);
+  }
+
+  .answer-review-email p {
+    flex: 1 1 220px;
+    margin: 0;
+  }
+
+  .answer-review-copy {
+    max-width: 100%;
+    min-height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #f8fbff;
+    color: var(--blue-dark);
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+  }
+
+  .answer-review-copy-status {
+    min-height: 16px;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .answer-review-copy-status.bad {
+    color: var(--red);
+  }
+
   .result-profile-actions {
     display: flex;
     justify-content: center;
@@ -2631,6 +2672,34 @@
     };
   }
 
+  async function copyTextToClipboard(text) {
+    if (!text) return false;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (_error) {}
+    }
+
+    const input = document.createElement("textarea");
+    input.value = text;
+    input.setAttribute("readonly", "");
+    input.style.position = "fixed";
+    input.style.opacity = "0";
+    document.body.appendChild(input);
+    input.select();
+
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch (_error) {
+      copied = false;
+    }
+    input.remove();
+    return copied;
+  }
+
   function getAuthErrorMessage(error, mode) {
     const message = error && error.message ? error.message : "";
     const lowerMessage = message.toLowerCase();
@@ -3082,6 +3151,31 @@
       benefits.appendChild(item);
     });
 
+    const profileEmail = getUserProfile().email;
+    const emailBox = document.createElement("div");
+    emailBox.className = "answer-review-email";
+
+    const emailHint = document.createElement("p");
+    emailHint.textContent = "Gunakan alamat email yang sama dengan profil kamu. Klik untuk salin.";
+
+    const emailButton = document.createElement("button");
+    emailButton.className = "answer-review-copy";
+    emailButton.type = "button";
+    emailButton.textContent = profileEmail || "Email profil";
+    emailButton.disabled = !profileEmail;
+
+    const emailStatus = document.createElement("span");
+    emailStatus.className = "answer-review-copy-status";
+    emailStatus.setAttribute("aria-live", "polite");
+
+    emailButton.addEventListener("click", async () => {
+      const copied = await copyTextToClipboard(profileEmail);
+      emailStatus.textContent = copied ? "Email disalin." : "Email belum bisa disalin.";
+      emailStatus.classList.toggle("bad", !copied);
+    });
+
+    emailBox.append(emailHint, emailButton, emailStatus);
+
     const actions = document.createElement("div");
     actions.className = "answer-review-actions";
 
@@ -3098,7 +3192,7 @@
     checkButton.addEventListener("click", refreshAnswerReviewAccess);
 
     actions.append(payLink, checkButton);
-    lock.append(title, copy, benefits, actions);
+    lock.append(title, copy, benefits, emailBox, actions);
     answerReview.appendChild(lock);
   }
 
