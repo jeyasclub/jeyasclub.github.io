@@ -225,7 +225,8 @@
       background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
     }
     #paidArea:has(.accordion-list) .paid-detail:first-child {
-      max-height:660px;
+      height:660px;
+      max-height:calc(100vh - 140px);
     }
     #paidArea:has(.accordion-list) .paid-title {
       min-height:108px;
@@ -244,7 +245,7 @@
       max-height:none;
       overflow:auto;
       padding-right:6px;
-      align-content:start;
+      display:block;
     }
     #paidArea:has(.accordion-list) .detail-list::-webkit-scrollbar {
       width:8px;
@@ -254,7 +255,24 @@
       background:#cbd5e1;
     }
     #paidArea:has(.accordion-list) .accordion-item {
+      display:block;
+      min-height:58px;
       box-shadow:0 8px 18px rgba(15,23,42,.04);
+    }
+    #paidArea:has(.accordion-list) .accordion-item + .accordion-item {
+      margin-top:10px;
+    }
+    #paidArea:has(.accordion-list) .accordion-item summary {
+      display:flex;
+      min-height:58px;
+      align-items:center;
+    }
+    #paidArea:has(.accordion-list) .accordion-question {
+      flex:1 1 auto;
+    }
+    #paidArea:has(.accordion-list) .accordion-status,
+    #paidArea:has(.accordion-list) .accordion-arrow {
+      flex:0 0 auto;
     }
     #paidArea:has(.accordion-list) .rec-list {
       align-content:start;
