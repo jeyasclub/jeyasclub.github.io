@@ -2005,7 +2005,7 @@
       </a>
       <div class="topbar-actions">
         <span class="user-chip" id="topUserChip">
-          <img id="topUserAvatar" src="/assets/blank.png" alt="">
+          <img id="topUserAvatar" src="/assets/cs.jpg" alt="">
           <span id="topUserName">User</span>
           <span class="user-menu" id="topUserMenu">
             <a class="menu-button" href="/account/">Profile</a>
@@ -2042,7 +2042,7 @@
           <div class="quiz-body" id="introView">
             <div class="auth-box" id="authBox">
               <div class="auth-profile" id="authProfile">
-                <img id="authAvatar" src="/assets/blank.png" alt="">
+                <img id="authAvatar" src="/assets/cs.jpg" alt="">
                 <div>
                   <strong id="authName">Sudah login</strong>
                   <span id="authEmail">Siap mulai quiz.</span>
@@ -2627,7 +2627,7 @@
       email: user ? user.email : "",
       username: metadata.username || emailName,
       name: metadata.username || metadata.full_name || metadata.name || emailName || "User",
-      avatar: metadata.avatar_url || metadata.picture || "/assets/blank.png"
+      avatar: metadata.avatar_url || metadata.picture || "/assets/cs.jpg"
     };
   }
 
@@ -2709,7 +2709,7 @@
       latestResult = null;
       latestResultButton.classList.add("hidden");
       authSessionActions.classList.remove("show");
-      topUserAvatar.src = "/assets/blank.png";
+      topUserAvatar.src = "/assets/cs.jpg";
       topUserAvatar.alt = "";
       topUserName.textContent = "User";
       authMessage.className = "save-status";

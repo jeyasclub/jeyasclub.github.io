@@ -3069,7 +3069,7 @@
     <a href="/account/?redirect=/" class="nav-test-link" id="navLoginLink">Login / Daftar</a>
     <div class="nav-user hidden" id="navUser">
       <button class="nav-user-button" type="button" id="navUserButton" aria-expanded="false" aria-haspopup="true">
-        <img id="navUserAvatar" src="/assets/blank.png" alt="">
+        <img id="navUserAvatar" src="/assets/cs.jpg" alt="">
         <span class="nav-user-name" id="navUserName">User</span>
       </button>
       <div class="nav-user-menu" id="navUserMenu">
@@ -3098,7 +3098,7 @@
   <a href="/account/?redirect=/" class="mobile-test-link" id="mobileLoginLink">Login / Daftar</a>
   <div class="mobile-user hidden" id="mobileUser">
     <div class="mobile-user-row">
-      <img id="mobileUserAvatar" src="/assets/blank.png" alt="">
+      <img id="mobileUserAvatar" src="/assets/cs.jpg" alt="">
       <span class="mobile-user-name" id="mobileUserName">User</span>
     </div>
     <a class="mobile-logout-button" href="/account/">Profile</a>
@@ -3650,7 +3650,7 @@
     const emailName = user && user.email ? user.email.split('@')[0] : '';
     return {
       name: metadata.username || metadata.full_name || metadata.name || emailName || 'User',
-      avatar: metadata.avatar_url || metadata.picture || '/assets/blank.png'
+      avatar: metadata.avatar_url || metadata.picture || '/assets/cs.jpg'
     };
   }
 

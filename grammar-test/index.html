@@ -235,7 +235,7 @@
     <div class="top-actions">
       <a class="ghost" href="/">Jeya's Club</a>
       <div class="user" id="topUser">
-        <button class="user-btn" id="topUserButton" type="button"><img id="topAvatar" src="/assets/blank.png" alt=""><span id="topName">User</span></button>
+        <button class="user-btn" id="topUserButton" type="button"><img id="topAvatar" src="/assets/cs.jpg" alt=""><span id="topName">User</span></button>
         <div class="menu"><a href="/account/">Profile</a><button type="button" id="topLogout">Logout</button></div>
       </div>
     </div>
@@ -273,7 +273,7 @@
           </form>
         </div>
         <div class="profile" id="profileBox">
-          <img id="profileAvatar" src="/assets/blank.png" alt="">
+          <img id="profileAvatar" src="/assets/cs.jpg" alt="">
           <div><strong id="profileName">User</strong><p class="tiny">Siap mulai grammar test.</p></div>
         </div>
         <div class="session-actions" id="sessionActions">
@@ -419,7 +419,7 @@ const $=id=>document.getElementById(id);
 const els={authControls:$("authControls"),authForm:$("authForm"),tabs:document.querySelectorAll("[data-auth-mode]"),name:$("nameInput"),email:$("emailInput"),password:$("passwordInput"),authSubmit:$("authSubmit"),authMessage:$("authMessage"),profile:$("profileBox"),profileAvatar:$("profileAvatar"),profileName:$("profileName"),sessionActions:$("sessionActions"),start:$("startButton"),latest:$("latestResultButton"),logout:$("logoutButton"),resultRetake:$("resultRetakeButton"),topUser:$("topUser"),topUserButton:$("topUserButton"),topAvatar:$("topAvatar"),topName:$("topName"),topLogout:$("topLogout"),panelTitle:$("panelTitle"),intro:$("introPanel"),question:$("questionPanel"),result:$("resultPanel"),questionText:$("questionText"),category:$("categoryLabel"),answers:$("answers"),counter:$("counter"),bar:$("bar"),next:$("nextButton"),stepNote:$("stepNote"),scoreLevel:$("scoreLevel"),scoreNum:$("scoreNum"),scoreIcon:$("scoreIcon"),scoreCopy:$("scoreCopy"),correct:$("correctText"),accuracy:$("accuracyText"),breakdown:$("breakdown"),paidArea:$("paidArea"),saveStatus:$("saveStatus"),footerNote:$("footerNote")};
 const paymentModal=$("paymentModal"), paymentFrame=$("paymentFrame");
 function setAuthMode(mode){authMode=mode; els.tabs.forEach(t=>t.classList.toggle("active",t.dataset.authMode===mode)); els.name.classList.toggle("hidden",mode!=="signup"); els.name.disabled=mode!=="signup"; els.name.required=mode==="signup"; els.authSubmit.textContent=mode==="signup"?"Daftar":"Login"; els.password.autocomplete=mode==="signup"?"new-password":"current-password"; els.authMessage.className="status"; els.authMessage.textContent=mode==="signup"?"Masukkan email aktif untuk daftar.":"Login dengan akun Jeya's Club.";}
-function profile(){const u=session&&session.user; const m=u&&u.user_metadata||{}; const emailName=u&&u.email?u.email.split("@")[0]:""; return {id:u?u.id:"",email:u?u.email:"",name:m.username||m.full_name||m.name||emailName||"User",avatar:m.avatar_url||m.picture||"/assets/blank.png"};}
+function profile(){const u=session&&session.user; const m=u&&u.user_metadata||{}; const emailName=u&&u.email?u.email.split("@")[0]:""; return {id:u?u.id:"",email:u?u.email:"",name:m.username||m.full_name||m.name||emailName||"User",avatar:m.avatar_url||m.picture||"/assets/cs.jpg"};}
 function updateStartLabel(){els.start.textContent=latestResult?"Retake":"Mulai";}
 function renderAuth(){const on=Boolean(session&&session.user); const p=profile(); els.authControls.classList.toggle("hidden",on); els.profile.classList.toggle("show",on); els.sessionActions.classList.toggle("show",on); els.topUser.classList.toggle("show",on); els.panelTitle.textContent=on?"Siap cek grammar kamu?":"Login untuk mulai tes"; els.footerNote.textContent=on?"Klik mulai untuk mengerjakan Grammar Test.":"Buat akun atau login dulu supaya hasil tes bisa disimpan."; if(on){els.profileAvatar.src=p.avatar; els.profileName.textContent=p.name; els.topAvatar.src=p.avatar; els.topName.textContent=p.name; els.authMessage.className="status good"; els.authMessage.textContent="Login berhasil. Kamu bisa mulai tes."; loadPaidAccess(); loadLatestResult();}else{latestResult=null; els.latest.classList.add("hidden"); updateStartLabel(); els.authMessage.className="status"; els.authMessage.textContent="Login atau daftar untuk mulai.";}}
 function authError(error,mode){const msg=(error&&error.message||"").toLowerCase(); if(msg.includes("auth_timeout"))return"Login terlalu lama. Cek koneksi internet kamu lalu coba lagi."; if(msg.includes("invalid login"))return"Login gagal. Cek email dan password kamu."; if(msg.includes("already"))return"Email ini sudah terdaftar. Coba login."; if(msg.includes("rate"))return"Terlalu banyak percobaan. Tunggu sebentar."; if(msg.includes("password"))return"Password minimal 6 karakter."; return mode==="signup"?"Daftar gagal. Cek email kamu.":"Login gagal. Coba lagi.";}
