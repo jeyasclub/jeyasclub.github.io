@@ -699,6 +699,19 @@
     padding: 0 22px 22px 126px;
   }
 
+  .test-card-takers {
+    width: fit-content;
+    min-height: 28px;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(26, 111, 232, 0.08);
+    color: var(--blue-dark);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
   .test-card-meta {
     display: flex;
     flex-wrap: wrap;
@@ -3067,6 +3080,11 @@
       padding: 0 18px 18px;
     }
 
+    .test-card-takers {
+      width: 100%;
+      justify-content: center;
+    }
+
     .test-card-action {
       width: 100%;
     }
@@ -3250,6 +3268,7 @@
         </summary>
         <div class="test-card-body">
           <p>Jawab pertanyaan singkat untuk menguji kosakata bahasa Inggrismu.</p>
+          <span class="test-card-takers" data-test-takers="vocabulary">Telah diambil ... orang</span>
           <a class="test-card-action" href="/vocabulary-test/" data-vocaquiz-link>Mulai Vocabulary Test</a>
         </div>
       </details>
@@ -3266,6 +3285,7 @@
         </summary>
         <div class="test-card-body">
           <p>Tes kemampuan grammar dari tenses, modals, prepositions, articles, nouns, dan conditionals.</p>
+          <span class="test-card-takers" data-test-takers="grammar">Telah diambil ... orang</span>
           <a class="test-card-action" href="/grammar-test/">Mulai Grammar Test</a>
         </div>
       </details>
@@ -3716,6 +3736,7 @@
   const mobileUserName = document.getElementById('mobileUserName');
   const mobileLogoutButton = document.getElementById('mobileLogoutButton');
   const vocaquizLinks = document.querySelectorAll('[data-vocaquiz-link]');
+  const quickTestTakerEls = document.querySelectorAll('[data-test-takers]');
 
   function getMainLoginUrl() {
     const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/';
@@ -3786,6 +3807,46 @@
     renderMainAuthState();
   }
 
+  function formatMainCount(value) {
+    return new Intl.NumberFormat('id-ID').format(value || 0);
+  }
+
+  function setQuickTestTakerText(key, count) {
+    const target = document.querySelector(`[data-test-takers="${key}"]`);
+    if (!target) return;
+    target.textContent = `Telah diambil ${formatMainCount(count)} orang`;
+  }
+
+  async function loadQuickTestTakers() {
+    quickTestTakerEls.forEach(el => {
+      el.textContent = 'Memuat jumlah peserta...';
+    });
+
+    if (!mainSupabaseClient) {
+      quickTestTakerEls.forEach(el => {
+        el.textContent = 'Jumlah peserta belum tersedia';
+      });
+      return;
+    }
+
+    const [vocabularyResult, grammarResult] = await Promise.all([
+      mainSupabaseClient.from('vocaquiz_results').select('id', { count: 'exact', head: true }),
+      mainSupabaseClient.from('grammar_test_results').select('id', { count: 'exact', head: true })
+    ]);
+
+    if (!vocabularyResult.error) setQuickTestTakerText('vocabulary', vocabularyResult.count);
+    if (!grammarResult.error) setQuickTestTakerText('grammar', grammarResult.count);
+
+    if (vocabularyResult.error) {
+      const target = document.querySelector('[data-test-takers="vocabulary"]');
+      if (target) target.textContent = 'Jumlah peserta belum tersedia';
+    }
+    if (grammarResult.error) {
+      const target = document.querySelector('[data-test-takers="grammar"]');
+      if (target) target.textContent = 'Jumlah peserta belum tersedia';
+    }
+  }
+
   if (navUserButton) {
     navUserButton.addEventListener('click', event => {
       event.stopPropagation();
@@ -3803,6 +3864,7 @@
   if (navLogoutButton) navLogoutButton.addEventListener('click', logoutMainUser);
   if (mobileLogoutButton) mobileLogoutButton.addEventListener('click', logoutMainUser);
   initMainAuth();
+  loadQuickTestTakers();
 
   // Animate XP bar on scroll into view
   const xpBar = document.querySelector('.xp-bar-fill');
