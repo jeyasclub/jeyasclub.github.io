@@ -150,9 +150,9 @@
   .accordion-item[open] { border-color:rgba(26,111,232,.22); box-shadow:0 12px 24px rgba(15,23,42,.06); }
   .accordion-item.ok { border-left:5px solid var(--green); }
   .accordion-item.bad { border-left:5px solid var(--red); }
-  .accordion-item summary { min-height:56px; display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:13px 14px; cursor:pointer; list-style:none; }
+  .accordion-item summary { min-height:56px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:13px 14px; cursor:pointer; list-style:none; }
   .accordion-item summary::-webkit-details-marker { display:none; }
-  .accordion-question { color:var(--text); font-size:14px; font-weight:800; line-height:1.45; }
+  .accordion-question { min-width:0; color:var(--text); font-size:14px; font-weight:800; line-height:1.45; overflow-wrap:anywhere; }
   .accordion-status { min-height:26px; display:inline-flex; align-items:center; padding:5px 9px; border-radius:999px; font-size:11px; font-weight:900; white-space:nowrap; }
   .accordion-item.ok .accordion-status { background:#edfaf3; color:var(--green); }
   .accordion-item.bad .accordion-status { background:#fff0ef; color:var(--red); }
@@ -207,21 +207,58 @@
     .card:has(#resultPanel.active) #saveStatus {
       grid-column:1 / -1;
     }
-    #paidArea:has(.paid-detail) {
-      grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);
+    #paidArea:has(.accordion-list) {
+      grid-template-columns:minmax(0,1fr) minmax(300px,360px);
+      gap:20px;
       align-items:stretch;
     }
-    #paidArea:has(.paid-detail) .paid-detail {
+    #paidArea:has(.accordion-list) .paid-detail {
+      min-width:0;
       min-height:0;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:14px;
+      padding:18px;
+      background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
     }
-    .detail-list {
+    #paidArea:has(.accordion-list) .paid-detail:first-child {
+      max-height:660px;
+    }
+    #paidArea:has(.accordion-list) .paid-title {
+      min-height:108px;
+      padding-bottom:14px;
+      border-bottom:1px solid var(--border);
+    }
+    #paidArea:has(.accordion-list) .paid-title > div {
+      min-width:0;
+    }
+    #paidArea:has(.accordion-list) .paid-title p {
+      max-width:680px;
+    }
+    #paidArea:has(.accordion-list) .detail-list {
       flex:1;
-      max-height:540px;
+      min-height:0;
+      max-height:none;
       overflow:auto;
-      padding-right:4px;
+      padding-right:6px;
+      align-content:start;
+    }
+    #paidArea:has(.accordion-list) .detail-list::-webkit-scrollbar {
+      width:8px;
+    }
+    #paidArea:has(.accordion-list) .detail-list::-webkit-scrollbar-thumb {
+      border-radius:999px;
+      background:#cbd5e1;
+    }
+    #paidArea:has(.accordion-list) .accordion-item {
+      box-shadow:0 8px 18px rgba(15,23,42,.04);
+    }
+    #paidArea:has(.accordion-list) .rec-list {
+      align-content:start;
+    }
+    #paidArea:has(.accordion-list) .rec-card {
+      padding:15px;
+      background:#fff;
     }
   }
   @media (max-width:820px){ .grid{grid-template-columns:1fr;} .hero{padding:38px 0 60px;} }
