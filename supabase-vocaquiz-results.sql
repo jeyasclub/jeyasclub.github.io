@@ -236,10 +236,10 @@ stable
 security definer
 set search_path = public
 as $$
-  select 'vocabulary'::text as test_key, count(distinct user_id)::bigint as taker_count
+  select 'vocabulary'::text as test_key, count(*)::bigint as taker_count
   from public.vocaquiz_results
   union all
-  select 'grammar'::text as test_key, count(distinct user_id)::bigint as taker_count
+  select 'grammar'::text as test_key, count(*)::bigint as taker_count
   from public.grammar_test_results;
 $$;
 
