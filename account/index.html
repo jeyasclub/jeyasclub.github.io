@@ -390,12 +390,19 @@
     line-height: 1.18;
   }
 
-  .member-card-profile span {
+  .member-card-profile span,
+  .member-card-bio {
     display: block;
     margin-top: 5px;
     color: var(--text-muted);
     font-size: 12px;
     font-weight: 700;
+  }
+
+  .member-card-bio {
+    max-width: 260px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
   }
 
   .member-card-meta {
@@ -487,7 +494,8 @@
     text-transform: uppercase;
   }
 
-  .account-info-form input {
+  .account-info-form input,
+  .account-info-form textarea {
     width: 100%;
     min-height: 44px;
     border: 1px solid var(--border);
@@ -498,7 +506,14 @@
     outline: none;
   }
 
-  .account-info-form input:focus {
+  .account-info-form textarea {
+    min-height: 82px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  .account-info-form input:focus,
+  .account-info-form textarea:focus {
     border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(26, 111, 232, 0.12);
   }
@@ -1136,6 +1151,7 @@
                 <img class="member-card-avatar" src="/assets/cs.jpg" alt="">
                 <div>
                   <strong id="profileName">Akun Jeya's Club</strong>
+                  <span class="member-card-bio" id="profileBio">Belajar bahasa Inggris bareng Jeya's Club.</span>
                 </div>
               </div>
 
@@ -1154,7 +1170,11 @@
                   <span>Nama</span>
                   <input id="accountNameInput" name="accountName" type="text" autocomplete="name" minlength="2" required>
                 </label>
-                <button class="primary-button" type="submit" id="accountInfoSubmit">Simpan Nama</button>
+                <label for="accountBioInput">
+                  <span>Bio</span>
+                  <textarea id="accountBioInput" name="accountBio" maxlength="90" placeholder="Tulis bio singkat untuk member card kamu."></textarea>
+                </label>
+                <button class="primary-button" type="submit" id="accountInfoSubmit">Simpan Info</button>
               </form>
               <div class="account-info-row">
                 <span>Email</span>
@@ -1326,9 +1346,11 @@
   const authMessage = document.getElementById("authMessage");
   const cardTitle = document.getElementById("cardTitle");
   const profileName = document.getElementById("profileName");
+  const profileBio = document.getElementById("profileBio");
   const profileEmail = document.getElementById("profileEmail");
   const accountInfoForm = document.getElementById("accountInfoForm");
   const accountNameInput = document.getElementById("accountNameInput");
+  const accountBioInput = document.getElementById("accountBioInput");
   const accountInfoSubmit = document.getElementById("accountInfoSubmit");
   const memberSince = document.getElementById("memberSince");
   const memberCard = document.querySelector(".member-card");
@@ -1419,6 +1441,7 @@
     return {
       email: user ? user.email : "",
       name: metadata.username || metadata.full_name || metadata.name || emailName || "User",
+      bio: metadata.bio || "",
       avatar: metadata.avatar_url || metadata.picture || "/assets/cs.jpg",
       createdAt: user ? user.created_at : ""
     };
@@ -1748,7 +1771,9 @@
     if (isLoggedIn) {
       cardTitle.textContent = "Akun Aktif";
       profileName.textContent = profile.name;
+      profileBio.textContent = profile.bio || "Belajar bahasa Inggris bareng Jeya's Club.";
       accountNameInput.value = profile.name;
+      accountBioInput.value = profile.bio;
       profileEmail.textContent = profile.email;
       memberSince.textContent = formatMemberDate(profile.createdAt);
       authMessage.className = "status good";
@@ -1763,6 +1788,7 @@
 
     cardTitle.textContent = "Login atau Daftar";
     accountNameInput.value = "";
+    accountBioInput.value = "";
     memberSince.textContent = "-";
     authMessage.className = "status";
     authMessage.textContent = "Login atau buat akun Jeya's Club untuk mulai.";
@@ -1869,21 +1895,29 @@
     }
 
     const displayName = accountNameInput.value.trim();
+    const bio = accountBioInput.value.trim();
     if (displayName.length < 2) {
       authMessage.className = "status bad";
       authMessage.textContent = "Nama minimal 2 karakter.";
       return;
     }
 
+    if (bio.length > 90) {
+      authMessage.className = "status bad";
+      authMessage.textContent = "Bio maksimal 90 karakter.";
+      return;
+    }
+
     accountInfoSubmit.disabled = true;
     authMessage.className = "status";
-    authMessage.textContent = "Menyimpan nama...";
+    authMessage.textContent = "Menyimpan account information...";
 
     const { data, error } = await supabaseClient.auth.updateUser({
       data: {
         username: displayName,
         full_name: displayName,
-        name: displayName
+        name: displayName,
+        bio
       }
     });
 
@@ -1904,9 +1938,11 @@
     }
 
     profileName.textContent = displayName;
+    profileBio.textContent = bio || "Belajar bahasa Inggris bareng Jeya's Club.";
     accountNameInput.value = displayName;
+    accountBioInput.value = bio;
     authMessage.className = "status good";
-    authMessage.textContent = "Nama berhasil disimpan.";
+    authMessage.textContent = "Account information berhasil disimpan.";
   }
 
   function getMemberCardFileName() {
