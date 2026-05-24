@@ -430,6 +430,45 @@
     line-height: 1.35;
   }
 
+  .account-info {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid rgba(26,111,232,0.12);
+    border-radius: 18px;
+    background: #f8fbff;
+  }
+
+  .account-info h3 {
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.3;
+  }
+
+  .account-info-row {
+    display: grid;
+    gap: 5px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--white);
+  }
+
+  .account-info-row span {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .account-info-row strong {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+
   .status {
     color: var(--text-muted);
     font-size: 12px;
@@ -1020,7 +1059,7 @@
                 <img class="member-card-avatar" src="/assets/cs.jpg" alt="">
                 <div>
                   <strong id="profileName">Akun Jeya's Club</strong>
-                  <span id="profileEmail">Siap digunakan.</span>
+                  <span>Member aktif</span>
                 </div>
               </div>
 
@@ -1035,6 +1074,14 @@
                 </div>
               </div>
             </div>
+
+            <section class="account-info" aria-labelledby="accountInfoTitle">
+              <h3 id="accountInfoTitle">Account Information</h3>
+              <div class="account-info-row">
+                <span>Email</span>
+                <strong id="profileEmail">Siap digunakan.</strong>
+              </div>
+            </section>
 
             <div class="account-actions">
               <button class="primary-button secondary" type="button" id="logoutButton">Logout</button>
