@@ -359,11 +359,13 @@
 
   .member-card-logo {
     width: 66px;
-    height: 46px;
+    height: auto;
+    max-height: 46px;
     object-fit: contain;
     border-radius: 12px;
     background: rgba(255,255,255,0.72);
     padding: 5px;
+    aspect-ratio: 500 / 208;
   }
 
   .member-card-profile {
@@ -1144,7 +1146,7 @@
                   <span>Member Card</span>
 
                 </div>
-                <img class="member-card-logo" src="/assets/logo.jpg" alt="">
+                <img class="member-card-logo" src="/assets/logo.jpg" alt="" width="500" height="208">
               </div>
 
               <div class="member-card-profile">
@@ -1989,6 +1991,7 @@
 
     try {
       await waitForMemberCardAssets();
+      await new Promise((resolve) => requestAnimationFrame(resolve));
       const canvas = await window.html2canvas(memberCard, {
         backgroundColor: null,
         scale: Math.min(3, window.devicePixelRatio || 2),
