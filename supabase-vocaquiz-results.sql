@@ -226,6 +226,26 @@ for select
 to authenticated
 using (user_id = auth.uid());
 
+create or replace function public.get_quick_english_test_taker_counts()
+returns table (
+  test_key text,
+  taker_count bigint
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select 'vocabulary'::text as test_key, count(distinct user_id)::bigint as taker_count
+  from public.vocaquiz_results
+  union all
+  select 'grammar'::text as test_key, count(distinct user_id)::bigint as taker_count
+  from public.grammar_test_results;
+$$;
+
+revoke all on function public.get_quick_english_test_taker_counts() from public;
+grant execute on function public.get_quick_english_test_taker_counts() to anon, authenticated;
+
 drop policy if exists "Users can read their own grammar test review access" on public.grammar_test_review_access;
 create policy "Users can read their own grammar test review access"
 on public.grammar_test_review_access
