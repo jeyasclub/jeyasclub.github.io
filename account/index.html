@@ -593,6 +593,13 @@
     background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
   }
 
+  .mission-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
   .mission-head h3 {
     color: var(--text);
     font-size: 18px;
@@ -605,6 +612,31 @@
     font-size: 12px;
     line-height: 1.6;
     font-weight: 700;
+  }
+
+  .mission-completed {
+    min-width: 96px;
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    text-align: center;
+  }
+
+  .mission-completed span {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mission-completed strong {
+    color: var(--blue-dark);
+    font-size: 24px;
+    line-height: 1;
   }
 
   .mission-card {
@@ -1108,10 +1140,6 @@
                   <span>Member Since</span>
                   <strong id="memberSince">-</strong>
                 </div>
-                <div class="member-card-field">
-                  <span>Badges Earned</span>
-                  <strong id="badgesEarnedCount">0</strong>
-                </div>
               </div>
             </div>
 
@@ -1136,8 +1164,14 @@
 
             <section class="mission-section" aria-labelledby="missionTitle">
               <div class="mission-head">
-                <h3 id="missionTitle">Mission</h3>
-                <p>Selesaikan mission untuk mengaktifkan badge member kamu.</p>
+                <div>
+                  <h3 id="missionTitle">Mission</h3>
+                  <p>Selesaikan mission untuk mengaktifkan badge member kamu.</p>
+                </div>
+                <div class="mission-completed" aria-label="Missions completed">
+                  <span>Missions completed</span>
+                  <strong id="missionsCompletedCount">0</strong>
+                </div>
               </div>
               <div class="mission-card" id="hangoutMissionCard">
                 <div class="mission-star" aria-hidden="true">★</div>
@@ -1291,7 +1325,7 @@
   const accountNameInput = document.getElementById("accountNameInput");
   const accountInfoSubmit = document.getElementById("accountInfoSubmit");
   const memberSince = document.getElementById("memberSince");
-  const badgesEarnedCount = document.getElementById("badgesEarnedCount");
+  const missionsCompletedCount = document.getElementById("missionsCompletedCount");
   const logoutButton = document.getElementById("logoutButton");
   const testResultsList = document.getElementById("testResultsList");
   const hangoutMissionCard = document.getElementById("hangoutMissionCard");
@@ -1310,7 +1344,6 @@
   const grammarPerfectMissionStatus = document.getElementById("grammarPerfectMissionStatus");
   const grammarPerfectMissionButton = document.getElementById("grammarPerfectMissionButton");
   const HANGOUT_COURSE_KEY = "english-hangout-club";
-  const BADGE_TOTAL = 5;
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
@@ -1451,9 +1484,9 @@
     `).join("");
   }
 
-  function updateBadgesEarnedCount() {
+  function updateMissionsCompletedCount() {
     const earned = document.querySelectorAll(".mission-card.is-complete").length;
-    badgesEarnedCount.textContent = `${earned}/${BADGE_TOTAL}`;
+    missionsCompletedCount.textContent = `${earned}`;
   }
 
   async function loadTestResults() {
@@ -1523,7 +1556,7 @@
     hangoutMissionButton.setAttribute("aria-label", isComplete
       ? "English Hangout Club sudah aktif"
       : "Join English Hangout Club");
-    updateBadgesEarnedCount();
+    updateMissionsCompletedCount();
   }
 
   async function loadHangoutMission() {
@@ -1552,7 +1585,7 @@
     vocaquizUnlockMissionButton.setAttribute("aria-label", isComplete
       ? "Rincian hasil Vocabulary Test sudah aktif"
       : "Unlock rincian hasil Vocabulary Test");
-    updateBadgesEarnedCount();
+    updateMissionsCompletedCount();
   }
 
   async function loadVocaquizUnlockMission() {
@@ -1582,7 +1615,7 @@
     buttonEl.setAttribute("aria-label", isComplete
       ? `Mission skor minimal ${threshold} Vocabulary Test sudah tercapai`
       : `Ambil Vocabulary Test untuk mencapai skor minimal ${threshold}`);
-    updateBadgesEarnedCount();
+    updateMissionsCompletedCount();
   }
 
   function renderVocaquizScoreMissions(bestScore = null) {
@@ -1636,7 +1669,7 @@
     grammarPerfectMissionButton.setAttribute("aria-label", isComplete
       ? "Mission skor sempurna Grammar Test sudah tercapai"
       : "Ambil Grammar Test untuk mencapai skor sempurna");
-    updateBadgesEarnedCount();
+    updateMissionsCompletedCount();
   }
 
   async function loadGrammarPerfectMission() {
@@ -1729,7 +1762,7 @@
     renderVocaquizUnlockMission(false);
     renderVocaquizScoreMissions(null);
     renderGrammarPerfectMission(null);
-    updateBadgesEarnedCount();
+    updateMissionsCompletedCount();
     testResultsList.innerHTML = "";
   }
 
