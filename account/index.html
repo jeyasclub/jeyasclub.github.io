@@ -527,6 +527,8 @@
   .account-actions {
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .account-actions .primary-button {
@@ -557,6 +559,8 @@
     }
 
     .account-card:has(#accountSession:not(.hidden)) .account-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-column: 1;
       grid-row: 2;
       justify-content: stretch;
@@ -1159,6 +1163,7 @@
             </section>
 
             <div class="account-actions">
+              <button class="primary-button" type="button" id="downloadMemberCardButton">Download Member Card</button>
               <button class="primary-button secondary" type="button" id="logoutButton">Logout</button>
             </div>
 
@@ -1302,6 +1307,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
   const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
@@ -1325,7 +1331,9 @@
   const accountNameInput = document.getElementById("accountNameInput");
   const accountInfoSubmit = document.getElementById("accountInfoSubmit");
   const memberSince = document.getElementById("memberSince");
+  const memberCard = document.querySelector(".member-card");
   const missionsCompletedCount = document.getElementById("missionsCompletedCount");
+  const downloadMemberCardButton = document.getElementById("downloadMemberCardButton");
   const logoutButton = document.getElementById("logoutButton");
   const testResultsList = document.getElementById("testResultsList");
   const hangoutMissionCard = document.getElementById("hangoutMissionCard");
@@ -1901,6 +1909,70 @@
     authMessage.textContent = "Nama berhasil disimpan.";
   }
 
+  function getMemberCardFileName() {
+    const profile = getUserProfile();
+    const cleanName = (profile.name || "member")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "member";
+    return `jeyas-club-member-card-${cleanName}.png`;
+  }
+
+  async function waitForMemberCardAssets() {
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
+    const images = memberCard ? Array.from(memberCard.querySelectorAll("img")) : [];
+    await Promise.all(images.map((image) => {
+      if (image.complete) return Promise.resolve();
+      if (image.decode) return image.decode().catch(() => {});
+      return new Promise((resolve) => {
+        image.addEventListener("load", resolve, { once: true });
+        image.addEventListener("error", resolve, { once: true });
+      });
+    }));
+  }
+
+  async function downloadMemberCard() {
+    if (!memberCard || !currentSession || !currentSession.user) {
+      authMessage.className = "status bad";
+      authMessage.textContent = "Login dulu untuk download member card.";
+      return;
+    }
+
+    if (!window.html2canvas) {
+      authMessage.className = "status bad";
+      authMessage.textContent = "Generator PNG belum termuat. Coba refresh halaman.";
+      return;
+    }
+
+    downloadMemberCardButton.disabled = true;
+    authMessage.className = "status";
+    authMessage.textContent = "Menyiapkan PNG member card...";
+
+    try {
+      await waitForMemberCardAssets();
+      const canvas = await window.html2canvas(memberCard, {
+        backgroundColor: null,
+        scale: Math.min(3, window.devicePixelRatio || 2),
+        useCORS: true
+      });
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = getMemberCardFileName();
+      link.click();
+      authMessage.className = "status good";
+      authMessage.textContent = "Member card berhasil didownload.";
+    } catch (error) {
+      console.error("Download member card failed:", error);
+      authMessage.className = "status bad";
+      authMessage.textContent = "Member card belum bisa didownload. Coba lagi.";
+    } finally {
+      downloadMemberCardButton.disabled = false;
+    }
+  }
+
   async function initAuth() {
     if (!supabaseClient) {
       renderAuthState();
@@ -1937,6 +2009,7 @@
     tab.addEventListener("click", () => setAuthMode(tab.dataset.authMode));
   });
   accountInfoForm.addEventListener("submit", handleAccountInfoSubmit);
+  downloadMemberCardButton.addEventListener("click", downloadMemberCard);
   logoutButton.addEventListener("click", logout);
   setAuthMode("login");
   initAuth();
