@@ -98,6 +98,12 @@
   .metric span, .locked span, .paid-detail span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
   .metric strong { display:block; color:var(--blue-dark); font-size:24px; }
   .breakdown-panel { width:100%; gap:14px; background:#f3f8ff; }
+  .speaking-rec { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:18px; align-items:center; padding:18px; border:1px solid rgba(22,164,108,.18); border-radius:18px; background:linear-gradient(135deg,#edfaf3 0%,#fff 64%,#eef6ff 100%); box-shadow:0 14px 30px rgba(22,164,108,.08); }
+  .speaking-rec-copy { display:grid; gap:8px; min-width:0; }
+  .speaking-rec-copy span { width:fit-content; min-height:28px; display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; background:#fff; color:var(--green); border:1px solid rgba(22,164,108,.18); font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+  .speaking-rec-copy h3 { font-size:20px; line-height:1.3; }
+  .speaking-rec-copy p { color:var(--muted); font-size:13px; line-height:1.7; }
+  .speaking-rec-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
   #paidArea { display:grid; gap:18px; }
   .locked { display:grid; gap:12px; background:#f3f8ff; }
   .unlock-note { display:grid; gap:8px; padding:12px; border:1px dashed rgba(26,111,232,.3); border-radius:12px; background:#fff; }
@@ -138,9 +144,9 @@
   .footer-grid img { width:120px; height:auto; }
   .footer-grid h4 { font-size:13px; margin-bottom:12px; }
   .footer-grid a, .footer-grid p { display:block; color:var(--muted); font-size:13px; line-height:1.8; text-decoration:none; }
-  @media (min-width:821px){ .grid:has(#resultPanel.active){align-items:start;} .grid:has(#resultPanel.active) .hero-start,.grid:has(#resultPanel.active) .hero-art{display:none;} .card:has(#resultPanel.active){grid-column:1 / -1;} .card:has(#resultPanel.active) .result.active{grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start;} .card:has(#resultPanel.active) .score-box,.card:has(#resultPanel.active) .metrics,.card:has(#resultPanel.active) .breakdown-panel,.card:has(#resultPanel.active) #paidArea,.card:has(#resultPanel.active) .result-actions,.card:has(#resultPanel.active) #saveStatus{grid-column:1 / -1;} }
+  @media (min-width:821px){ .grid:has(#resultPanel.active){align-items:start;} .grid:has(#resultPanel.active) .hero-start,.grid:has(#resultPanel.active) .hero-art{display:none;} .card:has(#resultPanel.active){grid-column:1 / -1;} .card:has(#resultPanel.active) .result.active{grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start;} .card:has(#resultPanel.active) .score-box,.card:has(#resultPanel.active) .metrics,.card:has(#resultPanel.active) .breakdown-panel,.card:has(#resultPanel.active) .speaking-rec,.card:has(#resultPanel.active) #paidArea,.card:has(#resultPanel.active) .result-actions,.card:has(#resultPanel.active) #saveStatus{grid-column:1 / -1;} }
   @media (max-width:820px){ .grid{grid-template-columns:1fr;} .hero{padding:38px 0 60px;} }
-  @media (max-width:620px){ .shell{width:min(100% - 24px,1120px);} .brand img{width:58px;height:58px;} .top-actions .ghost{display:none;} .card-head,.panel,.result{padding:20px;} .score-box{grid-template-columns:1fr;min-height:auto;padding:24px;} .answer-grid{grid-template-columns:1fr;} .footer{display:grid;} .primary,.ghost{width:100%;} .footer-grid{grid-template-columns:1fr;} .payment-modal{padding:10px;} .payment-panel{height:88vh;border-radius:18px;} }
+  @media (max-width:620px){ .shell{width:min(100% - 24px,1120px);} .brand img{width:58px;height:58px;} .top-actions .ghost{display:none;} .card-head,.panel,.result{padding:20px;} .score-box,.speaking-rec{grid-template-columns:1fr;min-height:auto;padding:24px;} .speaking-rec-actions{justify-content:stretch;} .speaking-rec-actions .primary,.speaking-rec-actions .ghost{width:100%;} .answer-grid{grid-template-columns:1fr;} .footer{display:grid;} .primary,.ghost{width:100%;} .footer-grid{grid-template-columns:1fr;} .payment-modal{padding:10px;} .payment-panel{height:88vh;border-radius:18px;} }
 </style>
 </head>
 <body>
@@ -226,6 +232,17 @@
         <div class="metric breakdown-panel">
           <span>Breakdown per level</span>
           <div class="breakdown" id="breakdown"></div>
+        </div>
+        <div class="speaking-rec">
+          <div class="speaking-rec-copy">
+            <span>Rekomendasi belajar</span>
+            <h3>Latih slang kamu di Private Speaking Practice</h3>
+            <p>Slang paling terasa kalau dipakai dalam obrolan. Private Speaking Practice bisa bantu kamu latihan conversation, pronunciation, dan ekspresi casual secara lebih natural bareng tutor.</p>
+          </div>
+          <div class="speaking-rec-actions">
+            <a class="primary" href="/private-speaking-bahasa-inggris-online/">Lihat Program</a>
+            <a class="ghost" href="https://wa.link/dely2z" target="_blank" rel="noreferrer noopener">Konsultasi</a>
+          </div>
         </div>
         <div id="paidArea"></div>
         <div class="result-actions">
