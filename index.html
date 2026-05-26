@@ -3287,6 +3287,23 @@
           <a class="test-card-action" href="/grammar-test/">Mulai Grammar Test</a>
         </div>
       </details>
+      <details class="test-card" name="quick-english-test">
+        <summary>
+          <div class="test-card-visual" aria-hidden="true">
+            <img src="assets/optimized/laptop.png" alt="" width="208" height="260" loading="lazy" decoding="async">
+          </div>
+          <div class="test-card-content">
+            <span class="test-card-label">Available</span>
+            <h3>English Slang Test by Jeya's Club</h3>
+          </div>
+          <span class="test-card-toggle" aria-hidden="true"></span>
+        </summary>
+        <div class="test-card-body">
+          <p>Tes seberapa paham kamu dengan slang, meme words, dan internet culture dalam bahasa Inggris.</p>
+          <span class="test-card-takers" data-test-takers="slang">Telah diambil ... orang</span>
+          <a class="test-card-action" href="/english-slang-test/">Mulai English Slang Test</a>
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -3837,8 +3854,14 @@
       return;
     }
 
+    const seenKeys = new Set();
     data.forEach(item => {
+      seenKeys.add(item.test_key);
       setQuickTestTakerText(item.test_key, item.taker_count);
+    });
+    quickTestTakerEls.forEach(el => {
+      const key = el.dataset.testTakers;
+      if (key && !seenKeys.has(key)) setQuickTestTakerText(key, 0);
     });
   }
 
