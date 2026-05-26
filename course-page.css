@@ -44,6 +44,34 @@ section { padding:72px 0; }
 .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .card, .faq-item, .price-panel, .cta-box { border:1px solid rgba(26,111,232,.14); border-radius:18px; background:var(--white); box-shadow:0 14px 30px rgba(26,111,232,.07); }
 .card { display:grid; gap:10px; padding:20px; }
+.grid-2 > .card:not(.step-card)::before,
+.grid-3 > .card:not(.step-card)::before {
+  content:"";
+  width:54px;
+  height:54px;
+  display:block;
+  border-radius:16px;
+  background-color:var(--blue-light);
+  background-image:url('/assets/optimized/ok.png');
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:42px auto;
+}
+.grid-2 > .card:nth-child(2n):not(.step-card)::before,
+.grid-3 > .card:nth-child(2n):not(.step-card)::before {
+  background-color:#edfaf3;
+  background-image:url('/assets/optimized/laptop.png');
+}
+.grid-2 > .card:nth-child(3n):not(.step-card)::before,
+.grid-3 > .card:nth-child(3n):not(.step-card)::before {
+  background-color:#f3eeff;
+  background-image:url('/assets/optimized/book.png');
+}
+.grid-2 > .card:nth-child(4n):not(.step-card)::before,
+.grid-3 > .card:nth-child(4n):not(.step-card)::before {
+  background-color:#fff8e6;
+  background-image:url('/assets/optimized/kids.png');
+}
 .card h3, .faq-item h3 { font-size:18px; line-height:1.35; }
 .card-icon { width:56px; height:56px; display:grid; place-items:center; border-radius:16px; background:var(--blue-light); }
 .card-icon img { width:44px; height:44px; object-fit:contain; }
