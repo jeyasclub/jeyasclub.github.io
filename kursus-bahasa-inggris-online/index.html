@@ -498,6 +498,19 @@
     object-fit: cover;
   }
 
+  .testimonial-avatar-placeholder {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-size: 14px;
+    font-weight: 900;
+    flex: 0 0 auto;
+  }
+
   .testimonial-name {
     font-weight: 900;
   }
@@ -512,6 +525,16 @@
     color: var(--muted);
     font-size: 13px;
     line-height: 1.75;
+  }
+
+  .testimonials-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+  }
+
+  .hidden {
+    display: none !important;
   }
 
   .faq {
@@ -816,27 +839,10 @@
         <h2>Pengalaman belajar di Jeya's Club</h2>
         <p>Suasana belajar yang suportif membantu peserta lebih nyaman untuk bertanya, latihan, dan berkembang.</p>
       </div>
-      <div class="testimonials-grid">
-        <article class="testimonial-card">
-          <div class="testimonial-header">
-            <img src="/assets/roro.jpg" alt="Roro Andini" width="585" height="585" loading="lazy" decoding="async">
-            <div>
-              <div class="testimonial-name">Roro Andini</div>
-              <div class="testimonial-role">Mahasiswa</div>
-            </div>
-          </div>
-          <p>"Jeya's Club jadi tempat yang nyaman untuk belajar bahasa Inggris. Materinya lengkap, dibimbing, diberi tugas, dan tetap bebas berdiskusi."</p>
-        </article>
-        <article class="testimonial-card">
-          <div class="testimonial-header">
-            <img src="/assets/rizqi.jpg" alt="Rizqi Rahmawati" width="585" height="585" loading="lazy" decoding="async">
-            <div>
-              <div class="testimonial-name">Rizqi Rahmawati</div>
-              <div class="testimonial-role">Karyawan Swasta</div>
-            </div>
-          </div>
-          <p>"Aku belajar banyak hal dan bertemu teman-teman yang seru. Suasananya suportif, tapi tetap menyenangkan."</p>
-        </article>
+      <div class="testimonials-grid" id="testimonialGrid">
+      </div>
+      <div class="testimonials-actions">
+        <button class="button" type="button" id="loadMoreTestimonials">Lihat lebih banyak</button>
       </div>
     </div>
   </section>
@@ -915,5 +921,137 @@
     </div>
   </div>
 </footer>
+<script>
+  const testimonials = [
+    {
+      name: "Roro Andini",
+      role: "Mahasiswa",
+      image: "/assets/roro.jpg",
+      text: "Jeya's Club jadi tempat yang nyaman untuk belajar bahasa Inggris. Materinya lengkap, dibimbing, diberi tugas, dan tetap bebas berdiskusi."
+    },
+    {
+      name: "Rizqi Rahmawati",
+      role: "Karyawan Swasta",
+      image: "/assets/rizqi.jpg",
+      text: "Aku belajar banyak hal dan bertemu teman-teman yang seru. Suasananya suportif, tapi tetap menyenangkan."
+    },
+    {
+      name: "Ghaitsaa Mutiara Pertama",
+      role: "Tutor: Lydia",
+      initials: "GM",
+      text: "Aku senang dan terkesan banget ikut private class ini karena jadi tahu basic berbahasa Inggris. Kak Lydia juga sabar dan seru banget ngajarnya."
+    },
+    {
+      name: "Diva Shabrina Jorgi",
+      role: "Tutor: Devo",
+      initials: "DS",
+      text: "Selama mengikuti Kursus Private Bahasa Inggris Jeya's Club, saya merasa sangat senang karena suasananya nyaman dan tutor sangat sabar menjelaskan materi."
+    },
+    {
+      name: "Raphaela Marie",
+      role: "Tutor: Indigo",
+      initials: "RM",
+      text: "It was so fun. We talked about a lot of things and it felt like talking with a bestie in English. Thank you Jeya's Club."
+    },
+    {
+      name: "Edria Nur Salsabila Waskita",
+      role: "Tutor: Aya",
+      initials: "EN",
+      text: "Aku awalnya tidak percaya diri speaking English, tapi kelasnya ternyata sangat cocok. Tutornya supportive dan membuatku tidak takut salah grammar."
+    },
+    {
+      name: "Shofarida",
+      role: "Tutor: Klair",
+      initials: "S",
+      text: "Senang banget sama kelas ini. Tutornya sabar, baik, friendly, dan smart. Aku jadi lebih pede ngomong bahasa Inggris tanpa takut salah."
+    },
+    {
+      name: "Fitri Wulan Suci",
+      role: "Tutor: Devo",
+      initials: "FW",
+      text: "Secara keseluruhan kelasnya asik dan seru. Tutor supportive banget, materinya juga asik. Jadi benar-benar belajar banyak."
+    },
+    {
+      name: "Nisrina Ikbar",
+      role: "Tutor: Fira",
+      initials: "NI",
+      text: "Miss Fira sangat humble dan komentarnya mudah dipahami. Beliau juga sabar banget menjelaskan kalau ada yang belum paham."
+    },
+    {
+      name: "Ahmad Fahmi Arya Fauzan",
+      role: "Tutor: Lydia",
+      initials: "AF",
+      text: "Joining this course has been a great experience. The lessons were well-structured, easy to follow, and helped boost my confidence."
+    },
+    {
+      name: "Faizah Aulia",
+      role: "Tutor: Zahra",
+      initials: "FA",
+      text: "Belajarnya nyaman dan penjelasannya mudah diikuti. Aku merasa lebih terbantu karena bisa bertanya langsung saat ada materi yang belum paham."
+    },
+    {
+      name: "Zahra Arum",
+      role: "Tutor: Nadila",
+      initials: "ZA",
+      text: "Kelasnya menyenangkan dan tidak kaku. Tutor memberi arahan dengan jelas sehingga latihan bahasa Inggris terasa lebih ringan."
+    },
+    {
+      name: "Putri D",
+      role: "Tutor: Devo",
+      initials: "PD",
+      text: "Materinya membantu banget untuk memahami dasar bahasa Inggris. Sesi private membuat aku lebih leluasa bertanya."
+    },
+    {
+      name: "Dinda M",
+      role: "Tutor: Devo",
+      initials: "DM",
+      text: "Tutor sabar dan cara mengajarnya enak. Aku jadi lebih percaya diri untuk latihan dan tidak malu saat melakukan kesalahan."
+    }
+  ];
+
+  const testimonialGrid = document.getElementById("testimonialGrid");
+  const loadMoreTestimonials = document.getElementById("loadMoreTestimonials");
+  let visibleTestimonials = 0;
+  const testimonialBatch = 4;
+
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  function renderTestimonialAvatar(item) {
+    if (item.image) {
+      return `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" width="585" height="585" loading="lazy" decoding="async">`;
+    }
+
+    return `<div class="testimonial-avatar-placeholder" aria-hidden="true">${escapeHTML(item.initials || item.name.slice(0, 2))}</div>`;
+  }
+
+  function renderTestimonials() {
+    visibleTestimonials = Math.min(visibleTestimonials + testimonialBatch, testimonials.length);
+    testimonialGrid.innerHTML = testimonials.slice(0, visibleTestimonials).map(item => `
+      <article class="testimonial-card">
+        <div class="testimonial-header">
+          ${renderTestimonialAvatar(item)}
+          <div>
+            <div class="testimonial-name">${escapeHTML(item.name)}</div>
+            <div class="testimonial-role">${escapeHTML(item.role)}</div>
+          </div>
+        </div>
+        <p>"${escapeHTML(item.text)}"</p>
+      </article>
+    `).join("");
+
+    loadMoreTestimonials.classList.toggle("hidden", visibleTestimonials >= testimonials.length);
+  }
+
+  loadMoreTestimonials.addEventListener("click", renderTestimonials);
+  renderTestimonials();
+</script>
 </body>
 </html>
