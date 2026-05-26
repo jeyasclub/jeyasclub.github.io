@@ -1471,6 +1471,7 @@
         <p>${message}</p>
         <a href="/vocabulary-test/">Ambil Vocabulary Test</a>
         <a href="/grammar-test/">Ambil Grammar Test</a>
+        <a href="/english-slang-test/">Ambil English Slang Test</a>
       </div>
     `;
   }
@@ -1538,6 +1539,12 @@
       .order("created_at", { ascending: false })
       .limit(1);
 
+    const { data: slangData, error: slangError } = await supabaseClient
+      .from("english_slang_test_results")
+      .select("id,test_name,score,total_point,category,correct_count,total_questions,accuracy,created_at")
+      .order("created_at", { ascending: false })
+      .limit(1);
+
     if (vocabularyError) {
       console.error("Load vocabulary test result failed:", vocabularyError);
       renderEmptyTestResults("Hasil tes belum bisa dimuat. Coba refresh halaman.");
@@ -1546,6 +1553,10 @@
 
     if (grammarError) {
       console.error("Load grammar test result failed:", grammarError);
+    }
+
+    if (slangError) {
+      console.error("Load English Slang Test result failed:", slangError);
     }
 
     const vocabularyResult = vocabularyData && vocabularyData.length
@@ -1570,8 +1581,19 @@
           isTaken: false,
           emptyText: "Grammar Test belum diambil."
         };
+    const slangResult = slangData && slangData.length
+      ? { ...slangData[0], isTaken: true, href: "/english-slang-test/" }
+      : {
+          test_name: "English Slang Test by Jeya's Club",
+          category: "Ready",
+          total_point: 25,
+          total_questions: 25,
+          href: "/english-slang-test/",
+          isTaken: false,
+          emptyText: "English Slang Test belum diambil."
+        };
 
-    renderTestResults([vocabularyResult, grammarResult]);
+    renderTestResults([vocabularyResult, grammarResult, slangResult]);
   }
 
   function renderHangoutMission(isComplete = false) {
