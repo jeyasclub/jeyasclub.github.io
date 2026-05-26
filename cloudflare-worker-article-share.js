@@ -6,6 +6,7 @@ const OG_IMAGE_WIDTH = 768;
 const OG_IMAGE_HEIGHT = 402;
 const VOCAQUIZ_PRODUCT_SLUG = 'vocabulary-test-result';
 const GRAMMAR_TEST_PRODUCT_SLUG = 'unlock-grammar-test-recommendation';
+const ENGLISH_SLANG_TEST_PRODUCT_SLUG = 'unlock-english-slang-test';
 const ENGLISH_HANGOUT_PRODUCT_SLUG = 'english-hangout-club-by-jeyas-club-may-2026-di9e';
 const ENGLISH_HANGOUT_COURSE_KEY = 'english-hangout-club';
 
@@ -109,9 +110,10 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   const isVocaquiz = isVocaquizPayment({ productName, productUrl, productId }, env);
   const isGrammarTest = isGrammarTestPayment({ productName, productUrl, productId }, env);
+  const isEnglishSlangTest = isEnglishSlangTestPayment({ productName, productUrl, productId }, env);
   const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
 
-  if (!isVocaquiz && !isGrammarTest && !isEnglishHangout) {
+  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isEnglishHangout) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -133,6 +135,10 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   if (isGrammarTest) {
     rpcName = 'grant_grammar_test_review_access_by_email';
+  }
+
+  if (isEnglishSlangTest) {
+    rpcName = 'grant_english_slang_test_review_access_by_email';
   }
 
   if (isEnglishHangout) {
@@ -174,7 +180,7 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
-    product: isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review'),
+    product: isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')),
     result: rpcData,
   });
 }
@@ -196,6 +202,15 @@ function isGrammarTestPayment({ productName, productUrl, productId }, env = {}) 
   return haystack.includes(GRAMMAR_TEST_PRODUCT_SLUG)
     || (haystack.includes('grammar') && haystack.includes('test') && haystack.includes('recommendation'))
     || (haystack.includes('grammar') && haystack.includes('test') && haystack.includes('result'));
+}
+
+function isEnglishSlangTestPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_ENGLISH_SLANG_TEST_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(ENGLISH_SLANG_TEST_PRODUCT_SLUG)
+    || (haystack.includes('english') && haystack.includes('slang') && haystack.includes('test'));
 }
 
 function isEnglishHangoutPayment({ productName, productUrl, productId }, env = {}) {
