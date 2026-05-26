@@ -65,7 +65,7 @@ section { padding:72px 0; }
 .testimonial-role { color:var(--muted); font-size:12px; font-weight:700; line-height:1.4; }
 .cta { padding-top:0; }
 .cta-box { display:grid; gap:14px; padding:32px; background:linear-gradient(135deg,#eef6ff 0%,#fff 62%,#fff8e6 100%); }
-.whatsapp-float { position:fixed; right:22px; bottom:22px; z-index:80; min-height:54px; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:14px 18px; border-radius:999px; background:#16a46c; color:#fff; text-decoration:none; font-size:14px; font-weight:900; box-shadow:0 16px 34px rgba(22,164,108,.28); }
+.whatsapp-float { position:fixed; right:22px; bottom:92px; z-index:1200; min-height:54px; display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:14px 18px; border-radius:999px; background:#16a46c; color:#fff; text-decoration:none; font-size:14px; font-weight:900; box-shadow:0 16px 34px rgba(22,164,108,.28); }
 .whatsapp-float:hover { background:#12855a; }
 .whatsapp-float-icon { font-size:18px; line-height:1; }
 footer { padding:34px 0; border-top:1px solid var(--border); background:#fff; }
@@ -81,7 +81,7 @@ footer { padding:34px 0; border-top:1px solid var(--border); background:#fff; }
   .brand span { display:none; }
   .topbar .button { min-height:40px; padding:9px 12px; }
   .hero-actions .button, .card-actions .button, .cta-box .button { width:100%; }
-  .whatsapp-float { right:14px; bottom:14px; min-height:48px; padding:12px 14px; font-size:13px; }
+  .whatsapp-float { right:14px; bottom:82px; min-height:48px; padding:12px 14px; font-size:13px; }
   h1 { font-size:40px; }
   .hero-art { padding:0; }
   .price-table { font-size:13px; }
