@@ -29,7 +29,7 @@
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="/assets/Jihan.png" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/optimized/normal-min.png" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -232,26 +232,66 @@
     gap: 12px;
   }
 
-  .hero-photo-stack {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    transform: rotate(1deg);
+  .hero-penguins {
+    position: relative;
+    min-height: 360px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
   }
 
-  .hero-photo-stack img {
+  .penguin-main {
+    position: relative;
+    z-index: 2;
+    width: clamp(170px, 70vw, 286px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .penguin-main img,
+  .penguin-float img {
     width: 100%;
-    aspect-ratio: 1;
-    border-radius: 22px;
-    object-fit: cover;
-    border: 6px solid rgba(255,255,255,0.9);
-    background: var(--white);
-    box-shadow: 0 18px 34px rgba(15, 23, 42, 0.12);
+    height: 100%;
+    object-fit: contain;
+    display: block;
   }
 
-  .hero-photo-stack img:nth-child(2) { transform: translateY(24px) rotate(3deg); }
-  .hero-photo-stack img:nth-child(3) { transform: translateY(-10px) rotate(-3deg); }
-  .hero-photo-stack img:nth-child(4) { transform: translateY(12px) rotate(2deg); }
+  .penguin-float {
+    position: absolute;
+    z-index: 1;
+    width: 188px;
+    height: 188px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .penguin-float-1 {
+    top: 18px;
+    left: 10px;
+    width: 176px;
+    height: 176px;
+  }
+
+  .penguin-float-2 {
+    top: 0;
+    right: 32px;
+    width: 148px;
+    height: 148px;
+  }
+
+  .penguin-float-3 {
+    right: 0;
+    bottom: 50px;
+  }
+
+  .penguin-float-4 {
+    left: 0;
+    bottom: 22px;
+    width: 218px;
+    height: 218px;
+  }
 
   .section {
     padding: 70px 0;
@@ -293,10 +333,10 @@
     position: relative;
     overflow: hidden;
     display: grid;
-    grid-template-columns: 160px minmax(0, 1fr);
-    gap: 18px;
-    min-height: 220px;
-    padding: 18px;
+    grid-template-columns: minmax(210px, 0.85fr) minmax(0, 1fr);
+    gap: 22px;
+    min-height: 280px;
+    padding: 22px;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--white);
@@ -327,12 +367,12 @@
 
   .person-photo {
     width: 100%;
-    aspect-ratio: 4 / 5;
-    border-radius: 8px;
-    object-fit: cover;
-    background: var(--blue-light);
-    border: 5px solid rgba(255,255,255,0.9);
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+    height: 260px;
+    object-fit: contain;
+    object-position: center bottom;
+    background: transparent;
+    border: 0;
+    filter: drop-shadow(0 14px 18px rgba(15, 23, 42, 0.14));
   }
 
   .person-copy {
@@ -494,8 +534,9 @@
       grid-template-columns: 1fr;
     }
 
-    .hero-photo-stack {
+    .hero-penguins {
       max-width: 480px;
+      min-height: 300px;
     }
 
     .footer-top {
@@ -562,14 +603,53 @@
       padding: 52px 0;
     }
 
+    .hero-penguins {
+      min-height: 230px;
+      width: 100%;
+    }
+
+    .penguin-main {
+      width: clamp(145px, 62vw, 210px);
+    }
+
+    .penguin-float {
+      width: 150px;
+      height: 150px;
+    }
+
+    .penguin-float-1 {
+      left: 24px;
+    }
+
+    .penguin-float-2 {
+      right: 52px;
+      width: 126px;
+      height: 126px;
+    }
+
+    .penguin-float-3 {
+      right: 0;
+      top: 84px;
+      bottom: auto;
+    }
+
+    .penguin-float-4 {
+      left: 0;
+      top: 84px;
+      bottom: auto;
+      width: 174px;
+      height: 174px;
+    }
+
     .person-card {
       grid-template-columns: 1fr;
       min-height: 0;
-      padding: 14px;
+      gap: 8px;
+      padding: 16px;
     }
 
     .person-photo {
-      max-height: 340px;
+      height: 250px;
     }
   }
 </style>
@@ -607,11 +687,12 @@
             <a class="ghost-link" href="#tutor">Meet the Tutors</a>
           </div>
         </div>
-        <div class="hero-photo-stack" aria-hidden="true">
-          <img src="/assets/Jihan.png" alt="" width="800" height="800" decoding="async" fetchpriority="high">
-          <img src="/assets/Assara.png" alt="" width="800" height="800" loading="lazy" decoding="async">
-          <img src="/assets/Nadila.png" alt="" width="800" height="800" loading="lazy" decoding="async">
-          <img src="/assets/Indi.png" alt="" width="800" height="800" loading="lazy" decoding="async">
+        <div class="hero-penguins" aria-hidden="true">
+          <div class="penguin-float penguin-float-1"><img src="/assets/optimized/piala.png" alt="" width="448" height="560" decoding="async" fetchpriority="high"></div>
+          <div class="penguin-float penguin-float-2"><img src="/assets/optimized/jatuh.png" alt="" width="368" height="460" decoding="async"></div>
+          <div class="penguin-float penguin-float-3"><img src="/assets/optimized/love.png" alt="" width="360" height="360" decoding="async"></div>
+          <div class="penguin-float penguin-float-4"><img src="/assets/optimized/tidur.png" alt="" width="448" height="560" decoding="async"></div>
+          <div class="penguin-main"><img src="/assets/optimized/normal-min.png" alt="" width="570" height="760" decoding="async" fetchpriority="high"></div>
         </div>
       </div>
     </section>
@@ -625,7 +706,7 @@
         </div>
         <div class="people-grid">
           <article class="person-card">
-            <img class="person-photo" src="/assets/Jihan.png" alt="Jihan Amalia" width="800" height="1000" loading="lazy" decoding="async">
+            <img class="person-photo" src="/assets/Jihan.png" alt="Jihan Amalia" width="1654" height="1654" loading="lazy" decoding="async">
             <div class="person-copy">
               <span class="role-pill">Founder</span>
               <h3>Jihan Amalia</h3>
@@ -633,7 +714,7 @@
             </div>
           </article>
           <article class="person-card">
-            <img class="person-photo" src="/assets/Assara.png" alt="Assara Bintari" width="800" height="1000" loading="lazy" decoding="async">
+            <img class="person-photo" src="/assets/Assara.png" alt="Assara Bintari" width="1654" height="1654" loading="lazy" decoding="async">
             <div class="person-copy">
               <span class="role-pill">CRM</span>
               <h3>Assara Bintari</h3>
@@ -653,7 +734,7 @@
         </div>
         <div class="people-grid">
           <article class="person-card">
-            <img class="person-photo" src="/assets/Nadila.png" alt="Kak Nadila" width="800" height="1000" loading="lazy" decoding="async">
+            <img class="person-photo" src="/assets/Nadila.png" alt="Kak Nadila" width="1654" height="1654" loading="lazy" decoding="async">
             <div class="person-copy">
               <span class="role-pill">Tutor</span>
               <h3>Kak Nadila</h3>
@@ -664,7 +745,7 @@
             </div>
           </article>
           <article class="person-card">
-            <img class="person-photo" src="/assets/Indi.png" alt="Kak Indi" width="800" height="1000" loading="lazy" decoding="async">
+            <img class="person-photo" src="/assets/Indi.png" alt="Kak Indi" width="1654" height="1654" loading="lazy" decoding="async">
             <div class="person-copy">
               <span class="role-pill">Tutor</span>
               <h3>Kak Indi</h3>
