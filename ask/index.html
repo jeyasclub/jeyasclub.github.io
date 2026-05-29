@@ -422,22 +422,11 @@
     text-transform: uppercase;
   }
 
-  .x-profile-timeline {
-    max-height: 360px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--white);
-  }
-
-  .x-profile-timeline .twitter-timeline {
-    display: block;
-    min-height: 320px;
-    padding: 16px;
-    color: var(--blue);
-    font-size: 13px;
-    font-weight: 900;
-    text-decoration: none;
+  .x-profile-note {
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.6;
+    font-weight: 700;
   }
 
   .visual-strip {
@@ -565,20 +554,18 @@
                 <span>Open X</span>
               </a>
             </div>
-            <p class="x-profile-bio" id="xProfileBio">Punya komunitas belajar Bahasa, suka ngetweet tentang bahasa Inggris. Owner @english_menfess. DM for business inquiries.</p>
+            <p class="x-profile-bio" id="xProfileBio">Suka ngetweet tentang belajar bahasa Inggris. Owner @english_menfess. Buka kursus bahasa Inggris di Jeya's Club. DM for business inquiries.</p>
             <div class="x-profile-stats">
               <div class="x-profile-stat">
-                <strong id="xFollowingCount">831</strong>
+                <strong id="xFollowingCount">1K</strong>
                 <span>Following</span>
               </div>
               <div class="x-profile-stat">
-                <strong id="xFollowersCount">98K</strong>
+                <strong id="xFollowersCount">110K</strong>
                 <span>Followers</span>
               </div>
             </div>
-            <div class="x-profile-timeline">
-              <a class="twitter-timeline" data-height="340" data-chrome="nofooter transparent" href="https://twitter.com/sourvive?ref_src=twsrc%5Etfw">Tweets by sourvive</a>
-            </div>
+            <p class="x-profile-note">Angka mengikuti tampilan publik X yang dibulatkan.</p>
           </section>
           <div class="visual-strip" aria-hidden="true">
             <img src="/assets/optimized/ok.png" alt="" loading="eager" decoding="async">
@@ -629,7 +616,6 @@
   </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
   const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
@@ -642,8 +628,6 @@
   const formStatus = document.getElementById("formStatus");
   const submitButton = document.getElementById("submitButton");
   const xProfileAvatar = document.getElementById("xProfileAvatar");
-  const xProfileName = document.getElementById("xProfileName");
-  const xFollowersCount = document.getElementById("xFollowersCount");
 
   function updateCount() {
     charCount.textContent = `${questionInput.value.length}/1200`;
@@ -652,33 +636,6 @@
   function setStatus(message, type = "") {
     formStatus.className = `status${type ? ` ${type}` : ""}`;
     formStatus.textContent = message;
-  }
-
-  function formatCompactNumber(value) {
-    const number = Number(value);
-    if (!Number.isFinite(number)) return "";
-    if (number >= 1000000) return `${(number / 1000000).toFixed(number >= 10000000 ? 0 : 1)}M`;
-    if (number >= 1000) return `${(number / 1000).toFixed(number >= 10000 ? 0 : 1)}K`;
-    return `${number}`;
-  }
-
-  function applyXProfileData(data) {
-    const profile = Array.isArray(data) ? data[0] : data;
-    if (!profile) return;
-
-    if (profile.name) xProfileName.textContent = profile.name;
-    if (profile.followers_count !== undefined) {
-      xFollowersCount.textContent = formatCompactNumber(profile.followers_count) || xFollowersCount.textContent;
-    }
-  }
-
-  function loadXProfileData() {
-    const endpoint = "https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=sourvive";
-
-    fetch(endpoint)
-      .then((response) => response.ok ? response.json() : null)
-      .then(applyXProfileData)
-      .catch(() => {});
   }
 
   xProfileAvatar.addEventListener("error", () => {
@@ -728,7 +685,6 @@
   });
 
   updateCount();
-  loadXProfileData();
 </script>
 </body>
 </html>
