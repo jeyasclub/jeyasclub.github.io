@@ -316,6 +316,130 @@
     font-weight: 600;
   }
 
+  .x-profile-embed {
+    display: grid;
+    gap: 14px;
+    width: min(100%, 620px);
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.86);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  }
+
+  .x-profile-top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .x-profile-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--white);
+    background: var(--blue-light);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.14);
+  }
+
+  .x-profile-name {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .x-profile-name strong {
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.25;
+  }
+
+  .x-profile-name span {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .x-profile-button {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 13px;
+    border-radius: 10px;
+    background: #0f1419;
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .x-profile-button img {
+    width: 16px;
+    height: 16px;
+    filter: invert(1);
+  }
+
+  .x-profile-bio {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.7;
+    font-weight: 600;
+  }
+
+  .x-profile-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .x-profile-stat {
+    min-height: 70px;
+    display: grid;
+    align-content: center;
+    gap: 4px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+  }
+
+  .x-profile-stat strong {
+    color: var(--text);
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .x-profile-stat span {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .x-profile-timeline {
+    max-height: 360px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+  }
+
+  .x-profile-timeline .twitter-timeline {
+    display: block;
+    min-height: 320px;
+    padding: 16px;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+  }
+
   .visual-strip {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -388,6 +512,15 @@
       padding: 20px;
     }
 
+    .x-profile-top {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .x-profile-button {
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+
     .character-row,
     .footer-inner {
       display: grid;
@@ -420,6 +553,33 @@
             <img src="/assets/x.png" alt="">
             <span>Jawaban muncul di @sourvive</span>
           </a>
+          <section class="x-profile-embed" aria-label="Profil X @sourvive">
+            <div class="x-profile-top">
+              <img class="x-profile-avatar" id="xProfileAvatar" src="https://unavatar.io/x/sourvive" alt="Foto profil X @sourvive" loading="lazy" decoding="async">
+              <div class="x-profile-name">
+                <strong id="xProfileName">Jeya - English Hacks</strong>
+                <span>@sourvive</span>
+              </div>
+              <a class="x-profile-button" href="https://x.com/sourvive" target="_blank" rel="noreferrer noopener">
+                <img src="/assets/x.png" alt="">
+                <span>Open X</span>
+              </a>
+            </div>
+            <p class="x-profile-bio" id="xProfileBio">Punya komunitas belajar Bahasa, suka ngetweet tentang bahasa Inggris. Owner @english_menfess. DM for business inquiries.</p>
+            <div class="x-profile-stats">
+              <div class="x-profile-stat">
+                <strong id="xFollowingCount">831</strong>
+                <span>Following</span>
+              </div>
+              <div class="x-profile-stat">
+                <strong id="xFollowersCount">98K</strong>
+                <span>Followers</span>
+              </div>
+            </div>
+            <div class="x-profile-timeline">
+              <a class="twitter-timeline" data-height="340" data-chrome="nofooter transparent" href="https://twitter.com/sourvive?ref_src=twsrc%5Etfw">Tweets by sourvive</a>
+            </div>
+          </section>
           <div class="visual-strip" aria-hidden="true">
             <img src="/assets/optimized/ok.png" alt="" loading="eager" decoding="async">
             <img src="/assets/optimized/book.png" alt="" loading="lazy" decoding="async">
@@ -441,6 +601,7 @@
                 <option value="Speaking">Speaking</option>
                 <option value="Writing">Writing</option>
                 <option value="Slang / Culture">Slang / Culture</option>
+                <option value="Learning Tips">Learning Tips</option>
                 <option value="Lainnya">Lainnya</option>
               </select>
             </label>
@@ -468,6 +629,7 @@
   </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
   const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
@@ -479,6 +641,9 @@
   const charCount = document.getElementById("charCount");
   const formStatus = document.getElementById("formStatus");
   const submitButton = document.getElementById("submitButton");
+  const xProfileAvatar = document.getElementById("xProfileAvatar");
+  const xProfileName = document.getElementById("xProfileName");
+  const xFollowersCount = document.getElementById("xFollowersCount");
 
   function updateCount() {
     charCount.textContent = `${questionInput.value.length}/1200`;
@@ -488,6 +653,37 @@
     formStatus.className = `status${type ? ` ${type}` : ""}`;
     formStatus.textContent = message;
   }
+
+  function formatCompactNumber(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "";
+    if (number >= 1000000) return `${(number / 1000000).toFixed(number >= 10000000 ? 0 : 1)}M`;
+    if (number >= 1000) return `${(number / 1000).toFixed(number >= 10000 ? 0 : 1)}K`;
+    return `${number}`;
+  }
+
+  function applyXProfileData(data) {
+    const profile = Array.isArray(data) ? data[0] : data;
+    if (!profile) return;
+
+    if (profile.name) xProfileName.textContent = profile.name;
+    if (profile.followers_count !== undefined) {
+      xFollowersCount.textContent = formatCompactNumber(profile.followers_count) || xFollowersCount.textContent;
+    }
+  }
+
+  function loadXProfileData() {
+    const endpoint = "https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=sourvive";
+
+    fetch(endpoint)
+      .then((response) => response.ok ? response.json() : null)
+      .then(applyXProfileData)
+      .catch(() => {});
+  }
+
+  xProfileAvatar.addEventListener("error", () => {
+    xProfileAvatar.src = "/assets/jeh.jpg";
+  }, { once: true });
 
   questionInput.addEventListener("input", updateCount);
 
@@ -532,6 +728,7 @@
   });
 
   updateCount();
+  loadXProfileData();
 </script>
 </body>
 </html>
