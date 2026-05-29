@@ -642,14 +642,14 @@
     }
 
     .person-card {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(116px, 0.82fr) minmax(0, 1fr);
       min-height: 0;
-      gap: 8px;
+      gap: 10px;
       padding: 16px;
     }
 
     .person-photo {
-      height: 250px;
+      height: clamp(188px, 48vw, 250px);
     }
 
     .person-photo.align-mobile-right {
