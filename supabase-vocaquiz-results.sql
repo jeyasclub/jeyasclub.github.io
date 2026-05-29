@@ -652,3 +652,62 @@ $$;
 
 revoke all on function public.grant_english_slang_test_review_access_by_email(text, text, text) from public;
 grant execute on function public.grant_english_slang_test_review_access_by_email(text, text, text) to service_role;
+
+create table if not exists public.tanya_jeya_questions (
+  id uuid primary key default gen_random_uuid(),
+  topic text not null default 'Lainnya',
+  question text not null,
+  status text not null default 'new',
+  answered_at timestamptz,
+  created_at timestamptz not null default now(),
+  constraint tanya_jeya_questions_topic_length check (char_length(trim(topic)) between 1 and 80),
+  constraint tanya_jeya_questions_question_length check (char_length(trim(question)) between 10 and 1200),
+  constraint tanya_jeya_questions_status_check check (status in ('new', 'answered', 'archived'))
+);
+
+alter table public.tanya_jeya_questions enable row level security;
+
+revoke all on public.tanya_jeya_questions from public;
+grant insert (topic, question) on public.tanya_jeya_questions to anon;
+grant insert (topic, question) on public.tanya_jeya_questions to authenticated;
+grant select, update, delete on public.tanya_jeya_questions to authenticated;
+
+create index if not exists tanya_jeya_questions_created_idx
+on public.tanya_jeya_questions (created_at desc);
+
+create index if not exists tanya_jeya_questions_status_created_idx
+on public.tanya_jeya_questions (status, created_at desc);
+
+drop policy if exists "Anyone can submit Tanya Jeya anonymously" on public.tanya_jeya_questions;
+create policy "Anyone can submit Tanya Jeya anonymously"
+on public.tanya_jeya_questions
+for insert
+to anon, authenticated
+with check (
+  char_length(trim(topic)) between 1 and 80
+  and char_length(trim(question)) between 10 and 1200
+  and status = 'new'
+  and answered_at is null
+);
+
+drop policy if exists "Only Jeya can read Tanya Jeya questions" on public.tanya_jeya_questions;
+create policy "Only Jeya can read Tanya Jeya questions"
+on public.tanya_jeya_questions
+for select
+to authenticated
+using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+
+drop policy if exists "Only Jeya can update Tanya Jeya questions" on public.tanya_jeya_questions;
+create policy "Only Jeya can update Tanya Jeya questions"
+on public.tanya_jeya_questions
+for update
+to authenticated
+using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com')
+with check (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+
+drop policy if exists "Only Jeya can delete Tanya Jeya questions" on public.tanya_jeya_questions;
+create policy "Only Jeya can delete Tanya Jeya questions"
+on public.tanya_jeya_questions
+for delete
+to authenticated
+using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');

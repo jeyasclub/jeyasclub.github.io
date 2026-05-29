@@ -592,6 +592,10 @@
       grid-column: 1 / -1;
     }
 
+    .account-card:has(#accountSession:not(.hidden)) .tanya-jeya-section {
+      grid-column: 1 / -1;
+    }
+
     .account-card:has(#accountSession:not(.hidden)) .mission-card {
       min-height: 86px;
     }
@@ -935,6 +939,157 @@
     font-weight: 700;
   }
 
+  .tanya-jeya-section {
+    display: grid;
+    gap: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  }
+
+  .tanya-jeya-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .tanya-jeya-head h3 {
+    color: var(--text);
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .tanya-jeya-head p,
+  .tanya-jeya-empty {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.6;
+    font-weight: 700;
+  }
+
+  .tanya-jeya-count {
+    min-width: 92px;
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    text-align: center;
+  }
+
+  .tanya-jeya-count span {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .tanya-jeya-count strong {
+    color: var(--blue-dark);
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .tanya-jeya-toolbar {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .tanya-jeya-refresh {
+    min-height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    padding: 9px 13px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .tanya-jeya-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .tanya-jeya-item {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--white);
+  }
+
+  .tanya-jeya-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .tanya-jeya-topic,
+  .tanya-jeya-status {
+    width: fit-content;
+    border-radius: 999px;
+    padding: 5px 9px;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tanya-jeya-status {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .tanya-jeya-status.is-answered {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .tanya-jeya-question {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .tanya-jeya-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tanya-jeya-action {
+    min-height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  .tanya-jeya-action:hover,
+  .tanya-jeya-refresh:hover {
+    border-color: var(--blue);
+    background: var(--blue-light);
+  }
+
   footer {
     background: var(--white);
     border-top: 1px solid var(--border);
@@ -1273,6 +1428,25 @@
               </div>
               <p class="test-results-note">Kalau kamu mengambil tes lain nanti, hasilnya akan otomatis masuk ke profil ini.</p>
             </section>
+
+            <section class="tanya-jeya-section hidden" id="tanyaJeyaSection" aria-labelledby="tanyaJeyaTitle">
+              <div class="tanya-jeya-head">
+                <div>
+                  <h3 id="tanyaJeyaTitle">Tanya Jeya</h3>
+                  <p>Pertanyaan anonymous dari halaman /ask yang hanya terlihat oleh Jeya.</p>
+                </div>
+                <div class="tanya-jeya-count" aria-label="Jumlah pertanyaan Tanya Jeya">
+                  <span>Questions</span>
+                  <strong id="tanyaJeyaCount">0</strong>
+                </div>
+              </div>
+              <div class="tanya-jeya-toolbar">
+                <button class="tanya-jeya-refresh" type="button" id="tanyaJeyaRefresh">Refresh</button>
+              </div>
+              <div class="tanya-jeya-list" id="tanyaJeyaList">
+                <div class="tanya-jeya-empty">Memuat pertanyaan...</div>
+              </div>
+            </section>
           </div>
 
           <p class="status" id="authMessage">Login atau buat akun Jeya's Club untuk mulai.</p>
@@ -1367,7 +1541,12 @@
   const grammarPerfectMissionCard = document.getElementById("grammarPerfectMissionCard");
   const grammarPerfectMissionStatus = document.getElementById("grammarPerfectMissionStatus");
   const grammarPerfectMissionButton = document.getElementById("grammarPerfectMissionButton");
+  const tanyaJeyaSection = document.getElementById("tanyaJeyaSection");
+  const tanyaJeyaList = document.getElementById("tanyaJeyaList");
+  const tanyaJeyaCount = document.getElementById("tanyaJeyaCount");
+  const tanyaJeyaRefresh = document.getElementById("tanyaJeyaRefresh");
   const HANGOUT_COURSE_KEY = "english-hangout-club";
+  const JEYA_DASHBOARD_EMAIL = "jihamalia@gmail.com";
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
@@ -1441,6 +1620,23 @@
     };
   }
 
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[char]));
+  }
+
+  function isJeyaProfile() {
+    const email = currentSession && currentSession.user && currentSession.user.email
+      ? currentSession.user.email.toLowerCase()
+      : "";
+    return email === JEYA_DASHBOARD_EMAIL;
+  }
+
   function formatMemberDate(value) {
     if (!value) return "-";
     const date = new Date(value);
@@ -1462,6 +1658,20 @@
       day: "numeric",
       month: "short",
       year: "numeric"
+    });
+  }
+
+  function formatQuestionDate(value) {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+
+    return date.toLocaleString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
     });
   }
 
@@ -1739,6 +1949,100 @@
     renderGrammarPerfectMission(Number.isFinite(bestScore) ? bestScore : null);
   }
 
+  function renderTanyaJeyaEmpty(message = "Belum ada pertanyaan masuk.") {
+    tanyaJeyaList.innerHTML = `<div class="tanya-jeya-empty">${escapeHTML(message)}</div>`;
+    tanyaJeyaCount.textContent = "0";
+  }
+
+  function renderTanyaJeyaQuestions(questions = []) {
+    tanyaJeyaCount.textContent = `${questions.length}`;
+
+    if (!questions.length) {
+      renderTanyaJeyaEmpty();
+      return;
+    }
+
+    tanyaJeyaList.innerHTML = questions.map((item) => {
+      const status = item.status || "new";
+      const isAnswered = status === "answered";
+      return `
+        <article class="tanya-jeya-item">
+          <div class="tanya-jeya-meta">
+            <span class="tanya-jeya-topic">${escapeHTML(item.topic || "Lainnya")}</span>
+            <span class="tanya-jeya-status${isAnswered ? " is-answered" : ""}">${isAnswered ? "Answered" : "New"}</span>
+            <span>${escapeHTML(formatQuestionDate(item.created_at))}</span>
+          </div>
+          <p class="tanya-jeya-question">${escapeHTML(item.question)}</p>
+          <div class="tanya-jeya-actions">
+            <button class="tanya-jeya-action" type="button" data-copy-question="${escapeHTML(item.id)}">Copy</button>
+            <button class="tanya-jeya-action" type="button" data-toggle-answer="${escapeHTML(item.id)}">${isAnswered ? "Mark New" : "Mark Answered"}</button>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  async function loadTanyaJeyaQuestions() {
+    if (!tanyaJeyaSection || !isJeyaProfile()) return;
+
+    tanyaJeyaList.innerHTML = `<div class="tanya-jeya-empty">Memuat pertanyaan...</div>`;
+
+    const { data, error } = await supabaseClient
+      .from("tanya_jeya_questions")
+      .select("id,topic,question,status,created_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) {
+      console.error("Load Tanya Jeya questions failed:", error);
+      renderTanyaJeyaEmpty("Pertanyaan belum bisa dimuat. Pastikan SQL Tanya Jeya sudah dijalankan.");
+      return;
+    }
+
+    renderTanyaJeyaQuestions(data || []);
+  }
+
+  async function updateTanyaJeyaStatus(questionId, currentStatus) {
+    if (!supabaseClient || !isJeyaProfile() || !questionId) return;
+    const nextStatus = currentStatus === "answered" ? "new" : "answered";
+    const { error } = await supabaseClient
+      .from("tanya_jeya_questions")
+      .update({
+        status: nextStatus,
+        answered_at: nextStatus === "answered" ? new Date().toISOString() : null
+      })
+      .eq("id", questionId);
+
+    if (error) {
+      console.error("Update Tanya Jeya status failed:", error);
+      authMessage.className = "status bad";
+      authMessage.textContent = "Status Tanya Jeya belum tersimpan. Cek policy Supabase.";
+      return;
+    }
+
+    await loadTanyaJeyaQuestions();
+  }
+
+  async function copyTanyaJeyaQuestion(questionId) {
+    const button = document.querySelector(`[data-copy-question="${CSS.escape(questionId)}"]`);
+    const item = button ? button.closest(".tanya-jeya-item") : null;
+    const text = item ? item.querySelector(".tanya-jeya-question").textContent.trim() : "";
+    if (!text) return;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      if (button) {
+        button.textContent = "Copied";
+        setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1400);
+      }
+    } catch {
+      authMessage.className = "status bad";
+      authMessage.textContent = "Browser belum mengizinkan copy otomatis.";
+    }
+  }
+
   function getAuthErrorMessage(error, mode) {
     const message = error && error.message ? error.message : "";
     const lowerMessage = message.toLowerCase();
@@ -1799,6 +2103,8 @@
       loadVocaquizScoreMissions();
       loadGrammarPerfectMission();
       loadTestResults();
+      tanyaJeyaSection.classList.toggle("hidden", !isJeyaProfile());
+      if (isJeyaProfile()) loadTanyaJeyaQuestions();
       return;
     }
 
@@ -1812,6 +2118,8 @@
     renderVocaquizUnlockMission(false);
     renderVocaquizScoreMissions(null);
     renderGrammarPerfectMission(null);
+    tanyaJeyaSection.classList.add("hidden");
+    renderTanyaJeyaEmpty();
     updateMissionsCompletedCount();
     testResultsList.innerHTML = "";
   }
@@ -1998,6 +2306,22 @@
   });
   accountInfoForm.addEventListener("submit", handleAccountInfoSubmit);
   logoutButton.addEventListener("click", logout);
+  tanyaJeyaRefresh.addEventListener("click", loadTanyaJeyaQuestions);
+  tanyaJeyaList.addEventListener("click", (event) => {
+    const copyId = event.target.dataset.copyQuestion;
+    const toggleId = event.target.dataset.toggleAnswer;
+
+    if (copyId) {
+      copyTanyaJeyaQuestion(copyId);
+      return;
+    }
+
+    if (toggleId) {
+      const statusEl = event.target.closest(".tanya-jeya-item").querySelector(".tanya-jeya-status");
+      const currentStatus = statusEl && statusEl.classList.contains("is-answered") ? "answered" : "new";
+      updateTanyaJeyaStatus(toggleId, currentStatus);
+    }
+  });
   setAuthMode("login");
   initAuth();
 </script>
