@@ -1473,6 +1473,7 @@
   .sheet-preview-frame {
     position: relative;
     overflow: hidden;
+    height: 218px;
     border: 1px solid color-mix(in srgb, var(--product-accent, var(--blue)) 18%, #e5e7eb);
     border-radius: 24px;
     background: #ffffff;
@@ -1482,6 +1483,7 @@
   .sheet-preview-track {
     display: flex;
     gap: 12px;
+    height: 100%;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -1495,6 +1497,7 @@
   .sheet-preview-button {
     flex: 0 0 100%;
     width: 100%;
+    height: 100%;
     border: 0;
     border-radius: 24px;
     background: #ffffff;
@@ -1506,9 +1509,9 @@
 
   .sheet-preview-button img {
     width: 100%;
-    aspect-ratio: 1.55;
+    height: 100%;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     background: #f8fbff;
   }
@@ -2241,6 +2244,10 @@
 
     .sheet-preview {
       width: min(280px, 100%);
+    }
+
+    .sheet-preview-frame {
+      height: 180px;
     }
 
     .image-preview-modal {
