@@ -9,6 +9,10 @@ const GRAMMAR_TEST_PRODUCT_SLUG = 'unlock-grammar-test-recommendation';
 const ENGLISH_SLANG_TEST_PRODUCT_SLUG = 'unlock-english-slang-test';
 const ENGLISH_HANGOUT_PRODUCT_SLUG = 'english-hangout-club-by-jeyas-club-may-2026-di9e';
 const ENGLISH_HANGOUT_COURSE_KEY = 'english-hangout-club';
+const TOEFL_VOCAB_PRODUCT_SLUG = '300-toefl-vocabulary';
+const TOEFL_VOCAB_COURSE_KEY = '300-toefl-vocabulary';
+const TOEFL_VOCAB_R2_KEY = '300_TOEFL_Vocabulary.xlsx';
+const TOEFL_VOCAB_DOWNLOAD_NAME = '300_TOEFL_Vocabulary.xlsx';
 
 export default {
   async fetch(request, env) {
@@ -16,6 +20,10 @@ export default {
 
     if (requestUrl.pathname === '/api/mayar-vocaquiz-webhook') {
       return handleMayarVocaquizWebhook(request, env);
+    }
+
+    if (requestUrl.pathname === '/api/download/300-toefl-vocabulary') {
+      return handleToeflVocabDownload(request, env);
     }
 
     if (requestUrl.pathname === '/sitemap-articles.xml') {
@@ -112,8 +120,9 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   const isGrammarTest = isGrammarTestPayment({ productName, productUrl, productId }, env);
   const isEnglishSlangTest = isEnglishSlangTestPayment({ productName, productUrl, productId }, env);
   const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
+  const isToeflVocab = isToeflVocabPayment({ productName, productUrl, productId }, env);
 
-  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isEnglishHangout) {
+  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isEnglishHangout && !isToeflVocab) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -151,6 +160,16 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     };
   }
 
+  if (isToeflVocab) {
+    rpcName = 'grant_jeyasclub_course_access_by_email';
+    rpcBody = {
+      p_email: customerEmail,
+      p_course_key: TOEFL_VOCAB_COURSE_KEY,
+      p_transaction_id: transactionId || null,
+      p_source: 'mayar',
+    };
+  }
+
   const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${rpcName}`, {
     method: 'POST',
     headers: {
@@ -180,8 +199,85 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
-    product: isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')),
+    product: isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review'))),
     result: rpcData,
+  });
+}
+
+async function handleToeflVocabDownload(request, env = {}) {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'GET') {
+    return jsonResponse({ ok: false, error: 'method_not_allowed' }, 405);
+  }
+
+  if (!env.PRIVATE_DOWNLOADS) {
+    return jsonResponse({ ok: false, error: 'missing_private_downloads_bucket' }, 500);
+  }
+
+  const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    return jsonResponse({ ok: false, error: 'missing_supabase_service_role_key' }, 500);
+  }
+
+  const authHeader = request.headers.get('authorization') || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+  if (!token) {
+    return jsonResponse({ ok: false, error: 'missing_auth_token' }, 401);
+  }
+
+  const userResponse = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!userResponse.ok) {
+    return jsonResponse({ ok: false, error: 'invalid_auth_token' }, 401);
+  }
+
+  const user = await userResponse.json();
+  if (!user || !user.id) {
+    return jsonResponse({ ok: false, error: 'user_not_found' }, 401);
+  }
+
+  const accessUrl = new URL(`${SUPABASE_URL}/rest/v1/jeyasclub_course_access`);
+  accessUrl.searchParams.set('select', 'id');
+  accessUrl.searchParams.set('user_id', `eq.${user.id}`);
+  accessUrl.searchParams.set('course_key', `eq.${TOEFL_VOCAB_COURSE_KEY}`);
+  accessUrl.searchParams.set('limit', '1');
+
+  const accessResponse = await fetch(accessUrl.href, {
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+    },
+  });
+
+  if (!accessResponse.ok) {
+    return jsonResponse({ ok: false, error: 'access_check_failed' }, 500);
+  }
+
+  const accessRows = await accessResponse.json();
+  if (!Array.isArray(accessRows) || accessRows.length === 0) {
+    return jsonResponse({ ok: false, error: 'download_access_denied' }, 403);
+  }
+
+  const file = await env.PRIVATE_DOWNLOADS.get(TOEFL_VOCAB_R2_KEY, 'arrayBuffer');
+  if (!file) {
+    return jsonResponse({ ok: false, error: 'file_not_found' }, 404);
+  }
+
+  return new Response(file, {
+    headers: {
+      ...corsHeaders(),
+      'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'content-disposition': `attachment; filename="${TOEFL_VOCAB_DOWNLOAD_NAME}"`,
+      'cache-control': 'private, no-store',
+    },
   });
 }
 
@@ -222,14 +318,32 @@ function isEnglishHangoutPayment({ productName, productUrl, productId }, env = {
     || (haystack.includes('english') && haystack.includes('hangout') && haystack.includes('club'));
 }
 
+function isToeflVocabPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_TOEFL_VOCAB_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(TOEFL_VOCAB_PRODUCT_SLUG)
+    || (haystack.includes('300') && haystack.includes('toefl') && haystack.includes('vocabulary'));
+}
+
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
+      ...corsHeaders(),
       'content-type': 'application/json; charset=utf-8',
       'cache-control': 'no-store',
     },
   });
+}
+
+function corsHeaders() {
+  return {
+    'access-control-allow-origin': SITE_URL,
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': 'authorization, content-type, x-webhook-secret',
+  };
 }
 
 async function renderArticleSitemap() {
