@@ -402,7 +402,7 @@
     padding: 22px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--white);
+    background: linear-gradient(180deg, #dce8f7 0%, #eaf2fd 50%, #f0f6ff 80%, #ffffff 100%);
     box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
   }
 
@@ -410,16 +410,24 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(232,241,253,0.8), transparent 44%);
+    background:
+      radial-gradient(circle at 16% 20%, rgba(255,255,255,0.86) 0 8px, transparent 9px),
+      radial-gradient(circle at 82% 18%, rgba(255,255,255,0.72) 0 6px, transparent 7px),
+      radial-gradient(circle at 74% 78%, rgba(26,111,232,0.12) 0 54px, transparent 55px),
+      linear-gradient(180deg, transparent 0%, rgba(180,210,240,0.24) 100%);
     pointer-events: none;
   }
 
-  .person-card:nth-child(2n)::before {
-    background: linear-gradient(135deg, rgba(255,240,247,0.9), transparent 44%);
-  }
-
-  .person-card:nth-child(3n)::before {
-    background: linear-gradient(135deg, rgba(236,251,245,0.95), transparent 44%);
+  .person-card::after {
+    content: "";
+    position: absolute;
+    right: -46px;
+    bottom: -62px;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.48);
+    pointer-events: none;
   }
 
   .person-photo,
