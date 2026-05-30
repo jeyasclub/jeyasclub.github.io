@@ -1450,37 +1450,141 @@
     max-height: 330px;
   }
 
-  .product-sheet-cover {
-    width: min(300px, 100%);
-    aspect-ratio: 0.78;
+  .sheet-preview {
+    width: min(330px, 100%);
     display: grid;
-    align-content: space-between;
-    gap: 18px;
-    padding: 24px;
-    border: 1px solid color-mix(in srgb, var(--product-accent, var(--blue)) 18%, #e5e7eb);
-    border-radius: 24px;
-    background:
-      linear-gradient(90deg, rgba(22, 164, 108, 0.08) 1px, transparent 1px) 0 0 / 28px 28px,
-      linear-gradient(180deg, #ffffff 0%, var(--product-soft, #ecfbf5) 100%);
-    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.14);
+    gap: 12px;
   }
 
-  .product-sheet-cover strong {
-    color: #123827;
-    font-size: clamp(34px, 5vw, 52px);
-    line-height: 0.9;
-    font-weight: 900;
-    letter-spacing: 0;
-  }
-
-  .product-sheet-cover span {
+  .sheet-preview-label {
     width: fit-content;
+    justify-self: center;
+    min-height: 30px;
+    display: inline-flex;
+    align-items: center;
     border-radius: 999px;
     background: var(--product-accent, var(--blue));
     color: var(--white);
-    padding: 8px 12px;
+    padding: 7px 12px;
     font-size: 12px;
     font-weight: 900;
+  }
+
+  .sheet-preview-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--product-accent, var(--blue)) 18%, #e5e7eb);
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.14);
+  }
+
+  .sheet-preview-track {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sheet-preview-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sheet-preview-button {
+    flex: 0 0 100%;
+    width: 100%;
+    border: 0;
+    border-radius: 24px;
+    background: #ffffff;
+    cursor: zoom-in;
+    padding: 0;
+    scroll-snap-align: center;
+    overflow: hidden;
+  }
+
+  .sheet-preview-button img {
+    width: 100%;
+    aspect-ratio: 1.55;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+    background: #f8fbff;
+  }
+
+  .sheet-preview-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .sheet-preview-nav button {
+    width: 38px;
+    height: 38px;
+    border: 1px solid color-mix(in srgb, var(--product-accent, var(--blue)) 20%, #d1d5db);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--product-accent-dark, var(--blue-dark));
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .image-preview-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 240;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+  }
+
+  .image-preview-modal.open {
+    display: flex;
+  }
+
+  .image-preview-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(5px);
+  }
+
+  .image-preview-panel {
+    position: relative;
+    z-index: 1;
+    width: min(920px, 100%);
+    max-height: 92vh;
+    display: grid;
+    place-items: center;
+  }
+
+  .image-preview-panel img {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: 18px;
+    background: var(--white);
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.34);
+    object-fit: contain;
+  }
+
+  .image-preview-close {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 26px;
+    line-height: 1;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.24);
   }
 
   .product-badge {
@@ -2133,6 +2237,19 @@
     .payment-panel {
       height: 88vh;
       border-radius: 18px;
+    }
+
+    .sheet-preview {
+      width: min(280px, 100%);
+    }
+
+    .image-preview-modal {
+      padding: 12px;
+    }
+
+    .image-preview-close {
+      top: 8px;
+      right: 8px;
     }
 
     .module-detail-title,
@@ -3743,6 +3860,14 @@
   </div>
 </div>
 
+<div class="image-preview-modal" id="sheetImagePreviewModal" role="dialog" aria-modal="true" aria-label="Sheet preview" aria-hidden="true">
+  <div class="image-preview-backdrop" data-close-sheet-preview></div>
+  <div class="image-preview-panel">
+    <button class="image-preview-close" type="button" aria-label="Tutup preview gambar" data-close-sheet-preview>&times;</button>
+    <img id="sheetImagePreview" src="" alt="">
+  </div>
+</div>
+
 <!-- COMMUNITIES -->
 <section id="communities">
   <div class="container">
@@ -4214,6 +4339,8 @@
   const productModalBody = document.getElementById('productModalBody');
   const digitalPaymentModal = document.getElementById('digitalPaymentModal');
   const digitalPaymentFrame = document.getElementById('digitalPaymentFrame');
+  const sheetImagePreviewModal = document.getElementById('sheetImagePreviewModal');
+  const sheetImagePreview = document.getElementById('sheetImagePreview');
   const toeflVocabCourseKey = '300-toefl-vocabulary';
   const toeflVocabPaymentUrl = 'https://jeyasclub.myr.id/pl/300-toefl-vocabulary?iframe=true';
   const toeflVocabDownloadUrl = '/api/download/300-toefl-vocabulary';
@@ -4297,10 +4424,25 @@
       <div class="product-detail">
         <div class="product-hero">
           <div class="product-cover-stage">
-            <div class="product-sheet-cover" aria-hidden="true">
-              <span>Study Sheet</span>
-              <strong>300 TOEFL Vocabulary</strong>
-              <span>.xlsx</span>
+            <div class="sheet-preview">
+              <span class="sheet-preview-label">Sheet Preview</span>
+              <div class="sheet-preview-frame">
+                <div class="sheet-preview-track" data-sheet-preview-track>
+                  <button class="sheet-preview-button" type="button" data-sheet-preview-src="assets/tracker.jpeg" data-sheet-preview-alt="Preview tracker 300 TOEFL Vocabulary">
+                    <img src="assets/tracker.jpeg" alt="Preview tracker 300 TOEFL Vocabulary" width="1600" height="928" loading="lazy" decoding="async">
+                  </button>
+                  <button class="sheet-preview-button" type="button" data-sheet-preview-src="assets/vocab.jpeg" data-sheet-preview-alt="Preview vocabulary 300 TOEFL Vocabulary">
+                    <img src="assets/vocab.jpeg" alt="Preview vocabulary 300 TOEFL Vocabulary" width="2774" height="1622" loading="lazy" decoding="async">
+                  </button>
+                  <button class="sheet-preview-button" type="button" data-sheet-preview-src="assets/how.jpeg" data-sheet-preview-alt="Preview cara pakai 300 TOEFL Vocabulary">
+                    <img src="assets/how.jpeg" alt="Preview cara pakai 300 TOEFL Vocabulary" width="1172" height="992" loading="lazy" decoding="async">
+                  </button>
+                </div>
+              </div>
+              <div class="sheet-preview-nav" aria-label="Navigasi sheet preview">
+                <button type="button" data-sheet-preview-prev aria-label="Preview sebelumnya">&lsaquo;</button>
+                <button type="button" data-sheet-preview-next aria-label="Preview berikutnya">&rsaquo;</button>
+              </div>
             </div>
             <span class="product-badge">Rp10.000</span>
           </div>
@@ -4548,6 +4690,52 @@
     }
   }
 
+  function initSheetPreviewSlider() {
+    const track = document.querySelector('[data-sheet-preview-track]');
+    if (!track) return;
+
+    const previewButtons = [...track.querySelectorAll('[data-sheet-preview-src]')];
+    const prevButton = document.querySelector('[data-sheet-preview-prev]');
+    const nextButton = document.querySelector('[data-sheet-preview-next]');
+
+    previewButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        openSheetImagePreview(button.dataset.sheetPreviewSrc, button.dataset.sheetPreviewAlt);
+      });
+    });
+
+    if (prevButton) prevButton.addEventListener('click', () => {
+      track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' });
+    });
+
+    if (nextButton) nextButton.addEventListener('click', () => {
+      track.scrollBy({ left: track.clientWidth, behavior: 'smooth' });
+    });
+  }
+
+  function openSheetImagePreview(src, alt) {
+    if (!sheetImagePreviewModal || !sheetImagePreview || !src) return;
+
+    sheetImagePreview.src = src;
+    sheetImagePreview.alt = alt || 'Sheet preview';
+    sheetImagePreviewModal.classList.add('open');
+    sheetImagePreviewModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    const closeButton = sheetImagePreviewModal.querySelector('.image-preview-close');
+    if (closeButton) closeButton.focus();
+  }
+
+  function closeSheetImagePreview(event) {
+    if (event) event.preventDefault();
+    if (!sheetImagePreviewModal || !sheetImagePreview) return;
+
+    sheetImagePreviewModal.classList.remove('open');
+    sheetImagePreviewModal.setAttribute('aria-hidden', 'true');
+    sheetImagePreview.src = '';
+    sheetImagePreview.alt = '';
+    document.body.style.overflow = productModal && productModal.classList.contains('open') ? 'hidden' : '';
+  }
+
   function openProgramModal(programKey, trigger) {
     const program = programDetails[programKey];
     if (!program) return;
@@ -4582,12 +4770,16 @@
     productModal.querySelector('.program-modal-close').focus();
 
     if (productKey === 'toefl-vocab-sheet') {
+      initSheetPreviewSlider();
       renderToeflVocabAccess();
     }
   }
 
   function closeProductModal(event) {
     if (event) event.preventDefault();
+    if (sheetImagePreviewModal && sheetImagePreviewModal.classList.contains('open')) {
+      closeSheetImagePreview();
+    }
     if (digitalPaymentModal && digitalPaymentModal.classList.contains('open')) {
       closeDigitalPaymentModal();
     }
@@ -4621,7 +4813,15 @@
     el.addEventListener('click', closeDigitalPaymentModal);
   });
 
+  document.querySelectorAll('[data-close-sheet-preview]').forEach(el => {
+    el.addEventListener('click', closeSheetImagePreview);
+  });
+
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && sheetImagePreviewModal && sheetImagePreviewModal.classList.contains('open')) {
+      closeSheetImagePreview(event);
+      return;
+    }
     if (event.key === 'Escape' && digitalPaymentModal && digitalPaymentModal.classList.contains('open')) {
       closeDigitalPaymentModal(event);
       return;
