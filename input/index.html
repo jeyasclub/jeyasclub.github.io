@@ -440,6 +440,7 @@
       setStatus(els.bookingStatus, "Booking belum tersimpan. Pastikan SQL sudah dijalankan.", "bad");
       return;
     }
+    const totalMeeting = Number($("bookingMeetingTotal").value || 0);
     const { error: trackerError } = await supabaseClient.from("class_tracker").insert({
       booking_id: booking.id,
       order_date: payload.order_date,
@@ -448,9 +449,9 @@
       program_name: payload.program_name,
       tutor: payload.tutor,
       meetings_realized: 0,
-      meetings_total: Number($("bookingMeetingTotal").value || 0),
-      payments_realized: 1,
-      payments_total: 1
+      meetings_total: totalMeeting,
+      payments_realized: 0,
+      payments_total: totalMeeting
     });
     els.bookingSubmit.disabled = false;
     if (trackerError) {

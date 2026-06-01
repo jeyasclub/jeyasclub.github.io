@@ -128,8 +128,8 @@ select
   booking.tutor,
   0,
   0,
-  1,
-  1,
+  0,
+  0,
   booking.created_by,
   booking.created_at,
   now()
