@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Class Tracker | Jeya's Club</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f7f9fc; --border:#e5e7eb; --green:#16a46c; --red:#dc2626; }
+  body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:var(--bg); }
+  button, input { font:inherit; }
+  .topbar { position:sticky; top:0; z-index:10; min-height:64px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
+  .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
+  .brand img { width:68px; height:68px; object-fit:contain; }
+  .topbar-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
+  .btn { min-height:42px; border-radius:12px; padding:10px 15px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--border); background:var(--white); color:var(--text); font-size:13px; font-weight:800; text-decoration:none; cursor:pointer; }
+  .btn.primary { border-color:var(--blue); background:var(--blue); color:var(--white); box-shadow:0 12px 24px rgba(26,111,232,.18); }
+  .btn.danger { color:var(--red); background:#fff1f2; border-color:#fecdd3; }
+  .shell { width:min(1180px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
+  .login-screen { min-height:calc(100vh - 64px); display:grid; place-items:center; padding:32px 16px; }
+  .login-card, .panel, .metric { background:var(--white); border:1px solid var(--border); border-radius:16px; box-shadow:0 18px 40px rgba(22,63,122,.07); }
+  .login-card { width:min(430px, 100%); padding:28px; display:grid; gap:18px; }
+  .eyebrow { color:var(--blue); font-size:12px; font-weight:900; letter-spacing:1.6px; text-transform:uppercase; }
+  h1 { font-size:clamp(28px, 5vw, 44px); line-height:1.12; letter-spacing:0; }
+  h2 { font-size:20px; line-height:1.25; }
+  .muted { color:var(--muted); font-size:14px; line-height:1.7; }
+  .form { display:grid; gap:14px; }
+  label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
+  input, select { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
+  input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
+  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .status.good { color:var(--green); }
+  .status.bad { color:var(--red); }
+  .hidden { display:none !important; }
+  .dashboard { display:none; gap:22px; }
+  .dashboard.open { display:grid; }
+  .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .filter-card { display:flex; align-items:end; gap:12px; flex-wrap:wrap; padding:16px; background:var(--white); border:1px solid var(--border); border-radius:14px; }
+  .filter-card label { min-width:220px; }
+  .metrics { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+  .metric { padding:16px; display:grid; gap:5px; }
+  .metric span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
+  .metric strong { font-size:24px; }
+  .grid { display:grid; gap:18px; }
+  .panel { overflow:hidden; }
+  .panel-head { padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid var(--border); }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; min-width:760px; }
+  th, td { padding:14px 18px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; vertical-align:middle; }
+  th { color:var(--muted); background:#fbfdff; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.7px; }
+  tbody tr:last-child td { border-bottom:0; }
+  .pill { display:inline-flex; align-items:center; min-height:30px; border-radius:999px; padding:6px 10px; background:var(--blue-light); color:var(--blue-dark); font-weight:900; white-space:nowrap; }
+  .empty { padding:22px; color:var(--muted); font-size:14px; }
+  @media (max-width:760px) { .topbar { padding:0 16px; } .brand span { display:none; } .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; flex-direction:column; } }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/assets/logo.jpg" alt="Jeya's Club"><span>Jeya's Club Admin</span></a>
+    <div class="topbar-actions">
+      <a class="btn" href="/input/">Input Data</a>
+      <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
+    </div>
+  </header>
+
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div>
+        <p class="eyebrow">Admin Only</p>
+        <h1>Class Tracker</h1>
+        <p class="muted">Login memakai akun admin Jeya's Club untuk melihat data booking dan progress kelas.</p>
+      </div>
+      <form class="form" id="loginForm">
+        <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
+        <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
+        <button class="btn primary" type="submit" id="loginButton">Login</button>
+        <p class="status" id="authMessage">Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.</p>
+      </form>
+    </div>
+  </section>
+
+  <main class="shell dashboard" id="dashboard">
+    <div class="hero-row">
+      <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>Class Data</h1>
+        <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
+      </div>
+      <div class="filter-card">
+        <label>Filter bulan<input type="month" id="monthFilter"></label>
+        <button class="btn" type="button" id="resetFilter">Semua Bulan</button>
+        <button class="btn primary" type="button" id="refreshButton">Refresh</button>
+      </div>
+    </div>
+
+    <section class="metrics">
+      <div class="metric"><span>Tracker</span><strong id="trackerCount">0</strong></div>
+      <div class="metric"><span>Booking</span><strong id="bookingCount">0</strong></div>
+      <div class="metric"><span>Total Harga</span><strong id="bookingTotal">Rp0</strong></div>
+      <div class="metric"><span>Bulan</span><strong id="monthLabel">Semua</strong></div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th></tr></thead>
+            <tbody id="trackerBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="trackerEmpty">Belum ada data Class Tracker untuk filter ini.</div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Program</th><th>Harga</th><th>Tutor</th></tr></thead>
+            <tbody id="bookingBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="bookingEmpty">Belum ada data Class Booking untuk filter ini.</div>
+      </section>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
+  let currentSession = null;
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    loginScreen: $("loginScreen"), dashboard: $("dashboard"), loginForm: $("loginForm"),
+    email: $("emailInput"), password: $("passwordInput"), loginButton: $("loginButton"), authMessage: $("authMessage"),
+    logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), reset: $("resetFilter"),
+    refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
+    trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
+    bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel")
+  };
+
+  function isAdmin(session = currentSession) {
+    const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
+    return adminEmails.has(email);
+  }
+
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  function formatDate(value) {
+    if (!value) return "-";
+    const date = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" });
+  }
+
+  function formatMoney(value) {
+    return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
+  }
+
+  function monthRange(monthValue) {
+    if (!monthValue) return null;
+    const [year, month] = monthValue.split("-").map(Number);
+    if (!year || !month) return null;
+    const start = `${year}-${String(month).padStart(2, "0")}-01`;
+    const next = new Date(year, month, 1);
+    const end = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`;
+    return { start, end };
+  }
+
+  function setAuthMessage(message, type = "") {
+    els.authMessage.className = `status ${type}`.trim();
+    els.authMessage.textContent = message;
+  }
+
+  function showLogin(message = "Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.") {
+    els.loginScreen.classList.remove("hidden");
+    els.dashboard.classList.remove("open");
+    els.logout.classList.add("hidden");
+    setAuthMessage(message);
+  }
+
+  function showDashboard() {
+    els.loginScreen.classList.add("hidden");
+    els.dashboard.classList.add("open");
+    els.logout.classList.remove("hidden");
+    els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    loadData();
+  }
+
+  async function loadData() {
+    if (!supabaseClient || !isAdmin()) return;
+    els.refresh.disabled = true;
+    els.refresh.textContent = "Memuat...";
+    const range = monthRange(els.month.value);
+    let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    let bookingQuery = supabaseClient.from("class_bookings").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    if (range) {
+      trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
+      bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
+    }
+    const [{ data: trackers, error: trackerError }, { data: bookings, error: bookingError }] = await Promise.all([trackerQuery, bookingQuery]);
+    els.refresh.disabled = false;
+    els.refresh.textContent = "Refresh";
+    if (trackerError || bookingError) {
+      console.error("Class admin load failed:", trackerError || bookingError);
+      els.sessionLabel.textContent = "Data belum bisa dimuat. Pastikan supabase-class-admin.sql sudah dijalankan.";
+      return;
+    }
+    renderTracker(trackers || []);
+    renderBookings(bookings || []);
+    els.monthLabel.textContent = els.month.value || "Semua";
+  }
+
+  function renderTracker(rows) {
+    els.trackerCount.textContent = rows.length;
+    els.trackerEmpty.classList.toggle("hidden", rows.length > 0);
+    els.trackerBody.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${formatDate(row.order_date)}</td>
+        <td>${escapeHTML(row.program_name)}</td>
+        <td>${escapeHTML(row.tutor)}</td>
+        <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
+        <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
+      </tr>
+    `).join("");
+  }
+
+  function renderBookings(rows) {
+    els.bookingCount.textContent = rows.length;
+    els.bookingTotal.textContent = formatMoney(rows.reduce((sum, row) => sum + Number(row.price || 0), 0));
+    els.bookingEmpty.classList.toggle("hidden", rows.length > 0);
+    els.bookingBody.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${formatDate(row.order_date)}</td>
+        <td>${escapeHTML(row.program_name)}</td>
+        <td>${formatMoney(row.price)}</td>
+        <td>${escapeHTML(row.tutor)}</td>
+      </tr>
+    `).join("");
+  }
+
+  async function init() {
+    if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    if (isAdmin()) showDashboard(); else showLogin();
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentSession = session;
+      if (isAdmin()) showDashboard(); else showLogin();
+    });
+  }
+
+  els.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = els.email.value.trim().toLowerCase();
+    if (!adminEmails.has(email)) { setAuthMessage("Akun ini tidak punya akses admin.", "bad"); return; }
+    els.loginButton.disabled = true;
+    els.loginButton.textContent = "Login...";
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: els.password.value });
+    els.loginButton.disabled = false;
+    els.loginButton.textContent = "Login";
+    if (error) { setAuthMessage("Login gagal. Cek email dan password.", "bad"); return; }
+    currentSession = data.session;
+    els.password.value = "";
+    if (isAdmin()) showDashboard();
+  });
+
+  els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  els.month.addEventListener("change", loadData);
+  els.reset.addEventListener("click", () => { els.month.value = ""; loadData(); });
+  els.refresh.addEventListener("click", loadData);
+  init();
+</script>
+</body>
+</html>
