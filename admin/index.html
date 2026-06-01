@@ -149,7 +149,7 @@
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -209,11 +209,39 @@
     return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
   }
 
-  function formatToBePaid(row) {
+  function getToBePaidCount(row) {
     const meetingsRealized = Number(row.meetings_realized || 0);
     const paymentsRealized = Number(row.payments_realized || 0);
-    const toBePaid = meetingsRealized - paymentsRealized;
+    return Math.max(meetingsRealized - paymentsRealized, 0);
+  }
+
+  function formatToBePaid(row) {
+    const toBePaid = getToBePaidCount(row);
     return toBePaid > 0 ? `${toBePaid} meetings` : "Lunas";
+  }
+
+  function normalizeProgramName(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  }
+
+  function getMeetingFee(programName, studentCount) {
+    const normalizedProgram = normalizeProgramName(programName);
+    const count = Math.min(Math.max(Number(studentCount || 1), 1), 4);
+    const feeByProgram = {
+      basicenglishcourse: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
+      privatespeakingpractice: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
+      privatewritingpractice: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
+      englishcourseforkids: { 1: 50000, 2: 55000, 3: 60000, 4: 65000 }
+    };
+    const key = Object.keys(feeByProgram).find((programKey) => normalizedProgram.includes(programKey));
+    return key ? feeByProgram[key][count] : 0;
+  }
+
+  function formatRemainingFee(row) {
+    const toBePaid = getToBePaidCount(row);
+    if (toBePaid <= 0) return "Lunas";
+    const fee = getMeetingFee(row.program_name, row.student_count);
+    return fee > 0 ? formatMoney(toBePaid * fee) : "Fee belum diset";
   }
 
   function monthRange(monthValue) {
@@ -405,6 +433,7 @@
         <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
         <td><span class="pill">${escapeHTML(formatToBePaid(row))}</span></td>
+        <td><span class="pill">${escapeHTML(formatRemainingFee(row))}</span></td>
         <td><button class="btn" type="button" data-payment-edit="${escapeHTML(row.id)}" data-payment-value="${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}">Edit Payment</button></td>
       </tr>
     `).join("");
