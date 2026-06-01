@@ -203,6 +203,20 @@
     return isAdmin() || Boolean(currentTutor);
   }
 
+  function hasZoomAccess() {
+    return hasInputAccess() || getCurrentEmail().endsWith("@jeyasclub.com");
+  }
+
+  async function ensureCurrentSession() {
+    if (currentSession && currentSession.user) return currentSession;
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    if (currentSession && currentSession.user && !isAdmin() && !currentTutor) {
+      await loadTutorProfile();
+    }
+    return currentSession;
+  }
+
   function setStatus(el, message, type = "") {
     el.className = `status ${type}`.trim();
     el.textContent = message;
@@ -436,7 +450,7 @@
   }
 
   async function loadZoomBookings() {
-    if (!supabaseClient || !hasInputAccess()) return;
+    if (!supabaseClient || !hasZoomAccess()) return;
     const range = getMonthRange(els.zoomMonth.value);
     els.zoomCalendar.innerHTML = `<div class="zoom-day"><span class="zoom-date">Memuat jadwal Zoom...</span></div>`;
     const { data, error } = await supabaseClient
@@ -594,7 +608,8 @@
 
   els.zoomForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!hasInputAccess()) { setStatus(els.zoomStatus, "Sesi input tidak aktif.", "bad"); return; }
+    await ensureCurrentSession();
+    if (!currentSession || !currentSession.user) { setStatus(els.zoomStatus, "Sesi login habis. Login ulang dulu.", "bad"); return; }
     els.zoomSubmit.disabled = true;
     setStatus(els.zoomStatus, "Menyimpan Zoom Booking...");
     const { error } = await supabaseClient.rpc("create_class_zoom_booking", {
