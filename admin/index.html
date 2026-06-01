@@ -64,8 +64,19 @@
   .master-wide { grid-column:1 / -1; }
   .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
   .row-actions .btn { min-height:34px; padding:7px 10px; font-size:12px; }
+  .zoom-filter { display:flex; gap:10px; align-items:end; flex-wrap:wrap; }
+  .zoom-filter label { min-width:220px; }
+  .zoom-calendar { display:grid; grid-template-columns:repeat(7, minmax(120px, 1fr)); border:1px solid #1f2937; overflow-x:auto; }
+  .zoom-weekday, .zoom-day { border:1px solid #1f2937; }
+  .zoom-weekday { min-height:42px; padding:11px 10px; background:#dbeafe; color:#111827; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.7px; }
+  .zoom-day { min-height:132px; padding:10px; display:flex; flex-direction:column; gap:8px; background:#fff; }
+  .zoom-day.muted-day { background:#f8fafc; }
+  .zoom-date { color:#111827; font-size:12px; font-weight:900; }
+  .zoom-event { display:grid; gap:3px; padding:8px; border-radius:10px; background:#e8f1fd; color:#1558c0; font-size:12px; line-height:1.35; border:1px solid #bfdbfe; }
+  .zoom-event strong { color:#111827; font-size:12px; }
+  .zoom-event button { justify-self:start; min-height:28px; padding:5px 8px; font-size:11px; }
   @media (max-width:760px) { .topbar { padding:0 16px; } .brand span { display:none; } .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; flex-direction:column; } }
-  @media (max-width:900px) { .master-grid { grid-template-columns:1fr; } .master-form { flex-direction:column; } }
+  @media (max-width:900px) { .master-grid { grid-template-columns:1fr; } .master-form { flex-direction:column; } .zoom-calendar { grid-template-columns:repeat(7, minmax(108px, 1fr)); } }
 </style>
 </head>
 <body>
@@ -139,6 +150,18 @@
         <div class="empty hidden" id="bookingEmpty">Belum ada data Class Booking untuk filter ini.</div>
       </section>
 
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Zoom Booking</h2><p class="muted">Jadwal pemakaian Zoom bulanan dari semua tutor.</p></div>
+          <div class="zoom-filter">
+            <label>Kalender bulan<input type="month" id="zoomMonth"></label>
+            <button class="btn" type="button" id="zoomRefresh">Refresh</button>
+          </div>
+        </div>
+        <div class="zoom-calendar" id="zoomCalendar"></div>
+        <div class="empty hidden" id="zoomEmpty">Belum ada Zoom Booking untuk bulan ini.</div>
+      </section>
+
       <section class="master-grid">
         <article class="panel">
           <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div></div>
@@ -210,7 +233,8 @@
     programForm: $("programForm"), programInput: $("programNameInput"), programBody: $("programBody"), programEmpty: $("programEmpty"),
     tutorForm: $("tutorForm"), tutorInput: $("tutorNameInput"), tutorBody: $("tutorBody"), tutorEmpty: $("tutorEmpty"),
     feeForm: $("feeForm"), feeProgramInput: $("feeProgramInput"), feeStudentCountInput: $("feeStudentCountInput"),
-    feeAmountInput: $("feeAmountInput"), feeBody: $("feeBody"), feeEmpty: $("feeEmpty")
+    feeAmountInput: $("feeAmountInput"), feeBody: $("feeBody"), feeEmpty: $("feeEmpty"),
+    zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty")
   };
 
   function isAdmin(session = currentSession) {
@@ -227,6 +251,21 @@
     const date = new Date(`${value}T00:00:00`);
     if (Number.isNaN(date.getTime())) return "-";
     return date.toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" });
+  }
+
+  function formatTime(value) {
+    return String(value || "").slice(0, 5);
+  }
+
+  function toDateInput(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function toMonthInput(date = new Date()) {
+    return toDateInput(date).slice(0, 7);
   }
 
   function formatMoney(value) {
@@ -288,6 +327,14 @@
     return { start, end };
   }
 
+  function getMonthRange(monthValue) {
+    const [year, month] = String(monthValue || toMonthInput()).split("-").map(Number);
+    const start = `${year}-${String(month).padStart(2, "0")}-01`;
+    const next = new Date(year, month, 1);
+    const end = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`;
+    return { year, month, start, end };
+  }
+
   function setAuthMessage(message, type = "") {
     els.authMessage.className = `status ${type}`.trim();
     els.authMessage.textContent = message;
@@ -305,8 +352,10 @@
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    els.zoomMonth.value ||= toMonthInput();
     await loadMasterData();
     await loadData();
+    await loadZoomBookings();
   }
 
   async function loadMasterData() {
@@ -539,6 +588,82 @@
       return;
     }
     await refreshFeesAndData();
+  }
+
+  async function loadZoomBookings() {
+    if (!supabaseClient || !isAdmin()) return;
+    const range = getMonthRange(els.zoomMonth.value);
+    els.zoomCalendar.innerHTML = `<div class="zoom-day"><span class="zoom-date">Memuat jadwal Zoom...</span></div>`;
+    const { data, error } = await supabaseClient
+      .from("class_zoom_bookings")
+      .select("*")
+      .gte("booking_date", range.start)
+      .lt("booking_date", range.end)
+      .order("booking_date", { ascending:true })
+      .order("start_time", { ascending:true });
+
+    if (error) {
+      console.error(error);
+      els.zoomCalendar.innerHTML = "";
+      els.zoomEmpty.classList.remove("hidden");
+      els.zoomEmpty.textContent = "Jadwal Zoom belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
+      return;
+    }
+
+    renderZoomCalendar(data || []);
+  }
+
+  function renderZoomCalendar(rows) {
+    const range = getMonthRange(els.zoomMonth.value);
+    const days = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+    const firstDay = (new Date(range.year, range.month - 1, 1).getDay() + 6) % 7;
+    const totalDays = new Date(range.year, range.month, 0).getDate();
+    const byDate = rows.reduce((map, row) => {
+      map[row.booking_date] = map[row.booking_date] || [];
+      map[row.booking_date].push(row);
+      return map;
+    }, {});
+    const cells = days.map((day) => `<div class="zoom-weekday">${day}</div>`);
+
+    for (let i = 0; i < firstDay; i += 1) {
+      cells.push(`<div class="zoom-day muted-day"></div>`);
+    }
+
+    for (let day = 1; day <= totalDays; day += 1) {
+      const dateValue = `${range.year}-${String(range.month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const events = byDate[dateValue] || [];
+      cells.push(`
+        <div class="zoom-day">
+          <span class="zoom-date">${day}</span>
+          ${events.map((event) => `
+            <div class="zoom-event">
+              <strong>${formatTime(event.start_time)}-${formatTime(event.end_time)}</strong>
+              <span>${escapeHTML(event.tutor_name || event.tutor_email)}</span>
+              ${event.note ? `<span>${escapeHTML(event.note)}</span>` : ""}
+              <button class="btn danger" type="button" data-zoom-delete="${escapeHTML(event.id)}">Hapus</button>
+            </div>
+          `).join("")}
+        </div>
+      `);
+    }
+
+    els.zoomEmpty.classList.toggle("hidden", rows.length > 0);
+    els.zoomEmpty.textContent = "Belum ada Zoom Booking untuk bulan ini.";
+    els.zoomCalendar.innerHTML = cells.join("");
+  }
+
+  async function deleteZoomBooking(bookingId) {
+    if (!window.confirm("Hapus Zoom Booking ini?")) return;
+    const { error } = await supabaseClient.rpc("delete_class_zoom_booking", {
+      p_booking_id: bookingId
+    });
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Zoom Booking belum terhapus.";
+      return;
+    }
+    els.sessionLabel.textContent = "Zoom Booking berhasil dihapus.";
+    await loadZoomBookings();
   }
 
   async function loadData() {
@@ -791,6 +916,7 @@
     const feeEditButton = event.target.closest("[data-fee-edit]");
     const feeToggleButton = event.target.closest("[data-fee-toggle]");
     const feeDeleteButton = event.target.closest("[data-fee-delete]");
+    const zoomDeleteButton = event.target.closest("[data-zoom-delete]");
     if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
     if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
     if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
@@ -798,12 +924,15 @@
     if (feeEditButton) editFeeItem(feeEditButton.dataset.feeEdit);
     if (feeToggleButton) toggleFeeItem(feeToggleButton.dataset.feeToggle, feeToggleButton.dataset.active === "1");
     if (feeDeleteButton) deleteFeeItem(feeDeleteButton.dataset.feeDelete);
+    if (zoomDeleteButton) deleteZoomBooking(zoomDeleteButton.dataset.zoomDelete);
   });
   els.month.addEventListener("change", loadData);
   els.programFilter.addEventListener("change", loadData);
   els.tutorFilter.addEventListener("change", loadData);
   els.reset.addEventListener("click", () => { els.month.value = ""; els.programFilter.value = ""; els.tutorFilter.value = ""; loadData(); });
   els.refresh.addEventListener("click", loadData);
+  els.zoomMonth.addEventListener("change", loadZoomBookings);
+  els.zoomRefresh.addEventListener("click", loadZoomBookings);
   init();
 </script>
 </body>
