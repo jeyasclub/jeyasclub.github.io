@@ -94,7 +94,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -235,7 +235,7 @@
 
   async function loadTrackers() {
     if (!supabaseClient || !hasInputAccess()) return;
-    els.trackerBody.innerHTML = `<tr><td colspan="6">Memuat tracker...</td></tr>`;
+    els.trackerBody.innerHTML = `<tr><td colspan="7">Memuat tracker...</td></tr>`;
     const { data, error } = await supabaseClient
       .from("class_tracker")
       .select("*")
@@ -245,12 +245,12 @@
 
     if (error) {
       console.error(error);
-      els.trackerBody.innerHTML = `<tr><td colspan="6">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="7">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
       return;
     }
 
     if (!data || !data.length) {
-      els.trackerBody.innerHTML = `<tr><td colspan="6">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="7">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
       return;
     }
 
@@ -261,6 +261,7 @@
         <td>${escapeHTML(row.program_name || "-")}</td>
         <td>${escapeHTML(row.tutor || "-")}</td>
         <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
+        <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
         <td><button class="btn" type="button" data-edit-tracker="${escapeHTML(row.id)}">Edit</button></td>
       </tr>
     `).join("");
