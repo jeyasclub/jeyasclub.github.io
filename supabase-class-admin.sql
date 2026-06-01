@@ -74,6 +74,9 @@ create table if not exists public.class_tracker (
 create table if not exists public.class_bookings (
   id uuid primary key default gen_random_uuid(),
   order_date date not null,
+  valid_until date,
+  certificate_issued boolean not null default false,
+  testimonial_received boolean not null default false,
   student_name text not null,
   student_count integer not null default 1,
   program_name text not null,
@@ -136,7 +139,10 @@ add column if not exists student_count integer not null default 1;
 
 alter table public.class_bookings
 add column if not exists student_name text not null default '',
-add column if not exists student_count integer not null default 1;
+add column if not exists student_count integer not null default 1,
+add column if not exists valid_until date,
+add column if not exists certificate_issued boolean not null default false,
+add column if not exists testimonial_received boolean not null default false;
 
 alter table public.class_tutors
 add column if not exists email text unique;

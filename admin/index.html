@@ -143,7 +143,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div><button class="btn" type="button" id="exportBooking">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Sertifikat</th><th>Testimoni</th><th>Aksi</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -282,6 +282,17 @@
 
   function formatExportMoney(value) {
     return Number(value || 0);
+  }
+
+  function formatYesNo(value) {
+    return value ? "Yes" : "No";
+  }
+
+  function parseYesNoInput(value, fallback = false) {
+    const normalized = String(value || "").trim().toLowerCase();
+    if (["yes", "y", "ya", "true", "1"].includes(normalized)) return true;
+    if (["no", "n", "tidak", "false", "0"].includes(normalized)) return false;
+    return fallback;
   }
 
   function parseNumberInput(value, fallback = 0) {
@@ -809,11 +820,14 @@
     els.bookingBody.innerHTML = rows.map((row) => `
       <tr>
         <td>${formatDate(row.order_date)}</td>
+        <td>${formatDate(row.valid_until)}</td>
         <td>${escapeHTML(row.student_name)}</td>
         <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name)}</td>
         <td>${formatMoney(row.price)}</td>
         <td>${escapeHTML(row.tutor)}</td>
+        <td><span class="pill">${formatYesNo(row.certificate_issued)}</span></td>
+        <td><span class="pill">${formatYesNo(row.testimonial_received)}</span></td>
         <td>
           <div class="row-actions">
             <button class="btn" type="button" data-booking-edit="${escapeHTML(row.id)}">Edit</button>
@@ -841,6 +855,8 @@
   async function editBooking(row) {
     const orderDate = window.prompt("Tanggal pemesanan (YYYY-MM-DD)", row.order_date || "");
     if (orderDate === null) return;
+    const validUntil = window.prompt("Masa berlaku (YYYY-MM-DD, boleh kosong)", row.valid_until || "");
+    if (validUntil === null) return;
     const studentName = window.prompt("Nama siswa", row.student_name || "");
     if (studentName === null) return;
     const studentCount = window.prompt("Jumlah siswa", String(row.student_count || 1));
@@ -851,14 +867,21 @@
     if (price === null) return;
     const tutor = window.prompt("Tutor", row.tutor || "");
     if (tutor === null) return;
+    const certificateIssued = window.prompt("Sertifikat sudah diterbitkan? Yes/No", formatYesNo(row.certificate_issued));
+    if (certificateIssued === null) return;
+    const testimonialReceived = window.prompt("Testimoni sudah masuk? Yes/No", formatYesNo(row.testimonial_received));
+    if (testimonialReceived === null) return;
 
     const payload = {
       order_date: orderDate.trim(),
+      valid_until: validUntil.trim() || null,
       student_name: studentName.trim(),
       student_count: Math.max(parseNumberInput(studentCount, row.student_count || 1), 1),
       program_name: programName.trim(),
       price: parseNumberInput(price, row.price || 0),
       tutor: tutor.trim(),
+      certificate_issued: parseYesNoInput(certificateIssued, Boolean(row.certificate_issued)),
+      testimonial_received: parseYesNoInput(testimonialReceived, Boolean(row.testimonial_received)),
       updated_at: new Date().toISOString()
     };
 
@@ -949,14 +972,17 @@
 
   function exportBookingRows() {
     downloadExcel("class-booking", [
-      "Tanggal Pemesanan", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor"
+      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Sertifikat", "Testimoni"
     ], bookingRows.map((row) => [
       row.order_date,
+      row.valid_until,
       row.student_name,
       Number(row.student_count || 1),
       row.program_name,
       formatExportMoney(row.price),
-      row.tutor
+      row.tutor,
+      formatYesNo(row.certificate_issued),
+      formatYesNo(row.testimonial_received)
     ]));
   }
 

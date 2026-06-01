@@ -126,6 +126,7 @@
         </div>
         <form class="form" id="bookingForm">
           <label>Tanggal Pemesanan<input type="date" id="bookingDate" required></label>
+          <label>Masa Berlaku<input type="date" id="bookingValidUntil"></label>
           <label>Nama Siswa<input type="text" id="bookingStudent" required placeholder="Nama siswa"></label>
           <label>Jumlah Siswa<input type="number" id="bookingStudentCount" min="1" value="1" required></label>
           <label>Nama Program<select id="bookingProgram" required></select></label>
@@ -638,6 +639,7 @@
     setStatus(els.bookingStatus, "Menyimpan booking...");
     const payload = {
       order_date: $("bookingDate").value,
+      valid_until: $("bookingValidUntil").value || null,
       student_name: $("bookingStudent").value.trim(),
       student_count: Number($("bookingStudentCount").value || 1),
       program_name: $("bookingProgram").value,
@@ -671,7 +673,7 @@
       return;
     }
     els.bookingForm.reset();
-    $("bookingDate").value = new Date().toISOString().slice(0, 10);
+    $("bookingDate").value = toDateInput();
     $("bookingStudentCount").value = 1;
     $("bookingMeetingTotal").value = 0;
     setStatus(els.bookingStatus, "Class Booking tersimpan dan otomatis muncul di Class Tracker.", "good");
