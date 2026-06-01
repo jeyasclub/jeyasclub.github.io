@@ -43,6 +43,8 @@
   .forms-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:18px; align-items:start; }
   .forms-grid.tracker-only { grid-template-columns:1fr; }
   .forms-grid.tracker-only .panel { width:100%; }
+  .forms-grid.booking-only { grid-template-columns:1fr; }
+  .forms-grid.booking-only .panel { width:100%; }
   .panel { padding:22px; display:grid; gap:18px; }
   .panel-head { display:grid; gap:6px; }
   .two-col { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
@@ -89,7 +91,7 @@
     </div>
 
     <section class="forms-grid">
-      <article class="panel">
+      <article class="panel" id="trackerPanel">
         <div class="panel-head">
           <h2>Class Tracker</h2>
           <p class="muted">Data muncul otomatis dari booking. Edit hanya untuk Total Meeting Realized.</p>
@@ -139,7 +141,7 @@
     loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"), email:$("emailInput"),
     password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"), logout:$("logoutButton"),
     sessionLabel:$("sessionLabel"), bookingForm:$("bookingForm"), trackerBody:$("trackerBody"),
-    formsGrid: document.querySelector(".forms-grid"), bookingPanel:$("bookingPanel"), adminLink:$("adminLink"), bookingSubmit:$("bookingSubmit"),
+    formsGrid: document.querySelector(".forms-grid"), trackerPanel:$("trackerPanel"), bookingPanel:$("bookingPanel"), adminLink:$("adminLink"), bookingSubmit:$("bookingSubmit"),
     trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus")
   };
 
@@ -361,8 +363,10 @@
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
     els.adminLink.classList.toggle("hidden", !isAdmin());
+    els.trackerPanel.classList.toggle("hidden", isAdmin());
     els.bookingPanel.classList.toggle("hidden", !isAdmin());
     els.formsGrid.classList.toggle("tracker-only", !isAdmin());
+    els.formsGrid.classList.toggle("booking-only", isAdmin());
     els.sessionLabel.textContent = currentTutor
       ? `Login sebagai tutor ${currentTutor.name} (${getCurrentEmail()})`
       : `Login sebagai ${currentSession.user.email}`;
@@ -370,6 +374,7 @@
     if (isAdmin()) {
       $("bookingDate").value ||= today;
       loadMasterOptions();
+      return;
     }
     loadTrackers();
   }
