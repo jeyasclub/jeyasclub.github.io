@@ -13,7 +13,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f7f9fc; --border:#e5e7eb; --green:#16a46c; --red:#dc2626; }
   body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:var(--bg); }
-  button, input { font:inherit; }
+  button, input, select { font:inherit; }
   .topbar { position:sticky; top:0; z-index:10; min-height:64px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
   .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
   .brand img { width:68px; height:68px; object-fit:contain; }
@@ -33,6 +33,7 @@
   label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
   input, select { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
   input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
+  input[type="checkbox"] { width:20px; min-height:20px; height:20px; padding:0; accent-color:var(--blue); }
   .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
   .status.good { color:var(--green); }
   .status.bad { color:var(--red); }
@@ -75,6 +76,15 @@
   .zoom-event { display:grid; gap:3px; padding:8px; border-radius:10px; background:#e8f1fd; color:#1558c0; font-size:12px; line-height:1.35; border:1px solid #bfdbfe; }
   .zoom-event strong { color:#111827; font-size:12px; }
   .zoom-event button { justify-self:start; min-height:28px; padding:5px 8px; font-size:11px; }
+  .modal-backdrop { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:18px; background:rgba(15,23,42,.48); }
+  .modal { width:min(720px, 100%); max-height:min(90vh, 760px); overflow:auto; background:var(--white); border:1px solid var(--border); border-radius:16px; box-shadow:0 24px 80px rgba(15,23,42,.28); }
+  .modal-head { padding:18px 20px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; border-bottom:1px solid var(--border); }
+  .modal-body { padding:20px; display:grid; gap:14px; }
+  .modal-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+  .check-row { min-height:54px; padding:12px 14px; display:flex; align-items:center; gap:10px; border:1.5px solid var(--border); border-radius:12px; background:#f8fbff; color:var(--text); }
+  .check-row span { font-size:13px; font-weight:900; }
+  .modal-actions { padding:0 20px 20px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+  @media (max-width:640px) { .modal-grid { grid-template-columns:1fr; } .modal-actions .btn { width:100%; } }
   @media (max-width:760px) { .topbar { padding:0 16px; } .brand span { display:none; } .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; flex-direction:column; } }
   @media (max-width:900px) { .master-grid { grid-template-columns:1fr; } .master-form { flex-direction:column; } .zoom-calendar { grid-template-columns:repeat(7, minmax(108px, 1fr)); } }
 </style>
@@ -214,6 +224,39 @@
     </div>
   </main>
 
+  <div class="modal-backdrop hidden" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+    <form class="modal" id="bookingEditForm">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Edit Booking</p>
+          <h2 id="bookingModalTitle">Class Booking</h2>
+          <p class="muted">Update data booking, termasuk status sertifikat dan testimoni.</p>
+        </div>
+        <button class="btn" type="button" id="bookingModalClose">Tutup</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="bookingEditId">
+        <div class="modal-grid">
+          <label>Tanggal pemesanan<input type="date" id="bookingOrderDate" required></label>
+          <label>Masa berlaku<input type="date" id="bookingValidUntil"></label>
+          <label>Nama siswa<input type="text" id="bookingStudentName" required></label>
+          <label>Jumlah siswa<input type="number" id="bookingStudentCount" min="1" required></label>
+          <label>Nama program<input type="text" id="bookingProgramName" required></label>
+          <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required></label>
+          <label>Tutor<input type="text" id="bookingTutor" required></label>
+        </div>
+        <div class="modal-grid">
+          <label class="check-row"><input type="checkbox" id="bookingCertificateIssued"><span>Sertifikat sudah diterbitkan</span></label>
+          <label class="check-row"><input type="checkbox" id="bookingTestimonialReceived"><span>Testimoni sudah masuk</span></label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="bookingModalCancel">Batal</button>
+        <button class="btn primary" type="submit" id="bookingSaveButton">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
@@ -242,7 +285,13 @@
     feeAmountInput: $("feeAmountInput"), feeBody: $("feeBody"), feeEmpty: $("feeEmpty"),
     zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
     exportTracker: $("exportTracker"), exportBooking: $("exportBooking"), exportZoom: $("exportZoom"),
-    exportProgram: $("exportProgram"), exportTutor: $("exportTutor"), exportFee: $("exportFee")
+    exportProgram: $("exportProgram"), exportTutor: $("exportTutor"), exportFee: $("exportFee"),
+    bookingModal: $("bookingModal"), bookingEditForm: $("bookingEditForm"), bookingEditId: $("bookingEditId"),
+    bookingOrderDate: $("bookingOrderDate"), bookingValidUntil: $("bookingValidUntil"),
+    bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
+    bookingProgramName: $("bookingProgramName"), bookingPrice: $("bookingPrice"), bookingTutor: $("bookingTutor"),
+    bookingCertificateIssued: $("bookingCertificateIssued"), bookingTestimonialReceived: $("bookingTestimonialReceived"),
+    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton")
   };
 
   function isAdmin(session = currentSession) {
@@ -852,52 +901,69 @@
     });
   }
 
-  async function editBooking(row) {
-    const orderDate = window.prompt("Tanggal pemesanan (YYYY-MM-DD)", row.order_date || "");
-    if (orderDate === null) return;
-    const validUntil = window.prompt("Masa berlaku (YYYY-MM-DD, boleh kosong)", row.valid_until || "");
-    if (validUntil === null) return;
-    const studentName = window.prompt("Nama siswa", row.student_name || "");
-    if (studentName === null) return;
-    const studentCount = window.prompt("Jumlah siswa", String(row.student_count || 1));
-    if (studentCount === null) return;
-    const programName = window.prompt("Nama program", row.program_name || "");
-    if (programName === null) return;
-    const price = window.prompt("Harga", String(Number(row.price || 0)));
-    if (price === null) return;
-    const tutor = window.prompt("Tutor", row.tutor || "");
-    if (tutor === null) return;
-    const certificateIssued = window.prompt("Sertifikat sudah diterbitkan? Yes/No", formatYesNo(row.certificate_issued));
-    if (certificateIssued === null) return;
-    const testimonialReceived = window.prompt("Testimoni sudah masuk? Yes/No", formatYesNo(row.testimonial_received));
-    if (testimonialReceived === null) return;
+  function openBookingModal(row) {
+    els.bookingEditId.value = row.id || "";
+    els.bookingOrderDate.value = row.order_date || "";
+    els.bookingValidUntil.value = row.valid_until || "";
+    els.bookingStudentName.value = row.student_name || "";
+    els.bookingStudentCount.value = Number(row.student_count || 1);
+    els.bookingProgramName.value = row.program_name || "";
+    els.bookingPrice.value = Number(row.price || 0);
+    els.bookingTutor.value = row.tutor || "";
+    els.bookingCertificateIssued.checked = Boolean(row.certificate_issued);
+    els.bookingTestimonialReceived.checked = Boolean(row.testimonial_received);
+    els.bookingModal.classList.remove("hidden");
+    els.bookingStudentName.focus();
+  }
 
+  function closeBookingModal() {
+    els.bookingModal.classList.add("hidden");
+    els.bookingEditForm.reset();
+    els.bookingEditId.value = "";
+  }
+
+  function editBooking(row) {
+    openBookingModal(row);
+  }
+
+  async function saveBookingEdit(event) {
+    event.preventDefault();
+    const bookingId = els.bookingEditId.value;
     const payload = {
-      order_date: orderDate.trim(),
-      valid_until: validUntil.trim() || null,
-      student_name: studentName.trim(),
-      student_count: Math.max(parseNumberInput(studentCount, row.student_count || 1), 1),
-      program_name: programName.trim(),
-      price: parseNumberInput(price, row.price || 0),
-      tutor: tutor.trim(),
-      certificate_issued: parseYesNoInput(certificateIssued, Boolean(row.certificate_issued)),
-      testimonial_received: parseYesNoInput(testimonialReceived, Boolean(row.testimonial_received)),
+      order_date: els.bookingOrderDate.value,
+      valid_until: els.bookingValidUntil.value || null,
+      student_name: els.bookingStudentName.value.trim(),
+      student_count: Math.max(parseNumberInput(els.bookingStudentCount.value, 1), 1),
+      program_name: els.bookingProgramName.value.trim(),
+      price: parseNumberInput(els.bookingPrice.value, 0),
+      tutor: els.bookingTutor.value.trim(),
+      certificate_issued: els.bookingCertificateIssued.checked,
+      testimonial_received: els.bookingTestimonialReceived.checked,
       updated_at: new Date().toISOString()
     };
+
+    if (!bookingId) {
+      els.sessionLabel.textContent = "Booking belum diupdate. ID booking tidak ditemukan.";
+      return;
+    }
 
     if (!payload.order_date || !payload.student_name || !payload.program_name || !payload.tutor) {
       els.sessionLabel.textContent = "Booking belum diupdate. Tanggal, siswa, program, dan tutor wajib diisi.";
       return;
     }
 
+    els.bookingSaveButton.disabled = true;
+    els.bookingSaveButton.textContent = "Menyimpan...";
     const { error } = await supabaseClient
       .from("class_bookings")
       .update(payload)
-      .eq("id", row.id);
+      .eq("id", bookingId);
 
     if (error) {
       console.error(error);
       els.sessionLabel.textContent = "Class Booking belum terupdate. Cek policy Supabase.";
+      els.bookingSaveButton.disabled = false;
+      els.bookingSaveButton.textContent = "Simpan Perubahan";
       return;
     }
 
@@ -911,16 +977,21 @@
         tutor: payload.tutor,
         updated_at: new Date().toISOString()
       })
-      .eq("booking_id", row.id);
+      .eq("booking_id", bookingId);
+
+    els.bookingSaveButton.disabled = false;
+    els.bookingSaveButton.textContent = "Simpan Perubahan";
 
     if (trackerError) {
       console.error(trackerError);
       els.sessionLabel.textContent = "Booking terupdate, tapi tracker terkait belum sinkron.";
+      closeBookingModal();
       await loadData();
       return;
     }
 
     els.sessionLabel.textContent = "Class Booking berhasil diupdate.";
+    closeBookingModal();
     await loadData();
   }
 
@@ -1060,6 +1131,12 @@
   els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
   els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
   els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
+  els.bookingEditForm.addEventListener("submit", saveBookingEdit);
+  els.bookingModalClose.addEventListener("click", closeBookingModal);
+  els.bookingModalCancel.addEventListener("click", closeBookingModal);
+  els.bookingModal.addEventListener("click", (event) => {
+    if (event.target === els.bookingModal) closeBookingModal();
+  });
   els.exportTracker.addEventListener("click", exportTrackerRows);
   els.exportBooking.addEventListener("click", exportBookingRows);
   els.exportZoom.addEventListener("click", exportZoomRows);
