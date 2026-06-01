@@ -96,7 +96,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -173,6 +173,13 @@
     return date.toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" });
   }
 
+  function formatToBePaid(row) {
+    const meetingsRealized = Number(row.meetings_realized || 0);
+    const paymentsRealized = Number(row.payments_realized || 0);
+    const toBePaid = meetingsRealized - paymentsRealized;
+    return toBePaid > 0 ? `${toBePaid} meetings` : "Lunas";
+  }
+
   function buildOptions(rows, placeholder, currentValue = "") {
     const options = [`<option value="">${placeholder}</option>`];
     const hasCurrentValue = currentValue && rows.some((row) => row.name === currentValue);
@@ -237,7 +244,7 @@
 
   async function loadTrackers() {
     if (!supabaseClient || !hasInputAccess()) return;
-    els.trackerBody.innerHTML = `<tr><td colspan="7">Memuat tracker...</td></tr>`;
+    els.trackerBody.innerHTML = `<tr><td colspan="8">Memuat tracker...</td></tr>`;
     const { data, error } = await supabaseClient
       .from("class_tracker")
       .select("*")
@@ -247,12 +254,12 @@
 
     if (error) {
       console.error(error);
-      els.trackerBody.innerHTML = `<tr><td colspan="7">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="8">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
       return;
     }
 
     if (!data || !data.length) {
-      els.trackerBody.innerHTML = `<tr><td colspan="7">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="8">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
       return;
     }
 
@@ -264,6 +271,7 @@
         <td>${escapeHTML(row.tutor || "-")}</td>
         <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
+        <td><span class="pill">${escapeHTML(formatToBePaid(row))}</span></td>
         <td><button class="btn" type="button" data-edit-tracker="${escapeHTML(row.id)}">Edit</button></td>
       </tr>
     `).join("");
