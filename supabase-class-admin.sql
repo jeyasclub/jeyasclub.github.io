@@ -24,8 +24,19 @@ create or replace function public.is_class_tutor_for(tutor_name text)
 returns boolean
 language sql
 stable
+security definer
+set search_path = public
 as $$
-  select lower(coalesce(auth.jwt() ->> 'email', '')) = public.class_tutor_email(tutor_name);
+  select exists (
+    select 1
+    from public.class_tutors tutor
+    where tutor.is_active = true
+      and lower(coalesce(tutor.email, public.class_tutor_email(tutor.name))) = lower(coalesce(auth.jwt() ->> 'email', ''))
+      and (
+        lower(regexp_replace(tutor.name, '[^a-zA-Z0-9]+', '', 'g')) = lower(regexp_replace(coalesce(tutor_name, ''), '[^a-zA-Z0-9]+', '', 'g'))
+        or lower(coalesce(tutor.email, public.class_tutor_email(tutor.name))) = public.class_tutor_email(tutor_name)
+      )
+  );
 $$;
 
 create table if not exists public.class_tracker (
@@ -89,6 +100,40 @@ update public.class_tutors
 set email = public.class_tutor_email(name)
 where email is null or email = '';
 
+insert into public.class_tracker (
+  booking_id,
+  order_date,
+  student_name,
+  program_name,
+  tutor,
+  meetings_realized,
+  meetings_total,
+  payments_realized,
+  payments_total,
+  created_by,
+  created_at,
+  updated_at
+)
+select
+  booking.id,
+  booking.order_date,
+  booking.student_name,
+  booking.program_name,
+  booking.tutor,
+  0,
+  0,
+  1,
+  1,
+  booking.created_by,
+  booking.created_at,
+  now()
+from public.class_bookings booking
+where not exists (
+  select 1
+  from public.class_tracker tracker
+  where tracker.booking_id = booking.id
+);
+
 alter table public.class_tracker enable row level security;
 alter table public.class_bookings enable row level security;
 alter table public.class_programs enable row level security;
@@ -132,6 +177,7 @@ to authenticated
 using (public.is_class_admin());
 
 drop policy if exists "Class admins can read bookings" on public.class_bookings;
+drop policy if exists "Class tutors can read own bookings" on public.class_bookings;
 drop policy if exists "Class admins can insert bookings" on public.class_bookings;
 drop policy if exists "Class admins can update bookings" on public.class_bookings;
 drop policy if exists "Class admins can delete bookings" on public.class_bookings;
@@ -141,6 +187,12 @@ on public.class_bookings
 for select
 to authenticated
 using (public.is_class_admin());
+
+create policy "Class tutors can read own bookings"
+on public.class_bookings
+for select
+to authenticated
+using (public.is_class_tutor_for(tutor));
 
 create policy "Class admins can insert bookings"
 on public.class_bookings

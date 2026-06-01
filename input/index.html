@@ -223,7 +223,6 @@
     const { data, error } = await supabaseClient
       .from("class_tutors")
       .select("name,email")
-      .eq("email", email)
       .eq("is_active", true)
       .limit(1);
     if (error) {
@@ -251,7 +250,7 @@
     }
 
     if (!data || !data.length) {
-      els.trackerBody.innerHTML = `<tr><td colspan="6">Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis.</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="6">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
       return;
     }
 
