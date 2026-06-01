@@ -148,7 +148,7 @@
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -369,8 +369,40 @@
         <td>${escapeHTML(row.tutor)}</td>
         <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
+        <td><button class="btn" type="button" data-payment-edit="${escapeHTML(row.id)}" data-payment-value="${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}">Edit Payment</button></td>
       </tr>
     `).join("");
+  }
+
+  async function editPaymentStatus(trackerId, currentValue) {
+    const nextValue = window.prompt("Update Status Payment dalam format n/n", currentValue || "0/0");
+    if (nextValue === null) return;
+    const match = nextValue.trim().match(/^(\d+)\s*\/\s*(\d+)$/);
+    if (!match) {
+      els.sessionLabel.textContent = "Format payment harus n/n, contoh: 1/2.";
+      return;
+    }
+    const paymentsRealized = Number(match[1]);
+    const paymentsTotal = Number(match[2]);
+    if (paymentsTotal > 0 && paymentsRealized > paymentsTotal) {
+      els.sessionLabel.textContent = "Payment realized tidak boleh lebih besar dari total payment.";
+      return;
+    }
+    const { error } = await supabaseClient
+      .from("class_tracker")
+      .update({
+        payments_realized: paymentsRealized,
+        payments_total: paymentsTotal,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", trackerId);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Status payment belum terupdate. Cek policy Supabase.";
+      return;
+    }
+    els.sessionLabel.textContent = "Status payment berhasil diupdate.";
+    await loadData();
   }
 
   function renderBookings(rows) {
@@ -421,9 +453,11 @@
     const editButton = event.target.closest("[data-master-edit]");
     const toggleButton = event.target.closest("[data-master-toggle]");
     const deleteButton = event.target.closest("[data-master-delete]");
+    const paymentButton = event.target.closest("[data-payment-edit]");
     if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
     if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
     if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
+    if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
   });
   els.month.addEventListener("change", loadData);
   els.reset.addEventListener("click", () => { els.month.value = ""; loadData(); });
