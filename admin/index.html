@@ -160,7 +160,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Aksi</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -207,6 +207,12 @@
 
   function formatMoney(value) {
     return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
+  }
+
+  function parseNumberInput(value, fallback = 0) {
+    const cleaned = String(value || "").replace(/[^\d]/g, "");
+    const number = Number(cleaned);
+    return Number.isFinite(number) ? number : fallback;
   }
 
   function getToBePaidCount(row) {
@@ -482,8 +488,120 @@
         <td>${escapeHTML(row.program_name)}</td>
         <td>${formatMoney(row.price)}</td>
         <td>${escapeHTML(row.tutor)}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn" type="button" data-booking-edit="${escapeHTML(row.id)}">Edit</button>
+            <button class="btn danger" type="button" data-booking-delete="${escapeHTML(row.id)}">Hapus</button>
+          </div>
+        </td>
       </tr>
     `).join("");
+
+    els.bookingBody.querySelectorAll("[data-booking-edit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const row = rows.find((item) => item.id === button.dataset.bookingEdit);
+        if (row) editBooking(row);
+      });
+    });
+
+    els.bookingBody.querySelectorAll("[data-booking-delete]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const row = rows.find((item) => item.id === button.dataset.bookingDelete);
+        if (row) deleteBooking(row);
+      });
+    });
+  }
+
+  async function editBooking(row) {
+    const orderDate = window.prompt("Tanggal pemesanan (YYYY-MM-DD)", row.order_date || "");
+    if (orderDate === null) return;
+    const studentName = window.prompt("Nama siswa", row.student_name || "");
+    if (studentName === null) return;
+    const studentCount = window.prompt("Jumlah siswa", String(row.student_count || 1));
+    if (studentCount === null) return;
+    const programName = window.prompt("Nama program", row.program_name || "");
+    if (programName === null) return;
+    const price = window.prompt("Harga", String(Number(row.price || 0)));
+    if (price === null) return;
+    const tutor = window.prompt("Tutor", row.tutor || "");
+    if (tutor === null) return;
+
+    const payload = {
+      order_date: orderDate.trim(),
+      student_name: studentName.trim(),
+      student_count: Math.max(parseNumberInput(studentCount, row.student_count || 1), 1),
+      program_name: programName.trim(),
+      price: parseNumberInput(price, row.price || 0),
+      tutor: tutor.trim(),
+      updated_at: new Date().toISOString()
+    };
+
+    if (!payload.order_date || !payload.student_name || !payload.program_name || !payload.tutor) {
+      els.sessionLabel.textContent = "Booking belum diupdate. Tanggal, siswa, program, dan tutor wajib diisi.";
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from("class_bookings")
+      .update(payload)
+      .eq("id", row.id);
+
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Class Booking belum terupdate. Cek policy Supabase.";
+      return;
+    }
+
+    const { error: trackerError } = await supabaseClient
+      .from("class_tracker")
+      .update({
+        order_date: payload.order_date,
+        student_name: payload.student_name,
+        student_count: payload.student_count,
+        program_name: payload.program_name,
+        tutor: payload.tutor,
+        updated_at: new Date().toISOString()
+      })
+      .eq("booking_id", row.id);
+
+    if (trackerError) {
+      console.error(trackerError);
+      els.sessionLabel.textContent = "Booking terupdate, tapi tracker terkait belum sinkron.";
+      await loadData();
+      return;
+    }
+
+    els.sessionLabel.textContent = "Class Booking berhasil diupdate.";
+    await loadData();
+  }
+
+  async function deleteBooking(row) {
+    if (!window.confirm(`Hapus booking ${row.student_name || row.program_name}? Tracker terkait juga akan dihapus.`)) return;
+
+    const { error: trackerError } = await supabaseClient
+      .from("class_tracker")
+      .delete()
+      .eq("booking_id", row.id);
+
+    if (trackerError) {
+      console.error(trackerError);
+      els.sessionLabel.textContent = "Tracker terkait belum terhapus. Booking tidak dihapus.";
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from("class_bookings")
+      .delete()
+      .eq("id", row.id);
+
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Class Booking belum terhapus. Cek policy Supabase.";
+      return;
+    }
+
+    els.sessionLabel.textContent = "Class Booking berhasil dihapus.";
+    await loadData();
   }
 
   async function init() {
