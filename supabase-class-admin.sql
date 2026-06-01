@@ -39,6 +39,21 @@ as $$
   );
 $$;
 
+create or replace function public.is_class_tutor_account()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.class_tutors tutor
+    where tutor.is_active = true
+      and lower(coalesce(tutor.email, public.class_tutor_email(tutor.name))) = lower(coalesce(auth.jwt() ->> 'email', ''))
+  );
+$$;
+
 create table if not exists public.class_tracker (
   id uuid primary key default gen_random_uuid(),
   booking_id uuid,
@@ -100,6 +115,20 @@ create table if not exists public.class_meeting_fees (
   unique (program_name, student_count)
 );
 
+create table if not exists public.class_zoom_bookings (
+  id uuid primary key default gen_random_uuid(),
+  booking_date date not null,
+  start_time time not null,
+  end_time time not null,
+  tutor_name text not null,
+  tutor_email text not null,
+  note text not null default '',
+  created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (start_time < end_time)
+);
+
 alter table public.class_tracker
 add column if not exists booking_id uuid,
 add column if not exists student_name text not null default '',
@@ -114,6 +143,23 @@ add column if not exists email text unique;
 
 alter table public.class_meeting_fees
 add column if not exists is_active boolean not null default true;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'class_zoom_bookings_no_overlap'
+      and conrelid = 'public.class_zoom_bookings'::regclass
+  ) then
+    alter table public.class_zoom_bookings
+    add constraint class_zoom_bookings_no_overlap
+    exclude using gist (
+      tsrange(booking_date + start_time, booking_date + end_time, '[)') with &&
+    );
+  end if;
+end;
+$$;
 
 update public.class_tutors
 set email = public.class_tutor_email(name)
@@ -184,6 +230,7 @@ alter table public.class_bookings enable row level security;
 alter table public.class_programs enable row level security;
 alter table public.class_tutors enable row level security;
 alter table public.class_meeting_fees enable row level security;
+alter table public.class_zoom_bookings enable row level security;
 
 drop policy if exists "Class admins can read tracker" on public.class_tracker;
 drop policy if exists "Class tutors can read own tracker" on public.class_tracker;
@@ -365,6 +412,142 @@ on public.class_meeting_fees
 for delete
 to authenticated
 using (public.is_class_admin());
+
+drop policy if exists "Class input users can read zoom bookings" on public.class_zoom_bookings;
+
+create policy "Class input users can read zoom bookings"
+on public.class_zoom_bookings
+for select
+to authenticated
+using (public.is_class_admin() or public.is_class_tutor_account());
+
+create or replace function public.create_class_zoom_booking(
+  p_booking_date date,
+  p_start_time time,
+  p_end_time time,
+  p_note text default ''
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_email text;
+  tutor_record public.class_tutors;
+  zoom_booking_id uuid;
+begin
+  current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
+
+  if current_email = '' then
+    raise exception 'Not allowed';
+  end if;
+
+  if p_booking_date is null or p_start_time is null or p_end_time is null then
+    raise exception 'Tanggal, jam mulai, dan jam selesai wajib diisi';
+  end if;
+
+  if p_start_time >= p_end_time then
+    raise exception 'Jam selesai harus lebih besar dari jam mulai';
+  end if;
+
+  if public.is_class_admin() then
+    insert into public.class_zoom_bookings (
+      booking_date,
+      start_time,
+      end_time,
+      tutor_name,
+      tutor_email,
+      note,
+      created_by
+    )
+    values (
+      p_booking_date,
+      p_start_time,
+      p_end_time,
+      'Admin',
+      current_email,
+      coalesce(p_note, ''),
+      current_email
+    )
+    returning id into zoom_booking_id;
+
+    return zoom_booking_id;
+  end if;
+
+  select *
+  into tutor_record
+  from public.class_tutors tutor
+  where tutor.is_active = true
+    and lower(coalesce(tutor.email, public.class_tutor_email(tutor.name))) = current_email
+  limit 1;
+
+  if not found then
+    raise exception 'Not allowed';
+  end if;
+
+  insert into public.class_zoom_bookings (
+    booking_date,
+    start_time,
+    end_time,
+    tutor_name,
+    tutor_email,
+    note,
+    created_by
+  )
+  values (
+    p_booking_date,
+    p_start_time,
+    p_end_time,
+    tutor_record.name,
+    current_email,
+    coalesce(p_note, ''),
+    current_email
+  )
+  returning id into zoom_booking_id;
+
+  return zoom_booking_id;
+exception
+  when exclusion_violation then
+    raise exception 'Slot Zoom sudah dibooking di tanggal dan jam tersebut';
+end;
+$$;
+
+grant execute on function public.create_class_zoom_booking(date, time, time, text) to authenticated;
+
+create or replace function public.delete_class_zoom_booking(
+  p_booking_id uuid
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_email text;
+  zoom_record public.class_zoom_bookings;
+begin
+  current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
+
+  select *
+  into zoom_record
+  from public.class_zoom_bookings
+  where id = p_booking_id;
+
+  if not found then
+    raise exception 'Zoom booking not found';
+  end if;
+
+  if not (public.is_class_admin() or lower(zoom_record.tutor_email) = current_email) then
+    raise exception 'Not allowed';
+  end if;
+
+  delete from public.class_zoom_bookings
+  where id = p_booking_id;
+end;
+$$;
+
+grant execute on function public.delete_class_zoom_booking(uuid) to authenticated;
 
 create or replace function public.update_class_tracker_meeting_realized(
   tracker_id uuid,
