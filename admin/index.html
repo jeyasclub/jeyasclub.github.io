@@ -113,6 +113,28 @@
     </section>
 
     <div class="grid">
+      <section class="panel">
+        <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
+            <tbody id="trackerBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="trackerEmpty">Belum ada data Class Tracker untuk filter ini.</div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Aksi</th></tr></thead>
+            <tbody id="bookingBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="bookingEmpty">Belum ada data Class Booking untuk filter ini.</div>
+      </section>
+
       <section class="master-grid">
         <article class="panel">
           <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div></div>
@@ -143,28 +165,6 @@
           </div>
           <div class="empty hidden" id="tutorEmpty">Belum ada tutor. Tambahkan tutor dulu supaya muncul di dropdown input.</div>
         </article>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
-            <tbody id="trackerBody"></tbody>
-          </table>
-        </div>
-        <div class="empty hidden" id="trackerEmpty">Belum ada data Class Tracker untuk filter ini.</div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Aksi</th></tr></thead>
-            <tbody id="bookingBody"></tbody>
-          </table>
-        </div>
-        <div class="empty hidden" id="bookingEmpty">Belum ada data Class Booking untuk filter ini.</div>
       </section>
     </div>
   </main>
