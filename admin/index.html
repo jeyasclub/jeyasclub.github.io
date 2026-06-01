@@ -59,6 +59,7 @@
   .master-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:18px; }
   .master-form { display:flex; gap:10px; padding:18px 20px; border-bottom:1px solid var(--border); }
   .master-form input { flex:1; }
+  .master-wide { grid-column:1 / -1; }
   .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
   .row-actions .btn { min-height:34px; padding:7px 10px; font-size:12px; }
   @media (max-width:760px) { .topbar { padding:0 16px; } .brand span { display:none; } .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; flex-direction:column; } }
@@ -166,6 +167,23 @@
           </div>
           <div class="empty hidden" id="tutorEmpty">Belum ada tutor. Tambahkan tutor dulu supaya muncul di dropdown input.</div>
         </article>
+
+        <article class="panel master-wide">
+          <div class="panel-head"><div><h2>Database Fee per Pertemuan</h2><p class="muted">Fee ini dipakai untuk menghitung Remaining Fee di Class Tracker.</p></div></div>
+          <form class="master-form" id="feeForm">
+            <input type="text" id="feeProgramInput" required placeholder="Nama program">
+            <input type="number" id="feeStudentCountInput" min="1" required placeholder="Jumlah siswa">
+            <input type="number" id="feeAmountInput" min="0" step="1000" required placeholder="Fee per pertemuan">
+            <button class="btn primary" type="submit">Tambah</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama Program</th><th>Jumlah Siswa</th><th>Fee / Pertemuan</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="feeBody"></tbody>
+            </table>
+          </div>
+          <div class="empty hidden" id="feeEmpty">Belum ada fee. Tambahkan fee agar Remaining Fee bisa dihitung otomatis.</div>
+        </article>
       </section>
     </div>
   </main>
@@ -177,6 +195,7 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
   const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
   let currentSession = null;
+  let feeRows = [];
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -187,7 +206,9 @@
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
     programForm: $("programForm"), programInput: $("programNameInput"), programBody: $("programBody"), programEmpty: $("programEmpty"),
-    tutorForm: $("tutorForm"), tutorInput: $("tutorNameInput"), tutorBody: $("tutorBody"), tutorEmpty: $("tutorEmpty")
+    tutorForm: $("tutorForm"), tutorInput: $("tutorNameInput"), tutorBody: $("tutorBody"), tutorEmpty: $("tutorEmpty"),
+    feeForm: $("feeForm"), feeProgramInput: $("feeProgramInput"), feeStudentCountInput: $("feeStudentCountInput"),
+    feeAmountInput: $("feeAmountInput"), feeBody: $("feeBody"), feeEmpty: $("feeEmpty")
   };
 
   function isAdmin(session = currentSession) {
@@ -234,14 +255,18 @@
   function getMeetingFee(programName, studentCount) {
     const normalizedProgram = normalizeProgramName(programName);
     const count = Math.min(Math.max(Number(studentCount || 1), 1), 4);
-    const feeByProgram = {
-      basicenglishcourse: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
-      privatespeakingpractice: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
-      privatewritingpractice: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
-      englishcourseforkids: { 1: 50000, 2: 55000, 3: 60000, 4: 65000 }
-    };
-    const key = Object.keys(feeByProgram).find((programKey) => normalizedProgram.includes(programKey));
-    return key ? feeByProgram[key][count] : 0;
+    const match = feeRows.find((row) =>
+      row.is_active
+      && Number(row.student_count || 0) === count
+      && normalizeProgramName(row.program_name) === normalizedProgram
+    ) || feeRows.find((row) => {
+      const feeProgram = normalizeProgramName(row.program_name);
+      return row.is_active
+        && Number(row.student_count || 0) === count
+        && feeProgram
+        && normalizedProgram.includes(feeProgram);
+    });
+    return match ? Number(match.fee || 0) : 0;
   }
 
   function formatRemainingFee(row) {
@@ -273,28 +298,35 @@
     setAuthMessage(message);
   }
 
-  function showDashboard() {
+  async function showDashboard() {
     els.loginScreen.classList.add("hidden");
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
-    loadData();
-    loadMasterData();
+    await loadMasterData();
+    await loadData();
   }
 
   async function loadMasterData() {
     if (!supabaseClient || !isAdmin()) return;
-    const [{ data: programs, error: programError }, { data: tutors, error: tutorError }] = await Promise.all([
+    const [
+      { data: programs, error: programError },
+      { data: tutors, error: tutorError },
+      { data: fees, error: feeError }
+    ] = await Promise.all([
       supabaseClient.from("class_programs").select("*").order("name", { ascending:true }),
-      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true })
+      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true }),
+      supabaseClient.from("class_meeting_fees").select("*").order("program_name", { ascending:true }).order("student_count", { ascending:true })
     ]);
-    if (programError || tutorError) {
-      console.error("Master data load failed:", programError || tutorError);
+    if (programError || tutorError || feeError) {
+      console.error("Master data load failed:", programError || tutorError || feeError);
       els.sessionLabel.textContent = "Master data belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
       return;
     }
+    feeRows = fees || [];
     renderMasterRows("program", programs || []);
     renderMasterRows("tutor", tutors || []);
+    renderFeeRows(feeRows);
     renderProgramFilter(programs || []);
     renderTutorFilter(tutors || []);
   }
@@ -407,6 +439,104 @@
       return;
     }
     await loadMasterData();
+  }
+
+  function renderFeeRows(rows) {
+    els.feeEmpty.classList.toggle("hidden", rows.length > 0);
+    els.feeBody.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${escapeHTML(row.program_name)}</td>
+        <td>${Number(row.student_count || 0)} siswa</td>
+        <td>${formatMoney(row.fee)}</td>
+        <td><span class="pill">${row.is_active ? "Aktif" : "Nonaktif"}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn" type="button" data-fee-edit="${escapeHTML(row.id)}">Edit</button>
+            <button class="btn" type="button" data-fee-toggle="${escapeHTML(row.id)}" data-active="${row.is_active ? "1" : "0"}">${row.is_active ? "Nonaktifkan" : "Aktifkan"}</button>
+            <button class="btn danger" type="button" data-fee-delete="${escapeHTML(row.id)}">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  async function refreshFeesAndData() {
+    await loadMasterData();
+    await loadData();
+  }
+
+  async function addFeeItem() {
+    const programName = els.feeProgramInput.value.trim();
+    const studentCount = Number(els.feeStudentCountInput.value || 0);
+    const fee = Number(els.feeAmountInput.value || 0);
+    if (!programName || !Number.isInteger(studentCount) || studentCount < 1 || fee < 0) {
+      els.sessionLabel.textContent = "Fee belum tersimpan. Program, jumlah siswa, dan fee wajib valid.";
+      return;
+    }
+    const { error } = await supabaseClient.from("class_meeting_fees").insert({
+      program_name: programName,
+      student_count: studentCount,
+      fee
+    });
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Fee belum tersimpan. Mungkin kombinasi program dan jumlah siswa sudah ada.";
+      return;
+    }
+    els.feeForm.reset();
+    await refreshFeesAndData();
+  }
+
+  async function editFeeItem(id) {
+    const row = feeRows.find((item) => item.id === id);
+    if (!row) return;
+    const programName = window.prompt("Nama program", row.program_name || "");
+    if (programName === null) return;
+    const studentCount = window.prompt("Jumlah siswa", String(row.student_count || 1));
+    if (studentCount === null) return;
+    const fee = window.prompt("Fee per pertemuan", String(Number(row.fee || 0)));
+    if (fee === null) return;
+    const payload = {
+      program_name: programName.trim(),
+      student_count: Math.max(parseNumberInput(studentCount, row.student_count || 1), 1),
+      fee: parseNumberInput(fee, row.fee || 0),
+      updated_at: new Date().toISOString()
+    };
+    if (!payload.program_name) {
+      els.sessionLabel.textContent = "Fee belum terupdate. Nama program wajib diisi.";
+      return;
+    }
+    const { error } = await supabaseClient.from("class_meeting_fees").update(payload).eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Fee belum terupdate. Mungkin kombinasi program dan jumlah siswa sudah ada.";
+      return;
+    }
+    await refreshFeesAndData();
+  }
+
+  async function toggleFeeItem(id, isActive) {
+    const { error } = await supabaseClient
+      .from("class_meeting_fees")
+      .update({ is_active: !isActive, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Status fee belum terupdate.";
+      return;
+    }
+    await refreshFeesAndData();
+  }
+
+  async function deleteFeeItem(id) {
+    if (!window.confirm("Hapus fee ini dari database?")) return;
+    const { error } = await supabaseClient.from("class_meeting_fees").delete().eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Fee belum terhapus.";
+      return;
+    }
+    await refreshFeesAndData();
   }
 
   async function loadData() {
@@ -650,15 +780,22 @@
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
   els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
   els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
+  els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
   document.addEventListener("click", (event) => {
     const editButton = event.target.closest("[data-master-edit]");
     const toggleButton = event.target.closest("[data-master-toggle]");
     const deleteButton = event.target.closest("[data-master-delete]");
     const paymentButton = event.target.closest("[data-payment-edit]");
+    const feeEditButton = event.target.closest("[data-fee-edit]");
+    const feeToggleButton = event.target.closest("[data-fee-toggle]");
+    const feeDeleteButton = event.target.closest("[data-fee-delete]");
     if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
     if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
     if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
     if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
+    if (feeEditButton) editFeeItem(feeEditButton.dataset.feeEdit);
+    if (feeToggleButton) toggleFeeItem(feeToggleButton.dataset.feeToggle, feeToggleButton.dataset.active === "1");
+    if (feeDeleteButton) deleteFeeItem(feeDeleteButton.dataset.feeDelete);
   });
   els.month.addEventListener("change", loadData);
   els.programFilter.addEventListener("change", loadData);

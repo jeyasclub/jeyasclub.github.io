@@ -135,6 +135,7 @@
   let currentTutor = null;
   let programOptions = [];
   let tutorOptions = [];
+  let feeRows = [];
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -198,14 +199,18 @@
   function getMeetingFee(programName, studentCount) {
     const normalizedProgram = normalizeProgramName(programName);
     const count = Math.min(Math.max(Number(studentCount || 1), 1), 4);
-    const feeByProgram = {
-      basicenglishcourse: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
-      privatespeakingpractice: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
-      privatewritingpractice: { 1: 45000, 2: 50000, 3: 55000, 4: 60000 },
-      englishcourseforkids: { 1: 50000, 2: 55000, 3: 60000, 4: 65000 }
-    };
-    const key = Object.keys(feeByProgram).find((programKey) => normalizedProgram.includes(programKey));
-    return key ? feeByProgram[key][count] : 0;
+    const match = feeRows.find((row) =>
+      row.is_active
+      && Number(row.student_count || 0) === count
+      && normalizeProgramName(row.program_name) === normalizedProgram
+    ) || feeRows.find((row) => {
+      const feeProgram = normalizeProgramName(row.program_name);
+      return row.is_active
+        && Number(row.student_count || 0) === count
+        && feeProgram
+        && normalizedProgram.includes(feeProgram);
+    });
+    return match ? Number(match.fee || 0) : 0;
   }
 
   function formatRemainingFee(row) {
@@ -257,6 +262,22 @@
     programOptions = programs || [];
     tutorOptions = tutors || [];
     populateMasterSelects();
+  }
+
+  async function loadMeetingFees() {
+    if (!supabaseClient || !hasInputAccess()) return;
+    const { data, error } = await supabaseClient
+      .from("class_meeting_fees")
+      .select("program_name,student_count,fee,is_active")
+      .eq("is_active", true)
+      .order("program_name", { ascending:true })
+      .order("student_count", { ascending:true });
+    if (error) {
+      console.error("Meeting fees load failed:", error);
+      setStatus(els.trackerStatus, "Fee per pertemuan belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.", "bad");
+      return;
+    }
+    feeRows = data || [];
   }
 
   async function loadTutorProfile() {
@@ -376,7 +397,7 @@
       loadMasterOptions();
       return;
     }
-    loadTrackers();
+    loadMeetingFees().then(loadTrackers);
   }
 
   async function renderSession(session) {

@@ -88,6 +88,18 @@ create table if not exists public.class_tutors (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.class_meeting_fees (
+  id uuid primary key default gen_random_uuid(),
+  program_name text not null,
+  student_count integer not null,
+  fee numeric(12,2) not null default 0,
+  is_active boolean not null default true,
+  created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (program_name, student_count)
+);
+
 alter table public.class_tracker
 add column if not exists booking_id uuid,
 add column if not exists student_name text not null default '',
@@ -100,9 +112,36 @@ add column if not exists student_count integer not null default 1;
 alter table public.class_tutors
 add column if not exists email text unique;
 
+alter table public.class_meeting_fees
+add column if not exists is_active boolean not null default true;
+
 update public.class_tutors
 set email = public.class_tutor_email(name)
 where email is null or email = '';
+
+insert into public.class_meeting_fees (program_name, student_count, fee, is_active)
+values
+  ('Basic English Course', 1, 45000, true),
+  ('Basic English Course', 2, 50000, true),
+  ('Basic English Course', 3, 55000, true),
+  ('Basic English Course', 4, 60000, true),
+  ('Private Speaking Practice', 1, 45000, true),
+  ('Private Speaking Practice', 2, 50000, true),
+  ('Private Speaking Practice', 3, 55000, true),
+  ('Private Speaking Practice', 4, 60000, true),
+  ('Private Writing Practice', 1, 45000, true),
+  ('Private Writing Practice', 2, 50000, true),
+  ('Private Writing Practice', 3, 55000, true),
+  ('Private Writing Practice', 4, 60000, true),
+  ('English Course for Kids', 1, 50000, true),
+  ('English Course for Kids', 2, 55000, true),
+  ('English Course for Kids', 3, 60000, true),
+  ('English Course for Kids', 4, 65000, true)
+on conflict (program_name, student_count)
+do update set
+  fee = excluded.fee,
+  is_active = excluded.is_active,
+  updated_at = now();
 
 insert into public.class_tracker (
   booking_id,
@@ -144,6 +183,7 @@ alter table public.class_tracker enable row level security;
 alter table public.class_bookings enable row level security;
 alter table public.class_programs enable row level security;
 alter table public.class_tutors enable row level security;
+alter table public.class_meeting_fees enable row level security;
 
 drop policy if exists "Class admins can read tracker" on public.class_tracker;
 drop policy if exists "Class tutors can read own tracker" on public.class_tracker;
@@ -285,6 +325,43 @@ with check (public.is_class_admin());
 
 create policy "Class admins can delete tutors"
 on public.class_tutors
+for delete
+to authenticated
+using (public.is_class_admin());
+
+drop policy if exists "Class admins can read meeting fees" on public.class_meeting_fees;
+drop policy if exists "Class tutors can read active meeting fees" on public.class_meeting_fees;
+drop policy if exists "Class admins can insert meeting fees" on public.class_meeting_fees;
+drop policy if exists "Class admins can update meeting fees" on public.class_meeting_fees;
+drop policy if exists "Class admins can delete meeting fees" on public.class_meeting_fees;
+
+create policy "Class admins can read meeting fees"
+on public.class_meeting_fees
+for select
+to authenticated
+using (public.is_class_admin());
+
+create policy "Class tutors can read active meeting fees"
+on public.class_meeting_fees
+for select
+to authenticated
+using (is_active = true);
+
+create policy "Class admins can insert meeting fees"
+on public.class_meeting_fees
+for insert
+to authenticated
+with check (public.is_class_admin());
+
+create policy "Class admins can update meeting fees"
+on public.class_meeting_fees
+for update
+to authenticated
+using (public.is_class_admin())
+with check (public.is_class_admin());
+
+create policy "Class admins can delete meeting fees"
+on public.class_meeting_fees
 for delete
 to authenticated
 using (public.is_class_admin());
