@@ -14,7 +14,9 @@ $$;
 
 create table if not exists public.class_tracker (
   id uuid primary key default gen_random_uuid(),
+  booking_id uuid,
   order_date date not null,
+  student_name text not null,
   program_name text not null,
   tutor text not null,
   meetings_realized integer not null default 0,
@@ -29,6 +31,7 @@ create table if not exists public.class_tracker (
 create table if not exists public.class_bookings (
   id uuid primary key default gen_random_uuid(),
   order_date date not null,
+  student_name text not null,
   program_name text not null,
   price numeric(12,2) not null default 0,
   tutor text not null,
@@ -36,6 +39,13 @@ create table if not exists public.class_bookings (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.class_tracker
+add column if not exists booking_id uuid,
+add column if not exists student_name text not null default '';
+
+alter table public.class_bookings
+add column if not exists student_name text not null default '';
 
 alter table public.class_tracker enable row level security;
 alter table public.class_bookings enable row level security;
