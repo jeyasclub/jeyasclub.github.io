@@ -97,8 +97,8 @@
           <input type="hidden" id="trackerId">
           <label>Tanggal Pemesanan<input type="date" id="trackerDate" required></label>
           <label>Nama Siswa<input type="text" id="trackerStudent" required placeholder="Nama siswa"></label>
-          <label>Nama Program<input type="text" id="trackerProgram" required placeholder="Private Speaking"></label>
-          <label>Tutor<input type="text" id="trackerTutor" required placeholder="Nama tutor"></label>
+          <label>Nama Program<select id="trackerProgram" required></select></label>
+          <label>Tutor<select id="trackerTutor" required></select></label>
           <div class="two-col">
             <label>Meeting Realized<input type="number" id="meetingRealized" min="0" value="0" required></label>
             <label>Total Meeting<input type="number" id="meetingTotal" min="0" value="0" required></label>
@@ -125,9 +125,9 @@
         <form class="form" id="bookingForm">
           <label>Tanggal Pemesanan<input type="date" id="bookingDate" required></label>
           <label>Nama Siswa<input type="text" id="bookingStudent" required placeholder="Nama siswa"></label>
-          <label>Nama Program<input type="text" id="bookingProgram" required placeholder="Kids English"></label>
+          <label>Nama Program<select id="bookingProgram" required></select></label>
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required placeholder="250000"></label>
-          <label>Tutor<input type="text" id="bookingTutor" required placeholder="Nama tutor"></label>
+          <label>Tutor<select id="bookingTutor" required></select></label>
           <label>Total Meeting untuk Tracker<input type="number" id="bookingMeetingTotal" min="0" value="0" required></label>
           <button class="btn primary" type="submit" id="bookingSubmit">Simpan Booking</button>
           <p class="status" id="bookingStatus"></p>
@@ -143,6 +143,8 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
   const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
   let currentSession = null;
+  let programOptions = [];
+  let tutorOptions = [];
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -178,14 +180,62 @@
     $("trackerId").value = row ? row.id : "";
     $("trackerDate").value = row ? row.order_date : (new Date().toISOString().slice(0, 10));
     $("trackerStudent").value = row ? row.student_name || "" : "";
-    $("trackerProgram").value = row ? row.program_name || "" : "";
-    $("trackerTutor").value = row ? row.tutor || "" : "";
+    setSelectValue($("trackerProgram"), row ? row.program_name || "" : "");
+    setSelectValue($("trackerTutor"), row ? row.tutor || "" : "");
     $("meetingRealized").value = row ? Number(row.meetings_realized || 0) : 0;
     $("meetingTotal").value = row ? Number(row.meetings_total || 0) : 0;
     $("paymentRealized").value = row ? Number(row.payments_realized || 0) : 0;
     $("paymentTotal").value = row ? Number(row.payments_total || 0) : 0;
     els.trackerSubmit.textContent = row ? "Update Tracker" : "Simpan Tracker";
     els.trackerCancel.classList.toggle("hidden", !row);
+  }
+
+  function buildOptions(rows, placeholder, currentValue = "") {
+    const options = [`<option value="">${placeholder}</option>`];
+    const hasCurrentValue = currentValue && rows.some((row) => row.name === currentValue);
+    if (currentValue && !hasCurrentValue) {
+      options.push(`<option value="${escapeHTML(currentValue)}">${escapeHTML(currentValue)} (data lama)</option>`);
+    }
+    rows.forEach((row) => {
+      options.push(`<option value="${escapeHTML(row.name)}">${escapeHTML(row.name)}</option>`);
+    });
+    return options.join("");
+  }
+
+  function setSelectValue(select, value) {
+    const rows = select.id.toLowerCase().includes("program") ? programOptions : tutorOptions;
+    const placeholder = select.id.toLowerCase().includes("program") ? "Pilih program" : "Pilih tutor";
+    select.innerHTML = buildOptions(rows, placeholder, value);
+    select.value = value || "";
+  }
+
+  function populateMasterSelects() {
+    const currentValues = {
+      trackerProgram: $("trackerProgram").value,
+      trackerTutor: $("trackerTutor").value,
+      bookingProgram: $("bookingProgram").value,
+      bookingTutor: $("bookingTutor").value
+    };
+    setSelectValue($("trackerProgram"), currentValues.trackerProgram);
+    setSelectValue($("trackerTutor"), currentValues.trackerTutor);
+    setSelectValue($("bookingProgram"), currentValues.bookingProgram);
+    setSelectValue($("bookingTutor"), currentValues.bookingTutor);
+  }
+
+  async function loadMasterOptions() {
+    if (!supabaseClient || !isAdmin()) return;
+    const [{ data: programs, error: programError }, { data: tutors, error: tutorError }] = await Promise.all([
+      supabaseClient.from("class_programs").select("name").eq("is_active", true).order("name", { ascending:true }),
+      supabaseClient.from("class_tutors").select("name").eq("is_active", true).order("name", { ascending:true })
+    ]);
+    if (programError || tutorError) {
+      console.error("Master options load failed:", programError || tutorError);
+      setStatus(els.bookingStatus, "Dropdown program/tutor belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.", "bad");
+      return;
+    }
+    programOptions = programs || [];
+    tutorOptions = tutors || [];
+    populateMasterSelects();
   }
 
   async function loadTrackers() {
@@ -251,6 +301,7 @@
     const today = new Date().toISOString().slice(0, 10);
     $("trackerDate").value ||= today;
     $("bookingDate").value ||= today;
+    loadMasterOptions();
     loadTrackers();
   }
 
@@ -290,8 +341,8 @@
     const payload = {
       order_date: $("trackerDate").value,
       student_name: $("trackerStudent").value.trim(),
-      program_name: $("trackerProgram").value.trim(),
-      tutor: $("trackerTutor").value.trim(),
+      program_name: $("trackerProgram").value,
+      tutor: $("trackerTutor").value,
       meetings_realized: Number($("meetingRealized").value || 0),
       meetings_total: Number($("meetingTotal").value || 0),
       payments_realized: Number($("paymentRealized").value || 0),
@@ -317,9 +368,9 @@
     const payload = {
       order_date: $("bookingDate").value,
       student_name: $("bookingStudent").value.trim(),
-      program_name: $("bookingProgram").value.trim(),
+      program_name: $("bookingProgram").value,
       price: Number($("bookingPrice").value || 0),
-      tutor: $("bookingTutor").value.trim()
+      tutor: $("bookingTutor").value
     };
     const { data: booking, error } = await supabaseClient.from("class_bookings").insert(payload).select("id").single();
     if (error) {

@@ -56,7 +56,13 @@
   tbody tr:last-child td { border-bottom:0; }
   .pill { display:inline-flex; align-items:center; min-height:30px; border-radius:999px; padding:6px 10px; background:var(--blue-light); color:var(--blue-dark); font-weight:900; white-space:nowrap; }
   .empty { padding:22px; color:var(--muted); font-size:14px; }
+  .master-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:18px; }
+  .master-form { display:flex; gap:10px; padding:18px 20px; border-bottom:1px solid var(--border); }
+  .master-form input { flex:1; }
+  .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .row-actions .btn { min-height:34px; padding:7px 10px; font-size:12px; }
   @media (max-width:760px) { .topbar { padding:0 16px; } .brand span { display:none; } .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; flex-direction:column; } }
+  @media (max-width:900px) { .master-grid { grid-template-columns:1fr; } .master-form { flex-direction:column; } }
 </style>
 </head>
 <body>
@@ -106,6 +112,38 @@
     </section>
 
     <div class="grid">
+      <section class="master-grid">
+        <article class="panel">
+          <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div></div>
+          <form class="master-form" id="programForm">
+            <input type="text" id="programNameInput" required placeholder="Nama program baru">
+            <button class="btn primary" type="submit">Tambah</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama Program</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="programBody"></tbody>
+            </table>
+          </div>
+          <div class="empty hidden" id="programEmpty">Belum ada program. Tambahkan program dulu supaya muncul di dropdown input.</div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head"><div><h2>Database Tutor</h2><p class="muted">Tambah, edit, atau hapus pilihan tutor untuk halaman input.</p></div></div>
+          <form class="master-form" id="tutorForm">
+            <input type="text" id="tutorNameInput" required placeholder="Nama tutor baru">
+            <button class="btn primary" type="submit">Tambah</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nama Tutor</th><th>Status</th><th>Aksi</th></tr></thead>
+              <tbody id="tutorBody"></tbody>
+            </table>
+          </div>
+          <div class="empty hidden" id="tutorEmpty">Belum ada tutor. Tambahkan tutor dulu supaya muncul di dropdown input.</div>
+        </article>
+      </section>
+
       <section class="panel">
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
         <div class="table-wrap">
@@ -145,7 +183,9 @@
     logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), reset: $("resetFilter"),
     refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
-    bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel")
+    bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
+    programForm: $("programForm"), programInput: $("programNameInput"), programBody: $("programBody"), programEmpty: $("programEmpty"),
+    tutorForm: $("tutorForm"), tutorInput: $("tutorNameInput"), tutorBody: $("tutorBody"), tutorEmpty: $("tutorEmpty")
   };
 
   function isAdmin(session = currentSession) {
@@ -196,6 +236,102 @@
     els.logout.classList.remove("hidden");
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
     loadData();
+    loadMasterData();
+  }
+
+  async function loadMasterData() {
+    if (!supabaseClient || !isAdmin()) return;
+    const [{ data: programs, error: programError }, { data: tutors, error: tutorError }] = await Promise.all([
+      supabaseClient.from("class_programs").select("*").order("name", { ascending:true }),
+      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true })
+    ]);
+    if (programError || tutorError) {
+      console.error("Master data load failed:", programError || tutorError);
+      els.sessionLabel.textContent = "Master data belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
+      return;
+    }
+    renderMasterRows("program", programs || []);
+    renderMasterRows("tutor", tutors || []);
+  }
+
+  function getMasterConfig(type) {
+    return type === "program"
+      ? { table:"class_programs", label:"program", input:els.programInput, body:els.programBody, empty:els.programEmpty }
+      : { table:"class_tutors", label:"tutor", input:els.tutorInput, body:els.tutorBody, empty:els.tutorEmpty };
+  }
+
+  function renderMasterRows(type, rows) {
+    const config = getMasterConfig(type);
+    config.empty.classList.toggle("hidden", rows.length > 0);
+    config.body.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${escapeHTML(row.name)}</td>
+        <td><span class="pill">${row.is_active ? "Aktif" : "Nonaktif"}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn" type="button" data-master-edit="${type}" data-id="${escapeHTML(row.id)}" data-name="${escapeHTML(row.name)}">Edit</button>
+            <button class="btn" type="button" data-master-toggle="${type}" data-id="${escapeHTML(row.id)}" data-active="${row.is_active ? "1" : "0"}">${row.is_active ? "Nonaktifkan" : "Aktifkan"}</button>
+            <button class="btn danger" type="button" data-master-delete="${type}" data-id="${escapeHTML(row.id)}">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  async function addMasterItem(type) {
+    const config = getMasterConfig(type);
+    const name = config.input.value.trim();
+    if (!name) return;
+    const { error } = await supabaseClient.from(config.table).insert({ name });
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `Nama ${config.label} belum tersimpan. Mungkin sudah ada atau SQL belum dijalankan.`;
+      return;
+    }
+    config.input.value = "";
+    await loadMasterData();
+  }
+
+  async function editMasterItem(type, id, currentName) {
+    const config = getMasterConfig(type);
+    const nextName = window.prompt(`Edit nama ${config.label}`, currentName || "");
+    if (!nextName || !nextName.trim()) return;
+    const { error } = await supabaseClient
+      .from(config.table)
+      .update({ name: nextName.trim(), updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `Nama ${config.label} belum terupdate.`;
+      return;
+    }
+    await loadMasterData();
+  }
+
+  async function toggleMasterItem(type, id, isActive) {
+    const config = getMasterConfig(type);
+    const { error } = await supabaseClient
+      .from(config.table)
+      .update({ is_active: !isActive, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `Status ${config.label} belum terupdate.`;
+      return;
+    }
+    await loadMasterData();
+  }
+
+  async function deleteMasterItem(type, id) {
+    const config = getMasterConfig(type);
+    if (!window.confirm(`Hapus ${config.label} ini dari database pilihan?`)) return;
+    const { error } = await supabaseClient.from(config.table).delete().eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `${config.label} belum terhapus.`;
+      return;
+    }
+    await loadMasterData();
   }
 
   async function loadData() {
@@ -279,6 +415,16 @@
   });
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
+  els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
+  document.addEventListener("click", (event) => {
+    const editButton = event.target.closest("[data-master-edit]");
+    const toggleButton = event.target.closest("[data-master-toggle]");
+    const deleteButton = event.target.closest("[data-master-delete]");
+    if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
+    if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
+    if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
+  });
   els.month.addEventListener("change", loadData);
   els.reset.addEventListener("click", () => { els.month.value = ""; loadData(); });
   els.refresh.addEventListener("click", loadData);
