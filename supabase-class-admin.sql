@@ -44,6 +44,7 @@ create table if not exists public.class_tracker (
   booking_id uuid,
   order_date date not null,
   student_name text not null,
+  student_count integer not null default 1,
   program_name text not null,
   tutor text not null,
   meetings_realized integer not null default 0,
@@ -59,6 +60,7 @@ create table if not exists public.class_bookings (
   id uuid primary key default gen_random_uuid(),
   order_date date not null,
   student_name text not null,
+  student_count integer not null default 1,
   program_name text not null,
   price numeric(12,2) not null default 0,
   tutor text not null,
@@ -88,10 +90,12 @@ create table if not exists public.class_tutors (
 
 alter table public.class_tracker
 add column if not exists booking_id uuid,
-add column if not exists student_name text not null default '';
+add column if not exists student_name text not null default '',
+add column if not exists student_count integer not null default 1;
 
 alter table public.class_bookings
-add column if not exists student_name text not null default '';
+add column if not exists student_name text not null default '',
+add column if not exists student_count integer not null default 1;
 
 alter table public.class_tutors
 add column if not exists email text unique;
@@ -104,6 +108,7 @@ insert into public.class_tracker (
   booking_id,
   order_date,
   student_name,
+  student_count,
   program_name,
   tutor,
   meetings_realized,
@@ -118,6 +123,7 @@ select
   booking.id,
   booking.order_date,
   booking.student_name,
+  booking.student_count,
   booking.program_name,
   booking.tutor,
   0,

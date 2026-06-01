@@ -149,7 +149,7 @@
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -160,7 +160,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -399,6 +399,7 @@
       <tr>
         <td>${formatDate(row.order_date)}</td>
         <td>${escapeHTML(row.student_name)}</td>
+        <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name)}</td>
         <td>${escapeHTML(row.tutor)}</td>
         <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
@@ -448,6 +449,7 @@
       <tr>
         <td>${formatDate(row.order_date)}</td>
         <td>${escapeHTML(row.student_name)}</td>
+        <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name)}</td>
         <td>${formatMoney(row.price)}</td>
         <td>${escapeHTML(row.tutor)}</td>

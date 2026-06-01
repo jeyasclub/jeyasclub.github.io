@@ -96,7 +96,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -111,6 +111,7 @@
         <form class="form" id="bookingForm">
           <label>Tanggal Pemesanan<input type="date" id="bookingDate" required></label>
           <label>Nama Siswa<input type="text" id="bookingStudent" required placeholder="Nama siswa"></label>
+          <label>Jumlah Siswa<input type="number" id="bookingStudentCount" min="1" value="1" required></label>
           <label>Nama Program<select id="bookingProgram" required></select></label>
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required placeholder="250000"></label>
           <label>Tutor<select id="bookingTutor" required></select></label>
@@ -244,7 +245,7 @@
 
   async function loadTrackers() {
     if (!supabaseClient || !hasInputAccess()) return;
-    els.trackerBody.innerHTML = `<tr><td colspan="8">Memuat tracker...</td></tr>`;
+    els.trackerBody.innerHTML = `<tr><td colspan="9">Memuat tracker...</td></tr>`;
     const { data, error } = await supabaseClient
       .from("class_tracker")
       .select("*")
@@ -254,12 +255,12 @@
 
     if (error) {
       console.error(error);
-      els.trackerBody.innerHTML = `<tr><td colspan="8">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="9">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
       return;
     }
 
     if (!data || !data.length) {
-      els.trackerBody.innerHTML = `<tr><td colspan="8">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="9">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
       return;
     }
 
@@ -267,6 +268,7 @@
       <tr>
         <td>${formatDate(row.order_date)}</td>
         <td>${escapeHTML(row.student_name || "-")}</td>
+        <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name || "-")}</td>
         <td>${escapeHTML(row.tutor || "-")}</td>
         <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
@@ -388,6 +390,7 @@
     const payload = {
       order_date: $("bookingDate").value,
       student_name: $("bookingStudent").value.trim(),
+      student_count: Number($("bookingStudentCount").value || 1),
       program_name: $("bookingProgram").value,
       price: Number($("bookingPrice").value || 0),
       tutor: $("bookingTutor").value
@@ -403,6 +406,7 @@
       booking_id: booking.id,
       order_date: payload.order_date,
       student_name: payload.student_name,
+      student_count: payload.student_count,
       program_name: payload.program_name,
       tutor: payload.tutor,
       meetings_realized: 0,
@@ -418,6 +422,7 @@
     }
     els.bookingForm.reset();
     $("bookingDate").value = new Date().toISOString().slice(0, 10);
+    $("bookingStudentCount").value = 1;
     $("bookingMeetingTotal").value = 0;
     setStatus(els.bookingStatus, "Class Booking tersimpan dan otomatis muncul di Class Tracker.", "good");
     await loadTrackers();
