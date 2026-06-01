@@ -144,22 +144,8 @@ add column if not exists email text unique;
 alter table public.class_meeting_fees
 add column if not exists is_active boolean not null default true;
 
-do $$
-begin
-  if not exists (
-    select 1
-    from pg_constraint
-    where conname = 'class_zoom_bookings_no_overlap'
-      and conrelid = 'public.class_zoom_bookings'::regclass
-  ) then
-    alter table public.class_zoom_bookings
-    add constraint class_zoom_bookings_no_overlap
-    exclude using gist (
-      tsrange(booking_date + start_time, booking_date + end_time, '[)') with &&
-    );
-  end if;
-end;
-$$;
+alter table public.class_zoom_bookings
+drop constraint if exists class_zoom_bookings_no_overlap;
 
 update public.class_tutors
 set email = public.class_tutor_email(name)
@@ -436,6 +422,7 @@ declare
   current_email text;
   tutor_record public.class_tutors;
   zoom_booking_id uuid;
+  zoom_tutor_name text;
 begin
   current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
 
@@ -451,39 +438,33 @@ begin
     raise exception 'Jam selesai harus lebih besar dari jam mulai';
   end if;
 
-  if public.is_class_admin() then
-    insert into public.class_zoom_bookings (
-      booking_date,
-      start_time,
-      end_time,
-      tutor_name,
-      tutor_email,
-      note,
-      created_by
-    )
-    values (
-      p_booking_date,
-      p_start_time,
-      p_end_time,
-      'Admin',
-      current_email,
-      coalesce(p_note, ''),
-      current_email
-    )
-    returning id into zoom_booking_id;
+  perform pg_advisory_xact_lock(hashtext('class_zoom_bookings:' || p_booking_date::text));
 
-    return zoom_booking_id;
+  if (
+    select count(*)
+    from public.class_zoom_bookings zoom
+    where zoom.booking_date = p_booking_date
+      and zoom.start_time < p_end_time
+      and zoom.end_time > p_start_time
+  ) >= 2 then
+    raise exception 'Slot Zoom sudah penuh. Maksimal 2 booking boleh overlap di jam tersebut';
   end if;
 
-  select *
-  into tutor_record
-  from public.class_tutors tutor
-  where tutor.is_active = true
-    and lower(coalesce(tutor.email, public.class_tutor_email(tutor.name))) = current_email
-  limit 1;
+  if public.is_class_admin() then
+    zoom_tutor_name := 'Admin';
+  else
+    select *
+    into tutor_record
+    from public.class_tutors tutor
+    where tutor.is_active = true
+      and lower(coalesce(tutor.email, public.class_tutor_email(tutor.name))) = current_email
+    limit 1;
 
-  if not found then
-    raise exception 'Not allowed';
+    if not found then
+      raise exception 'Not allowed';
+    end if;
+
+    zoom_tutor_name := tutor_record.name;
   end if;
 
   insert into public.class_zoom_bookings (
@@ -499,7 +480,7 @@ begin
     p_booking_date,
     p_start_time,
     p_end_time,
-    tutor_record.name,
+    zoom_tutor_name,
     current_email,
     coalesce(p_note, ''),
     current_email
@@ -507,9 +488,6 @@ begin
   returning id into zoom_booking_id;
 
   return zoom_booking_id;
-exception
-  when exclusion_violation then
-    raise exception 'Slot Zoom sudah dibooking di tanggal dan jam tersebut';
 end;
 $$;
 
