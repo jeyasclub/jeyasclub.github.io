@@ -99,6 +99,7 @@
       </div>
       <div class="filter-card">
         <label>Filter bulan<input type="month" id="monthFilter"></label>
+        <label>Filter program<select id="programFilter"><option value="">Semua Program</option></select></label>
         <label>Filter tutor<select id="tutorFilter"><option value="">Semua Tutor</option></select></label>
         <button class="btn" type="button" id="resetFilter">Reset Filter</button>
         <button class="btn primary" type="button" id="refreshButton">Refresh</button>
@@ -182,7 +183,7 @@
     loginScreen: $("loginScreen"), dashboard: $("dashboard"), loginForm: $("loginForm"),
     email: $("emailInput"), password: $("passwordInput"), loginButton: $("loginButton"), authMessage: $("authMessage"),
     logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), reset: $("resetFilter"),
-    tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
+    programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
     programForm: $("programForm"), programInput: $("programNameInput"), programBody: $("programBody"), programEmpty: $("programEmpty"),
@@ -294,7 +295,18 @@
     }
     renderMasterRows("program", programs || []);
     renderMasterRows("tutor", tutors || []);
+    renderProgramFilter(programs || []);
     renderTutorFilter(tutors || []);
+  }
+
+  function renderProgramFilter(programs) {
+    const selectedProgram = els.programFilter.value;
+    const options = [`<option value="">Semua Program</option>`];
+    programs.forEach((program) => {
+      options.push(`<option value="${escapeHTML(program.name)}">${escapeHTML(program.name)}</option>`);
+    });
+    els.programFilter.innerHTML = options.join("");
+    els.programFilter.value = programs.some((program) => program.name === selectedProgram) ? selectedProgram : "";
   }
 
   function renderTutorFilter(tutors) {
@@ -402,12 +414,17 @@
     els.refresh.disabled = true;
     els.refresh.textContent = "Memuat...";
     const range = monthRange(els.month.value);
+    const programValue = els.programFilter.value;
     const tutorValue = els.tutorFilter.value;
     let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
     let bookingQuery = supabaseClient.from("class_bookings").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
     if (range) {
       trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
       bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
+    }
+    if (programValue) {
+      trackerQuery = trackerQuery.eq("program_name", programValue);
+      bookingQuery = bookingQuery.eq("program_name", programValue);
     }
     if (tutorValue) {
       trackerQuery = trackerQuery.eq("tutor", tutorValue);
@@ -644,8 +661,9 @@
     if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
   });
   els.month.addEventListener("change", loadData);
+  els.programFilter.addEventListener("change", loadData);
   els.tutorFilter.addEventListener("change", loadData);
-  els.reset.addEventListener("click", () => { els.month.value = ""; els.tutorFilter.value = ""; loadData(); });
+  els.reset.addEventListener("click", () => { els.month.value = ""; els.programFilter.value = ""; els.tutorFilter.value = ""; loadData(); });
   els.refresh.addEventListener("click", loadData);
   init();
 </script>
