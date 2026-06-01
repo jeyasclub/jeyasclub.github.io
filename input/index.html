@@ -56,7 +56,7 @@
   <header class="topbar">
     <a class="brand" href="/"><img src="/assets/logo.jpg" alt="Jeya's Club"><span>Input Class Data</span></a>
     <div class="topbar-actions">
-      <a class="btn" href="/admin/">Dashboard</a>
+      <a class="btn hidden" href="/admin/" id="adminLink">Dashboard</a>
       <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
     </div>
   </header>
@@ -64,15 +64,15 @@
   <section class="login-screen" id="loginScreen">
     <div class="login-card">
       <div>
-        <p class="eyebrow">Admin Only</p>
+        <p class="eyebrow">Admin & Tutor</p>
         <h1>Input Data</h1>
-        <p class="muted">Login memakai akun admin untuk menambahkan Class Tracker dan Class Booking.</p>
+        <p class="muted">Admin bisa input booking. Tutor bisa update meeting realized untuk kelas yang diajar.</p>
       </div>
       <form class="form" id="loginForm">
         <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jeyasclub@gmail.com"></label>
         <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
         <button class="btn primary" type="submit" id="loginButton">Login</button>
-        <p class="status" id="authMessage">Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.</p>
+        <p class="status" id="authMessage">Admin atau tutor Jeya's Club bisa login di sini.</p>
       </form>
     </div>
   </section>
@@ -87,7 +87,7 @@
     </div>
 
     <section class="forms-grid">
-      <article class="panel">
+      <article class="panel" id="bookingPanel">
         <div class="panel-head">
           <h2>Class Tracker</h2>
           <p class="muted">Data muncul otomatis dari booking. Edit hanya untuk Total Meeting Realized.</p>
@@ -127,6 +127,7 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
   const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
   let currentSession = null;
+  let currentTutor = null;
   let programOptions = [];
   let tutorOptions = [];
 
@@ -135,12 +136,23 @@
     loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"), email:$("emailInput"),
     password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"), logout:$("logoutButton"),
     sessionLabel:$("sessionLabel"), bookingForm:$("bookingForm"), trackerBody:$("trackerBody"),
-    bookingSubmit:$("bookingSubmit"), trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus")
+    bookingPanel:$("bookingPanel"), adminLink:$("adminLink"), bookingSubmit:$("bookingSubmit"),
+    trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus")
   };
 
   function isAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
     return adminEmails.has(email);
+  }
+
+  function getCurrentEmail() {
+    return currentSession && currentSession.user && currentSession.user.email
+      ? currentSession.user.email.toLowerCase()
+      : "";
+  }
+
+  function hasInputAccess() {
+    return isAdmin() || Boolean(currentTutor);
   }
 
   function setStatus(el, message, type = "") {
@@ -203,8 +215,27 @@
     populateMasterSelects();
   }
 
+  async function loadTutorProfile() {
+    currentTutor = null;
+    if (!supabaseClient || !currentSession || isAdmin()) return null;
+    const email = getCurrentEmail();
+    if (!email.endsWith("@jeyasclub.com")) return null;
+    const { data, error } = await supabaseClient
+      .from("class_tutors")
+      .select("name,email")
+      .eq("email", email)
+      .eq("is_active", true)
+      .limit(1);
+    if (error) {
+      console.error("Tutor profile load failed:", error);
+      return null;
+    }
+    currentTutor = data && data.length ? data[0] : null;
+    return currentTutor;
+  }
+
   async function loadTrackers() {
-    if (!supabaseClient || !isAdmin()) return;
+    if (!supabaseClient || !hasInputAccess()) return;
     els.trackerBody.innerHTML = `<tr><td colspan="6">Memuat tracker...</td></tr>`;
     const { data, error } = await supabaseClient
       .from("class_tracker")
@@ -258,10 +289,10 @@
       return;
     }
     setStatus(els.trackerStatus, "Mengupdate meeting realized...");
-    const { error } = await supabaseClient
-      .from("class_tracker")
-      .update({ meetings_realized: normalizedValue, updated_at: new Date().toISOString() })
-      .eq("id", row.id);
+    const { error } = await supabaseClient.rpc("update_class_tracker_meeting_realized", {
+      tracker_id: row.id,
+      next_meetings_realized: normalizedValue
+    });
     if (error) {
       console.error(error);
       setStatus(els.trackerStatus, "Meeting realized belum terupdate. Cek policy Supabase.", "bad");
@@ -271,10 +302,12 @@
     await loadTrackers();
   }
 
-  function showLogin(message = "Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.") {
+  function showLogin(message = "Admin atau tutor Jeya's Club bisa login di sini.") {
     els.loginScreen.classList.remove("hidden");
     els.dashboard.classList.remove("open");
     els.logout.classList.add("hidden");
+    els.adminLink.classList.add("hidden");
+    currentTutor = null;
     setStatus(els.authMessage, message);
   }
 
@@ -282,28 +315,47 @@
     els.loginScreen.classList.add("hidden");
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
-    els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    els.adminLink.classList.toggle("hidden", !isAdmin());
+    els.bookingPanel.classList.toggle("hidden", !isAdmin());
+    els.sessionLabel.textContent = currentTutor
+      ? `Login sebagai tutor ${currentTutor.name} (${getCurrentEmail()})`
+      : `Login sebagai ${currentSession.user.email}`;
     const today = new Date().toISOString().slice(0, 10);
-    $("bookingDate").value ||= today;
-    loadMasterOptions();
+    if (isAdmin()) {
+      $("bookingDate").value ||= today;
+      loadMasterOptions();
+    }
     loadTrackers();
+  }
+
+  async function renderSession(session) {
+    currentSession = session;
+    if (!currentSession || !currentSession.user) {
+      showLogin();
+      return;
+    }
+    await loadTutorProfile();
+    if (hasInputAccess()) {
+      showDashboard();
+      return;
+    }
+    await supabaseClient.auth.signOut();
+    currentSession = null;
+    showLogin("Akun ini belum punya akses input/tracker.");
   }
 
   async function init() {
     if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
     const { data } = await supabaseClient.auth.getSession();
-    currentSession = data.session;
-    if (isAdmin()) showDashboard(); else showLogin();
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      currentSession = session;
-      if (isAdmin()) showDashboard(); else showLogin();
+    await renderSession(data.session);
+    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+      await renderSession(session);
     });
   }
 
   els.loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const email = els.email.value.trim().toLowerCase();
-    if (!adminEmails.has(email)) { setStatus(els.authMessage, "Akun ini tidak punya akses admin.", "bad"); return; }
     els.loginButton.disabled = true;
     els.loginButton.textContent = "Login...";
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: els.password.value });
@@ -312,7 +364,7 @@
     if (error) { setStatus(els.authMessage, "Login gagal. Cek email dan password.", "bad"); return; }
     currentSession = data.session;
     els.password.value = "";
-    if (isAdmin()) showDashboard();
+    await renderSession(data.session);
   });
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });

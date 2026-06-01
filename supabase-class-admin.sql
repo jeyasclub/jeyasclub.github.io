@@ -12,6 +12,22 @@ as $$
   );
 $$;
 
+create or replace function public.class_tutor_email(tutor_name text)
+returns text
+language sql
+immutable
+as $$
+  select lower(regexp_replace(coalesce(tutor_name, ''), '[^a-zA-Z0-9]+', '', 'g')) || '@jeyasclub.com';
+$$;
+
+create or replace function public.is_class_tutor_for(tutor_name text)
+returns boolean
+language sql
+stable
+as $$
+  select lower(coalesce(auth.jwt() ->> 'email', '')) = public.class_tutor_email(tutor_name);
+$$;
+
 create table if not exists public.class_tracker (
   id uuid primary key default gen_random_uuid(),
   booking_id uuid,
@@ -52,6 +68,7 @@ create table if not exists public.class_programs (
 create table if not exists public.class_tutors (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
+  email text unique,
   is_active boolean not null default true,
   created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
   created_at timestamptz not null default now(),
@@ -65,12 +82,20 @@ add column if not exists student_name text not null default '';
 alter table public.class_bookings
 add column if not exists student_name text not null default '';
 
+alter table public.class_tutors
+add column if not exists email text unique;
+
+update public.class_tutors
+set email = public.class_tutor_email(name)
+where email is null or email = '';
+
 alter table public.class_tracker enable row level security;
 alter table public.class_bookings enable row level security;
 alter table public.class_programs enable row level security;
 alter table public.class_tutors enable row level security;
 
 drop policy if exists "Class admins can read tracker" on public.class_tracker;
+drop policy if exists "Class tutors can read own tracker" on public.class_tracker;
 drop policy if exists "Class admins can insert tracker" on public.class_tracker;
 drop policy if exists "Class admins can update tracker" on public.class_tracker;
 drop policy if exists "Class admins can delete tracker" on public.class_tracker;
@@ -80,6 +105,12 @@ on public.class_tracker
 for select
 to authenticated
 using (public.is_class_admin());
+
+create policy "Class tutors can read own tracker"
+on public.class_tracker
+for select
+to authenticated
+using (public.is_class_tutor_for(tutor));
 
 create policy "Class admins can insert tracker"
 on public.class_tracker
@@ -161,6 +192,7 @@ to authenticated
 using (public.is_class_admin());
 
 drop policy if exists "Class admins can read tutors" on public.class_tutors;
+drop policy if exists "Class tutors can read own profile" on public.class_tutors;
 drop policy if exists "Class admins can insert tutors" on public.class_tutors;
 drop policy if exists "Class admins can update tutors" on public.class_tutors;
 drop policy if exists "Class admins can delete tutors" on public.class_tutors;
@@ -170,6 +202,15 @@ on public.class_tutors
 for select
 to authenticated
 using (public.is_class_admin());
+
+create policy "Class tutors can read own profile"
+on public.class_tutors
+for select
+to authenticated
+using (
+  is_active = true
+  and lower(coalesce(email, public.class_tutor_email(name))) = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
 
 create policy "Class admins can insert tutors"
 on public.class_tutors
@@ -189,3 +230,59 @@ on public.class_tutors
 for delete
 to authenticated
 using (public.is_class_admin());
+
+create or replace function public.update_class_tracker_meeting_realized(
+  tracker_id uuid,
+  next_meetings_realized integer
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  tracker_record public.class_tracker;
+begin
+  if next_meetings_realized is null or next_meetings_realized < 0 then
+    raise exception 'Meeting realized must be zero or greater';
+  end if;
+
+  select *
+  into tracker_record
+  from public.class_tracker
+  where id = tracker_id;
+
+  if not found then
+    raise exception 'Tracker not found';
+  end if;
+
+  if tracker_record.meetings_total > 0 and next_meetings_realized > tracker_record.meetings_total then
+    raise exception 'Meeting realized cannot exceed total meeting';
+  end if;
+
+  if not (public.is_class_admin() or public.is_class_tutor_for(tracker_record.tutor)) then
+    raise exception 'Not allowed';
+  end if;
+
+  update public.class_tracker
+  set
+    meetings_realized = next_meetings_realized,
+    updated_at = now()
+  where id = tracker_id;
+end;
+$$;
+
+grant execute on function public.update_class_tracker_meeting_realized(uuid, integer) to authenticated;
+
+create or replace view public.class_tutor_login_accounts
+with (security_invoker = true)
+as
+select
+  name,
+  coalesce(email, public.class_tutor_email(name)) as email,
+  '123123'::text as password,
+  is_active
+from public.class_tutors
+order by name;
+
+grant select on public.class_tutor_login_accounts to authenticated;
