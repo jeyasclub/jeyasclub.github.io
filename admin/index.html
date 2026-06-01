@@ -129,7 +129,7 @@
 
     <div class="grid">
       <section class="panel">
-        <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div></div>
+        <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div><button class="btn" type="button" id="exportTracker">Export Excel</button></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
@@ -140,7 +140,7 @@
       </section>
 
       <section class="panel">
-        <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div></div>
+        <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div><button class="btn" type="button" id="exportBooking">Export Excel</button></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Aksi</th></tr></thead>
@@ -155,6 +155,7 @@
           <div><h2>Zoom Booking</h2><p class="muted">Jadwal pemakaian Zoom bulanan dari semua tutor.</p></div>
           <div class="zoom-filter">
             <label>Kalender bulan<input type="month" id="zoomMonth"></label>
+            <button class="btn" type="button" id="exportZoom">Export Excel</button>
             <button class="btn" type="button" id="zoomRefresh">Refresh</button>
           </div>
         </div>
@@ -164,7 +165,7 @@
 
       <section class="master-grid">
         <article class="panel">
-          <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div></div>
+          <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div><button class="btn" type="button" id="exportProgram">Export Excel</button></div>
           <form class="master-form" id="programForm">
             <input type="text" id="programNameInput" required placeholder="Nama program baru">
             <button class="btn primary" type="submit">Tambah</button>
@@ -179,7 +180,7 @@
         </article>
 
         <article class="panel">
-          <div class="panel-head"><div><h2>Database Tutor</h2><p class="muted">Tambah, edit, atau hapus pilihan tutor untuk halaman input.</p></div></div>
+          <div class="panel-head"><div><h2>Database Tutor</h2><p class="muted">Tambah, edit, atau hapus pilihan tutor untuk halaman input.</p></div><button class="btn" type="button" id="exportTutor">Export Excel</button></div>
           <form class="master-form" id="tutorForm">
             <input type="text" id="tutorNameInput" required placeholder="Nama tutor baru">
             <button class="btn primary" type="submit">Tambah</button>
@@ -194,7 +195,7 @@
         </article>
 
         <article class="panel master-wide">
-          <div class="panel-head"><div><h2>Database Fee per Pertemuan</h2><p class="muted">Fee ini dipakai untuk menghitung Remaining Fee di Class Tracker.</p></div></div>
+          <div class="panel-head"><div><h2>Database Fee per Pertemuan</h2><p class="muted">Fee ini dipakai untuk menghitung Remaining Fee di Class Tracker.</p></div><button class="btn" type="button" id="exportFee">Export Excel</button></div>
           <form class="master-form" id="feeForm">
             <input type="text" id="feeProgramInput" required placeholder="Nama program">
             <input type="number" id="feeStudentCountInput" min="1" required placeholder="Jumlah siswa">
@@ -220,7 +221,12 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
   const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
   let currentSession = null;
+  let trackerRows = [];
+  let bookingRows = [];
+  let programRows = [];
+  let tutorRows = [];
   let feeRows = [];
+  let zoomRows = [];
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -234,7 +240,9 @@
     tutorForm: $("tutorForm"), tutorInput: $("tutorNameInput"), tutorBody: $("tutorBody"), tutorEmpty: $("tutorEmpty"),
     feeForm: $("feeForm"), feeProgramInput: $("feeProgramInput"), feeStudentCountInput: $("feeStudentCountInput"),
     feeAmountInput: $("feeAmountInput"), feeBody: $("feeBody"), feeEmpty: $("feeEmpty"),
-    zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty")
+    zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
+    exportTracker: $("exportTracker"), exportBooking: $("exportBooking"), exportZoom: $("exportZoom"),
+    exportProgram: $("exportProgram"), exportTutor: $("exportTutor"), exportFee: $("exportFee")
   };
 
   function isAdmin(session = currentSession) {
@@ -272,10 +280,49 @@
     return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
   }
 
+  function formatExportMoney(value) {
+    return Number(value || 0);
+  }
+
   function parseNumberInput(value, fallback = 0) {
     const cleaned = String(value || "").replace(/[^\d]/g, "");
     const number = Number(cleaned);
     return Number.isFinite(number) ? number : fallback;
+  }
+
+  function downloadExcel(filename, headers, rows) {
+    if (!rows.length) {
+      els.sessionLabel.textContent = "Belum ada data untuk diexport.";
+      return;
+    }
+    const escapeCell = (value) => String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+    const html = `
+      <html>
+        <head><meta charset="UTF-8"></head>
+        <body>
+          <table border="1">
+            <thead><tr>${headers.map((header) => `<th>${escapeCell(header)}</th>`).join("")}</tr></thead>
+            <tbody>
+              ${rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeCell(cell)}</td>`).join("")}</tr>`).join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+    const blob = new Blob([html], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${filename}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    els.sessionLabel.textContent = `Export ${filename}.xls berhasil dibuat.`;
   }
 
   function getToBePaidCount(row) {
@@ -374,12 +421,14 @@
       els.sessionLabel.textContent = "Master data belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
       return;
     }
+    programRows = programs || [];
+    tutorRows = tutors || [];
     feeRows = fees || [];
-    renderMasterRows("program", programs || []);
-    renderMasterRows("tutor", tutors || []);
+    renderMasterRows("program", programRows);
+    renderMasterRows("tutor", tutorRows);
     renderFeeRows(feeRows);
-    renderProgramFilter(programs || []);
-    renderTutorFilter(tutors || []);
+    renderProgramFilter(programRows);
+    renderTutorFilter(tutorRows);
   }
 
   function renderProgramFilter(programs) {
@@ -610,7 +659,8 @@
       return;
     }
 
-    renderZoomCalendar(data || []);
+    zoomRows = data || [];
+    renderZoomCalendar(zoomRows);
   }
 
   function renderZoomCalendar(rows) {
@@ -695,8 +745,10 @@
       els.sessionLabel.textContent = "Data belum bisa dimuat. Pastikan supabase-class-admin.sql sudah dijalankan.";
       return;
     }
-    renderTracker(trackers || []);
-    renderBookings(bookings || []);
+    trackerRows = trackers || [];
+    bookingRows = bookings || [];
+    renderTracker(trackerRows);
+    renderBookings(bookingRows);
     els.monthLabel.textContent = els.month.value || "Semua";
   }
 
@@ -878,6 +930,80 @@
     await loadData();
   }
 
+  function exportTrackerRows() {
+    downloadExcel("class-tracker", [
+      "Tanggal Pemesanan", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Tutor",
+      "Total Meeting Realized", "Status Payment", "To Be Paid", "Remaining Fee"
+    ], trackerRows.map((row) => [
+      row.order_date,
+      row.student_name,
+      Number(row.student_count || 1),
+      row.program_name,
+      row.tutor,
+      `${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}`,
+      `${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}`,
+      formatToBePaid(row),
+      formatRemainingFee(row)
+    ]));
+  }
+
+  function exportBookingRows() {
+    downloadExcel("class-booking", [
+      "Tanggal Pemesanan", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor"
+    ], bookingRows.map((row) => [
+      row.order_date,
+      row.student_name,
+      Number(row.student_count || 1),
+      row.program_name,
+      formatExportMoney(row.price),
+      row.tutor
+    ]));
+  }
+
+  function exportZoomRows() {
+    downloadExcel("zoom-booking", [
+      "Tanggal", "Jam Mulai", "Jam Selesai", "Tutor", "Email", "Catatan", "Dibuat Oleh"
+    ], zoomRows.map((row) => [
+      row.booking_date,
+      formatTime(row.start_time),
+      formatTime(row.end_time),
+      row.tutor_name,
+      row.tutor_email,
+      row.note,
+      row.created_by
+    ]));
+  }
+
+  function exportProgramRows() {
+    downloadExcel("database-program", [
+      "Nama Program", "Status"
+    ], programRows.map((row) => [
+      row.name,
+      row.is_active ? "Aktif" : "Nonaktif"
+    ]));
+  }
+
+  function exportTutorRows() {
+    downloadExcel("database-tutor", [
+      "Nama Tutor", "Email Login", "Status"
+    ], tutorRows.map((row) => [
+      row.name,
+      row.email || tutorEmailFromName(row.name),
+      row.is_active ? "Aktif" : "Nonaktif"
+    ]));
+  }
+
+  function exportFeeRows() {
+    downloadExcel("database-fee-per-pertemuan", [
+      "Nama Program", "Jumlah Siswa", "Fee per Pertemuan", "Status"
+    ], feeRows.map((row) => [
+      row.program_name,
+      Number(row.student_count || 0),
+      formatExportMoney(row.fee),
+      row.is_active ? "Aktif" : "Nonaktif"
+    ]));
+  }
+
   async function init() {
     if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
     const { data } = await supabaseClient.auth.getSession();
@@ -908,6 +1034,12 @@
   els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
   els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
   els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
+  els.exportTracker.addEventListener("click", exportTrackerRows);
+  els.exportBooking.addEventListener("click", exportBookingRows);
+  els.exportZoom.addEventListener("click", exportZoomRows);
+  els.exportProgram.addEventListener("click", exportProgramRows);
+  els.exportTutor.addEventListener("click", exportTutorRows);
+  els.exportFee.addEventListener("click", exportFeeRows);
   document.addEventListener("click", (event) => {
     const editButton = event.target.closest("[data-master-edit]");
     const toggleButton = event.target.closest("[data-master-toggle]");
