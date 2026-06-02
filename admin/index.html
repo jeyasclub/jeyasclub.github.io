@@ -260,6 +260,29 @@
     </form>
   </div>
 
+  <div class="modal-backdrop hidden" id="tutorModal" role="dialog" aria-modal="true" aria-labelledby="tutorModalTitle">
+    <form class="modal" id="tutorEditForm">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Edit Tutor</p>
+          <h2 id="tutorModalTitle">Database Tutor</h2>
+          <p class="muted">Update nama, link Zoom, dan link testimoni untuk akun tutor.</p>
+        </div>
+        <button class="btn" type="button" id="tutorModalClose">Tutup</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="tutorEditId">
+        <label>Nama tutor<input type="text" id="tutorEditName" required></label>
+        <label>Link Zoom<input type="url" id="tutorEditZoomLink" placeholder="https://..."></label>
+        <label>Link Testimoni<input type="url" id="tutorEditTestimonialLink" placeholder="https://..."></label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="tutorModalCancel">Batal</button>
+        <button class="btn primary" type="submit" id="tutorSaveButton">Simpan Tutor</button>
+      </div>
+    </form>
+  </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
@@ -295,7 +318,11 @@
     bookingProgramName: $("bookingProgramName"), bookingPrice: $("bookingPrice"), bookingTutor: $("bookingTutor"),
     bookingNote: $("bookingNote"),
     bookingCertificateIssued: $("bookingCertificateIssued"), bookingTestimonialReceived: $("bookingTestimonialReceived"),
-    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton")
+    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton"),
+    tutorModal: $("tutorModal"), tutorEditForm: $("tutorEditForm"), tutorEditId: $("tutorEditId"),
+    tutorEditName: $("tutorEditName"), tutorEditZoomLink: $("tutorEditZoomLink"),
+    tutorEditTestimonialLink: $("tutorEditTestimonialLink"), tutorModalClose: $("tutorModalClose"),
+    tutorModalCancel: $("tutorModalCancel"), tutorSaveButton: $("tutorSaveButton")
   };
 
   function isAdmin(session = currentSession) {
@@ -565,24 +592,17 @@
 
   async function editMasterItem(type, id, currentName) {
     const config = getMasterConfig(type);
-    const currentRow = type === "tutor" ? tutorRows.find((row) => row.id === id) : null;
+    if (type === "tutor") {
+      const currentRow = tutorRows.find((row) => row.id === id);
+      if (currentRow) openTutorModal(currentRow);
+      return;
+    }
     const nextName = window.prompt(`Edit nama ${config.label}`, currentName || "");
     if (!nextName || !nextName.trim()) return;
-    const tutorLinks = {};
-    if (type === "tutor") {
-      const zoomLink = window.prompt("Link Zoom tutor", (currentRow && currentRow.zoom_link) || "");
-      if (zoomLink === null) return;
-      const testimonialLink = window.prompt("Link Testimoni tutor", (currentRow && currentRow.testimonial_link) || "");
-      if (testimonialLink === null) return;
-      tutorLinks.zoom_link = zoomLink.trim();
-      tutorLinks.testimonial_link = testimonialLink.trim();
-    }
     const { error } = await supabaseClient
       .from(config.table)
       .update({
         name: nextName.trim(),
-        ...(type === "tutor" ? { email: tutorEmailFromName(nextName.trim()) } : {}),
-        ...(type === "tutor" ? tutorLinks : {}),
         updated_at: new Date().toISOString()
       })
       .eq("id", id);
@@ -591,6 +611,53 @@
       els.sessionLabel.textContent = `Nama ${config.label} belum terupdate.`;
       return;
     }
+    await loadMasterData();
+  }
+
+  function openTutorModal(row) {
+    els.tutorEditId.value = row.id || "";
+    els.tutorEditName.value = row.name || "";
+    els.tutorEditZoomLink.value = row.zoom_link || "";
+    els.tutorEditTestimonialLink.value = row.testimonial_link || "";
+    els.tutorModal.classList.remove("hidden");
+    els.tutorEditName.focus();
+  }
+
+  function closeTutorModal() {
+    els.tutorModal.classList.add("hidden");
+    els.tutorEditForm.reset();
+    els.tutorEditId.value = "";
+  }
+
+  async function saveTutorEdit(event) {
+    event.preventDefault();
+    const tutorId = els.tutorEditId.value;
+    const name = els.tutorEditName.value.trim();
+    if (!tutorId || !name) {
+      els.sessionLabel.textContent = "Tutor belum terupdate. Nama tutor wajib diisi.";
+      return;
+    }
+    els.tutorSaveButton.disabled = true;
+    els.tutorSaveButton.textContent = "Menyimpan...";
+    const { error } = await supabaseClient
+      .from("class_tutors")
+      .update({
+        name,
+        email: tutorEmailFromName(name),
+        zoom_link: els.tutorEditZoomLink.value.trim(),
+        testimonial_link: els.tutorEditTestimonialLink.value.trim(),
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", tutorId);
+    els.tutorSaveButton.disabled = false;
+    els.tutorSaveButton.textContent = "Simpan Tutor";
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Tutor belum terupdate. Cek policy Supabase atau format link.";
+      return;
+    }
+    els.sessionLabel.textContent = "Data tutor berhasil diupdate.";
+    closeTutorModal();
     await loadMasterData();
   }
 
@@ -1260,6 +1327,12 @@
   els.bookingModalCancel.addEventListener("click", closeBookingModal);
   els.bookingModal.addEventListener("click", (event) => {
     if (event.target === els.bookingModal) closeBookingModal();
+  });
+  els.tutorEditForm.addEventListener("submit", saveTutorEdit);
+  els.tutorModalClose.addEventListener("click", closeTutorModal);
+  els.tutorModalCancel.addEventListener("click", closeTutorModal);
+  els.tutorModal.addEventListener("click", (event) => {
+    if (event.target === els.tutorModal) closeTutorModal();
   });
   els.exportTracker.addEventListener("click", exportTrackerRows);
   els.exportBooking.addEventListener("click", exportBookingRows);
