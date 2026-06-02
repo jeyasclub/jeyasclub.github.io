@@ -249,8 +249,8 @@
         </div>
         <label>Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
         <div class="modal-grid">
-          <label class="check-row"><input type="checkbox" id="bookingCertificateIssued"><span>Sertifikat sudah diterbitkan</span></label>
-          <label class="check-row"><input type="checkbox" id="bookingTestimonialReceived"><span>Testimoni sudah masuk</span></label>
+          <label>Status Sertifikat<select id="bookingCertificateIssued"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
+          <label>Status Testimoni<select id="bookingTestimonialReceived"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
         </div>
       </div>
       <div class="modal-actions">
@@ -364,15 +364,8 @@
     return Number(value || 0);
   }
 
-  function formatYesNo(value) {
-    return value ? "Yes" : "No";
-  }
-
-  function parseYesNoInput(value, fallback = false) {
-    const normalized = String(value || "").trim().toLowerCase();
-    if (["yes", "y", "ya", "true", "1"].includes(normalized)) return true;
-    if (["no", "n", "tidak", "false", "0"].includes(normalized)) return false;
-    return fallback;
+  function formatDoneStatus(value) {
+    return value ? "Done" : "Not Yet";
   }
 
   function parseNumberInput(value, fallback = 0) {
@@ -969,8 +962,8 @@
             <td rowspan="${rowspan}">${escapeHTML(row.tutor)}</td>
             <td rowspan="${rowspan}">${escapeHTML(row.note || "-")}</td>
           ` : ""}
-          <td><span class="pill">${formatYesNo(row.certificate_issued)}</span></td>
-          <td><span class="pill">${formatYesNo(row.testimonial_received)}</span></td>
+          <td><span class="pill">${formatDoneStatus(row.certificate_issued)}</span></td>
+          <td><span class="pill">${formatDoneStatus(row.testimonial_received)}</span></td>
           <td>
             <div class="row-actions">
               <button class="btn" type="button" data-booking-edit="${escapeHTML(row.id)}">Edit</button>
@@ -1032,8 +1025,8 @@
     els.bookingPrice.value = Number(row.price || 0);
     els.bookingTutor.value = row.tutor || "";
     els.bookingNote.value = row.note || "";
-    els.bookingCertificateIssued.checked = Boolean(row.certificate_issued);
-    els.bookingTestimonialReceived.checked = Boolean(row.testimonial_received);
+    els.bookingCertificateIssued.value = Boolean(row.certificate_issued) ? "true" : "false";
+    els.bookingTestimonialReceived.value = Boolean(row.testimonial_received) ? "true" : "false";
     els.bookingModal.classList.remove("hidden");
     els.bookingStudentName.focus();
   }
@@ -1063,8 +1056,8 @@
       price: parseNumberInput(els.bookingPrice.value, 0),
       tutor: els.bookingTutor.value.trim(),
       note: els.bookingNote.value.trim(),
-      certificate_issued: els.bookingCertificateIssued.checked,
-      testimonial_received: els.bookingTestimonialReceived.checked,
+      certificate_issued: els.bookingCertificateIssued.value === "true",
+      testimonial_received: els.bookingTestimonialReceived.value === "true",
       updated_at: new Date().toISOString()
     };
 
@@ -1241,8 +1234,8 @@
       formatExportMoney(row.price),
       row.tutor,
       row.note,
-      formatYesNo(row.certificate_issued),
-      formatYesNo(row.testimonial_received)
+      formatDoneStatus(row.certificate_issued),
+      formatDoneStatus(row.testimonial_received)
     ]));
   }
 
