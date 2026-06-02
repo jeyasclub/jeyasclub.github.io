@@ -61,6 +61,10 @@
   .zoom-event { display:grid; gap:3px; padding:8px; border-radius:10px; background:#e8f1fd; color:#1558c0; font-size:12px; line-height:1.35; border:1px solid #bfdbfe; }
   .zoom-event strong { color:#111827; font-size:12px; }
   .zoom-event button { justify-self:start; min-height:28px; padding:5px 8px; font-size:11px; }
+  .info-links { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; padding:18px 20px 20px; }
+  .info-link { min-height:82px; padding:14px; display:grid; align-content:center; gap:6px; border:1px solid var(--border); border-radius:12px; background:#f8fbff; color:var(--text); text-decoration:none; }
+  .info-link strong { color:var(--blue-dark); font-size:14px; }
+  .info-link span { color:var(--muted); font-size:13px; overflow-wrap:anywhere; }
   .table-wrap { overflow-x:auto; border-radius:10px; }
   table { width:100%; min-width:960px; border-collapse:collapse; border:1px solid #1f2937; background:#fff; }
   th, td { padding:13px 14px; text-align:left; border:1px solid #1f2937; font-size:13px; vertical-align:middle; }
@@ -68,7 +72,7 @@
   tbody tr:nth-child(even) td { background:#f8fbff; }
   tbody tr:hover td { background:#eef6ff; }
   .pill { display:inline-flex; align-items:center; min-height:28px; border-radius:999px; padding:5px 9px; background:var(--blue-light); color:var(--blue-dark); font-size:12px; font-weight:900; white-space:nowrap; }
-  @media (max-width:820px) { .forms-grid, .two-col, .zoom-tools { grid-template-columns:1fr; } .topbar { padding:0 16px; } .brand span { display:none; } .shell { width:min(100% - 24px, 1320px); } .zoom-calendar { grid-template-columns:repeat(7, minmax(108px, 1fr)); } }
+  @media (max-width:820px) { .forms-grid, .two-col, .zoom-tools, .info-links { grid-template-columns:1fr; } .topbar { padding:0 16px; } .brand span { display:none; } .shell { width:min(100% - 24px, 1320px); } .zoom-calendar { grid-template-columns:repeat(7, minmax(108px, 1fr)); } }
 </style>
 </head>
 <body>
@@ -141,6 +145,23 @@
       </article>
     </section>
 
+    <section class="panel hidden" id="tutorInfoPanel">
+      <div class="panel-head">
+        <h2>Informasi Tutor</h2>
+        <p class="muted">Link khusus untuk akun tutor ini.</p>
+      </div>
+      <div class="info-links">
+        <a class="info-link" href="#" target="_blank" rel="noopener" id="tutorZoomLink">
+          <strong>Link Zoom</strong>
+          <span>Belum diisi admin</span>
+        </a>
+        <a class="info-link" href="#" target="_blank" rel="noopener" id="tutorTestimonialLink">
+          <strong>Link Testimoni</strong>
+          <span>Belum diisi admin</span>
+        </a>
+      </div>
+    </section>
+
     <section class="panel" id="zoomPanel">
       <div class="panel-head">
         <h2>Zoom Booking</h2>
@@ -186,6 +207,7 @@
     password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"), logout:$("logoutButton"),
     sessionLabel:$("sessionLabel"), bookingForm:$("bookingForm"), trackerBody:$("trackerBody"),
     formsGrid: document.querySelector(".forms-grid"), trackerPanel:$("trackerPanel"), bookingPanel:$("bookingPanel"), adminLink:$("adminLink"), bookingSubmit:$("bookingSubmit"),
+    tutorInfoPanel:$("tutorInfoPanel"), tutorZoomLink:$("tutorZoomLink"), tutorTestimonialLink:$("tutorTestimonialLink"),
     trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus"), zoomForm:$("zoomForm"), zoomDate:$("zoomDate"),
     zoomStart:$("zoomStart"), zoomEnd:$("zoomEnd"), zoomNote:$("zoomNote"), zoomSubmit:$("zoomSubmit"), zoomStatus:$("zoomStatus"),
     zoomMonth:$("zoomMonth"), zoomRefresh:$("zoomRefresh"), zoomCalendar:$("zoomCalendar")
@@ -235,6 +257,28 @@
 
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  function setTutorInfoLink(anchor, url, emptyText) {
+    const label = anchor.querySelector("span");
+    const cleanUrl = String(url || "").trim();
+    if (!cleanUrl) {
+      anchor.removeAttribute("href");
+      anchor.setAttribute("aria-disabled", "true");
+      label.textContent = emptyText;
+      return;
+    }
+    anchor.href = cleanUrl;
+    anchor.removeAttribute("aria-disabled");
+    label.textContent = cleanUrl;
+  }
+
+  function renderTutorInfo() {
+    const showTutorInfo = Boolean(currentTutor) && !isAdmin();
+    els.tutorInfoPanel.classList.toggle("hidden", !showTutorInfo);
+    if (!showTutorInfo) return;
+    setTutorInfoLink(els.tutorZoomLink, currentTutor.zoom_link, "Belum diisi admin");
+    setTutorInfoLink(els.tutorTestimonialLink, currentTutor.testimonial_link, "Belum diisi admin");
   }
 
   function formatDate(value) {
@@ -397,7 +441,7 @@
     if (!email.endsWith("@jeyasclub.com")) return null;
     const { data, error } = await supabaseClient
       .from("class_tutors")
-      .select("name,email")
+      .select("name,email,zoom_link,testimonial_link")
       .eq("is_active", true)
       .limit(1);
     if (error) {
@@ -565,6 +609,7 @@
     els.dashboard.classList.remove("open");
     els.logout.classList.add("hidden");
     els.adminLink.classList.add("hidden");
+    els.tutorInfoPanel.classList.add("hidden");
     currentTutor = null;
     setStatus(els.authMessage, message);
   }
@@ -576,6 +621,7 @@
     els.adminLink.classList.toggle("hidden", !isAdmin());
     els.trackerPanel.classList.toggle("hidden", isAdmin());
     els.bookingPanel.classList.toggle("hidden", !isAdmin());
+    renderTutorInfo();
     els.formsGrid.classList.toggle("tracker-only", !isAdmin());
     els.formsGrid.classList.toggle("booking-only", isAdmin());
     els.sessionLabel.textContent = currentTutor

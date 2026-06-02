@@ -55,6 +55,7 @@
   table { width:100%; border-collapse:collapse; min-width:760px; border:1px solid #1f2937; background:#fff; }
   th, td { padding:14px 18px; text-align:left; border:1px solid #1f2937; font-size:13px; vertical-align:middle; }
   th { color:#111827; background:#dbeafe; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.7px; }
+  td a { color:var(--blue-dark); font-weight:800; overflow-wrap:anywhere; }
   tbody tr:nth-child(even) td { background:#f8fbff; }
   tbody tr:hover td { background:#eef6ff; }
   tbody tr:last-child td { border-bottom:0; }
@@ -198,7 +199,7 @@
           </form>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Nama Tutor</th><th>Email Login</th><th>Status</th><th>Aksi</th></tr></thead>
+              <thead><tr><th>Nama Tutor</th><th>Email Login</th><th>Link Zoom</th><th>Link Testimoni</th><th>Status</th><th>Aksi</th></tr></thead>
               <tbody id="tutorBody"></tbody>
             </table>
           </div>
@@ -530,7 +531,11 @@
     config.body.innerHTML = rows.map((row) => `
       <tr>
         <td>${escapeHTML(row.name)}</td>
-        ${type === "tutor" ? `<td>${escapeHTML(row.email || tutorEmailFromName(row.name))}</td>` : ""}
+        ${type === "tutor" ? `
+          <td>${escapeHTML(row.email || tutorEmailFromName(row.name))}</td>
+          <td>${row.zoom_link ? `<a href="${escapeHTML(row.zoom_link)}" target="_blank" rel="noopener">${escapeHTML(row.zoom_link)}</a>` : "-"}</td>
+          <td>${row.testimonial_link ? `<a href="${escapeHTML(row.testimonial_link)}" target="_blank" rel="noopener">${escapeHTML(row.testimonial_link)}</a>` : "-"}</td>
+        ` : ""}
         <td><span class="pill">${row.is_active ? "Aktif" : "Nonaktif"}</span></td>
         <td>
           <div class="row-actions">
@@ -560,13 +565,24 @@
 
   async function editMasterItem(type, id, currentName) {
     const config = getMasterConfig(type);
+    const currentRow = type === "tutor" ? tutorRows.find((row) => row.id === id) : null;
     const nextName = window.prompt(`Edit nama ${config.label}`, currentName || "");
     if (!nextName || !nextName.trim()) return;
+    const tutorLinks = {};
+    if (type === "tutor") {
+      const zoomLink = window.prompt("Link Zoom tutor", (currentRow && currentRow.zoom_link) || "");
+      if (zoomLink === null) return;
+      const testimonialLink = window.prompt("Link Testimoni tutor", (currentRow && currentRow.testimonial_link) || "");
+      if (testimonialLink === null) return;
+      tutorLinks.zoom_link = zoomLink.trim();
+      tutorLinks.testimonial_link = testimonialLink.trim();
+    }
     const { error } = await supabaseClient
       .from(config.table)
       .update({
         name: nextName.trim(),
         ...(type === "tutor" ? { email: tutorEmailFromName(nextName.trim()) } : {}),
+        ...(type === "tutor" ? tutorLinks : {}),
         updated_at: new Date().toISOString()
       })
       .eq("id", id);
@@ -1188,10 +1204,12 @@
 
   function exportTutorRows() {
     downloadExcel("database-tutor", [
-      "Nama Tutor", "Email Login", "Status"
+      "Nama Tutor", "Email Login", "Link Zoom", "Link Testimoni", "Status"
     ], tutorRows.map((row) => [
       row.name,
       row.email || tutorEmailFromName(row.name),
+      row.zoom_link,
+      row.testimonial_link,
       row.is_active ? "Aktif" : "Nonaktif"
     ]));
   }

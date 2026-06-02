@@ -103,6 +103,8 @@ create table if not exists public.class_tutors (
   id uuid primary key default gen_random_uuid(),
   name text not null unique,
   email text unique,
+  zoom_link text not null default '',
+  testimonial_link text not null default '',
   is_active boolean not null default true,
   created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
   created_at timestamptz not null default now(),
@@ -155,7 +157,9 @@ set booking_group_id = id
 where booking_group_id is null;
 
 alter table public.class_tutors
-add column if not exists email text unique;
+add column if not exists email text unique,
+add column if not exists zoom_link text not null default '',
+add column if not exists testimonial_link text not null default '';
 
 alter table public.class_meeting_fees
 add column if not exists is_active boolean not null default true;
