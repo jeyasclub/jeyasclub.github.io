@@ -1,4 +1,7 @@
 User-agent: *
+Disallow: /admin/
+Disallow: /input/
+Disallow: /ask/
 Allow: /
 
 Sitemap: https://www.jeyasclub.com/sitemap.xml
