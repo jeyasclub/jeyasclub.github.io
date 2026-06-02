@@ -105,6 +105,8 @@ create table if not exists public.class_tutors (
   email text unique,
   zoom_link text not null default '',
   testimonial_link text not null default '',
+  bank_name text not null default '',
+  bank_account_number text not null default '',
   is_active boolean not null default true,
   created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
   created_at timestamptz not null default now(),
@@ -159,7 +161,9 @@ where booking_group_id is null;
 alter table public.class_tutors
 add column if not exists email text unique,
 add column if not exists zoom_link text not null default '',
-add column if not exists testimonial_link text not null default '';
+add column if not exists testimonial_link text not null default '',
+add column if not exists bank_name text not null default '',
+add column if not exists bank_account_number text not null default '';
 
 alter table public.class_meeting_fees
 add column if not exists is_active boolean not null default true;
@@ -170,6 +174,42 @@ drop constraint if exists class_zoom_bookings_no_overlap;
 update public.class_tutors
 set email = public.class_tutor_email(name)
 where email is null or email = '';
+
+update public.class_tutors tutor
+set
+  bank_name = bank_data.bank_name,
+  bank_account_number = bank_data.bank_account_number,
+  updated_at = now()
+from (
+  values
+    ('Aya', 'MANDIRI', '1370022415984'),
+    ('Dhila', 'BNI', '1254460461'),
+    ('Dian', 'BCA', '0031147092'),
+    ('Feby', 'BCA', '1672429310'),
+    ('Fira', 'BNI', '1254691035'),
+    ('Klair/Dilla', 'BCA', '7870825034'),
+    ('Klair', 'BCA', '7870825034'),
+    ('Dilla', 'BCA', '7870825034'),
+    ('Lydia', 'BRI', '166801007389503'),
+    ('Nadila', 'BNI', '1937462578'),
+    ('Tista', 'BNI', '913487269'),
+    ('Zahra', 'GOPAY', '0895401593441'),
+    ('Zelfa', 'GOPAY', '083115310868'),
+    ('Nisya', 'BCA', '5315321350'),
+    ('Indi', 'MANDIRI', '1270012348361'),
+    ('Ezra', 'SEABANK', '901530503283'),
+    ('Lula', 'MANDIRI', '1640003022458'),
+    ('Rae', '-', '-'),
+    ('Nida', 'BNI', '907576031'),
+    ('Vica', 'BCA', '4061315386')
+) as bank_data(name, bank_name, bank_account_number)
+where lower(regexp_replace(tutor.name, '[^a-zA-Z0-9]+', '', 'g')) = lower(regexp_replace(bank_data.name, '[^a-zA-Z0-9]+', '', 'g'))
+  and (
+    coalesce(tutor.bank_name, '') = ''
+    or coalesce(tutor.bank_account_number, '') = ''
+    or tutor.bank_name = '-'
+    or tutor.bank_account_number = '-'
+  );
 
 insert into public.class_meeting_fees (program_name, student_count, fee, is_active)
 values
