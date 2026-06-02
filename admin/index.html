@@ -864,27 +864,35 @@
 
   function renderBookings(rows) {
     els.bookingCount.textContent = rows.length;
-    els.bookingTotal.textContent = formatMoney(rows.reduce((sum, row) => sum + Number(row.price || 0), 0));
+    const bookingGroups = groupBookingRows(rows);
+    els.bookingTotal.textContent = formatMoney(bookingGroups.reduce((sum, group) => sum + Number((group.rows[0] && group.rows[0].price) || 0), 0));
     els.bookingEmpty.classList.toggle("hidden", rows.length > 0);
-    els.bookingBody.innerHTML = rows.map((row) => `
-      <tr>
-        <td>${formatDate(row.order_date)}</td>
-        <td>${formatDate(row.valid_until)}</td>
-        <td>${escapeHTML(row.student_name)}</td>
-        <td>${Number(row.student_count || 1)}</td>
-        <td>${escapeHTML(row.program_name)}</td>
-        <td>${formatMoney(row.price)}</td>
-        <td>${escapeHTML(row.tutor)}</td>
-        <td><span class="pill">${formatYesNo(row.certificate_issued)}</span></td>
-        <td><span class="pill">${formatYesNo(row.testimonial_received)}</span></td>
-        <td>
-          <div class="row-actions">
-            <button class="btn" type="button" data-booking-edit="${escapeHTML(row.id)}">Edit</button>
-            <button class="btn danger" type="button" data-booking-delete="${escapeHTML(row.id)}">Hapus</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
+    els.bookingBody.innerHTML = bookingGroups.map((group) => {
+      const rowspan = group.rows.length;
+      return group.rows.map((row, index) => `
+        <tr>
+          ${index === 0 ? `
+            <td rowspan="${rowspan}">${formatDate(row.order_date)}</td>
+            <td rowspan="${rowspan}">${formatDate(row.valid_until)}</td>
+          ` : ""}
+          <td>${escapeHTML(row.student_name)}</td>
+          ${index === 0 ? `
+            <td rowspan="${rowspan}">${Number(row.student_count || 1)}</td>
+            <td rowspan="${rowspan}">${escapeHTML(row.program_name)}</td>
+            <td rowspan="${rowspan}">${formatMoney(row.price)}</td>
+            <td rowspan="${rowspan}">${escapeHTML(row.tutor)}</td>
+          ` : ""}
+          <td><span class="pill">${formatYesNo(row.certificate_issued)}</span></td>
+          <td><span class="pill">${formatYesNo(row.testimonial_received)}</span></td>
+          <td>
+            <div class="row-actions">
+              <button class="btn" type="button" data-booking-edit="${escapeHTML(row.id)}">Edit</button>
+              <button class="btn danger" type="button" data-booking-delete="${escapeHTML(row.id)}">Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }).join("");
 
     els.bookingBody.querySelectorAll("[data-booking-edit]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -899,6 +907,32 @@
         if (row) deleteBooking(row);
       });
     });
+  }
+
+  function getBookingGroupId(row) {
+    return row.booking_group_id || row.id;
+  }
+
+  function getBookingGroupRows(row) {
+    const groupId = getBookingGroupId(row);
+    return bookingRows
+      .filter((item) => getBookingGroupId(item) === groupId)
+      .sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+  }
+
+  function groupBookingRows(rows) {
+    const groups = [];
+    const seen = new Set();
+    rows.forEach((row) => {
+      const groupId = getBookingGroupId(row);
+      if (seen.has(groupId)) return;
+      const groupRows = rows
+        .filter((item) => getBookingGroupId(item) === groupId)
+        .sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+      seen.add(groupId);
+      groups.push({ groupId, rows: groupRows });
+    });
+    return groups;
   }
 
   function openBookingModal(row) {
@@ -929,6 +963,9 @@
   async function saveBookingEdit(event) {
     event.preventDefault();
     const bookingId = els.bookingEditId.value;
+    const originalRow = bookingRows.find((item) => item.id === bookingId);
+    const groupRows = originalRow ? getBookingGroupRows(originalRow) : [];
+    const groupId = originalRow ? getBookingGroupId(originalRow) : "";
     const payload = {
       order_date: els.bookingOrderDate.value,
       valid_until: els.bookingValidUntil.value || null,
@@ -947,6 +984,11 @@
       return;
     }
 
+    if (!originalRow) {
+      els.sessionLabel.textContent = "Booking belum diupdate. Data booking tidak ditemukan di halaman.";
+      return;
+    }
+
     if (!payload.order_date || !payload.student_name || !payload.program_name || !payload.tutor) {
       els.sessionLabel.textContent = "Booking belum diupdate. Tanggal, siswa, program, dan tutor wajib diisi.";
       return;
@@ -954,10 +996,26 @@
 
     els.bookingSaveButton.disabled = true;
     els.bookingSaveButton.textContent = "Menyimpan...";
+    const sharedPayload = {
+      order_date: payload.order_date,
+      valid_until: payload.valid_until,
+      student_count: payload.student_count,
+      program_name: payload.program_name,
+      price: payload.price,
+      tutor: payload.tutor,
+      updated_at: payload.updated_at
+    };
+    const studentPayload = {
+      student_name: payload.student_name,
+      certificate_issued: payload.certificate_issued,
+      testimonial_received: payload.testimonial_received,
+      updated_at: payload.updated_at
+    };
+
     const { error } = await supabaseClient
       .from("class_bookings")
-      .update(payload)
-      .eq("id", bookingId);
+      .update(sharedPayload)
+      .eq("booking_group_id", groupId);
 
     if (error) {
       console.error(error);
@@ -967,17 +1025,32 @@
       return;
     }
 
+    const { error: studentError } = await supabaseClient
+      .from("class_bookings")
+      .update(studentPayload)
+      .eq("id", bookingId);
+
+    if (studentError) {
+      console.error(studentError);
+      els.sessionLabel.textContent = "Data siswa belum terupdate. Cek policy Supabase.";
+      els.bookingSaveButton.disabled = false;
+      els.bookingSaveButton.textContent = "Simpan Perubahan";
+      return;
+    }
+
+    const mergedStudentNames = groupRows.map((item) => item.id === bookingId ? payload.student_name : item.student_name).join(", ");
+    const trackerBookingId = (groupRows[0] && groupRows[0].id) || bookingId;
     const { error: trackerError } = await supabaseClient
       .from("class_tracker")
       .update({
         order_date: payload.order_date,
-        student_name: payload.student_name,
+        student_name: mergedStudentNames,
         student_count: payload.student_count,
         program_name: payload.program_name,
         tutor: payload.tutor,
         updated_at: new Date().toISOString()
       })
-      .eq("booking_id", bookingId);
+      .eq("booking_id", trackerBookingId);
 
     els.bookingSaveButton.disabled = false;
     els.bookingSaveButton.textContent = "Simpan Perubahan";
@@ -996,17 +1069,42 @@
   }
 
   async function deleteBooking(row) {
-    if (!window.confirm(`Hapus booking ${row.student_name || row.program_name}? Tracker terkait juga akan dihapus.`)) return;
+    const groupRows = getBookingGroupRows(row);
+    const remainingRows = groupRows.filter((item) => item.id !== row.id);
+    const isLastStudent = remainingRows.length === 0;
+    const confirmMessage = isLastStudent
+      ? `Hapus booking ${row.student_name || row.program_name}? Tracker terkait juga akan dihapus.`
+      : `Hapus siswa ${row.student_name || row.program_name} dari booking ini? Data siswa lain tetap tersimpan.`;
+    if (!window.confirm(confirmMessage)) return;
 
-    const { error: trackerError } = await supabaseClient
-      .from("class_tracker")
-      .delete()
-      .eq("booking_id", row.id);
+    const trackerBookingId = (groupRows[0] && groupRows[0].id) || row.id;
+    const trackerQuery = supabaseClient.from("class_tracker");
+    const { error: trackerError } = isLastStudent
+      ? await trackerQuery.delete().eq("booking_id", trackerBookingId)
+      : await trackerQuery.update({
+          booking_id: remainingRows[0].id,
+          student_name: remainingRows.map((item) => item.student_name).join(", "),
+          student_count: remainingRows.length,
+          updated_at: new Date().toISOString()
+        }).eq("booking_id", trackerBookingId);
 
     if (trackerError) {
       console.error(trackerError);
-      els.sessionLabel.textContent = "Tracker terkait belum terhapus. Booking tidak dihapus.";
+      els.sessionLabel.textContent = "Tracker terkait belum terupdate. Booking tidak dihapus.";
       return;
+    }
+
+    if (!isLastStudent) {
+      const { error: groupError } = await supabaseClient
+        .from("class_bookings")
+        .update({ student_count: remainingRows.length, updated_at: new Date().toISOString() })
+        .eq("booking_group_id", getBookingGroupId(row));
+
+      if (groupError) {
+        console.error(groupError);
+        els.sessionLabel.textContent = "Jumlah siswa di booking grup belum terupdate.";
+        return;
+      }
     }
 
     const { error } = await supabaseClient
@@ -1020,7 +1118,7 @@
       return;
     }
 
-    els.sessionLabel.textContent = "Class Booking berhasil dihapus.";
+    els.sessionLabel.textContent = isLastStudent ? "Class Booking berhasil dihapus." : "Siswa berhasil dihapus dari Class Booking.";
     await loadData();
   }
 

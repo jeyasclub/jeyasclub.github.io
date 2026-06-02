@@ -13,7 +13,7 @@
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f7f9fc; --border:#e5e7eb; --green:#16a46c; --red:#dc2626; }
   body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:var(--bg); }
-  button, input, select { font:inherit; }
+  button, input, select, textarea { font:inherit; }
   .topbar { position:sticky; top:0; z-index:10; min-height:64px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
   .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
   .brand img { width:68px; height:68px; object-fit:contain; }
@@ -31,8 +31,9 @@
   .muted { color:var(--muted); font-size:14px; line-height:1.7; }
   .form { display:grid; gap:14px; }
   label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
-  input, select { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
-  input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
+  input, select, textarea { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
+  textarea { min-height:94px; resize:vertical; line-height:1.6; }
+  input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
   .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
   .status.good { color:var(--green); }
   .status.bad { color:var(--red); }
@@ -127,7 +128,7 @@
         <form class="form" id="bookingForm">
           <label>Tanggal Pemesanan<input type="date" id="bookingDate" required></label>
           <label>Masa Berlaku<input type="date" id="bookingValidUntil"></label>
-          <label>Nama Siswa<input type="text" id="bookingStudent" required placeholder="Nama siswa"></label>
+          <label>Nama Siswa<textarea id="bookingStudent" required placeholder="1 siswa: tulis satu nama&#10;Lebih dari 1 siswa: tulis satu nama per baris"></textarea></label>
           <label>Jumlah Siswa<input type="number" id="bookingStudentCount" min="1" value="1" required></label>
           <label>Nama Program<select id="bookingProgram" required></select></label>
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required placeholder="250000"></label>
@@ -259,6 +260,26 @@
 
   function formatMoney(value) {
     return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
+  }
+
+  function parseStudentNames(value) {
+    return String(value || "")
+      .split(/\n|,/)
+      .map((name) => name.trim())
+      .filter(Boolean);
+  }
+
+  function createId() {
+    const browserCrypto = window.crypto || window.msCrypto;
+    if (browserCrypto && typeof browserCrypto.randomUUID === "function") return browserCrypto.randomUUID();
+    if (!browserCrypto || typeof browserCrypto.getRandomValues !== "function") return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+      const random = Math.random() * 16 | 0;
+      const value = char === "x" ? random : (random & 3 | 8);
+      return value.toString(16);
+    });
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (char) =>
+      (Number(char) ^ browserCrypto.getRandomValues(new Uint8Array(1))[0] & 15 >> Number(char) / 4).toString(16)
+    );
   }
 
   function getToBePaidCount(row) {
@@ -637,27 +658,42 @@
     if (!isAdmin()) { setStatus(els.bookingStatus, "Sesi admin tidak aktif.", "bad"); return; }
     els.bookingSubmit.disabled = true;
     setStatus(els.bookingStatus, "Menyimpan booking...");
+    const studentCount = Math.max(Number($("bookingStudentCount").value || 1), 1);
+    const studentNames = parseStudentNames($("bookingStudent").value);
+    if (studentNames.length !== studentCount) {
+      els.bookingSubmit.disabled = false;
+      setStatus(els.bookingStatus, `Jumlah nama siswa harus ${studentCount}. Tulis satu nama per baris atau pisahkan dengan koma.`, "bad");
+      return;
+    }
+    const bookingGroupId = createId();
     const payload = {
       order_date: $("bookingDate").value,
       valid_until: $("bookingValidUntil").value || null,
-      student_name: $("bookingStudent").value.trim(),
-      student_count: Number($("bookingStudentCount").value || 1),
+      student_count: studentCount,
       program_name: $("bookingProgram").value,
       price: Number($("bookingPrice").value || 0),
       tutor: $("bookingTutor").value
     };
-    const { data: booking, error } = await supabaseClient.from("class_bookings").insert(payload).select("id").single();
+    const bookingPayloads = studentNames.map((studentName, index) => ({
+      ...payload,
+      booking_group_id: bookingGroupId,
+      booking_student_order: index + 1,
+      student_name: studentName
+    }));
+    const { data: bookings, error } = await supabaseClient.from("class_bookings").insert(bookingPayloads).select("id,student_name,booking_student_order");
     if (error) {
       els.bookingSubmit.disabled = false;
       console.error(error);
-      setStatus(els.bookingStatus, "Booking belum tersimpan. Pastikan SQL sudah dijalankan.", "bad");
+      setStatus(els.bookingStatus, "Booking belum tersimpan. Pastikan supabase-class-admin.sql terbaru sudah dijalankan.", "bad");
       return;
     }
+    const sortedBookings = (bookings || []).slice().sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+    const firstBooking = sortedBookings[0];
     const totalMeeting = Number($("bookingMeetingTotal").value || 0);
     const { error: trackerError } = await supabaseClient.from("class_tracker").insert({
-      booking_id: booking.id,
+      booking_id: firstBooking.id,
       order_date: payload.order_date,
-      student_name: payload.student_name,
+      student_name: studentNames.join(", "),
       student_count: payload.student_count,
       program_name: payload.program_name,
       tutor: payload.tutor,
@@ -676,7 +712,7 @@
     $("bookingDate").value = toDateInput();
     $("bookingStudentCount").value = 1;
     $("bookingMeetingTotal").value = 0;
-    setStatus(els.bookingStatus, "Class Booking tersimpan dan otomatis muncul di Class Tracker.", "good");
+    setStatus(els.bookingStatus, `${studentCount} data Class Booking tersimpan dan otomatis muncul di Class Tracker.`, "good");
     await loadTrackers();
   });
 
