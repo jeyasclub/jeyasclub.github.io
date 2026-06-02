@@ -34,7 +34,7 @@
   input, select, textarea { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
   textarea { min-height:94px; resize:vertical; line-height:1.6; }
   input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
-  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; white-space:pre-line; }
   .status.good { color:var(--green); }
   .status.bad { color:var(--red); }
   .hidden { display:none !important; }
@@ -223,6 +223,14 @@
   function setStatus(el, message, type = "") {
     el.className = `status ${type}`.trim();
     el.textContent = message;
+  }
+
+  function getZoomBookingErrorMessage(error) {
+    const message = error && error.message ? error.message : "";
+    if (message.toLowerCase().includes("slot zoom sudah penuh") || message.toLowerCase().includes("overlap")) {
+      return "Slot Zoom sudah penuh/overlap.\nPilihan solusi:\n- Hubungi admin untuk meminta link zoom baru\n- Gunakan zoom pribadi (jangan lupa tetap record)";
+    }
+    return message || "Zoom Booking belum tersimpan. Cek apakah slot sudah dipakai.";
   }
 
   function escapeHTML(value) {
@@ -644,7 +652,7 @@
     els.zoomSubmit.disabled = false;
     if (error) {
       console.error(error);
-      setStatus(els.zoomStatus, error.message || "Zoom Booking belum tersimpan. Cek apakah slot sudah dipakai.", "bad");
+      setStatus(els.zoomStatus, getZoomBookingErrorMessage(error), "bad");
       return;
     }
     els.zoomForm.reset();

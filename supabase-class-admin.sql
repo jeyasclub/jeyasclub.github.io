@@ -463,7 +463,7 @@ begin
       and zoom.start_time < p_end_time
       and zoom.end_time > p_start_time
   ) >= 2 then
-    raise exception 'Slot Zoom sudah penuh. Maksimal 2 booking boleh overlap di jam tersebut';
+    raise exception 'Slot Zoom sudah penuh/overlap. Pilihan solusi: Hubungi admin untuk meminta link zoom baru; atau gunakan zoom pribadi (jangan lupa tetap record)';
   end if;
 
   if public.is_class_admin() then
