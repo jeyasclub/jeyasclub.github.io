@@ -134,6 +134,7 @@
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required placeholder="250000"></label>
           <label>Tutor<select id="bookingTutor" required></select></label>
           <label>Total Meeting untuk Tracker<input type="number" id="bookingMeetingTotal" min="0" value="0" required></label>
+          <label>Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
           <button class="btn primary" type="submit" id="bookingSubmit">Simpan Booking</button>
           <p class="status" id="bookingStatus"></p>
         </form>
@@ -672,7 +673,8 @@
       student_count: studentCount,
       program_name: $("bookingProgram").value,
       price: Number($("bookingPrice").value || 0),
-      tutor: $("bookingTutor").value
+      tutor: $("bookingTutor").value,
+      note: $("bookingNote").value.trim()
     };
     const bookingPayloads = studentNames.map((studentName, index) => ({
       ...payload,

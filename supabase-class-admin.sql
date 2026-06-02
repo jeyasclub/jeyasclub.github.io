@@ -84,6 +84,7 @@ create table if not exists public.class_bookings (
   program_name text not null,
   price numeric(12,2) not null default 0,
   tutor text not null,
+  note text not null default '',
   created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -146,7 +147,8 @@ add column if not exists student_name text not null default '',
 add column if not exists student_count integer not null default 1,
 add column if not exists valid_until date,
 add column if not exists certificate_issued boolean not null default false,
-add column if not exists testimonial_received boolean not null default false;
+add column if not exists testimonial_received boolean not null default false,
+add column if not exists note text not null default '';
 
 update public.class_bookings
 set booking_group_id = id

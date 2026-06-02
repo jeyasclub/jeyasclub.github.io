@@ -13,7 +13,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f7f9fc; --border:#e5e7eb; --green:#16a46c; --red:#dc2626; }
   body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:var(--bg); }
-  button, input, select { font:inherit; }
+  button, input, select, textarea { font:inherit; }
   .topbar { position:sticky; top:0; z-index:10; min-height:64px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
   .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
   .brand img { width:68px; height:68px; object-fit:contain; }
@@ -31,8 +31,9 @@
   .muted { color:var(--muted); font-size:14px; line-height:1.7; }
   .form { display:grid; gap:14px; }
   label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
-  input, select { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
-  input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
+  input, select, textarea { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
+  textarea { min-height:94px; resize:vertical; line-height:1.6; }
+  input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
   input[type="checkbox"] { width:20px; min-height:20px; height:20px; padding:0; accent-color:var(--blue); }
   .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
   .status.good { color:var(--green); }
@@ -153,7 +154,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div><button class="btn" type="button" id="exportBooking">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Sertifikat</th><th>Testimoni</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Keterangan</th><th>Sertifikat</th><th>Testimoni</th><th>Aksi</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -245,6 +246,7 @@
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required></label>
           <label>Tutor<input type="text" id="bookingTutor" required></label>
         </div>
+        <label>Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
         <div class="modal-grid">
           <label class="check-row"><input type="checkbox" id="bookingCertificateIssued"><span>Sertifikat sudah diterbitkan</span></label>
           <label class="check-row"><input type="checkbox" id="bookingTestimonialReceived"><span>Testimoni sudah masuk</span></label>
@@ -290,6 +292,7 @@
     bookingOrderDate: $("bookingOrderDate"), bookingValidUntil: $("bookingValidUntil"),
     bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
     bookingProgramName: $("bookingProgramName"), bookingPrice: $("bookingPrice"), bookingTutor: $("bookingTutor"),
+    bookingNote: $("bookingNote"),
     bookingCertificateIssued: $("bookingCertificateIssued"), bookingTestimonialReceived: $("bookingTestimonialReceived"),
     bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton")
   };
@@ -881,6 +884,7 @@
             <td rowspan="${rowspan}">${escapeHTML(row.program_name)}</td>
             <td rowspan="${rowspan}">${formatMoney(row.price)}</td>
             <td rowspan="${rowspan}">${escapeHTML(row.tutor)}</td>
+            <td rowspan="${rowspan}">${escapeHTML(row.note || "-")}</td>
           ` : ""}
           <td><span class="pill">${formatYesNo(row.certificate_issued)}</span></td>
           <td><span class="pill">${formatYesNo(row.testimonial_received)}</span></td>
@@ -944,6 +948,7 @@
     els.bookingProgramName.value = row.program_name || "";
     els.bookingPrice.value = Number(row.price || 0);
     els.bookingTutor.value = row.tutor || "";
+    els.bookingNote.value = row.note || "";
     els.bookingCertificateIssued.checked = Boolean(row.certificate_issued);
     els.bookingTestimonialReceived.checked = Boolean(row.testimonial_received);
     els.bookingModal.classList.remove("hidden");
@@ -974,6 +979,7 @@
       program_name: els.bookingProgramName.value.trim(),
       price: parseNumberInput(els.bookingPrice.value, 0),
       tutor: els.bookingTutor.value.trim(),
+      note: els.bookingNote.value.trim(),
       certificate_issued: els.bookingCertificateIssued.checked,
       testimonial_received: els.bookingTestimonialReceived.checked,
       updated_at: new Date().toISOString()
@@ -1003,6 +1009,7 @@
       program_name: payload.program_name,
       price: payload.price,
       tutor: payload.tutor,
+      note: payload.note,
       updated_at: payload.updated_at
     };
     const studentPayload = {
@@ -1141,7 +1148,7 @@
 
   function exportBookingRows() {
     downloadExcel("class-booking", [
-      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Sertifikat", "Testimoni"
+      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Keterangan", "Sertifikat", "Testimoni"
     ], bookingRows.map((row) => [
       row.order_date,
       row.valid_until,
@@ -1150,6 +1157,7 @@
       row.program_name,
       formatExportMoney(row.price),
       row.tutor,
+      row.note,
       formatYesNo(row.certificate_issued),
       formatYesNo(row.testimonial_received)
     ]));
