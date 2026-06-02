@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database Admin | Jeya's Club</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f7f9fc; --border:#e5e7eb; --green:#16a46c; --red:#dc2626; }
+  body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:var(--bg); }
+  button, input { font:inherit; }
+  .topbar { position:sticky; top:0; z-index:10; min-height:64px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
+  .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
+  .brand img { width:68px; height:68px; object-fit:contain; }
+  .topbar-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
+  .btn { min-height:42px; border-radius:12px; padding:10px 15px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--border); background:var(--white); color:var(--text); font-size:13px; font-weight:800; text-decoration:none; cursor:pointer; }
+  .btn.primary { border-color:var(--blue); background:var(--blue); color:var(--white); box-shadow:0 12px 24px rgba(26,111,232,.18); }
+  .btn.danger { color:var(--red); background:#fff1f2; border-color:#fecdd3; }
+  .shell { width:min(1180px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
+  .login-screen { min-height:calc(100vh - 64px); display:grid; place-items:center; padding:32px 16px; }
+  .login-card, .panel, .metric { background:var(--white); border:1px solid var(--border); border-radius:16px; box-shadow:0 18px 40px rgba(22,63,122,.07); }
+  .login-card { width:min(430px, 100%); padding:28px; display:grid; gap:18px; }
+  .eyebrow { color:var(--blue); font-size:12px; font-weight:900; letter-spacing:1.6px; text-transform:uppercase; }
+  h1 { font-size:clamp(28px, 5vw, 44px); line-height:1.12; letter-spacing:0; }
+  h2 { font-size:20px; line-height:1.25; }
+  .muted { color:var(--muted); font-size:14px; line-height:1.7; }
+  .form { display:grid; gap:14px; }
+  label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
+  input { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
+  input:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
+  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .status.good { color:var(--green); }
+  .status.bad { color:var(--red); }
+  .hidden { display:none !important; }
+  .dashboard { display:none; gap:22px; }
+  .dashboard.open { display:grid; }
+  .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .grid { display:grid; gap:18px; }
+  .master-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:18px; }
+  .master-wide { grid-column:1 / -1; }
+  .panel { overflow:hidden; }
+  .panel-head { padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid var(--border); }
+  .master-form { display:flex; gap:10px; padding:18px 20px; border-bottom:1px solid var(--border); }
+  .master-form input { flex:1; }
+  .table-wrap { overflow-x:auto; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; min-width:760px; border:1px solid #1f2937; background:#fff; }
+  th, td { padding:14px 18px; text-align:left; border:1px solid #1f2937; font-size:13px; vertical-align:middle; }
+  th { color:#111827; background:#dbeafe; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.7px; }
+  td a { color:var(--blue-dark); font-weight:800; overflow-wrap:anywhere; }
+  tbody tr:nth-child(even) td { background:#f8fbff; }
+  tbody tr:hover td { background:#eef6ff; }
+  .pill { display:inline-flex; align-items:center; min-height:30px; border-radius:999px; padding:6px 10px; background:var(--blue-light); color:var(--blue-dark); font-weight:900; white-space:nowrap; }
+  .empty { padding:22px; color:var(--muted); font-size:14px; }
+  .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .row-actions .btn { min-height:34px; padding:7px 10px; font-size:12px; }
+  .modal-backdrop { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:18px; background:rgba(15,23,42,.48); }
+  .modal { width:min(720px, 100%); max-height:min(90vh, 760px); overflow:auto; background:var(--white); border:1px solid var(--border); border-radius:16px; box-shadow:0 24px 80px rgba(15,23,42,.28); }
+  .modal-head { padding:18px 20px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; border-bottom:1px solid var(--border); }
+  .modal-body { padding:20px; display:grid; gap:14px; }
+  .modal-actions { padding:0 20px 20px; display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+  @media (max-width:760px) { .topbar { padding:0 16px; } .brand span { display:none; } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; flex-direction:column; } .modal-actions .btn { width:100%; } }
+  @media (max-width:900px) { .master-grid { grid-template-columns:1fr; } .master-form { flex-direction:column; } }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/assets/logo.jpg" alt="Jeya's Club"><span>Jeya's Club Admin</span></a>
+    <div class="topbar-actions">
+      <a class="btn" href="/admin/">Dashboard</a>
+      <a class="btn" href="/input/">Input Data</a>
+      <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
+    </div>
+  </header>
+
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div>
+        <p class="eyebrow">Admin Only</p>
+        <h1>Database</h1>
+        <p class="muted">Login memakai akun admin Jeya's Club untuk mengelola program, tutor, dan fee kelas.</p>
+      </div>
+      <form class="form" id="loginForm">
+        <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
+        <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
+        <button class="btn primary" type="submit" id="loginButton">Login</button>
+        <p class="status" id="authMessage">Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.</p>
+      </form>
+    </div>
+  </section>
+
+  <main class="shell dashboard" id="dashboard">
+    <div class="hero-row">
+      <div>
+        <p class="eyebrow">Admin Database</p>
+        <h1>Database Kelas</h1>
+        <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
+      </div>
+      <button class="btn primary" type="button" id="refreshButton">Refresh</button>
+    </div>
+
+    <section class="master-grid">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div><button class="btn" type="button" id="exportProgram">Export Excel</button></div>
+        <form class="master-form" id="programForm">
+          <input type="text" id="programNameInput" required placeholder="Nama program baru">
+          <button class="btn primary" type="submit">Tambah</button>
+        </form>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nama Program</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="programBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="programEmpty">Belum ada program. Tambahkan program dulu supaya muncul di dropdown input.</div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><div><h2>Database Tutor</h2><p class="muted">Tambah, edit, atau hapus pilihan tutor untuk halaman input.</p></div><button class="btn" type="button" id="exportTutor">Export Excel</button></div>
+        <form class="master-form" id="tutorForm">
+          <input type="text" id="tutorNameInput" required placeholder="Nama tutor baru">
+          <button class="btn primary" type="submit">Tambah</button>
+        </form>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nama Tutor</th><th>Email Login</th><th>Link Zoom</th><th>Link Testimoni</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tutorBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="tutorEmpty">Belum ada tutor. Tambahkan tutor dulu supaya muncul di dropdown input.</div>
+      </article>
+
+      <article class="panel master-wide">
+        <div class="panel-head"><div><h2>Database Fee per Pertemuan</h2><p class="muted">Fee ini dipakai untuk menghitung Remaining Fee di Class Tracker.</p></div><button class="btn" type="button" id="exportFee">Export Excel</button></div>
+        <form class="master-form" id="feeForm">
+          <input type="text" id="feeProgramInput" required placeholder="Nama program">
+          <input type="number" id="feeStudentCountInput" min="1" required placeholder="Jumlah siswa">
+          <input type="number" id="feeAmountInput" min="0" step="1000" required placeholder="Fee per pertemuan">
+          <button class="btn primary" type="submit">Tambah</button>
+        </form>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Nama Program</th><th>Jumlah Siswa</th><th>Fee / Pertemuan</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="feeBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="feeEmpty">Belum ada fee. Tambahkan fee agar Remaining Fee bisa dihitung otomatis.</div>
+      </article>
+    </section>
+  </main>
+
+  <div class="modal-backdrop hidden" id="tutorModal" role="dialog" aria-modal="true" aria-labelledby="tutorModalTitle">
+    <form class="modal" id="tutorEditForm">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Edit Tutor</p>
+          <h2 id="tutorModalTitle">Database Tutor</h2>
+          <p class="muted">Update nama, link Zoom, dan link testimoni untuk akun tutor.</p>
+        </div>
+        <button class="btn" type="button" id="tutorModalClose">Tutup</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="tutorEditId">
+        <label>Nama tutor<input type="text" id="tutorEditName" required></label>
+        <label>Link Zoom<input type="url" id="tutorEditZoomLink" placeholder="https://..."></label>
+        <label>Link Testimoni<input type="url" id="tutorEditTestimonialLink" placeholder="https://..."></label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="tutorModalCancel">Batal</button>
+        <button class="btn primary" type="submit" id="tutorSaveButton">Simpan Tutor</button>
+      </div>
+    </form>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
+  let currentSession = null;
+  let programRows = [];
+  let tutorRows = [];
+  let feeRows = [];
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
+    email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
+    logout:$("logoutButton"), sessionLabel:$("sessionLabel"), refresh:$("refreshButton"),
+    programForm:$("programForm"), programInput:$("programNameInput"), programBody:$("programBody"), programEmpty:$("programEmpty"),
+    tutorForm:$("tutorForm"), tutorInput:$("tutorNameInput"), tutorBody:$("tutorBody"), tutorEmpty:$("tutorEmpty"),
+    feeForm:$("feeForm"), feeProgramInput:$("feeProgramInput"), feeStudentCountInput:$("feeStudentCountInput"),
+    feeAmountInput:$("feeAmountInput"), feeBody:$("feeBody"), feeEmpty:$("feeEmpty"),
+    exportProgram:$("exportProgram"), exportTutor:$("exportTutor"), exportFee:$("exportFee"),
+    tutorModal:$("tutorModal"), tutorEditForm:$("tutorEditForm"), tutorEditId:$("tutorEditId"),
+    tutorEditName:$("tutorEditName"), tutorEditZoomLink:$("tutorEditZoomLink"),
+    tutorEditTestimonialLink:$("tutorEditTestimonialLink"), tutorModalClose:$("tutorModalClose"),
+    tutorModalCancel:$("tutorModalCancel"), tutorSaveButton:$("tutorSaveButton")
+  };
+
+  function isAdmin(session = currentSession) {
+    const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
+    return adminEmails.has(email);
+  }
+
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  function formatMoney(value) {
+    return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
+  }
+
+  function formatExportMoney(value) {
+    return Number(value || 0);
+  }
+
+  function parseNumberInput(value, fallback = 0) {
+    const cleaned = String(value || "").replace(/[^\d]/g, "");
+    const number = Number(cleaned);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  function setAuthMessage(message, type = "") {
+    els.authMessage.className = `status ${type}`.trim();
+    els.authMessage.textContent = message;
+  }
+
+  function showLogin(message = "Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.") {
+    els.loginScreen.classList.remove("hidden");
+    els.dashboard.classList.remove("open");
+    els.logout.classList.add("hidden");
+    setAuthMessage(message);
+  }
+
+  async function showDashboard() {
+    els.loginScreen.classList.add("hidden");
+    els.dashboard.classList.add("open");
+    els.logout.classList.remove("hidden");
+    els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    await loadDatabase();
+  }
+
+  async function loadDatabase() {
+    if (!supabaseClient || !isAdmin()) return;
+    els.refresh.disabled = true;
+    els.refresh.textContent = "Memuat...";
+    const [
+      { data: programs, error: programError },
+      { data: tutors, error: tutorError },
+      { data: fees, error: feeError }
+    ] = await Promise.all([
+      supabaseClient.from("class_programs").select("*").order("name", { ascending:true }),
+      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true }),
+      supabaseClient.from("class_meeting_fees").select("*").order("program_name", { ascending:true }).order("student_count", { ascending:true })
+    ]);
+    els.refresh.disabled = false;
+    els.refresh.textContent = "Refresh";
+    if (programError || tutorError || feeError) {
+      console.error("Database load failed:", programError || tutorError || feeError);
+      els.sessionLabel.textContent = "Database belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
+      return;
+    }
+    programRows = programs || [];
+    tutorRows = tutors || [];
+    feeRows = fees || [];
+    renderMasterRows("program", programRows);
+    renderMasterRows("tutor", tutorRows);
+    renderFeeRows(feeRows);
+  }
+
+  function getMasterConfig(type) {
+    return type === "program"
+      ? { table:"class_programs", label:"program", input:els.programInput, body:els.programBody, empty:els.programEmpty }
+      : { table:"class_tutors", label:"tutor", input:els.tutorInput, body:els.tutorBody, empty:els.tutorEmpty };
+  }
+
+  function tutorEmailFromName(name) {
+    return `${String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, "")}@jeyasclub.com`;
+  }
+
+  function renderMasterRows(type, rows) {
+    const config = getMasterConfig(type);
+    config.empty.classList.toggle("hidden", rows.length > 0);
+    config.body.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${escapeHTML(row.name)}</td>
+        ${type === "tutor" ? `
+          <td>${escapeHTML(row.email || tutorEmailFromName(row.name))}</td>
+          <td>${row.zoom_link ? `<a href="${escapeHTML(row.zoom_link)}" target="_blank" rel="noopener">${escapeHTML(row.zoom_link)}</a>` : "-"}</td>
+          <td>${row.testimonial_link ? `<a href="${escapeHTML(row.testimonial_link)}" target="_blank" rel="noopener">${escapeHTML(row.testimonial_link)}</a>` : "-"}</td>
+        ` : ""}
+        <td><span class="pill">${row.is_active ? "Aktif" : "Nonaktif"}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn" type="button" data-master-edit="${type}" data-id="${escapeHTML(row.id)}" data-name="${escapeHTML(row.name)}">Edit</button>
+            <button class="btn" type="button" data-master-toggle="${type}" data-id="${escapeHTML(row.id)}" data-active="${row.is_active ? "1" : "0"}">${row.is_active ? "Nonaktifkan" : "Aktifkan"}</button>
+            <button class="btn danger" type="button" data-master-delete="${type}" data-id="${escapeHTML(row.id)}">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  async function addMasterItem(type) {
+    const config = getMasterConfig(type);
+    const name = config.input.value.trim();
+    if (!name) return;
+    const payload = type === "tutor" ? { name, email: tutorEmailFromName(name) } : { name };
+    const { error } = await supabaseClient.from(config.table).insert(payload);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `Nama ${config.label} belum tersimpan. Mungkin sudah ada atau SQL belum dijalankan.`;
+      return;
+    }
+    config.input.value = "";
+    await loadDatabase();
+  }
+
+  async function editMasterItem(type, id, currentName) {
+    const config = getMasterConfig(type);
+    if (type === "tutor") {
+      const currentRow = tutorRows.find((row) => row.id === id);
+      if (currentRow) openTutorModal(currentRow);
+      return;
+    }
+    const nextName = window.prompt(`Edit nama ${config.label}`, currentName || "");
+    if (!nextName || !nextName.trim()) return;
+    const { error } = await supabaseClient
+      .from(config.table)
+      .update({ name: nextName.trim(), updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `Nama ${config.label} belum terupdate.`;
+      return;
+    }
+    await loadDatabase();
+  }
+
+  function openTutorModal(row) {
+    els.tutorEditId.value = row.id || "";
+    els.tutorEditName.value = row.name || "";
+    els.tutorEditZoomLink.value = row.zoom_link || "";
+    els.tutorEditTestimonialLink.value = row.testimonial_link || "";
+    els.tutorModal.classList.remove("hidden");
+    els.tutorEditName.focus();
+  }
+
+  function closeTutorModal() {
+    els.tutorModal.classList.add("hidden");
+    els.tutorEditForm.reset();
+    els.tutorEditId.value = "";
+  }
+
+  async function saveTutorEdit(event) {
+    event.preventDefault();
+    const tutorId = els.tutorEditId.value;
+    const name = els.tutorEditName.value.trim();
+    if (!tutorId || !name) {
+      els.sessionLabel.textContent = "Tutor belum terupdate. Nama tutor wajib diisi.";
+      return;
+    }
+    els.tutorSaveButton.disabled = true;
+    els.tutorSaveButton.textContent = "Menyimpan...";
+    const { error } = await supabaseClient
+      .from("class_tutors")
+      .update({
+        name,
+        email: tutorEmailFromName(name),
+        zoom_link: els.tutorEditZoomLink.value.trim(),
+        testimonial_link: els.tutorEditTestimonialLink.value.trim(),
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", tutorId);
+    els.tutorSaveButton.disabled = false;
+    els.tutorSaveButton.textContent = "Simpan Tutor";
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Tutor belum terupdate. Cek policy Supabase atau format link.";
+      return;
+    }
+    els.sessionLabel.textContent = "Data tutor berhasil diupdate.";
+    closeTutorModal();
+    await loadDatabase();
+  }
+
+  async function toggleMasterItem(type, id, isActive) {
+    const config = getMasterConfig(type);
+    const { error } = await supabaseClient
+      .from(config.table)
+      .update({ is_active: !isActive, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `Status ${config.label} belum terupdate.`;
+      return;
+    }
+    await loadDatabase();
+  }
+
+  async function deleteMasterItem(type, id) {
+    const config = getMasterConfig(type);
+    if (!window.confirm(`Hapus ${config.label} ini dari database pilihan?`)) return;
+    const { error } = await supabaseClient.from(config.table).delete().eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = `${config.label} belum terhapus.`;
+      return;
+    }
+    await loadDatabase();
+  }
+
+  function renderFeeRows(rows) {
+    els.feeEmpty.classList.toggle("hidden", rows.length > 0);
+    els.feeBody.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${escapeHTML(row.program_name)}</td>
+        <td>${Number(row.student_count || 0)} siswa</td>
+        <td>${formatMoney(row.fee)}</td>
+        <td><span class="pill">${row.is_active ? "Aktif" : "Nonaktif"}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="btn" type="button" data-fee-edit="${escapeHTML(row.id)}">Edit</button>
+            <button class="btn" type="button" data-fee-toggle="${escapeHTML(row.id)}" data-active="${row.is_active ? "1" : "0"}">${row.is_active ? "Nonaktifkan" : "Aktifkan"}</button>
+            <button class="btn danger" type="button" data-fee-delete="${escapeHTML(row.id)}">Hapus</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  async function addFeeItem() {
+    const programName = els.feeProgramInput.value.trim();
+    const studentCount = Number(els.feeStudentCountInput.value || 0);
+    const fee = Number(els.feeAmountInput.value || 0);
+    if (!programName || !Number.isInteger(studentCount) || studentCount < 1 || fee < 0) {
+      els.sessionLabel.textContent = "Fee belum tersimpan. Program, jumlah siswa, dan fee wajib valid.";
+      return;
+    }
+    const { error } = await supabaseClient.from("class_meeting_fees").insert({
+      program_name: programName,
+      student_count: studentCount,
+      fee
+    });
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Fee belum tersimpan. Mungkin kombinasi program dan jumlah siswa sudah ada.";
+      return;
+    }
+    els.feeForm.reset();
+    await loadDatabase();
+  }
+
+  async function editFeeItem(id) {
+    const row = feeRows.find((item) => item.id === id);
+    if (!row) return;
+    const programName = window.prompt("Nama program", row.program_name || "");
+    if (programName === null) return;
+    const studentCount = window.prompt("Jumlah siswa", String(row.student_count || 1));
+    if (studentCount === null) return;
+    const fee = window.prompt("Fee per pertemuan", String(Number(row.fee || 0)));
+    if (fee === null) return;
+    const payload = {
+      program_name: programName.trim(),
+      student_count: Math.max(parseNumberInput(studentCount, row.student_count || 1), 1),
+      fee: parseNumberInput(fee, row.fee || 0),
+      updated_at: new Date().toISOString()
+    };
+    if (!payload.program_name) {
+      els.sessionLabel.textContent = "Fee belum terupdate. Nama program wajib diisi.";
+      return;
+    }
+    const { error } = await supabaseClient.from("class_meeting_fees").update(payload).eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Fee belum terupdate. Mungkin kombinasi program dan jumlah siswa sudah ada.";
+      return;
+    }
+    await loadDatabase();
+  }
+
+  async function toggleFeeItem(id, isActive) {
+    const { error } = await supabaseClient
+      .from("class_meeting_fees")
+      .update({ is_active: !isActive, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Status fee belum terupdate.";
+      return;
+    }
+    await loadDatabase();
+  }
+
+  async function deleteFeeItem(id) {
+    if (!window.confirm("Hapus fee ini dari database?")) return;
+    const { error } = await supabaseClient.from("class_meeting_fees").delete().eq("id", id);
+    if (error) {
+      console.error(error);
+      els.sessionLabel.textContent = "Fee belum terhapus.";
+      return;
+    }
+    await loadDatabase();
+  }
+
+  function downloadExcel(filename, headers, rows) {
+    if (!rows.length) {
+      els.sessionLabel.textContent = "Belum ada data untuk diexport.";
+      return;
+    }
+    const escapeCell = (value) => String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+    const html = `
+      <html>
+        <head><meta charset="UTF-8"></head>
+        <body>
+          <table border="1">
+            <thead><tr>${headers.map((header) => `<th>${escapeCell(header)}</th>`).join("")}</tr></thead>
+            <tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeCell(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
+          </table>
+        </body>
+      </html>
+    `;
+    const blob = new Blob([html], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${filename}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    els.sessionLabel.textContent = `Export ${filename}.xls berhasil dibuat.`;
+  }
+
+  function exportProgramRows() {
+    downloadExcel("database-program", [
+      "Nama Program", "Status"
+    ], programRows.map((row) => [
+      row.name,
+      row.is_active ? "Aktif" : "Nonaktif"
+    ]));
+  }
+
+  function exportTutorRows() {
+    downloadExcel("database-tutor", [
+      "Nama Tutor", "Email Login", "Link Zoom", "Link Testimoni", "Status"
+    ], tutorRows.map((row) => [
+      row.name,
+      row.email || tutorEmailFromName(row.name),
+      row.zoom_link,
+      row.testimonial_link,
+      row.is_active ? "Aktif" : "Nonaktif"
+    ]));
+  }
+
+  function exportFeeRows() {
+    downloadExcel("database-fee-per-pertemuan", [
+      "Nama Program", "Jumlah Siswa", "Fee per Pertemuan", "Status"
+    ], feeRows.map((row) => [
+      row.program_name,
+      Number(row.student_count || 0),
+      formatExportMoney(row.fee),
+      row.is_active ? "Aktif" : "Nonaktif"
+    ]));
+  }
+
+  async function init() {
+    if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    if (isAdmin()) showDashboard(); else showLogin();
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentSession = session;
+      if (isAdmin()) showDashboard(); else showLogin();
+    });
+  }
+
+  els.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = els.email.value.trim().toLowerCase();
+    if (!adminEmails.has(email)) { setAuthMessage("Akun ini tidak punya akses admin.", "bad"); return; }
+    els.loginButton.disabled = true;
+    els.loginButton.textContent = "Login...";
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: els.password.value });
+    els.loginButton.disabled = false;
+    els.loginButton.textContent = "Login";
+    if (error) { setAuthMessage("Login gagal. Cek email dan password.", "bad"); return; }
+    currentSession = data.session;
+    els.password.value = "";
+    if (isAdmin()) showDashboard();
+  });
+
+  els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  els.refresh.addEventListener("click", loadDatabase);
+  els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
+  els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
+  els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
+  els.tutorEditForm.addEventListener("submit", saveTutorEdit);
+  els.tutorModalClose.addEventListener("click", closeTutorModal);
+  els.tutorModalCancel.addEventListener("click", closeTutorModal);
+  els.tutorModal.addEventListener("click", (event) => {
+    if (event.target === els.tutorModal) closeTutorModal();
+  });
+  els.exportProgram.addEventListener("click", exportProgramRows);
+  els.exportTutor.addEventListener("click", exportTutorRows);
+  els.exportFee.addEventListener("click", exportFeeRows);
+  document.addEventListener("click", (event) => {
+    const editButton = event.target.closest("[data-master-edit]");
+    const toggleButton = event.target.closest("[data-master-toggle]");
+    const deleteButton = event.target.closest("[data-master-delete]");
+    const feeEditButton = event.target.closest("[data-fee-edit]");
+    const feeToggleButton = event.target.closest("[data-fee-toggle]");
+    const feeDeleteButton = event.target.closest("[data-fee-delete]");
+    if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
+    if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
+    if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
+    if (feeEditButton) editFeeItem(feeEditButton.dataset.feeEdit);
+    if (feeToggleButton) toggleFeeItem(feeToggleButton.dataset.feeToggle, feeToggleButton.dataset.active === "1");
+    if (feeDeleteButton) deleteFeeItem(feeDeleteButton.dataset.feeDelete);
+  });
+  init();
+</script>
+</body>
+</html>

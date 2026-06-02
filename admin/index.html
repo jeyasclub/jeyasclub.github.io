@@ -95,6 +95,7 @@
   <header class="topbar">
     <a class="brand" href="/"><img src="/assets/logo.jpg" alt="Jeya's Club"><span>Jeya's Club Admin</span></a>
     <div class="topbar-actions">
+      <a class="btn" href="/admin/database/">Database</a>
       <a class="btn" href="/input/">Input Data</a>
       <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
     </div>
@@ -175,54 +176,6 @@
         <div class="empty hidden" id="zoomEmpty">Belum ada Zoom Booking untuk bulan ini.</div>
       </section>
 
-      <section class="master-grid">
-        <article class="panel">
-          <div class="panel-head"><div><h2>Database Program</h2><p class="muted">Tambah, edit, atau hapus pilihan nama program untuk halaman input.</p></div><button class="btn" type="button" id="exportProgram">Export Excel</button></div>
-          <form class="master-form" id="programForm">
-            <input type="text" id="programNameInput" required placeholder="Nama program baru">
-            <button class="btn primary" type="submit">Tambah</button>
-          </form>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Nama Program</th><th>Status</th><th>Aksi</th></tr></thead>
-              <tbody id="programBody"></tbody>
-            </table>
-          </div>
-          <div class="empty hidden" id="programEmpty">Belum ada program. Tambahkan program dulu supaya muncul di dropdown input.</div>
-        </article>
-
-        <article class="panel">
-          <div class="panel-head"><div><h2>Database Tutor</h2><p class="muted">Tambah, edit, atau hapus pilihan tutor untuk halaman input.</p></div><button class="btn" type="button" id="exportTutor">Export Excel</button></div>
-          <form class="master-form" id="tutorForm">
-            <input type="text" id="tutorNameInput" required placeholder="Nama tutor baru">
-            <button class="btn primary" type="submit">Tambah</button>
-          </form>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Nama Tutor</th><th>Email Login</th><th>Link Zoom</th><th>Link Testimoni</th><th>Status</th><th>Aksi</th></tr></thead>
-              <tbody id="tutorBody"></tbody>
-            </table>
-          </div>
-          <div class="empty hidden" id="tutorEmpty">Belum ada tutor. Tambahkan tutor dulu supaya muncul di dropdown input.</div>
-        </article>
-
-        <article class="panel master-wide">
-          <div class="panel-head"><div><h2>Database Fee per Pertemuan</h2><p class="muted">Fee ini dipakai untuk menghitung Remaining Fee di Class Tracker.</p></div><button class="btn" type="button" id="exportFee">Export Excel</button></div>
-          <form class="master-form" id="feeForm">
-            <input type="text" id="feeProgramInput" required placeholder="Nama program">
-            <input type="number" id="feeStudentCountInput" min="1" required placeholder="Jumlah siswa">
-            <input type="number" id="feeAmountInput" min="0" step="1000" required placeholder="Fee per pertemuan">
-            <button class="btn primary" type="submit">Tambah</button>
-          </form>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Nama Program</th><th>Jumlah Siswa</th><th>Fee / Pertemuan</th><th>Status</th><th>Aksi</th></tr></thead>
-              <tbody id="feeBody"></tbody>
-            </table>
-          </div>
-          <div class="empty hidden" id="feeEmpty">Belum ada fee. Tambahkan fee agar Remaining Fee bisa dihitung otomatis.</div>
-        </article>
-      </section>
     </div>
   </main>
 
@@ -260,29 +213,6 @@
     </form>
   </div>
 
-  <div class="modal-backdrop hidden" id="tutorModal" role="dialog" aria-modal="true" aria-labelledby="tutorModalTitle">
-    <form class="modal" id="tutorEditForm">
-      <div class="modal-head">
-        <div>
-          <p class="eyebrow">Edit Tutor</p>
-          <h2 id="tutorModalTitle">Database Tutor</h2>
-          <p class="muted">Update nama, link Zoom, dan link testimoni untuk akun tutor.</p>
-        </div>
-        <button class="btn" type="button" id="tutorModalClose">Tutup</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="tutorEditId">
-        <label>Nama tutor<input type="text" id="tutorEditName" required></label>
-        <label>Link Zoom<input type="url" id="tutorEditZoomLink" placeholder="https://..."></label>
-        <label>Link Testimoni<input type="url" id="tutorEditTestimonialLink" placeholder="https://..."></label>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" type="button" id="tutorModalCancel">Batal</button>
-        <button class="btn primary" type="submit" id="tutorSaveButton">Simpan Tutor</button>
-      </div>
-    </form>
-  </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
@@ -305,24 +235,15 @@
     programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
-    programForm: $("programForm"), programInput: $("programNameInput"), programBody: $("programBody"), programEmpty: $("programEmpty"),
-    tutorForm: $("tutorForm"), tutorInput: $("tutorNameInput"), tutorBody: $("tutorBody"), tutorEmpty: $("tutorEmpty"),
-    feeForm: $("feeForm"), feeProgramInput: $("feeProgramInput"), feeStudentCountInput: $("feeStudentCountInput"),
-    feeAmountInput: $("feeAmountInput"), feeBody: $("feeBody"), feeEmpty: $("feeEmpty"),
     zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
     exportTracker: $("exportTracker"), exportBooking: $("exportBooking"), exportZoom: $("exportZoom"),
-    exportProgram: $("exportProgram"), exportTutor: $("exportTutor"), exportFee: $("exportFee"),
     bookingModal: $("bookingModal"), bookingEditForm: $("bookingEditForm"), bookingEditId: $("bookingEditId"),
     bookingOrderDate: $("bookingOrderDate"), bookingValidUntil: $("bookingValidUntil"),
     bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
     bookingProgramName: $("bookingProgramName"), bookingPrice: $("bookingPrice"), bookingTutor: $("bookingTutor"),
     bookingNote: $("bookingNote"),
     bookingCertificateIssued: $("bookingCertificateIssued"), bookingTestimonialReceived: $("bookingTestimonialReceived"),
-    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton"),
-    tutorModal: $("tutorModal"), tutorEditForm: $("tutorEditForm"), tutorEditId: $("tutorEditId"),
-    tutorEditName: $("tutorEditName"), tutorEditZoomLink: $("tutorEditZoomLink"),
-    tutorEditTestimonialLink: $("tutorEditTestimonialLink"), tutorModalClose: $("tutorModalClose"),
-    tutorModalCancel: $("tutorModalCancel"), tutorSaveButton: $("tutorSaveButton")
+    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton")
   };
 
   function isAdmin(session = currentSession) {
@@ -508,9 +429,6 @@
     programRows = programs || [];
     tutorRows = tutors || [];
     feeRows = fees || [];
-    renderMasterRows("program", programRows);
-    renderMasterRows("tutor", tutorRows);
-    renderFeeRows(feeRows);
     renderProgramFilter(programRows);
     renderTutorFilter(tutorRows);
   }
@@ -1312,43 +1230,19 @@
   });
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
-  els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
-  els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
-  els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
   els.bookingEditForm.addEventListener("submit", saveBookingEdit);
   els.bookingModalClose.addEventListener("click", closeBookingModal);
   els.bookingModalCancel.addEventListener("click", closeBookingModal);
   els.bookingModal.addEventListener("click", (event) => {
     if (event.target === els.bookingModal) closeBookingModal();
   });
-  els.tutorEditForm.addEventListener("submit", saveTutorEdit);
-  els.tutorModalClose.addEventListener("click", closeTutorModal);
-  els.tutorModalCancel.addEventListener("click", closeTutorModal);
-  els.tutorModal.addEventListener("click", (event) => {
-    if (event.target === els.tutorModal) closeTutorModal();
-  });
   els.exportTracker.addEventListener("click", exportTrackerRows);
   els.exportBooking.addEventListener("click", exportBookingRows);
   els.exportZoom.addEventListener("click", exportZoomRows);
-  els.exportProgram.addEventListener("click", exportProgramRows);
-  els.exportTutor.addEventListener("click", exportTutorRows);
-  els.exportFee.addEventListener("click", exportFeeRows);
   document.addEventListener("click", (event) => {
-    const editButton = event.target.closest("[data-master-edit]");
-    const toggleButton = event.target.closest("[data-master-toggle]");
-    const deleteButton = event.target.closest("[data-master-delete]");
     const paymentButton = event.target.closest("[data-payment-edit]");
-    const feeEditButton = event.target.closest("[data-fee-edit]");
-    const feeToggleButton = event.target.closest("[data-fee-toggle]");
-    const feeDeleteButton = event.target.closest("[data-fee-delete]");
     const zoomDeleteButton = event.target.closest("[data-zoom-delete]");
-    if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
-    if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
-    if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
     if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
-    if (feeEditButton) editFeeItem(feeEditButton.dataset.feeEdit);
-    if (feeToggleButton) toggleFeeItem(feeToggleButton.dataset.feeToggle, feeToggleButton.dataset.active === "1");
-    if (feeDeleteButton) deleteFeeItem(feeDeleteButton.dataset.feeDelete);
     if (zoomDeleteButton) deleteZoomBooking(zoomDeleteButton.dataset.zoomDelete);
   });
   els.month.addEventListener("change", loadData);
