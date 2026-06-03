@@ -156,7 +156,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div><button class="btn" type="button" id="exportBooking">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Keterangan</th><th>Sertifikat</th><th>Testimoni</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Sertifikat</th><th>Testimoni</th><th>Keterangan</th><th>Aksi</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -878,10 +878,10 @@
             <td rowspan="${rowspan}">${escapeHTML(row.program_name)}</td>
             <td rowspan="${rowspan}">${formatMoney(row.price)}</td>
             <td rowspan="${rowspan}">${escapeHTML(row.tutor)}</td>
-            <td rowspan="${rowspan}">${escapeHTML(row.note || "-")}</td>
           ` : ""}
           <td><span class="pill">${formatDoneStatus(row.certificate_issued)}</span></td>
           <td><span class="pill">${formatDoneStatus(row.testimonial_received)}</span></td>
+          ${index === 0 ? `<td rowspan="${rowspan}">${escapeHTML(row.note || "-")}</td>` : ""}
           <td>
             <div class="row-actions">
               <button class="btn" type="button" data-booking-edit="${escapeHTML(row.id)}">Edit</button>
@@ -1142,7 +1142,7 @@
 
   function exportBookingRows() {
     downloadExcel("class-booking", [
-      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Keterangan", "Sertifikat", "Testimoni"
+      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Sertifikat", "Testimoni", "Keterangan"
     ], bookingRows.map((row) => [
       row.order_date,
       row.valid_until,
@@ -1151,9 +1151,9 @@
       row.program_name,
       formatExportMoney(row.price),
       row.tutor,
-      row.note,
       formatDoneStatus(row.certificate_issued),
-      formatDoneStatus(row.testimonial_received)
+      formatDoneStatus(row.testimonial_received),
+      row.note
     ]));
   }
 
