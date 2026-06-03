@@ -90,10 +90,7 @@
     }
 
     .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
-      gap: 36px;
-      align-items: center;
+      max-width: 880px;
       padding-bottom: 36px;
     }
 
@@ -120,23 +117,6 @@
       color: var(--muted);
       font-size: clamp(1rem, 2vw, 1.18rem);
       line-height: 1.8;
-    }
-
-    .hero-preview {
-      min-height: 340px;
-      display: grid;
-      place-items: center;
-      padding: 26px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      box-shadow: 0 16px 40px rgba(31, 115, 232, 0.08);
-    }
-
-    .hero-preview img {
-      width: min(360px, 92%);
-      height: auto;
-      border-radius: 6px;
     }
 
     .section-head {
@@ -293,7 +273,6 @@
         padding-bottom: 2px;
       }
 
-      .hero,
       .product-grid {
         grid-template-columns: 1fr;
       }
@@ -335,9 +314,6 @@
         <p class="eyebrow">Produk Digital</p>
         <h1>Materi belajar bahasa Inggris yang bisa kamu pakai mandiri.</h1>
         <p class="lead">Pilih e-modul, paket TOEFL, atau study sheet sesuai kebutuhanmu. Semua dirancang supaya belajar terasa lebih rapi, ringan, dan mudah diulang kapan saja.</p>
-      </div>
-      <div class="hero-preview" aria-hidden="true">
-        <img src="/assets/cs.jpg" alt="">
       </div>
     </section>
 
