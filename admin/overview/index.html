@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overview Admin | Jeya's Club</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f7f9fc; --border:#e5e7eb; --green:#16a46c; --red:#dc2626; --amber:#f59e0b; }
+  body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:var(--bg); }
+  button, input { font:inherit; }
+  .topbar { position:sticky; top:0; z-index:10; min-height:64px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); }
+  .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
+  .brand img { width:68px; height:68px; object-fit:contain; }
+  .topbar-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
+  .btn { min-height:42px; border-radius:12px; padding:10px 15px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--border); background:var(--white); color:var(--text); font-size:13px; font-weight:800; text-decoration:none; cursor:pointer; }
+  .btn.primary { border-color:var(--blue); background:var(--blue); color:var(--white); box-shadow:0 12px 24px rgba(26,111,232,.18); }
+  .btn.danger { color:var(--red); background:#fff1f2; border-color:#fecdd3; }
+  .shell { width:min(1180px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
+  .login-screen { min-height:calc(100vh - 64px); display:grid; place-items:center; padding:32px 16px; }
+  .login-card, .panel, .metric { background:var(--white); border:1px solid var(--border); border-radius:16px; box-shadow:0 18px 40px rgba(22,63,122,.07); }
+  .login-card { width:min(430px, 100%); padding:28px; display:grid; gap:18px; }
+  .eyebrow { color:var(--blue); font-size:12px; font-weight:900; letter-spacing:1.6px; text-transform:uppercase; }
+  h1 { font-size:clamp(28px, 5vw, 44px); line-height:1.12; letter-spacing:0; }
+  h2 { font-size:20px; line-height:1.25; }
+  .muted { color:var(--muted); font-size:14px; line-height:1.7; }
+  .form { display:grid; gap:14px; }
+  label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
+  input { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
+  input:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.12); }
+  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .status.bad { color:var(--red); }
+  .hidden { display:none !important; }
+  .dashboard { display:none; gap:22px; }
+  .dashboard.open { display:grid; }
+  .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .filter-card { display:flex; align-items:end; gap:12px; flex-wrap:wrap; padding:16px; background:var(--white); border:1px solid var(--border); border-radius:14px; }
+  .filter-card label { min-width:220px; }
+  .metrics { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px; }
+  .metric { padding:16px; display:grid; gap:5px; }
+  .metric span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
+  .metric strong { color:var(--text); font-size:24px; line-height:1.15; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .panel { overflow:hidden; }
+  .panel-head { padding:18px 20px; display:grid; gap:5px; border-bottom:1px solid var(--border); }
+  .chart-body { padding:18px 20px 20px; display:grid; gap:14px; }
+  .bar-chart { display:grid; gap:12px; }
+  .bar-row { display:grid; grid-template-columns:minmax(130px, 1fr) minmax(0, 2fr) 58px; gap:12px; align-items:center; color:var(--text); font-size:13px; font-weight:900; }
+  .bar-label { overflow-wrap:anywhere; }
+  .bar-track { height:16px; overflow:hidden; border-radius:999px; background:#e2e8f0; }
+  .bar-fill { width:var(--value, 0%); height:100%; border-radius:999px; background:var(--blue); }
+  .bar-fill.tutor { background:var(--green); }
+  .bar-fill.revenue { background:var(--amber); }
+  .donut-wrap { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .donut-box { position:relative; display:grid; place-items:center; width:156px; }
+  .donut-chart { --active:0%; width:156px; aspect-ratio:1; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--green) 0 var(--active), var(--blue) var(--active) 100%); }
+  .donut-chart::before { content:""; width:96px; aspect-ratio:1; border-radius:50%; background:var(--white); box-shadow:inset 0 0 0 1px var(--border); }
+  .donut-center { position:absolute; display:grid; place-items:center; color:var(--text); font-size:24px; font-weight:900; }
+  .legend { display:grid; gap:8px; color:var(--muted); font-size:13px; font-weight:800; }
+  .legend-item { display:flex; align-items:center; gap:8px; }
+  .legend-dot { width:10px; height:10px; border-radius:50%; background:var(--green); }
+  .legend-dot.completed { background:var(--blue); }
+  .legend-dot.inactive { background:#e2e8f0; border:1px solid #cbd5e1; }
+  .empty { padding:4px 0; color:var(--muted); font-size:13px; }
+  @media (max-width:900px) { .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .grid-2 { grid-template-columns:1fr; } }
+  @media (max-width:700px) { .topbar { padding:0 16px; } .brand span { display:none; } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; } .bar-row { grid-template-columns:1fr; gap:7px; } .filter-card .btn, .filter-card label { width:100%; min-width:0; } }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/assets/logo.jpg" alt="Jeya's Club"><span>Jeya's Club Admin</span></a>
+    <div class="topbar-actions">
+      <a class="btn" href="/admin/">Dashboard</a>
+      <a class="btn" href="/admin/database/">Database</a>
+      <a class="btn" href="/input/">Input Data</a>
+      <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
+    </div>
+  </header>
+
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div>
+        <p class="eyebrow">Admin Only</p>
+        <h1>Overview</h1>
+        <p class="muted">Login memakai akun admin Jeya's Club untuk melihat statistik booking dan progress kelas.</p>
+      </div>
+      <form class="form" id="loginForm">
+        <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
+        <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
+        <button class="btn primary" type="submit" id="loginButton">Login</button>
+        <p class="status" id="authMessage">Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.</p>
+      </form>
+    </div>
+  </section>
+
+  <main class="shell dashboard" id="dashboard">
+    <div class="hero-row">
+      <div>
+        <p class="eyebrow">Admin Overview</p>
+        <h1>Class Statistics</h1>
+        <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
+      </div>
+      <div class="filter-card">
+        <label>Filter bulan<input type="month" id="monthFilter"></label>
+        <button class="btn" type="button" id="resetFilter">Semua Bulan</button>
+        <button class="btn primary" type="button" id="refreshButton">Refresh</button>
+      </div>
+    </div>
+
+    <section class="metrics">
+      <div class="metric"><span>Total Bookings</span><strong id="totalBookings">0</strong></div>
+      <div class="metric"><span>Total Pendapatan</span><strong id="totalRevenue">Rp0</strong></div>
+      <div class="metric"><span>Tutor Aktif / Nonaktif</span><strong id="tutorStatus">0 / 0</strong></div>
+      <div class="metric"><span>Course Active</span><strong id="courseActive">0</strong></div>
+      <div class="metric"><span>Course Completed</span><strong id="courseCompleted">0</strong></div>
+    </section>
+
+    <section class="grid-2">
+      <article class="panel">
+        <div class="panel-head"><h2>Booking per Program</h2><p class="muted">Breakdown total booking berdasarkan program.</p></div>
+        <div class="chart-body"><div class="bar-chart" id="programChart"></div></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><h2>Booking per Tutor</h2><p class="muted">Breakdown total booking berdasarkan tutor.</p></div>
+        <div class="chart-body"><div class="bar-chart" id="tutorChart"></div></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><h2>Course Progress</h2><p class="muted">Active berarti meeting realized belum sama dengan total meeting.</p></div>
+        <div class="chart-body">
+          <div class="donut-wrap">
+            <div class="donut-box">
+              <div class="donut-chart" id="courseDonut"></div>
+              <div class="donut-center" id="courseActivePercent">0%</div>
+            </div>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-dot"></span><span>Active: <strong id="courseActiveLegend">0</strong></span></div>
+              <div class="legend-item"><span class="legend-dot completed"></span><span>Completed: <strong id="courseCompletedLegend">0</strong></span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head"><h2>Tutor Status</h2><p class="muted">Jumlah tutor aktif dan nonaktif.</p></div>
+        <div class="chart-body">
+          <div class="bar-chart">
+            <div class="bar-row"><span class="bar-label">Aktif</span><div class="bar-track"><div class="bar-fill tutor" id="tutorActiveBar"></div></div><strong id="tutorActiveCount">0</strong></div>
+            <div class="bar-row"><span class="bar-label">Nonaktif</span><div class="bar-track"><div class="bar-fill" id="tutorInactiveBar"></div></div><strong id="tutorInactiveCount">0</strong></div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
+  let currentSession = null;
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
+    email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
+    logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), reset:$("resetFilter"), refresh:$("refreshButton"),
+    totalBookings:$("totalBookings"), totalRevenue:$("totalRevenue"), tutorStatus:$("tutorStatus"),
+    courseActive:$("courseActive"), courseCompleted:$("courseCompleted"), programChart:$("programChart"), tutorChart:$("tutorChart"),
+    courseDonut:$("courseDonut"), courseActivePercent:$("courseActivePercent"),
+    courseActiveLegend:$("courseActiveLegend"), courseCompletedLegend:$("courseCompletedLegend"),
+    tutorActiveBar:$("tutorActiveBar"), tutorInactiveBar:$("tutorInactiveBar"), tutorActiveCount:$("tutorActiveCount"), tutorInactiveCount:$("tutorInactiveCount")
+  };
+
+  function isAdmin(session = currentSession) {
+    const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
+    return adminEmails.has(email);
+  }
+
+  function setAuthMessage(message, type = "") {
+    els.authMessage.className = `status ${type}`.trim();
+    els.authMessage.textContent = message;
+  }
+
+  function showLogin(message = "Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.") {
+    els.loginScreen.classList.remove("hidden");
+    els.dashboard.classList.remove("open");
+    els.logout.classList.add("hidden");
+    setAuthMessage(message);
+  }
+
+  function formatMoney(value) {
+    return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
+  }
+
+  function toMonthInput(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${year}-${month}`;
+  }
+
+  function monthRange(monthValue) {
+    if (!monthValue) return null;
+    const [year, month] = monthValue.split("-").map(Number);
+    if (!year || !month) return null;
+    const start = `${year}-${String(month).padStart(2, "0")}-01`;
+    const next = new Date(year, month, 1);
+    const end = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`;
+    return { start, end };
+  }
+
+  function getBookingGroupId(row) {
+    return row.booking_group_id || row.id;
+  }
+
+  function groupBookings(rows) {
+    const groups = [];
+    const seen = new Set();
+    rows.forEach((row) => {
+      const groupId = getBookingGroupId(row);
+      if (seen.has(groupId)) return;
+      const groupRows = rows
+        .filter((item) => getBookingGroupId(item) === groupId)
+        .sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+      seen.add(groupId);
+      groups.push(groupRows[0] || row);
+    });
+    return groups;
+  }
+
+  function countBy(rows, key) {
+    return rows.reduce((map, row) => {
+      const label = row[key] || "-";
+      map[label] = (map[label] || 0) + 1;
+      return map;
+    }, {});
+  }
+
+  function renderBarChart(container, dataMap, colorClass = "") {
+    const entries = Object.entries(dataMap).sort((a, b) => b[1] - a[1]);
+    if (!entries.length) {
+      container.innerHTML = `<p class="empty">Belum ada data untuk filter ini.</p>`;
+      return;
+    }
+    const max = Math.max(...entries.map((entry) => entry[1]), 1);
+    container.innerHTML = entries.map(([label, value]) => `
+      <div class="bar-row">
+        <span class="bar-label">${escapeHTML(label)}</span>
+        <div class="bar-track"><div class="bar-fill ${colorClass}" style="--value:${Math.round((value / max) * 100)}%"></div></div>
+        <strong>${value}</strong>
+      </div>
+    `).join("");
+  }
+
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  function isCompletedCourse(row) {
+    const realized = Number(row.meetings_realized || 0);
+    const total = Number(row.meetings_total || 0);
+    return total > 0 && realized >= total;
+  }
+
+  async function loadOverview() {
+    if (!supabaseClient || !isAdmin()) return;
+    els.refresh.disabled = true;
+    els.refresh.textContent = "Memuat...";
+    const range = monthRange(els.month.value);
+    let bookingQuery = supabaseClient.from("class_bookings").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    if (range) {
+      bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
+      trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
+    }
+    const [
+      { data: bookings, error: bookingError },
+      { data: trackers, error: trackerError },
+      { data: tutors, error: tutorError }
+    ] = await Promise.all([
+      bookingQuery,
+      trackerQuery,
+      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true })
+    ]);
+    els.refresh.disabled = false;
+    els.refresh.textContent = "Refresh";
+    if (bookingError || trackerError || tutorError) {
+      console.error("Overview load failed:", bookingError || trackerError || tutorError);
+      els.sessionLabel.textContent = "Overview belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
+      return;
+    }
+    renderOverview(bookings || [], trackers || [], tutors || []);
+  }
+
+  function renderOverview(bookings, trackers, tutors) {
+    const groupedBookings = groupBookings(bookings);
+    const activeTutors = tutors.filter((row) => row.is_active).length;
+    const inactiveTutors = Math.max(tutors.length - activeTutors, 0);
+    const completedCourses = trackers.filter(isCompletedCourse).length;
+    const activeCourses = trackers.length - completedCourses;
+    const courseActivePercent = trackers.length ? Math.round((activeCourses / trackers.length) * 100) : 0;
+    const tutorMax = Math.max(activeTutors, inactiveTutors, 1);
+
+    els.totalBookings.textContent = groupedBookings.length;
+    els.totalRevenue.textContent = formatMoney(groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0));
+    els.tutorStatus.textContent = `${activeTutors} / ${inactiveTutors}`;
+    els.courseActive.textContent = activeCourses;
+    els.courseCompleted.textContent = completedCourses;
+
+    renderBarChart(els.programChart, countBy(groupedBookings, "program_name"));
+    renderBarChart(els.tutorChart, countBy(groupedBookings, "tutor"), "tutor");
+
+    els.courseActiveLegend.textContent = activeCourses;
+    els.courseCompletedLegend.textContent = completedCourses;
+    els.courseActivePercent.textContent = `${courseActivePercent}%`;
+    els.courseDonut.style.setProperty("--active", `${courseActivePercent}%`);
+    els.tutorActiveCount.textContent = activeTutors;
+    els.tutorInactiveCount.textContent = inactiveTutors;
+    els.tutorActiveBar.style.setProperty("--value", `${Math.round((activeTutors / tutorMax) * 100)}%`);
+    els.tutorInactiveBar.style.setProperty("--value", `${Math.round((inactiveTutors / tutorMax) * 100)}%`);
+    els.sessionLabel.textContent = els.month.value ? `Data bulan ${els.month.value}` : `Data semua bulan`;
+  }
+
+  async function showDashboard() {
+    els.loginScreen.classList.add("hidden");
+    els.dashboard.classList.add("open");
+    els.logout.classList.remove("hidden");
+    els.month.value ||= toMonthInput();
+    await loadOverview();
+  }
+
+  async function init() {
+    if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    if (isAdmin()) showDashboard(); else showLogin();
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentSession = session;
+      if (isAdmin()) showDashboard(); else showLogin();
+    });
+  }
+
+  els.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = els.email.value.trim().toLowerCase();
+    if (!adminEmails.has(email)) { setAuthMessage("Akun ini tidak punya akses admin.", "bad"); return; }
+    els.loginButton.disabled = true;
+    els.loginButton.textContent = "Login...";
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: els.password.value });
+    els.loginButton.disabled = false;
+    els.loginButton.textContent = "Login";
+    if (error) { setAuthMessage("Login gagal. Cek email dan password.", "bad"); return; }
+    currentSession = data.session;
+    els.password.value = "";
+    if (isAdmin()) showDashboard();
+  });
+
+  els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  els.month.addEventListener("change", loadOverview);
+  els.reset.addEventListener("click", () => { els.month.value = ""; loadOverview(); });
+  els.refresh.addEventListener("click", loadOverview);
+  init();
+</script>
+</body>
+</html>
