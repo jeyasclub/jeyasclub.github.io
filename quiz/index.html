@@ -83,6 +83,32 @@
       background: var(--sky);
     }
 
+    .nav-login.hidden,
+    .nav-user.hidden {
+      display: none;
+    }
+
+    .nav-user {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .nav-user img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--sky);
+    }
+
     .shell {
       width: min(1120px, calc(100% - 40px));
       margin: 0 auto;
@@ -261,7 +287,11 @@
       <a href="/produkdigital/">Produk Digital</a>
       <a href="/artikel/">Artikel</a>
       <a href="/about/">Tentang Kami</a>
-      <a href="/account/?redirect=/quiz/">Login</a>
+      <a class="nav-login" id="navLoginLink" href="/account/?redirect=/quiz/">Login</a>
+      <a class="nav-user hidden" id="navUserLink" href="/account/">
+        <img id="navUserAvatar" src="/assets/cs.jpg" alt="">
+        <span id="navUserName">User</span>
+      </a>
     </nav>
   </header>
 
@@ -327,5 +357,61 @@
       </div>
     </section>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const mainSupabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
+    const mainSupabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
+    const mainSupabaseClient = window.supabase ? window.supabase.createClient(mainSupabaseUrl, mainSupabaseAnonKey) : null;
+    const navLoginLink = document.getElementById('navLoginLink');
+    const navUserLink = document.getElementById('navUserLink');
+    const navUserAvatar = document.getElementById('navUserAvatar');
+    const navUserName = document.getElementById('navUserName');
+    let mainCurrentSession = null;
+
+    function getLoginUrl() {
+      const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/quiz/';
+      return `/account/?redirect=${encodeURIComponent(redirect)}`;
+    }
+
+    function getUserProfile() {
+      const user = mainCurrentSession && mainCurrentSession.user;
+      const metadata = (user && user.user_metadata) || {};
+      const emailName = user && user.email ? user.email.split('@')[0] : '';
+      return {
+        name: metadata.username || metadata.full_name || metadata.name || emailName || 'User',
+        avatar: metadata.avatar_url || metadata.picture || '/assets/cs.jpg'
+      };
+    }
+
+    function renderNavAuthState() {
+      const isLoggedIn = Boolean(mainCurrentSession && mainCurrentSession.user);
+      const profile = getUserProfile();
+      if (navLoginLink) {
+        navLoginLink.href = getLoginUrl();
+        navLoginLink.classList.toggle('hidden', isLoggedIn);
+      }
+      if (navUserLink) navUserLink.classList.toggle('hidden', !isLoggedIn);
+      if (!isLoggedIn) return;
+      if (navUserAvatar) {
+        navUserAvatar.src = profile.avatar;
+        navUserAvatar.alt = profile.name;
+      }
+      if (navUserName) navUserName.textContent = profile.name;
+    }
+
+    async function initAuth() {
+      renderNavAuthState();
+      if (!mainSupabaseClient) return;
+      const { data } = await mainSupabaseClient.auth.getSession();
+      mainCurrentSession = data.session;
+      renderNavAuthState();
+      mainSupabaseClient.auth.onAuthStateChange((_event, session) => {
+        mainCurrentSession = session;
+        renderNavAuthState();
+      });
+    }
+
+    initAuth();
+  </script>
 </body>
 </html>
