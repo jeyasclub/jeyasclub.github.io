@@ -4306,6 +4306,7 @@
   const productModal = document.getElementById('productModal');
   const productModalBody = document.getElementById('productModalBody');
   const digitalPaymentModal = document.getElementById('digitalPaymentModal');
+  const digitalPaymentModalTitle = document.getElementById('digitalPaymentModalTitle');
   const digitalPaymentFrame = document.getElementById('digitalPaymentFrame');
   const sheetImagePreviewModal = document.getElementById('sheetImagePreviewModal');
   const sheetImagePreview = document.getElementById('sheetImagePreview');
@@ -4318,6 +4319,7 @@
   let lastProgramTrigger = null;
   let lastProductTrigger = null;
   let activePaymentUrl = toeflVocabPaymentUrl;
+  let activePaymentTitle = 'Pembayaran 300 TOEFL Vocabulary';
 
   const productDetails = {
     'english-journey': `
@@ -4658,6 +4660,7 @@
 
     if (paymentButton) paymentButton.addEventListener('click', () => {
       activePaymentUrl = config.paymentUrl;
+      activePaymentTitle = `Pembayaran ${config.title}`;
       openToeflVocabPaymentModal();
     });
     if (checkButton) checkButton.addEventListener('click', () => {
@@ -4722,6 +4725,8 @@
       return;
     }
 
+    if (digitalPaymentModalTitle) digitalPaymentModalTitle.textContent = activePaymentTitle;
+    digitalPaymentFrame.title = activePaymentTitle;
     digitalPaymentFrame.src = activePaymentUrl;
     digitalPaymentModal.classList.add('open');
     digitalPaymentModal.setAttribute('aria-hidden', 'false');
