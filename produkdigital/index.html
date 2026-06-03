@@ -244,6 +244,7 @@
       background: var(--blue);
       border-color: var(--blue);
       box-shadow: 0 14px 28px rgba(31, 115, 232, 0.22);
+      cursor: pointer;
     }
 
     .btn.secondary {
@@ -261,6 +262,255 @@
       line-height: 1.7;
     }
 
+    .product-modal,
+    .payment-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .product-modal.open,
+    .payment-modal.open {
+      display: flex;
+    }
+
+    .modal-backdrop,
+    .payment-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.58);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-panel,
+    .payment-panel {
+      position: relative;
+      width: min(1040px, 100%);
+      max-height: min(86vh, 780px);
+      overflow: auto;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
+    }
+
+    .modal-close,
+    .payment-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .product-detail {
+      color: #182033;
+    }
+
+    .product-detail-hero {
+      display: grid;
+      grid-template-columns: minmax(230px, 0.72fr) minmax(0, 1fr);
+      gap: 34px;
+      align-items: center;
+      padding: 38px 46px 34px;
+      background: linear-gradient(135deg, #eaf4ff 0%, #ffffff 58%, #f8fbff 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .product-cover-stage {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+    }
+
+    .product-cover-stage img {
+      width: auto;
+      max-width: min(330px, 100%);
+      max-height: 380px;
+      object-fit: contain;
+    }
+
+    .product-modal[data-product="toefl-package"] .product-cover-stage img {
+      max-width: min(390px, 100%);
+      max-height: 330px;
+    }
+
+    .product-kicker {
+      display: inline-flex;
+      margin-bottom: 10px;
+      color: var(--blue);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.78rem;
+    }
+
+    .product-title {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .product-subtitle {
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .product-badge {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .product-content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      padding: 24px 46px 0;
+    }
+
+    .product-panel {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .product-panel h4 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .product-panel p,
+    .product-list {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 8px;
+      padding-left: 20px;
+    }
+
+    .product-list a {
+      color: var(--blue);
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    .product-cta-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 24px 46px 38px;
+    }
+
+    .sheet-preview {
+      width: min(330px, 100%);
+      display: grid;
+      gap: 12px;
+    }
+
+    .sheet-preview-frame {
+      overflow: hidden;
+      height: 218px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .sheet-preview-track {
+      display: flex;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .sheet-preview-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sheet-preview-button {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: #ffffff;
+      cursor: zoom-in;
+      scroll-snap-align: center;
+    }
+
+    .sheet-preview-button img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sheet-preview-nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .sheet-preview-nav button {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--blue);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .payment-panel {
+      width: min(980px, 100%);
+      height: min(86vh, 760px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .payment-head {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      padding: 0 64px 0 20px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 800;
+    }
+
+    .payment-frame {
+      width: 100%;
+      flex: 1;
+      border: 0;
+      background: #ffffff;
+    }
+
     @media (max-width: 900px) {
       .topbar {
         align-items: flex-start;
@@ -275,6 +525,18 @@
 
       .product-grid {
         grid-template-columns: 1fr;
+      }
+
+      .product-detail-hero,
+      .product-content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .product-detail-hero,
+      .product-content-grid,
+      .product-cta-row {
+        padding-left: 22px;
+        padding-right: 22px;
       }
 
       .section-head {
@@ -342,8 +604,7 @@
               <li>Materi bertahap untuk kosakata dan ekspresi.</li>
             </ul>
             <div class="actions">
-              <a class="btn primary" href="https://forms.gle/hRqaRN8WFtXt4fS48" target="_blank" rel="noopener">Beli Produk</a>
-              <a class="btn secondary" href="/#digital-products">Lihat Detail</a>
+              <button class="btn primary" type="button" data-product="english-journey">Lihat Detail</button>
             </div>
           </div>
         </article>
@@ -363,8 +624,7 @@
               <li>Strategi menjawab lebih cepat dan tepat.</li>
             </ul>
             <div class="actions">
-              <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" target="_blank" rel="noopener">Beli Produk</a>
-              <a class="btn secondary" href="/#digital-products">Lihat Detail</a>
+              <button class="btn primary" type="button" data-product="toefl-package">Lihat Detail</button>
             </div>
           </div>
         </article>
@@ -384,8 +644,7 @@
               <li>Format spreadsheet yang mudah dipelajari ulang.</li>
             </ul>
             <div class="actions">
-              <a class="btn primary" href="https://jeyasclub.myr.id/pl/300-toefl-vocabulary" target="_blank" rel="noopener">Beli Produk</a>
-              <a class="btn secondary" href="/#digital-products">Lihat Detail</a>
+              <button class="btn primary" type="button" data-product="toefl-vocab-sheet">Lihat Detail</button>
             </div>
           </div>
         </article>
@@ -394,5 +653,249 @@
       <p class="note">Butuh rekomendasi produk yang paling cocok? Mulai dari quiz bahasa Inggris dulu supaya kamu bisa melihat area yang perlu dilatih.</p>
     </section>
   </main>
+
+  <div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle" aria-hidden="true">
+    <div class="modal-backdrop" data-close-product></div>
+    <div class="modal-panel">
+      <button class="modal-close" type="button" aria-label="Tutup detail produk" data-close-product>&times;</button>
+      <div id="productModalBody"></div>
+    </div>
+  </div>
+
+  <div class="payment-modal" id="digitalPaymentModal" role="dialog" aria-modal="true" aria-labelledby="digitalPaymentModalTitle" aria-hidden="true">
+    <div class="payment-backdrop" data-close-payment></div>
+    <div class="payment-panel">
+      <div class="payment-head">
+        <span id="digitalPaymentModalTitle">Pembayaran 300 TOEFL Vocabulary</span>
+        <button class="payment-close" type="button" aria-label="Tutup pembayaran" data-close-payment>&times;</button>
+      </div>
+      <iframe class="payment-frame" id="digitalPaymentFrame" title="Pembayaran 300 TOEFL Vocabulary"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const productModal = document.getElementById('productModal');
+    const productModalBody = document.getElementById('productModalBody');
+    const paymentModal = document.getElementById('digitalPaymentModal');
+    const paymentFrame = document.getElementById('digitalPaymentFrame');
+    const toeflVocabPaymentUrl = 'https://jeyasclub.myr.id/pl/300-toefl-vocabulary?iframe=true';
+    let lastProductTrigger = null;
+
+    const productDetails = {
+      'english-journey': `
+        <div class="product-detail">
+          <div class="product-detail-hero">
+            <div class="product-cover-stage">
+              <img src="/assets/moduleng.jpg" alt="Sampul modul 30-Day English Journey" loading="lazy" decoding="async">
+              <span class="product-badge">Rp40.000</span>
+            </div>
+            <div>
+              <span class="product-kicker">E-Modul Bahasa Inggris</span>
+              <h3 class="product-title" id="productModalTitle">30-Day English Journey</h3>
+              <p class="product-subtitle">Belajar bahasa Inggris dari dasar secara mandiri dalam 30 hari dengan alur harian yang ringan, rapi, dan mudah diikuti.</p>
+            </div>
+          </div>
+          <div class="product-content-grid">
+            <section class="product-panel">
+              <h4>Yang kamu dapatkan</h4>
+              <ul class="product-list">
+                <li>Materi harian bahasa Inggris dari dasar.</li>
+                <li>Latihan soal harian dalam setiap materi.</li>
+                <li>Kuis evaluasi materi mingguan.</li>
+                <li>Kunci jawaban latihan dan evaluasi.</li>
+                <li>Tips belajar bahasa Inggris otodidak.</li>
+              </ul>
+            </section>
+            <section class="product-panel">
+              <h4>Cocok untuk</h4>
+              <p>Kamu yang ingin mulai belajar bahasa Inggris dari nol dengan panduan mandiri yang tidak membingungkan.</p>
+            </section>
+          </div>
+          <div class="product-cta-row">
+            <a class="btn primary" href="https://forms.gle/hRqaRN8WFtXt4fS48" target="_blank" rel="noopener">Klaim Sekarang</a>
+          </div>
+        </div>
+      `,
+      'toefl-package': `
+        <div class="product-detail">
+          <div class="product-detail-hero">
+            <div class="product-cover-stage">
+              <img src="/assets/toefl.jpeg" alt="Folder Video dan PPT Belajar TOEFL ITP" loading="lazy" decoding="async">
+              <span class="product-badge">Rp50.000</span>
+            </div>
+            <div>
+              <span class="product-kicker">Paket Belajar TOEFL</span>
+              <h3 class="product-title" id="productModalTitle">Folder Video & PPT Belajar TOEFL ITP</h3>
+              <p class="product-subtitle">Paket belajar TOEFL yang berisi materi, rekaman, dan latihan agar kamu bisa belajar lebih terarah.</p>
+            </div>
+          </div>
+          <div class="product-content-grid">
+            <section class="product-panel">
+              <h4>Isi folder belajar</h4>
+              <ul class="product-list">
+                <li>PPT Materi Belajar TOEFL ITP 8 Pertemuan.</li>
+                <li>Video Rekaman Zoom Penjelasan Materi 8 Pertemuan.</li>
+                <li>Latihan soal di tiap pertemuan.</li>
+                <li>Cara menghitung skor TOEFL.</li>
+              </ul>
+            </section>
+            <section class="product-panel">
+              <h4>Cara akses</h4>
+              <ol class="product-list">
+                <li>Isi form dengan email kamu dan pastikan tidak ada typo.</li>
+                <li>Email kamu akan diberi akses link untuk membuka folder.</li>
+                <li>Kamu bisa mengakses folder kapan saja dengan email tersebut.</li>
+              </ol>
+            </section>
+          </div>
+          <div class="product-cta-row">
+            <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfDxFEVv1_J5j338AY4U95CxILjclc8-QpEdP2KK5_5LoukXw/viewform" target="_blank" rel="noopener">Klaim Sekarang</a>
+          </div>
+        </div>
+      `,
+      'toefl-vocab-sheet': `
+        <div class="product-detail">
+          <div class="product-detail-hero">
+            <div class="product-cover-stage">
+              <div class="sheet-preview">
+                <div class="sheet-preview-frame">
+                  <div class="sheet-preview-track" data-sheet-preview-track>
+                    <button class="sheet-preview-button" type="button"><img src="/assets/toefl-vocab-tracker-preview.jpeg" alt="Preview tracker 300 TOEFL Vocabulary" loading="lazy" decoding="async"></button>
+                    <button class="sheet-preview-button" type="button"><img src="/assets/toefl-vocab-list-preview.jpeg" alt="Preview vocabulary 300 TOEFL Vocabulary" loading="lazy" decoding="async"></button>
+                    <button class="sheet-preview-button" type="button"><img src="/assets/toefl-vocab-how-preview.jpeg" alt="Preview cara pakai 300 TOEFL Vocabulary" loading="lazy" decoding="async"></button>
+                  </div>
+                </div>
+                <div class="sheet-preview-nav" aria-label="Navigasi sheet preview">
+                  <button type="button" data-sheet-preview-prev aria-label="Preview sebelumnya">&lsaquo;</button>
+                  <button type="button" data-sheet-preview-next aria-label="Preview berikutnya">&rsaquo;</button>
+                </div>
+              </div>
+              <span class="product-badge">Rp10.000</span>
+            </div>
+            <div>
+              <span class="product-kicker">Spreadsheet Vocabulary</span>
+              <h3 class="product-title" id="productModalTitle">(Study Sheet) 300 TOEFL Vocabulary</h3>
+              <p class="product-subtitle">Daftar 300 kosakata TOEFL dalam format spreadsheet agar kamu bisa belajar, menandai, dan mengulang vocabulary dengan lebih rapi.</p>
+            </div>
+          </div>
+          <div class="product-content-grid">
+            <section class="product-panel">
+              <h4>Isi file</h4>
+              <ul class="product-list">
+                <li>300 TOEFL vocabulary pilihan untuk latihan mandiri.</li>
+                <li>Format spreadsheet yang bisa dibuka di Excel atau aplikasi sejenis.</li>
+                <li>Bisa dipakai untuk tracking hafalan dan review berkala.</li>
+              </ul>
+            </section>
+            <section class="product-panel">
+              <h4>Cara akses</h4>
+              <ol class="product-list">
+                <li>Login atau daftar akun Jeya's Club terlebih dahulu.</li>
+                <li>Bayar Rp10.000 dengan email yang sama seperti akun kamu.</li>
+                <li>Setelah akses aktif, file bisa didownload dari akun kamu.</li>
+              </ol>
+            </section>
+          </div>
+          <div class="product-cta-row">
+            <button class="btn primary" type="button" id="openToeflVocabPayment">Bayar Rp10.000</button>
+          </div>
+        </div>
+      `
+    };
+
+    function openProductModal(productKey, trigger) {
+      const product = productDetails[productKey];
+      if (!product || !productModal || !productModalBody) return;
+
+      lastProductTrigger = trigger;
+      productModal.dataset.product = productKey;
+      productModalBody.innerHTML = product;
+      productModal.classList.add('open');
+      productModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      const closeButton = productModal.querySelector('.modal-close');
+      if (closeButton) closeButton.focus();
+
+      if (productKey === 'toefl-vocab-sheet') {
+        initSheetPreviewSlider();
+        const paymentButton = document.getElementById('openToeflVocabPayment');
+        if (paymentButton) paymentButton.addEventListener('click', openPaymentModal);
+      }
+    }
+
+    function closeProductModal(event) {
+      if (event) event.preventDefault();
+      closePaymentModal();
+      productModal.classList.remove('open');
+      productModal.setAttribute('aria-hidden', 'true');
+      productModalBody.innerHTML = '';
+      delete productModal.dataset.product;
+      document.body.style.overflow = '';
+      if (lastProductTrigger) lastProductTrigger.focus();
+    }
+
+    function openPaymentModal() {
+      if (!paymentModal || !paymentFrame) {
+        window.open(toeflVocabPaymentUrl.replace('?iframe=true', ''), '_blank', 'noopener,noreferrer');
+        return;
+      }
+
+      paymentFrame.src = toeflVocabPaymentUrl;
+      paymentModal.classList.add('open');
+      paymentModal.setAttribute('aria-hidden', 'false');
+      const closeButton = paymentModal.querySelector('.payment-close');
+      if (closeButton) closeButton.focus();
+    }
+
+    function closePaymentModal(event) {
+      if (event) event.preventDefault();
+      if (!paymentModal) return;
+
+      paymentModal.classList.remove('open');
+      paymentModal.setAttribute('aria-hidden', 'true');
+      if (paymentFrame) paymentFrame.src = '';
+    }
+
+    function initSheetPreviewSlider() {
+      const track = document.querySelector('[data-sheet-preview-track]');
+      if (!track) return;
+
+      const prevButton = document.querySelector('[data-sheet-preview-prev]');
+      const nextButton = document.querySelector('[data-sheet-preview-next]');
+
+      if (prevButton) prevButton.addEventListener('click', () => {
+        track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' });
+      });
+
+      if (nextButton) nextButton.addEventListener('click', () => {
+        track.scrollBy({ left: track.clientWidth, behavior: 'smooth' });
+      });
+    }
+
+    document.querySelectorAll('[data-product]').forEach(button => {
+      button.addEventListener('click', () => {
+        openProductModal(button.dataset.product, button);
+      });
+    });
+
+    document.querySelectorAll('[data-close-product]').forEach(element => {
+      element.addEventListener('click', closeProductModal);
+    });
+
+    document.querySelectorAll('[data-close-payment]').forEach(element => {
+      element.addEventListener('click', closePaymentModal);
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      if (paymentModal && paymentModal.classList.contains('open')) {
+        closePaymentModal(event);
+        return;
+      }
+      if (productModal && productModal.classList.contains('open')) {
+        closeProductModal(event);
+      }
+    });
+  </script>
 </body>
 </html>
