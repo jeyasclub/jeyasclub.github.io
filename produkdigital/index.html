@@ -345,14 +345,15 @@
 
     .product-body {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 142px;
+      grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
-        "badge side"
-        "title side"
-        "desc side"
-        "points side";
-      column-gap: 18px;
-      align-items: center;
+        "badge"
+        "title"
+        "price"
+        "desc"
+        "points"
+        "action";
+      align-items: start;
       padding: 14px 16px;
     }
 
@@ -377,10 +378,9 @@
     }
 
     .price {
-      grid-area: side;
-      align-self: start;
-      justify-self: end;
-      margin: 0;
+      grid-area: price;
+      justify-self: start;
+      margin: 5px 0 0;
       color: var(--blue);
       font-size: 1.15rem;
       font-weight: 800;
@@ -417,13 +417,12 @@
     }
 
     .actions {
-      grid-area: side;
-      align-self: end;
-      justify-self: end;
+      grid-area: action;
+      justify-self: start;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: auto;
+      margin-top: 12px;
     }
 
     .btn {
