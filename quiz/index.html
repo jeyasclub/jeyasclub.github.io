@@ -35,78 +35,221 @@
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
 
-    .topbar {
+    .site-nav {
       position: sticky;
       top: 0;
       z-index: 10;
+      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-      padding: 18px clamp(20px, 5vw, 72px);
-      background: rgba(255, 255, 255, 0.92);
+      padding: 0 32px;
+      background: rgba(255, 255, 255, 0.96);
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(10px);
     }
 
-    .brand {
+    .nav-logo {
       display: inline-flex;
       align-items: center;
-      gap: 14px;
-      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 96px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-logo-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.2s;
       white-space: nowrap;
     }
 
-    .brand img {
-      width: 76px;
-      height: auto;
-      border-radius: 6px;
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--blue);
     }
 
-    .nav {
+    .nav-links a.active {
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 2px;
+    }
+
+    .nav-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+    }
+
+    .nav-test-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border: 1px solid var(--blue);
+      border-radius: 10px;
+      background: var(--blue);
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(31, 115, 232, 0.22);
+      font-size: 13.5px;
       font-weight: 700;
-      font-size: 0.95rem;
-      color: #2b3150;
+      text-decoration: none;
+      white-space: nowrap;
     }
 
-    .nav a {
-      padding: 10px 12px;
-      border-radius: 8px;
+    .nav-test-link:hover {
+      background: #1558c0;
+      border-color: #1558c0;
     }
 
-    .nav a:hover,
-    .nav a.active {
-      color: var(--blue);
-      background: var(--sky);
-    }
-
-    .nav-login.hidden,
+    .nav-test-link.hidden,
+    .mobile-test-link.hidden,
     .nav-user.hidden {
       display: none;
     }
 
     .nav-user {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      min-height: 40px;
-      padding: 7px 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      color: var(--ink);
-      font-weight: 800;
+      position: relative;
     }
 
-    .nav-user img {
-      width: 28px;
-      height: 28px;
+    .nav-user-button {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px 6px 6px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .nav-user-button img {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
       background: var(--sky);
+      border: 1px solid var(--line);
+    }
+
+    .nav-user-name {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .nav-user-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 160px;
+      display: none;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16);
+    }
+
+    .nav-user.open .nav-user-menu {
+      display: block;
+    }
+
+    .nav-profile-link,
+    .nav-logout-button {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 12px;
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .nav-profile-link:hover,
+    .nav-logout-button:hover {
+      background: var(--sky);
+      color: var(--blue);
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      width: 24px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--ink);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      display: none;
+      flex-direction: column;
+      background: rgba(255,255,255,0.98);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu a {
+      display: block;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 24px;
+      text-decoration: none;
+    }
+
+    .mobile-menu a.active {
+      color: var(--blue);
     }
 
     .shell {
@@ -250,15 +393,22 @@
     }
 
     @media (max-width: 900px) {
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
+      .site-nav {
+        height: 64px;
+        padding: 0 18px;
       }
 
-      .nav {
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 2px;
+      .nav-links,
+      .nav-actions {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .mobile-menu {
+        top: 64px;
       }
 
       .test-grid,
@@ -276,24 +426,54 @@
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="/">
-      <img src="/assets/logo.jpg" alt="Jeya's Club">
-      <span>Jeya's Club</span>
+  <nav class="site-nav">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><img src="/assets/logo.jpg" alt="Logo Jeya's Club" width="500" height="208" decoding="async" fetchpriority="high"></div>
     </a>
-    <nav class="nav" aria-label="Navigasi utama">
-      <a href="/">Beranda</a>
-      <a class="active" href="/quiz/">Quiz</a>
-      <a href="/produkdigital/">Produk Digital</a>
-      <a href="/artikel/">Artikel</a>
-      <a href="/about/">Tentang Kami</a>
-      <a class="nav-login" id="navLoginLink" href="/account/?redirect=/quiz/">Login</a>
-      <a class="nav-user hidden" id="navUserLink" href="/account/">
-        <img id="navUserAvatar" src="/assets/cs.jpg" alt="">
-        <span id="navUserName">User</span>
-      </a>
-    </nav>
-  </header>
+
+    <ul class="nav-links">
+      <li><a href="/">Beranda</a></li>
+      <li><a href="/#features">Kursus</a></li>
+      <li><a class="active" href="/quiz/">Quiz</a></li>
+      <li><a href="/produkdigital/">Produk Digital</a></li>
+      <li><a href="/artikel/">Artikel</a></li>
+      <li><a href="/testimoni/">Testimoni</a></li>
+      <li><a href="/#communities">Komunitas</a></li>
+      <li><a href="/#gallery">Galeri</a></li>
+      <li><a href="/about/">Tentang Kami</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="/account/?redirect=/quiz/" class="nav-test-link" id="navLoginLink">Login / Daftar</a>
+      <div class="nav-user hidden" id="navUser">
+        <button class="nav-user-button" type="button" id="navUserButton" aria-expanded="false" aria-haspopup="true">
+          <img id="navUserAvatar" src="/assets/cs.jpg" alt="">
+          <span class="nav-user-name" id="navUserName">User</span>
+        </button>
+        <div class="nav-user-menu" id="navUserMenu">
+          <a class="nav-profile-link" href="/account/">Profile</a>
+          <button class="nav-logout-button" type="button" id="navLogoutButton">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="nav-hamburger" type="button" id="mobileMenuToggle" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/">Beranda</a>
+    <a href="/#features">Kursus</a>
+    <a class="active" href="/quiz/">Quiz</a>
+    <a href="/produkdigital/">Produk Digital</a>
+    <a href="/artikel/">Artikel</a>
+    <a href="/testimoni/">Testimoni</a>
+    <a href="/#communities">Komunitas</a>
+    <a href="/#gallery">Galeri</a>
+    <a href="/about/">Tentang Kami</a>
+    <a href="/account/?redirect=/quiz/" class="mobile-test-link" id="mobileLoginLink">Login / Daftar</a>
+  </div>
 
   <main class="shell">
     <section class="hero">
@@ -363,9 +543,14 @@
     const mainSupabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
     const mainSupabaseClient = window.supabase ? window.supabase.createClient(mainSupabaseUrl, mainSupabaseAnonKey) : null;
     const navLoginLink = document.getElementById('navLoginLink');
-    const navUserLink = document.getElementById('navUserLink');
+    const mobileLoginLink = document.getElementById('mobileLoginLink');
+    const navUser = document.getElementById('navUser');
+    const navUserButton = document.getElementById('navUserButton');
     const navUserAvatar = document.getElementById('navUserAvatar');
     const navUserName = document.getElementById('navUserName');
+    const navLogoutButton = document.getElementById('navLogoutButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     let mainCurrentSession = null;
 
     function getLoginUrl() {
@@ -390,13 +575,24 @@
         navLoginLink.href = getLoginUrl();
         navLoginLink.classList.toggle('hidden', isLoggedIn);
       }
-      if (navUserLink) navUserLink.classList.toggle('hidden', !isLoggedIn);
+      if (mobileLoginLink) {
+        mobileLoginLink.href = getLoginUrl();
+        mobileLoginLink.classList.toggle('hidden', isLoggedIn);
+      }
+      if (navUser) navUser.classList.toggle('hidden', !isLoggedIn);
       if (!isLoggedIn) return;
       if (navUserAvatar) {
         navUserAvatar.src = profile.avatar;
         navUserAvatar.alt = profile.name;
       }
       if (navUserName) navUserName.textContent = profile.name;
+    }
+
+    async function logoutUser() {
+      if (!mainSupabaseClient) return;
+      await mainSupabaseClient.auth.signOut();
+      mainCurrentSession = null;
+      renderNavAuthState();
     }
 
     async function initAuth() {
@@ -410,6 +606,33 @@
         renderNavAuthState();
       });
     }
+
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+    }
+
+    if (mobileMenu) {
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+      });
+    }
+
+    if (navUserButton && navUser) {
+      navUserButton.addEventListener('click', () => {
+        const isOpen = navUser.classList.toggle('open');
+        navUserButton.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
+
+    if (navLogoutButton) navLogoutButton.addEventListener('click', logoutUser);
+
+    document.addEventListener('click', event => {
+      if (!navUser || !navUserButton || navUser.contains(event.target)) return;
+      navUser.classList.remove('open');
+      navUserButton.setAttribute('aria-expanded', 'false');
+    });
 
     initAuth();
   </script>
