@@ -13,6 +13,10 @@ const TOEFL_VOCAB_PRODUCT_SLUG = '300-toefl-vocabulary';
 const TOEFL_VOCAB_COURSE_KEY = '300-toefl-vocabulary';
 const TOEFL_VOCAB_R2_KEY = '300_TOEFL_Vocabulary.xlsx';
 const TOEFL_VOCAB_DOWNLOAD_NAME = '300_TOEFL_Vocabulary.xlsx';
+const ENGLISH_CHALLENGES_PRODUCT_SLUG = 'study-sheet-100-english-challenges';
+const ENGLISH_CHALLENGES_COURSE_KEY = 'study-sheet-100-english-challenges';
+const ENGLISH_CHALLENGES_R2_KEY = '100_English_Challenges.xlsx';
+const ENGLISH_CHALLENGES_DOWNLOAD_NAME = '100_English_Challenges.xlsx';
 
 export default {
   async fetch(request, env) {
@@ -23,7 +27,19 @@ export default {
     }
 
     if (requestUrl.pathname === '/api/download/300-toefl-vocabulary') {
-      return handleToeflVocabDownload(request, env);
+      return handlePrivateCourseDownload(request, env, {
+        courseKey: TOEFL_VOCAB_COURSE_KEY,
+        r2Key: TOEFL_VOCAB_R2_KEY,
+        downloadName: TOEFL_VOCAB_DOWNLOAD_NAME,
+      });
+    }
+
+    if (requestUrl.pathname === '/api/download/study-sheet-100-english-challenges') {
+      return handlePrivateCourseDownload(request, env, {
+        courseKey: ENGLISH_CHALLENGES_COURSE_KEY,
+        r2Key: ENGLISH_CHALLENGES_R2_KEY,
+        downloadName: ENGLISH_CHALLENGES_DOWNLOAD_NAME,
+      });
     }
 
     if (requestUrl.pathname === '/sitemap-articles.xml') {
@@ -121,8 +137,9 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   const isEnglishSlangTest = isEnglishSlangTestPayment({ productName, productUrl, productId }, env);
   const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
   const isToeflVocab = isToeflVocabPayment({ productName, productUrl, productId }, env);
+  const isEnglishChallenges = isEnglishChallengesPayment({ productName, productUrl, productId }, env);
 
-  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isEnglishHangout && !isToeflVocab) {
+  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isEnglishHangout && !isToeflVocab && !isEnglishChallenges) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -170,6 +187,16 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     };
   }
 
+  if (isEnglishChallenges) {
+    rpcName = 'grant_jeyasclub_course_access_by_email';
+    rpcBody = {
+      p_email: customerEmail,
+      p_course_key: ENGLISH_CHALLENGES_COURSE_KEY,
+      p_transaction_id: transactionId || null,
+      p_source: 'mayar',
+    };
+  }
+
   const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${rpcName}`, {
     method: 'POST',
     headers: {
@@ -199,12 +226,12 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
-    product: isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review'))),
+    product: isEnglishChallenges ? ENGLISH_CHALLENGES_COURSE_KEY : (isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')))),
     result: rpcData,
   });
 }
 
-async function handleToeflVocabDownload(request, env = {}) {
+async function handlePrivateCourseDownload(request, env = {}, product = {}) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders() });
   }
@@ -247,7 +274,7 @@ async function handleToeflVocabDownload(request, env = {}) {
   const accessUrl = new URL(`${SUPABASE_URL}/rest/v1/jeyasclub_course_access`);
   accessUrl.searchParams.set('select', 'id');
   accessUrl.searchParams.set('user_id', `eq.${user.id}`);
-  accessUrl.searchParams.set('course_key', `eq.${TOEFL_VOCAB_COURSE_KEY}`);
+  accessUrl.searchParams.set('course_key', `eq.${product.courseKey}`);
   accessUrl.searchParams.set('limit', '1');
 
   const accessResponse = await fetch(accessUrl.href, {
@@ -266,7 +293,7 @@ async function handleToeflVocabDownload(request, env = {}) {
     return jsonResponse({ ok: false, error: 'download_access_denied' }, 403);
   }
 
-  const file = await env.PRIVATE_DOWNLOADS.get(TOEFL_VOCAB_R2_KEY, 'arrayBuffer');
+  const file = await env.PRIVATE_DOWNLOADS.get(product.r2Key, 'arrayBuffer');
   if (!file) {
     return jsonResponse({ ok: false, error: 'file_not_found' }, 404);
   }
@@ -275,7 +302,7 @@ async function handleToeflVocabDownload(request, env = {}) {
     headers: {
       ...corsHeaders(),
       'content-type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'content-disposition': `attachment; filename="${TOEFL_VOCAB_DOWNLOAD_NAME}"`,
+      'content-disposition': `attachment; filename="${product.downloadName}"`,
       'cache-control': 'private, no-store',
     },
   });
@@ -325,6 +352,15 @@ function isToeflVocabPayment({ productName, productUrl, productId }, env = {}) {
   const haystack = `${productName} ${productUrl}`.toLowerCase();
   return haystack.includes(TOEFL_VOCAB_PRODUCT_SLUG)
     || (haystack.includes('300') && haystack.includes('toefl') && haystack.includes('vocabulary'));
+}
+
+function isEnglishChallengesPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_ENGLISH_CHALLENGES_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(ENGLISH_CHALLENGES_PRODUCT_SLUG)
+    || (haystack.includes('100') && haystack.includes('english') && haystack.includes('challenges'));
 }
 
 function jsonResponse(body, status = 200) {

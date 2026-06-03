@@ -1110,6 +1110,13 @@
     --product-warm: #c9f4df;
   }
 
+  .program-modal[data-product="english-challenges"] {
+    --product-accent: #d8901d;
+    --product-accent-dark: #a86c0e;
+    --product-soft: #fff7e6;
+    --product-warm: #ffe3a3;
+  }
+
   .program-modal-close {
     position: absolute;
     top: 14px;
@@ -3732,6 +3739,19 @@
         <a href="#" class="product-link" data-product="toefl-vocab-sheet" aria-haspopup="dialog">Lihat Produk</a>
       </article>
 
+      <article class="product-card">
+        <div class="product-icon gold">✅</div>
+        <h3>(Study Sheet) 100 English Challenges</h3>
+        <div class="product-price">Rp1.000</div>
+        <p>Study sheet berisi 100 tantangan bahasa Inggris ringan untuk latihan konsisten setiap hari.</p>
+        <ul class="product-points">
+          <li>100 challenge praktis untuk latihan mandiri</li>
+          <li>Format spreadsheet yang mudah dipakai</li>
+          <li>Download otomatis setelah akses pembayaran aktif</li>
+        </ul>
+        <a href="#" class="product-link" data-product="english-challenges" aria-haspopup="dialog">Lihat Produk</a>
+      </article>
+
     </div>
   </div>
 </section>
@@ -4107,8 +4127,8 @@
     mainSupabaseClient.auth.onAuthStateChange((_event, session) => {
       mainCurrentSession = session;
       renderMainAuthState();
-      if (productModal && productModal.dataset.product === 'toefl-vocab-sheet') {
-        renderToeflVocabAccess();
+      if (productModal && (productModal.dataset.product === 'toefl-vocab-sheet' || productModal.dataset.product === 'english-challenges')) {
+        renderPaidSheetAccess(productModal.dataset.product);
       }
     });
   }
@@ -4292,8 +4312,12 @@
   const toeflVocabCourseKey = '300-toefl-vocabulary';
   const toeflVocabPaymentUrl = 'https://jeyasclub.myr.id/pl/300-toefl-vocabulary?iframe=true';
   const toeflVocabDownloadUrl = '/api/download/300-toefl-vocabulary';
+  const englishChallengesCourseKey = 'study-sheet-100-english-challenges';
+  const englishChallengesPaymentUrl = 'https://jeyasclub.myr.id/pl/study-sheet-100-english-challenges?iframe=true';
+  const englishChallengesDownloadUrl = '/api/download/study-sheet-100-english-challenges';
   let lastProgramTrigger = null;
   let lastProductTrigger = null;
+  let activePaymentUrl = toeflVocabPaymentUrl;
 
   const productDetails = {
     'english-journey': `
@@ -4420,6 +4444,59 @@
         </div>
         <div class="product-access-panel" id="toeflVocabAccessPanel" aria-live="polite"></div>
       </div>
+    `,
+    'english-challenges': `
+      <div class="product-detail">
+        <div class="product-hero">
+          <div class="product-cover-stage">
+            <div class="sheet-preview">
+              <span class="sheet-preview-label">Sheet Preview</span>
+              <div class="sheet-preview-frame">
+                <div class="sheet-preview-track" data-sheet-preview-track>
+                  <button class="sheet-preview-button" type="button" data-sheet-preview-src="assets/challenge1.jpeg" data-sheet-preview-alt="Preview 100 English Challenges halaman 1">
+                    <img src="assets/challenge1.jpeg" alt="Preview 100 English Challenges halaman 1" width="1400" height="822" loading="lazy" decoding="async">
+                  </button>
+                  <button class="sheet-preview-button" type="button" data-sheet-preview-src="assets/challenge2.jpeg" data-sheet-preview-alt="Preview 100 English Challenges halaman 2">
+                    <img src="assets/challenge2.jpeg" alt="Preview 100 English Challenges halaman 2" width="1400" height="819" loading="lazy" decoding="async">
+                  </button>
+                  <button class="sheet-preview-button" type="button" data-sheet-preview-src="assets/challenge3.png" data-sheet-preview-alt="Preview 100 English Challenges halaman 3">
+                    <img src="assets/challenge3.png" alt="Preview 100 English Challenges halaman 3" width="884" height="900" loading="lazy" decoding="async">
+                  </button>
+                </div>
+              </div>
+              <div class="sheet-preview-nav" aria-label="Navigasi preview 100 English Challenges">
+                <button type="button" data-sheet-preview-prev aria-label="Preview sebelumnya">&lsaquo;</button>
+                <button type="button" data-sheet-preview-next aria-label="Preview berikutnya">&rsaquo;</button>
+              </div>
+            </div>
+            <span class="product-badge">Rp1.000</span>
+          </div>
+          <div class="product-copy">
+            <span class="product-kicker">Spreadsheet Challenge</span>
+            <h3 class="product-title" id="productModalTitle">(Study Sheet) 100 English Challenges</h3>
+            <p class="product-subtitle">Kumpulan 100 tantangan bahasa Inggris dalam format spreadsheet agar latihan harian terasa lebih ringan, terarah, dan mudah dilacak.</p>
+          </div>
+        </div>
+        <div class="product-content-grid">
+          <section class="product-panel">
+            <h4>Isi file</h4>
+            <ul class="product-list">
+              <li>100 English challenges untuk latihan mandiri</li>
+              <li>Format spreadsheet yang bisa dibuka di Excel atau aplikasi sejenis</li>
+              <li>Cocok untuk membangun kebiasaan latihan bahasa Inggris harian</li>
+            </ul>
+          </section>
+          <section class="product-panel">
+            <h4>Cara akses</h4>
+            <ol class="product-list product-steps">
+              <li>Login atau daftar akun Jeya's Club terlebih dahulu</li>
+              <li>Bayar Rp1.000 dengan email yang sama seperti akun kamu</li>
+              <li>Setelah akses aktif, tombol download akan muncul di halaman ini</li>
+            </ol>
+          </section>
+        </div>
+        <div class="product-access-panel" id="englishChallengesAccessPanel" aria-live="polite"></div>
+      </div>
     `
   };
 
@@ -4465,13 +4542,37 @@
     return (mainCurrentSession && mainCurrentSession.user && mainCurrentSession.user.email || '').toLowerCase();
   }
 
-  async function hasToeflVocabAccess() {
+  function getPaidSheetConfig(productKey) {
+    if (productKey === 'english-challenges') {
+      return {
+        courseKey: englishChallengesCourseKey,
+        paymentUrl: englishChallengesPaymentUrl,
+        downloadUrl: englishChallengesDownloadUrl,
+        panelId: 'englishChallengesAccessPanel',
+        fileName: '100_English_Challenges.xlsx',
+        title: '100 English Challenges',
+        price: 'Rp1.000'
+      };
+    }
+    return {
+      courseKey: toeflVocabCourseKey,
+      paymentUrl: toeflVocabPaymentUrl,
+      downloadUrl: toeflVocabDownloadUrl,
+      panelId: 'toeflVocabAccessPanel',
+      fileName: '300_TOEFL_Vocabulary.xlsx',
+      title: '300 TOEFL Vocabulary',
+      price: 'Rp10.000'
+    };
+  }
+
+  async function hasPaidSheetAccess(productKey) {
     if (!mainSupabaseClient || !mainCurrentSession || !mainCurrentSession.user) return false;
+    const config = getPaidSheetConfig(productKey);
 
     const { data, error } = await mainSupabaseClient
       .from('jeyasclub_course_access')
       .select('id')
-      .eq('course_key', toeflVocabCourseKey)
+      .eq('course_key', config.courseKey)
       .limit(1);
 
     return !error && Array.isArray(data) && data.length > 0;
@@ -4484,8 +4585,9 @@
     status.classList.toggle('good', type === 'good');
   }
 
-  async function renderToeflVocabAccess(message = '', type = '') {
-    const panel = document.getElementById('toeflVocabAccessPanel');
+  async function renderPaidSheetAccess(productKey = 'toefl-vocab-sheet', message = '', type = '') {
+    const config = getPaidSheetConfig(productKey);
+    const panel = document.getElementById(config.panelId);
     if (!panel) return;
 
     if (!mainSupabaseClient) {
@@ -4519,16 +4621,16 @@
       </div>
     `;
 
-    const hasAccess = await hasToeflVocabAccess();
+    const hasAccess = await hasPaidSheetAccess(productKey);
     const email = getMainUserEmail();
 
     if (hasAccess) {
       panel.innerHTML = `
         <div class="product-access-box">
           <strong>Akses aktif</strong>
-          <p>Kamu sudah bisa download study sheet ini dengan akun ${email}.</p>
+          <p>Kamu sudah bisa download ${config.title} dengan akun ${email}.</p>
           <div class="product-access-actions">
-            <button class="product-access-btn" type="button" id="downloadToeflVocabFile">Download Study Sheet</button>
+            <button class="product-access-btn" type="button" id="downloadPaidSheetFile">Download Study Sheet</button>
             <button class="product-access-btn secondary" type="button" id="checkToeflVocabAccess">Cek akses lagi</button>
           </div>
           <div class="product-access-status good" data-toefl-vocab-status>${message || 'Siap didownload.'}</div>
@@ -4540,7 +4642,7 @@
           <strong>Belum ada akses untuk akun ini</strong>
           <p>Kamu login sebagai ${email}. Pastikan pembayaran memakai email yang sama supaya file muncul di akun ini.</p>
           <div class="product-access-actions">
-            <button class="product-access-btn" type="button" id="openToeflVocabPayment">Bayar Rp10.000</button>
+            <button class="product-access-btn" type="button" id="openToeflVocabPayment">Bayar ${config.price}</button>
             <button class="product-access-btn secondary" type="button" id="checkToeflVocabAccess">Cek akses</button>
             <button class="product-access-btn secondary" type="button" id="copyToeflVocabEmail">Copy email</button>
           </div>
@@ -4552,14 +4654,17 @@
     const paymentButton = document.getElementById('openToeflVocabPayment');
     const checkButton = document.getElementById('checkToeflVocabAccess');
     const copyButton = document.getElementById('copyToeflVocabEmail');
-    const downloadButton = document.getElementById('downloadToeflVocabFile');
+    const downloadButton = document.getElementById('downloadPaidSheetFile');
 
-    if (paymentButton) paymentButton.addEventListener('click', openToeflVocabPaymentModal);
+    if (paymentButton) paymentButton.addEventListener('click', () => {
+      activePaymentUrl = config.paymentUrl;
+      openToeflVocabPaymentModal();
+    });
     if (checkButton) checkButton.addEventListener('click', () => {
-      renderToeflVocabAccess('Mengecek ulang akses pembayaran...', '');
+      renderPaidSheetAccess(productKey, 'Mengecek ulang akses pembayaran...', '');
     });
     if (downloadButton) downloadButton.addEventListener('click', () => {
-      downloadToeflVocabFile(panel);
+      downloadPaidSheetFile(productKey, panel);
     });
     if (copyButton) copyButton.addEventListener('click', async () => {
       try {
@@ -4571,16 +4676,17 @@
     });
   }
 
-  async function downloadToeflVocabFile(panel) {
+  async function downloadPaidSheetFile(productKey, panel) {
+    const config = getPaidSheetConfig(productKey);
     if (!mainCurrentSession || !mainCurrentSession.access_token) {
-      renderToeflVocabAccess('Session login belum aktif. Silakan login ulang dulu.', '');
+      renderPaidSheetAccess(productKey, 'Session login belum aktif. Silakan login ulang dulu.', '');
       return;
     }
 
     setToeflVocabStatus(panel, 'Menyiapkan file download...', '');
 
     try {
-      const response = await fetch(toeflVocabDownloadUrl, {
+      const response = await fetch(config.downloadUrl, {
         headers: {
           Authorization: `Bearer ${mainCurrentSession.access_token}`,
         },
@@ -4599,7 +4705,7 @@
       const fileUrl = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = fileUrl;
-      link.download = '300_TOEFL_Vocabulary.xlsx';
+      link.download = config.fileName;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -4612,11 +4718,11 @@
 
   function openToeflVocabPaymentModal() {
     if (!digitalPaymentModal || !digitalPaymentFrame) {
-      window.open(toeflVocabPaymentUrl, '_blank', 'noopener,noreferrer');
+      window.open(activePaymentUrl, '_blank', 'noopener,noreferrer');
       return;
     }
 
-    digitalPaymentFrame.src = toeflVocabPaymentUrl;
+    digitalPaymentFrame.src = activePaymentUrl;
     digitalPaymentModal.classList.add('open');
     digitalPaymentModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -4633,8 +4739,8 @@
     if (digitalPaymentFrame) digitalPaymentFrame.src = '';
     document.body.style.overflow = productModal && productModal.classList.contains('open') ? 'hidden' : '';
 
-    if (productModal && productModal.dataset.product === 'toefl-vocab-sheet') {
-      renderToeflVocabAccess('Kalau baru membayar, klik cek akses setelah pembayaran selesai diproses.', '');
+    if (productModal && (productModal.dataset.product === 'toefl-vocab-sheet' || productModal.dataset.product === 'english-challenges')) {
+      renderPaidSheetAccess(productModal.dataset.product, 'Kalau baru membayar, klik cek akses setelah pembayaran selesai diproses.', '');
     }
   }
 
@@ -4717,9 +4823,9 @@
     document.body.style.overflow = 'hidden';
     productModal.querySelector('.program-modal-close').focus();
 
-    if (productKey === 'toefl-vocab-sheet') {
+    if (productKey === 'toefl-vocab-sheet' || productKey === 'english-challenges') {
       initSheetPreviewSlider();
-      renderToeflVocabAccess();
+      renderPaidSheetAccess(productKey);
     }
   }
 
