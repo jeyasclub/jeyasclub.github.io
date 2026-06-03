@@ -427,6 +427,48 @@
       padding: 24px 46px 38px;
     }
 
+    .product-access-panel {
+      padding: 24px 46px 38px;
+    }
+
+    .product-access-box {
+      padding: 20px;
+      border: 1px solid #cfe4ff;
+      border-radius: 8px;
+      background: #f4f9ff;
+    }
+
+    .product-access-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .product-access-box p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .product-access-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .product-access-status {
+      min-height: 22px;
+      margin-top: 12px;
+      color: #4d5c73;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .product-access-status.good {
+      color: #0f8a5f;
+    }
+
     .sheet-preview {
       width: min(330px, 100%);
       display: grid;
@@ -534,6 +576,7 @@
 
       .product-detail-hero,
       .product-content-grid,
+      .product-access-panel,
       .product-cta-row {
         padding-left: 22px;
         padding-right: 22px;
@@ -673,12 +716,19 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const productModal = document.getElementById('productModal');
     const productModalBody = document.getElementById('productModalBody');
     const paymentModal = document.getElementById('digitalPaymentModal');
     const paymentFrame = document.getElementById('digitalPaymentFrame');
+    const mainSupabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
+    const mainSupabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
+    const mainSupabaseClient = window.supabase ? window.supabase.createClient(mainSupabaseUrl, mainSupabaseAnonKey) : null;
+    const toeflVocabCourseKey = '300-toefl-vocabulary';
     const toeflVocabPaymentUrl = 'https://jeyasclub.myr.id/pl/300-toefl-vocabulary?iframe=true';
+    const toeflVocabDownloadUrl = '/api/download/300-toefl-vocabulary';
+    let mainCurrentSession = null;
     let lastProductTrigger = null;
 
     const productDetails = {
@@ -796,9 +846,7 @@
               </ol>
             </section>
           </div>
-          <div class="product-cta-row">
-            <button class="btn primary" type="button" id="openToeflVocabPayment">Bayar Rp10.000</button>
-          </div>
+          <div class="product-access-panel" id="toeflVocabAccessPanel" aria-live="polite"></div>
         </div>
       `
     };
@@ -818,8 +866,7 @@
 
       if (productKey === 'toefl-vocab-sheet') {
         initSheetPreviewSlider();
-        const paymentButton = document.getElementById('openToeflVocabPayment');
-        if (paymentButton) paymentButton.addEventListener('click', openPaymentModal);
+        renderToeflVocabAccess();
       }
     }
 
@@ -835,6 +882,11 @@
     }
 
     function openPaymentModal() {
+      if (!mainCurrentSession || !mainCurrentSession.user) {
+        renderToeflVocabAccess('Login dulu sebelum lanjut ke pembayaran.', '');
+        return;
+      }
+
       if (!paymentModal || !paymentFrame) {
         window.open(toeflVocabPaymentUrl.replace('?iframe=true', ''), '_blank', 'noopener,noreferrer');
         return;
@@ -854,6 +906,181 @@
       paymentModal.classList.remove('open');
       paymentModal.setAttribute('aria-hidden', 'true');
       if (paymentFrame) paymentFrame.src = '';
+
+      if (productModal && productModal.dataset.product === 'toefl-vocab-sheet') {
+        renderToeflVocabAccess('Kalau baru membayar, klik cek akses setelah pembayaran selesai diproses.', '');
+      }
+    }
+
+    function getLoginUrl() {
+      const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/produkdigital/';
+      return `/account/?redirect=${encodeURIComponent(redirect)}`;
+    }
+
+    function getUserEmail() {
+      return (mainCurrentSession && mainCurrentSession.user && mainCurrentSession.user.email || '').toLowerCase();
+    }
+
+    async function hasToeflVocabAccess() {
+      if (!mainSupabaseClient || !mainCurrentSession || !mainCurrentSession.user) return false;
+
+      const { data, error } = await mainSupabaseClient
+        .from('jeyasclub_course_access')
+        .select('id')
+        .eq('course_key', toeflVocabCourseKey)
+        .limit(1);
+
+      return !error && Array.isArray(data) && data.length > 0;
+    }
+
+    function setToeflVocabStatus(panel, message, type) {
+      const status = panel.querySelector('[data-toefl-vocab-status]');
+      if (!status) return;
+      status.textContent = message || '';
+      status.classList.toggle('good', type === 'good');
+    }
+
+    async function renderToeflVocabAccess(message = '', type = '') {
+      const panel = document.getElementById('toeflVocabAccessPanel');
+      if (!panel) return;
+
+      if (!mainSupabaseClient) {
+        panel.innerHTML = `
+          <div class="product-access-box">
+            <strong>Akses belum bisa dicek</strong>
+            <p>Koneksi Supabase belum tersedia di browser ini. Coba refresh halaman, lalu buka produk ini lagi.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!mainCurrentSession || !mainCurrentSession.user) {
+        panel.innerHTML = `
+          <div class="product-access-box">
+            <strong>Login dulu untuk membeli atau download</strong>
+            <p>Gunakan email yang sama saat login dan pembayaran supaya akses file bisa aktif otomatis.</p>
+            <div class="product-access-actions">
+              <a class="btn primary" href="${getLoginUrl()}">Login / Daftar</a>
+            </div>
+            <div class="product-access-status" data-toefl-vocab-status>${message || ''}</div>
+          </div>
+        `;
+        return;
+      }
+
+      panel.innerHTML = `
+        <div class="product-access-box">
+          <strong>Mengecek akses download...</strong>
+          <p>Mohon tunggu sebentar ya.</p>
+        </div>
+      `;
+
+      const hasAccess = await hasToeflVocabAccess();
+      const email = getUserEmail();
+
+      if (hasAccess) {
+        panel.innerHTML = `
+          <div class="product-access-box">
+            <strong>Akses aktif</strong>
+            <p>Kamu sudah bisa download study sheet ini dengan akun ${email}.</p>
+            <div class="product-access-actions">
+              <button class="btn primary" type="button" id="downloadToeflVocabFile">Download Study Sheet</button>
+              <button class="btn secondary" type="button" id="checkToeflVocabAccess">Cek akses lagi</button>
+            </div>
+            <div class="product-access-status good" data-toefl-vocab-status>${message || 'Siap didownload.'}</div>
+          </div>
+        `;
+      } else {
+        panel.innerHTML = `
+          <div class="product-access-box">
+            <strong>Belum ada akses untuk akun ini</strong>
+            <p>Kamu login sebagai ${email}. Pastikan pembayaran memakai email yang sama supaya file muncul di akun ini.</p>
+            <div class="product-access-actions">
+              <button class="btn primary" type="button" id="openToeflVocabPayment">Bayar Rp10.000</button>
+              <button class="btn secondary" type="button" id="checkToeflVocabAccess">Cek akses</button>
+              <button class="btn secondary" type="button" id="copyToeflVocabEmail">Copy email</button>
+            </div>
+            <div class="product-access-status" data-toefl-vocab-status>${message || 'Setelah bayar, klik cek akses. Jika belum aktif, tunggu sebentar lalu cek lagi.'}</div>
+          </div>
+        `;
+      }
+
+      const paymentButton = document.getElementById('openToeflVocabPayment');
+      const checkButton = document.getElementById('checkToeflVocabAccess');
+      const copyButton = document.getElementById('copyToeflVocabEmail');
+      const downloadButton = document.getElementById('downloadToeflVocabFile');
+
+      if (paymentButton) paymentButton.addEventListener('click', openPaymentModal);
+      if (checkButton) checkButton.addEventListener('click', () => {
+        renderToeflVocabAccess('Mengecek ulang akses pembayaran...', '');
+      });
+      if (downloadButton) downloadButton.addEventListener('click', () => {
+        downloadToeflVocabFile(panel);
+      });
+      if (copyButton) copyButton.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(email);
+          setToeflVocabStatus(panel, 'Email berhasil dicopy.', 'good');
+        } catch (_error) {
+          setToeflVocabStatus(panel, `Email kamu: ${email}`, '');
+        }
+      });
+    }
+
+    async function downloadToeflVocabFile(panel) {
+      if (!mainCurrentSession || !mainCurrentSession.access_token) {
+        renderToeflVocabAccess('Session login belum aktif. Silakan login ulang dulu.', '');
+        return;
+      }
+
+      setToeflVocabStatus(panel, 'Menyiapkan file download...', '');
+
+      try {
+        const response = await fetch(toeflVocabDownloadUrl, {
+          headers: {
+            Authorization: `Bearer ${mainCurrentSession.access_token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const detail = await response.json().catch(() => ({}));
+          const errorMessage = detail.error === 'download_access_denied'
+            ? 'Akses download belum aktif untuk akun ini.'
+            : 'Download belum berhasil. Coba cek akses lagi sebentar lagi.';
+          setToeflVocabStatus(panel, errorMessage, '');
+          return;
+        }
+
+        const blob = await response.blob();
+        const fileUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = '300_TOEFL_Vocabulary.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(fileUrl);
+        setToeflVocabStatus(panel, 'File berhasil mulai didownload.', 'good');
+      } catch (_error) {
+        setToeflVocabStatus(panel, 'Download gagal. Coba lagi setelah refresh halaman.', '');
+      }
+    }
+
+    async function initAuth() {
+      if (!mainSupabaseClient) return;
+
+      const { data } = await mainSupabaseClient.auth.getSession();
+      mainCurrentSession = data.session;
+      if (productModal && productModal.dataset.product === 'toefl-vocab-sheet') {
+        renderToeflVocabAccess();
+      }
+
+      mainSupabaseClient.auth.onAuthStateChange((_event, session) => {
+        mainCurrentSession = session;
+        if (productModal && productModal.dataset.product === 'toefl-vocab-sheet') {
+          renderToeflVocabAccess();
+        }
+      });
     }
 
     function initSheetPreviewSlider() {
@@ -896,6 +1123,8 @@
         closeProductModal(event);
       }
     });
+
+    initAuth();
   </script>
 </body>
 </html>

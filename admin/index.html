@@ -806,11 +806,11 @@
     bookingRows = bookings || [];
     renderTracker(trackerRows);
     renderBookings(bookingRows);
-    els.monthLabel.textContent = els.month.value || "Semua";
+    if (els.monthLabel) els.monthLabel.textContent = els.month.value || "Semua";
   }
 
   function renderTracker(rows) {
-    els.trackerCount.textContent = rows.length;
+    if (els.trackerCount) els.trackerCount.textContent = rows.length;
     els.trackerEmpty.classList.toggle("hidden", rows.length > 0);
     els.trackerBody.innerHTML = rows.map((row) => `
       <tr>
@@ -860,9 +860,9 @@
   }
 
   function renderBookings(rows) {
-    els.bookingCount.textContent = rows.length;
     const bookingGroups = groupBookingRows(rows);
-    els.bookingTotal.textContent = formatMoney(bookingGroups.reduce((sum, group) => sum + Number((group.rows[0] && group.rows[0].price) || 0), 0));
+    if (els.bookingCount) els.bookingCount.textContent = rows.length;
+    if (els.bookingTotal) els.bookingTotal.textContent = formatMoney(bookingGroups.reduce((sum, group) => sum + Number((group.rows[0] && group.rows[0].price) || 0), 0));
     els.bookingEmpty.classList.toggle("hidden", rows.length > 0);
     els.bookingBody.innerHTML = bookingGroups.map((group) => {
       const rowspan = group.rows.length;
