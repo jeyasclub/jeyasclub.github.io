@@ -30,6 +30,7 @@
   h2 { font-size:20px; line-height:1.25; }
   .muted { color:var(--muted); font-size:14px; line-height:1.7; }
   .form { display:grid; gap:14px; }
+  .student-name-grid { display:grid; gap:10px; }
   label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
   input, select, textarea { width:100%; min-height:46px; border:1.5px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; }
   textarea { min-height:94px; resize:vertical; line-height:1.6; }
@@ -135,8 +136,8 @@
         <form class="form" id="bookingForm">
           <label>Tanggal Pemesanan<input type="date" id="bookingDate" required></label>
           <label>Masa Berlaku<input type="date" id="bookingValidUntil"></label>
-          <label>Nama Siswa<textarea id="bookingStudent" required placeholder="1 siswa: tulis satu nama&#10;Lebih dari 1 siswa: tulis satu nama per baris"></textarea></label>
           <label>Jumlah Siswa<input type="number" id="bookingStudentCount" min="1" value="1" required></label>
+          <label>Nama Siswa<div class="student-name-grid" id="bookingStudentFields"></div></label>
           <label>Nama Program<select id="bookingProgram" required></select></label>
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required placeholder="250000"></label>
           <label>Tutor<select id="bookingTutor" required></select></label>
@@ -216,6 +217,7 @@
     password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"), logout:$("logoutButton"),
     sessionLabel:$("sessionLabel"), bookingForm:$("bookingForm"), trackerBody:$("trackerBody"),
     formsGrid: document.querySelector(".forms-grid"), trackerPanel:$("trackerPanel"), bookingPanel:$("bookingPanel"), adminLink:$("adminLink"), bookingSubmit:$("bookingSubmit"),
+    bookingStudentCount:$("bookingStudentCount"), bookingStudentFields:$("bookingStudentFields"),
     tutorInfoPanel:$("tutorInfoPanel"), tutorZoomLink:$("tutorZoomLink"), tutorTestimonialLink:$("tutorTestimonialLink"),
     copyZoomLink:$("copyZoomLink"), copyTestimonialLink:$("copyTestimonialLink"),
     trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus"), zoomForm:$("zoomForm"), zoomDate:$("zoomDate"),
@@ -359,10 +361,17 @@
     return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
   }
 
-  function parseStudentNames(value) {
-    return String(value || "")
-      .split(/\n|,/)
-      .map((name) => name.trim())
+  function renderStudentNameFields() {
+    const studentCount = Math.max(Number(els.bookingStudentCount.value || 1), 1);
+    const currentNames = getStudentNames();
+    els.bookingStudentFields.innerHTML = Array.from({ length: studentCount }, (_item, index) => `
+      <input type="text" class="booking-student-name" required placeholder="Nama siswa ${index + 1}" value="${escapeHTML(currentNames[index] || "")}">
+    `).join("");
+  }
+
+  function getStudentNames() {
+    return Array.from(els.bookingStudentFields.querySelectorAll(".booking-student-name"))
+      .map((input) => input.value.trim())
       .filter(Boolean);
   }
 
@@ -676,6 +685,7 @@
     els.zoomMonth.value ||= toMonthInput();
     if (isAdmin()) {
       $("bookingDate").value ||= today;
+      renderStudentNameFields();
       loadMasterOptions();
       loadZoomBookings();
       return;
@@ -726,6 +736,13 @@
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
   els.copyZoomLink.addEventListener("click", () => copyTutorLink(els.copyZoomLink));
   els.copyTestimonialLink.addEventListener("click", () => copyTutorLink(els.copyTestimonialLink));
+  function handleStudentCountChange() {
+    if (Number(els.bookingStudentCount.value || 0) < 1) els.bookingStudentCount.value = 1;
+    renderStudentNameFields();
+  }
+
+  els.bookingStudentCount.addEventListener("input", handleStudentCountChange);
+  els.bookingStudentCount.addEventListener("change", handleStudentCountChange);
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
 
@@ -759,11 +776,11 @@
     if (!isAdmin()) { setStatus(els.bookingStatus, "Sesi admin tidak aktif.", "bad"); return; }
     els.bookingSubmit.disabled = true;
     setStatus(els.bookingStatus, "Menyimpan booking...");
-    const studentCount = Math.max(Number($("bookingStudentCount").value || 1), 1);
-    const studentNames = parseStudentNames($("bookingStudent").value);
+    const studentCount = Math.max(Number(els.bookingStudentCount.value || 1), 1);
+    const studentNames = getStudentNames();
     if (studentNames.length !== studentCount) {
       els.bookingSubmit.disabled = false;
-      setStatus(els.bookingStatus, `Jumlah nama siswa harus ${studentCount}. Tulis satu nama per baris atau pisahkan dengan koma.`, "bad");
+      setStatus(els.bookingStatus, `Jumlah nama siswa harus ${studentCount}. Isi semua textbox nama siswa.`, "bad");
       return;
     }
     const bookingGroupId = createId();
@@ -812,7 +829,8 @@
     }
     els.bookingForm.reset();
     $("bookingDate").value = toDateInput();
-    $("bookingStudentCount").value = 1;
+    els.bookingStudentCount.value = 1;
+    renderStudentNameFields();
     $("bookingMeetingTotal").value = 0;
     setStatus(els.bookingStatus, `${studentCount} data Class Booking tersimpan dan otomatis muncul di Class Tracker.`, "good");
     await loadTrackers();
