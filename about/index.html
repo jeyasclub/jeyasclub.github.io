@@ -65,77 +65,161 @@
     margin: 0 auto;
   }
 
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
+  nav {
+    position: sticky; top: 0; z-index: 100;
     background: rgba(255,255,255,0.95);
-    border-bottom: 1px solid var(--border);
     backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
     padding: 0 24px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
   }
 
-  .topbar-inner {
-    min-height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
   }
 
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--text);
-    text-decoration: none;
+  .nav-logo-icon {
+    width: 72px; height: 72px; border-radius: 14px;
+    background: none;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  .brand img {
-    width: 72px;
-    height: 72px;
-    border-radius: 14px;
+  .nav-logo-icon img {
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-  }
-
-  .brand-copy {
-    display: grid;
-    line-height: 1.08;
-  }
-
-  .brand-copy strong {
-    font-size: 13px;
-    font-weight: 800;
-  }
-
-  .brand-copy span {
-    color: var(--text-muted);
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    display: block;
   }
 
   .nav-links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    margin-left: auto;
+    display: flex; align-items: center; gap: 20px; list-style: none;
   }
 
   .nav-links a {
     color: var(--text-muted);
     font-size: 13.5px;
-    font-weight: 700;
+    font-weight: 500;
     text-decoration: none;
     transition: color 0.2s;
-    white-space: nowrap;
   }
 
   .nav-links a:hover,
   .nav-links a.active {
     color: var(--blue);
+  }
+
+  .nav-links a.active {
+    border-bottom: 2px solid var(--blue);
+    padding-bottom: 2px;
+  }
+
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+  .nav-test-link {
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--blue);
+    border: 1px solid var(--blue);
+    box-shadow: 0 10px 22px rgba(26, 111, 232, 0.22);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .nav-test-link:hover {
+    background: var(--blue-dark);
+    border-color: var(--blue-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(26, 111, 232, 0.28);
+  }
+
+  .nav-test-link.hidden,
+  .mobile-test-link.hidden,
+  .nav-user.hidden,
+  .mobile-user.hidden {
+    display: none;
+  }
+
+  .nav-user { position: relative; }
+
+  .nav-user-button {
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px 6px 6px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .nav-user-button img,
+  .mobile-user img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--blue-light);
+    border: 1px solid var(--border);
+  }
+
+  .nav-user-name {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .nav-user-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    min-width: 160px;
+    display: none;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.16);
+  }
+
+  .nav-user.open .nav-user-menu { display: block; }
+
+  .nav-profile-link,
+  .nav-logout-button,
+  .mobile-logout-button {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 12px;
+    text-align: left;
+    text-decoration: none;
+  }
+
+  .nav-profile-link:hover,
+  .nav-logout-button:hover,
+  .mobile-logout-button:hover {
+    background: var(--blue-light);
   }
 
   .nav-hamburger {
@@ -182,7 +266,7 @@
     border-bottom: 1px solid var(--border);
     color: var(--text);
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 500;
     padding: 12px 24px;
     text-decoration: none;
   }
@@ -191,13 +275,42 @@
     color: var(--blue);
   }
 
-  .mobile-menu .mobile-profile-link {
+  .mobile-menu .mobile-test-link {
     margin: auto 16px 10px;
     border: none;
     border-radius: 12px;
     background: var(--blue);
     color: var(--white);
     box-shadow: 0 12px 26px rgba(26, 111, 232, 0.24);
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .mobile-user {
+    margin: auto 16px 10px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.1);
+  }
+
+  .mobile-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .mobile-user-name {
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-logout-button {
+    border: 1px solid var(--border);
     text-align: center;
   }
 
@@ -630,22 +743,12 @@
       width: min(100% - 24px, 1120px);
     }
 
-    .topbar {
+    nav {
       padding: 0 16px;
     }
 
-    .topbar-inner {
-      gap: 10px;
-    }
-
-    .brand img {
-      width: 58px;
-      height: 58px;
-    }
-
-    .brand-copy,
     .nav-links,
-    .topbar .ghost-link {
+    .nav-actions {
       display: none;
     }
 
@@ -722,35 +825,61 @@
 </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="page-shell topbar-inner">
-      <a class="brand" href="/" aria-label="Kembali ke Jeya's Club">
-        <img src="/assets/logo.jpg" alt="Jeya's Club">
-        <span class="brand-copy">
-          <strong>Jeya's Club</strong>
-          <span>Language and Social</span>
-        </span>
-      </a>
-      <nav class="nav-links" aria-label="Navigasi utama">
-        <a href="/">Home</a>
-        <a href="/about/" class="active">Tentang Kami</a>
-        <a href="/artikel/">Artikel</a>
-        <a href="/#english-test">English Test</a>
-        <a href="/kursus-bahasa-inggris-online/">Kursus</a>
-      </nav>
-      <a class="ghost-link" href="/account/">Profile</a>
-      <button class="nav-hamburger" type="button" aria-label="Buka menu" aria-controls="mobileMenu" aria-expanded="false" id="navHamburger">
-        <span></span><span></span><span></span>
-      </button>
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><img src="/assets/logo.jpg" alt="Logo Jeya's Club" width="500" height="208" decoding="async" fetchpriority="high"></div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/">Beranda</a></li>
+      <li><a href="/#features">Kursus</a></li>
+      <li><a href="/quiz/">Quiz</a></li>
+      <li><a href="/produkdigital/">Produk Digital</a></li>
+      <li><a href="/artikel/">Artikel</a></li>
+      <li><a href="/testimoni/">Testimoni</a></li>
+      <li><a href="/#communities">Komunitas</a></li>
+      <li><a href="/#gallery">Galeri</a></li>
+      <li><a href="/about/" class="active">Tentang Kami</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="/account/?redirect=/about/" class="nav-test-link" id="navLoginLink">Login / Daftar</a>
+      <div class="nav-user hidden" id="navUser">
+        <button class="nav-user-button" type="button" id="navUserButton" aria-expanded="false" aria-haspopup="true">
+          <img id="navUserAvatar" src="/assets/cs.jpg" alt="">
+          <span class="nav-user-name" id="navUserName">User</span>
+        </button>
+        <div class="nav-user-menu" id="navUserMenu">
+          <a class="nav-profile-link" href="/account/">Profile</a>
+          <button class="nav-logout-button" type="button" id="navLogoutButton">Logout</button>
+        </div>
+      </div>
     </div>
-  </header>
+
+    <button class="nav-hamburger" type="button" aria-label="Buka menu" aria-controls="mobileMenu" aria-expanded="false" id="mobileMenuToggle">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
   <div class="mobile-menu" id="mobileMenu">
-    <a href="/">Home</a>
-    <a href="/about/" class="active">Tentang Kami</a>
+    <a href="/">Beranda</a>
+    <a href="/#features">Kursus</a>
+    <a href="/quiz/">Quiz</a>
+    <a href="/produkdigital/">Produk Digital</a>
     <a href="/artikel/">Artikel</a>
-    <a href="/#english-test">English Test</a>
-    <a href="/kursus-bahasa-inggris-online/">Kursus</a>
-    <a href="/account/" class="mobile-profile-link">Profile</a>
+    <a href="/testimoni/">Testimoni</a>
+    <a href="/#communities">Komunitas</a>
+    <a href="/#gallery">Galeri</a>
+    <a href="/about/" class="active">Tentang Kami</a>
+    <a href="/account/?redirect=/about/" class="mobile-test-link" id="mobileLoginLink">Login / Daftar</a>
+    <div class="mobile-user hidden" id="mobileUser">
+      <div class="mobile-user-row">
+        <img id="mobileUserAvatar" src="/assets/cs.jpg" alt="">
+        <span class="mobile-user-name" id="mobileUserName">User</span>
+      </div>
+      <a class="mobile-logout-button" href="/account/">Profile</a>
+      <button class="mobile-logout-button" type="button" id="mobileLogoutButton">Logout</button>
+    </div>
   </div>
 
   <main>
@@ -972,14 +1101,123 @@
       </div>
     </div>
   </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const navHamburger = document.getElementById('navHamburger');
-  const mobileMenu = document.getElementById('mobileMenu');
+  const navSupabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const navSupabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const navSupabaseClient = window.supabase ? window.supabase.createClient(navSupabaseUrl, navSupabaseAnonKey) : null;
+  let navCurrentSession = null;
 
-  navHamburger.addEventListener('click', () => {
-    const isOpen = mobileMenu.classList.toggle('open');
-    navHamburger.setAttribute('aria-expanded', String(isOpen));
+  const navLoginLink = document.getElementById('navLoginLink');
+  const mobileLoginLink = document.getElementById('mobileLoginLink');
+  const navUser = document.getElementById('navUser');
+  const navUserButton = document.getElementById('navUserButton');
+  const navUserAvatar = document.getElementById('navUserAvatar');
+  const navUserName = document.getElementById('navUserName');
+  const navLogoutButton = document.getElementById('navLogoutButton');
+  const mobileUser = document.getElementById('mobileUser');
+  const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+  const mobileUserName = document.getElementById('mobileUserName');
+  const mobileLogoutButton = document.getElementById('mobileLogoutButton');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+
+  function getNavLoginUrl() {
+    const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/about/';
+    return `/account/?redirect=${encodeURIComponent(redirect)}`;
+  }
+
+  function getNavUserProfile() {
+    const user = navCurrentSession && navCurrentSession.user;
+    const metadata = (user && user.user_metadata) || {};
+    const emailName = user && user.email ? user.email.split('@')[0] : '';
+    return {
+      name: metadata.username || metadata.full_name || metadata.name || emailName || 'User',
+      avatar: metadata.avatar_url || metadata.picture || '/assets/cs.jpg'
+    };
+  }
+
+  function renderNavAuthState() {
+    const isLoggedIn = Boolean(navCurrentSession && navCurrentSession.user);
+    const profile = getNavUserProfile();
+    const loginUrl = getNavLoginUrl();
+
+    if (navLoginLink) navLoginLink.href = loginUrl;
+    if (mobileLoginLink) mobileLoginLink.href = loginUrl;
+    if (navLoginLink) navLoginLink.classList.toggle('hidden', isLoggedIn);
+    if (mobileLoginLink) mobileLoginLink.classList.toggle('hidden', isLoggedIn);
+    if (navUser) navUser.classList.toggle('hidden', !isLoggedIn);
+    if (mobileUser) mobileUser.classList.toggle('hidden', !isLoggedIn);
+
+    if (!isLoggedIn) {
+      if (navUser) navUser.classList.remove('open');
+      if (navUserButton) navUserButton.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    if (navUserAvatar) {
+      navUserAvatar.src = profile.avatar;
+      navUserAvatar.alt = profile.name;
+    }
+    if (mobileUserAvatar) {
+      mobileUserAvatar.src = profile.avatar;
+      mobileUserAvatar.alt = profile.name;
+    }
+    if (navUserName) navUserName.textContent = profile.name;
+    if (mobileUserName) mobileUserName.textContent = profile.name;
+  }
+
+  async function initNavAuth() {
+    renderNavAuthState();
+    if (!navSupabaseClient) return;
+
+    const { data } = await navSupabaseClient.auth.getSession();
+    navCurrentSession = data.session;
+    renderNavAuthState();
+
+    navSupabaseClient.auth.onAuthStateChange((_event, session) => {
+      navCurrentSession = session;
+      renderNavAuthState();
+    });
+  }
+
+  async function logoutNavUser() {
+    if (!navSupabaseClient) return;
+    await navSupabaseClient.auth.signOut();
+    navCurrentSession = null;
+    renderNavAuthState();
+  }
+
+  if (mobileMenuToggle && mobileMenu) {
+    mobileMenuToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      mobileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+  }
+
+  if (mobileMenu) {
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    });
+  }
+
+  if (navUserButton && navUser) {
+    navUserButton.addEventListener('click', event => {
+      event.stopPropagation();
+      const isOpen = navUser.classList.toggle('open');
+      navUserButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+
+  document.addEventListener('click', event => {
+    if (!navUser || navUser.contains(event.target)) return;
+    navUser.classList.remove('open');
+    if (navUserButton) navUserButton.setAttribute('aria-expanded', 'false');
   });
+
+  if (navLogoutButton) navLogoutButton.addEventListener('click', logoutNavUser);
+  if (mobileLogoutButton) mobileLogoutButton.addEventListener('click', logoutNavUser);
+  initNavAuth();
 </script>
 </body>
 </html>
