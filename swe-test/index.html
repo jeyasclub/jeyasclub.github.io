@@ -246,6 +246,62 @@
       line-height: 1.55;
       font-weight: 800;
     }
+    .question.written-question {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.15rem, 2vw, 1.5rem);
+      font-weight: 600;
+      line-height: 2.1;
+    }
+    .written-choice {
+      position: relative;
+      display: inline-block;
+      border: 0;
+      border-bottom: 2px solid currentColor;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: 1.2;
+      margin: 0 2px 1.1em;
+      padding: 0 2px 2px;
+      vertical-align: baseline;
+    }
+    .written-choice:hover {
+      color: var(--blue);
+    }
+    .written-choice::after {
+      content: attr(data-letter);
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 2px);
+      transform: translateX(-50%);
+      color: var(--ink);
+      font-family: "Poppins", Arial, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .written-options {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .written-options .option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      text-align: center;
+      grid-template-columns: 1fr;
+      font-size: 1rem;
+    }
+    .written-options .option span:first-child {
+      width: auto;
+      height: auto;
+      background: transparent;
+      color: var(--blue);
+      font-size: 1.1rem;
+    }
     .options {
       display: grid;
       gap: 12px;
@@ -333,26 +389,176 @@
       display: grid;
       gap: 12px;
     }
-    details {
+    .paid-detail {
+      padding: 16px;
+      border: 1px solid rgba(31, 115, 232, 0.14);
+      border-radius: 16px;
+      background: #f3f8ff;
+    }
+    .paid-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .paid-title span,
+    .locked span {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .paid-title h3 {
+      margin: 4px 0 4px;
+    }
+    .paid-title p,
+    .locked p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .paid-count {
+      flex: 0 0 auto;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--sky);
+      color: var(--blue);
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+    .locked {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid rgba(31, 115, 232, 0.14);
+      border-radius: 16px;
+      background: #f3f8ff;
+    }
+    .locked strong {
+      font-size: 1.12rem;
+    }
+    .accordion-list {
+      display: grid;
+      gap: 10px;
+    }
+    .accordion-item {
       border: 1px solid var(--line);
       border-radius: 14px;
       background: #fff;
       overflow: hidden;
     }
-    summary {
-      cursor: pointer;
-      padding: 16px 18px;
-      font-weight: 900;
+    .accordion-item[open] {
+      border-color: rgba(31, 115, 232, 0.22);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
     }
-    .review-body {
+    .accordion-item.ok { border-left: 5px solid var(--green); }
+    .accordion-item.bad { border-left: 5px solid var(--red); }
+    .accordion-item summary {
+      min-height: 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 10px;
+      align-items: center;
+      cursor: pointer;
+      list-style: none;
+      padding: 13px 14px;
+    }
+    .accordion-item summary::-webkit-details-marker { display: none; }
+    .accordion-question {
+      min-width: 0;
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .accordion-status {
+      min-height: 26px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 5px 9px;
+      white-space: nowrap;
+    }
+    .accordion-item.ok .accordion-status {
+      background: #edfaf3;
+      color: var(--green);
+    }
+    .accordion-item.bad .accordion-status {
+      background: #fff0ef;
+      color: var(--red);
+    }
+    .accordion-arrow {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f8fbff;
+      color: var(--muted);
+      transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .accordion-arrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+    }
+    .accordion-item[open] .accordion-arrow {
+      transform: rotate(180deg);
+      background: var(--sky);
+      color: var(--blue);
+    }
+    .accordion-body {
       display: grid;
       gap: 10px;
-      padding: 0 18px 18px;
+      padding: 0 14px 14px;
       color: var(--muted);
       line-height: 1.7;
     }
-    .answer-good { color: var(--green); font-weight: 900; }
-    .answer-bad { color: var(--red); font-weight: 900; }
+    .answer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .answer-box {
+      padding: 12px;
+      border: 1px solid rgba(31, 115, 232, 0.12);
+      border-radius: 12px;
+      background: #f7fbff;
+    }
+    .answer-box span {
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .answer-box strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .explanation-box {
+      border: 1px solid rgba(31, 115, 232, 0.12);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      padding: 12px;
+    }
 
     .payment-modal {
       position: fixed;
@@ -396,6 +602,7 @@
       .hero, .score-layout, .auth-grid { grid-template-columns: 1fr; }
       .panel { padding: 20px; }
       .panel-head { display: grid; }
+      .paid-title, .answer-grid { display: grid; }
       .nav-actions { gap: 8px; }
       .nav-link, .btn { padding-inline: 12px; }
     }
@@ -419,13 +626,11 @@
       <div>
         <p class="eyebrow">TOEFL ITP Readiness</p>
         <h1>Structure & Written Expressions Test</h1>
-        <p class="lead">Latihan 40 soal untuk membaca kesiapanmu di bagian Structure dan Written Expression. Urutan soal diacak per bagian supaya latihan terasa lebih natural.</p>
+        <p class="lead">Latihan soal untuk membaca kesiapanmu tes TOEFL ITP.</p>
       </div>
       <aside class="summary-panel" aria-label="Ringkasan test">
-        <div class="summary-row"><span>Bagian</span><strong>2</strong></div>
-        <div class="summary-row"><span>Jumlah soal</span><strong>40</strong></div>
-        <div class="summary-row"><span>Scoring</span><strong>Persentase</strong></div>
-        <div class="summary-row"><span>Unlock pembahasan</span><strong>Rp30.000</strong></div>
+        <div class="summary-row"><span>Structure</span><strong>15 Soal</strong></div>
+        <div class="summary-row"><span>Written Expression</span><strong>25 Soal</strong></div>
       </aside>
     </section>
 
@@ -504,8 +709,7 @@
     <section class="panel hidden" id="reviewPanel">
       <div class="panel-head">
         <div>
-          <h2>Kunci & Pembahasan</h2>
-          <p class="muted" id="reviewIntro">Teaser 3 soal pilihan tersedia gratis. Pembahasan lengkap bisa dibuka setelah pembayaran.</p>
+          <h2>Kunci Jawaban & Pembahasan</h2>
         </div>
         <div class="nav-actions">
           <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
@@ -559,7 +763,6 @@
     const scoreCategory = document.getElementById("scoreCategory");
     const breakdownList = document.getElementById("breakdownList");
     const resultStatus = document.getElementById("resultStatus");
-    const reviewIntro = document.getElementById("reviewIntro");
     const reviewList = document.getElementById("reviewList");
     const checkAccessButton = document.getElementById("checkAccessButton");
     const payButton = document.getElementById("payButton");
@@ -657,17 +860,47 @@
       progressFill.style.width = `${progress}%`;
       typeLabel.textContent = question.type;
       difficultyLabel.textContent = "Mixed difficulty";
-      questionText.textContent = question.question;
+      questionText.classList.toggle("written-question", question.part === "written");
       quizStatus.textContent = "";
-      optionsList.innerHTML = question.options.map((option, index) => `
-        <button class="option" type="button" data-index="${index}">
-          <span>${letters[index]}</span>
-          <strong>${escapeHtml(option)}</strong>
-        </button>
-      `).join("");
+      optionsList.classList.toggle("written-options", question.part === "written");
+      if (question.part === "written") {
+        questionText.innerHTML = renderWrittenQuestion(question);
+        questionText.querySelectorAll(".written-choice").forEach(button => {
+          button.addEventListener("click", () => submitAnswer(Number(button.dataset.index)));
+        });
+        optionsList.innerHTML = question.options.map((option, index) => `
+          <button class="option" type="button" data-index="${index}" aria-label="Pilih jawaban ${letters[index]}: ${escapeHtml(stripChoiceLabel(option))}">
+            <span>${letters[index]}</span>
+          </button>
+        `).join("");
+      } else {
+        questionText.textContent = question.question;
+        optionsList.innerHTML = question.options.map((option, index) => `
+          <button class="option" type="button" data-index="${index}">
+            <span>${letters[index]}</span>
+            <strong>${escapeHtml(option)}</strong>
+          </button>
+        `).join("");
+      }
       optionsList.querySelectorAll(".option").forEach(button => {
         button.addEventListener("click", () => submitAnswer(Number(button.dataset.index)));
       });
+    }
+
+    function renderWrittenQuestion(question) {
+      let html = escapeHtml(question.question);
+      question.options.forEach((option, index) => {
+        const marker = `\\(${letters[index]}\\)`;
+        const segment = escapeHtml(stripChoiceLabel(option));
+        const pattern = new RegExp(`${marker}\\s*${escapeRegExp(segment)}`);
+        const replacement = `<button class="written-choice" type="button" data-index="${index}" data-letter="${letters[index]}">${segment}</button>`;
+        html = html.replace(pattern, replacement);
+      });
+      return html;
+    }
+
+    function stripChoiceLabel(option) {
+      return String(option).replace(/^\([A-D]\)\s*/i, "").trim();
     }
 
     function submitAnswer(selectedIndex) {
@@ -791,22 +1024,56 @@
 
     function renderReviews(showAll) {
       const source = showAll ? answers : answers.filter(item => teaserQuestionIds.includes(item.id));
-      reviewIntro.textContent = showAll
-        ? "Akses pembahasan lengkap aktif. Semua kunci dan pembahasan ditampilkan."
-        : "Teaser gratis: 3 soal pilihan. Unlock untuk membuka seluruh kunci dan pembahasan.";
-      reviewList.innerHTML = source.map((item, index) => {
+      const introTitle = showAll ? "Review setiap soal" : "Teaser pembahasan pilihan";
+      const introCopy = showAll
+        ? "Buka soal yang ingin kamu cek untuk melihat jawabanmu, kunci jawaban, dan penjelasan singkatnya."
+        : "Ini contoh 3 pembahasan pilihan. Unlock untuk membuka seluruh kunci jawaban dan pembahasan.";
+      const lockedCopy = showAll ? "" : `
+        <div class="locked">
+          <span>Pembahasan lengkap terkunci</span>
+          <strong>Unlock kunci jawaban & pembahasan hanya dengan Rp30.000</strong>
+          <p>Gunakan email yang sama dengan akun Jeya's Club supaya akses pembahasan otomatis aktif setelah pembayaran.</p>
+        </div>
+      `;
+      const accordions = source.map((item, index) => {
         const isCorrect = item.selected === item.correct;
         return `
-          <details ${index === 0 ? "open" : ""}>
-            <summary>${item.partName} - Soal ${item.id}: ${escapeHtml(item.question)}</summary>
-            <div class="review-body">
-              <div>Jawaban kamu: <span class="${isCorrect ? "answer-good" : "answer-bad"}">${letters[item.selected]} - ${escapeHtml(item.options[item.selected])}</span></div>
-              <div>Kunci jawaban: <span class="answer-good">${letters[item.correct]} - ${escapeHtml(item.options[item.correct])}</span></div>
-              <div>${escapeHtml(item.explanation)}</div>
+          <details class="accordion-item ${isCorrect ? "ok" : "bad"}" ${index === 0 ? "open" : ""}>
+            <summary>
+              <span class="accordion-question">${item.id}. ${escapeHtml(item.question)}</span>
+              <span class="accordion-status">${isCorrect ? "Benar" : "Salah"}</span>
+              <span class="accordion-arrow" aria-hidden="true"></span>
+            </summary>
+            <div class="accordion-body">
+              <div class="answer-grid">
+                <div class="answer-box">
+                  <span>Jawaban kamu</span>
+                  <strong>${letters[item.selected]} - ${escapeHtml(item.options[item.selected] || "-")}</strong>
+                </div>
+                <div class="answer-box">
+                  <span>Jawaban benar</span>
+                  <strong>${letters[item.correct]} - ${escapeHtml(item.options[item.correct])}</strong>
+                </div>
+              </div>
+              <div class="explanation-box">${escapeHtml(item.explanation)}</div>
             </div>
           </details>
         `;
       }).join("");
+      reviewList.innerHTML = `
+        ${lockedCopy}
+        <div class="paid-detail">
+          <div class="paid-title">
+            <div>
+              <span>Pembahasan jawaban</span>
+              <h3>${introTitle}</h3>
+              <p>${introCopy}</p>
+            </div>
+            <strong class="paid-count">${source.length} soal</strong>
+          </div>
+          <div class="accordion-list">${accordions}</div>
+        </div>
+      `;
     }
 
     function openPayment() {
@@ -828,6 +1095,10 @@
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function escapeRegExp(value) {
+      return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
     document.getElementById("loginButton").addEventListener("click", login);

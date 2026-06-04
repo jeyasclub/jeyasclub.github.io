@@ -260,10 +260,10 @@ const questions = [
     "partName": "Written Expression",
     "type": "Error Identification",
     "difficulty": "easy",
-    "question": "The researcher (A)has submitted her report (B)yesterday and (C)is now waiting for (D)feedback.",
+    "question": "The researcher (A)has submitted (B) her report yesterday and (C)is now waiting for (D)feedback.",
     "options": [
       "(A) has submitted",
-      "(B) yesterday",
+      "(B) her report",
       "(C) is now waiting for",
       "(D) feedback"
     ],
@@ -383,7 +383,7 @@ const questions = [
     "options": [
       "(A) who made",
       "(B) was awarded",
-      "(C) them",
+      "(C) for them",
       "(D) contribution"
     ],
     "correct": 2,
