@@ -362,6 +362,12 @@
       color: var(--blue);
       margin: 8px 0;
     }
+    .score-emoji {
+      display: block;
+      font-size: clamp(2.4rem, 7vw, 4rem);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
     .score-copy {
       margin: 14px auto 0;
       max-width: 260px;
@@ -723,6 +729,7 @@
       <div class="score-layout">
         <div class="score-card">
           <p class="eyebrow">Persentase</p>
+          <span class="score-emoji" id="scoreEmoji" aria-hidden="true">👍🏻</span>
           <div class="score-number" id="scorePercent">0%</div>
           <strong id="scoreCategory">Ready</strong>
           <p class="score-copy" id="scoreCopy"></p>
@@ -790,6 +797,7 @@
     const optionsList = document.getElementById("optionsList");
     const quizStatus = document.getElementById("quizStatus");
     const scorePercent = document.getElementById("scorePercent");
+    const scoreEmoji = document.getElementById("scoreEmoji");
     const scoreCategory = document.getElementById("scoreCategory");
     const scoreCopy = document.getElementById("scoreCopy");
     const breakdownList = document.getElementById("breakdownList");
@@ -1033,6 +1041,7 @@
       const percent = Number(result.accuracy || 0);
       const breakdown = Array.isArray(result.category_breakdown) ? result.category_breakdown : [];
       const category = getCategory(percent);
+      scoreEmoji.textContent = getCategoryEmoji(category);
       scorePercent.textContent = `${percent}%`;
       scoreCategory.textContent = category;
       scoreCopy.textContent = getCategoryCopy(category);
@@ -1093,6 +1102,17 @@
         "Tahan dulu!": "Mending jangan buru-buru ikut TOEFL saat ini. Masih ada banyak konsep grammar dan structure yang perlu dipahami biar kamu ga kesulitan saat mengerjakan soal. Coba mulai dari materi dasar, bangun pemahaman, lalu tes lagi setelah kemampuanmu meningkat."
       };
       return copies[category] || "";
+    }
+
+    function getCategoryEmoji(category) {
+      const emojis = {
+        "You're all set!": "👏🏼",
+        "Almost there!": "🙌🏼",
+        "Nice work!": "👍🏻",
+        "Tunda dulu!": "🤙🏼",
+        "Tahan dulu!": "🖐🏼"
+      };
+      return emojis[category] || "👍🏻";
     }
 
     async function saveResult(result) {
