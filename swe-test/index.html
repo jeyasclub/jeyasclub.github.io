@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOEFL ITP Structure & Written Expressions Test | Jeya's Club</title>
+  <meta name="description" content="Uji kesiapan TOEFL ITP bagian Structure & Written Expressions. Hasil ditampilkan dalam persentase, dengan pembahasan lengkap berbayar.">
+  <link rel="canonical" href="https://www.jeyasclub.com/swe-test/">
+  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #171832;
+      --muted: #66738c;
+      --blue: #2477e8;
+      --blue-dark: #1558c0;
+      --sky: #eaf4ff;
+      --line: #dfe7f2;
+      --soft: #f6f8fc;
+      --panel: #ffffff;
+      --green: #23a66d;
+      --yellow: #ffd15d;
+      --red: #e65050;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Poppins", Arial, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #ffffff 0%, #f5f8fd 58%, #ffffff 100%);
+    }
+    button, input { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .hidden { display: none !important; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 74px;
+      padding: 12px max(22px, calc((100vw - 1120px) / 2));
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+    }
+    .brand img {
+      width: 82px;
+      height: 44px;
+      object-fit: contain;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-link, .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+      padding: 10px 16px;
+    }
+    .btn.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(31, 115, 232, 0.22);
+    }
+    .btn.primary:hover { background: var(--blue-dark); }
+    .btn.ghost { background: var(--soft); }
+    .btn.danger { color: var(--red); border-color: #ffd5d5; background: #fff8f8; }
+
+    .shell {
+      width: min(100% - 36px, 1120px);
+      margin: 0 auto;
+      padding: 54px 0 72px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font-size: clamp(2.3rem, 6vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+    .lead {
+      max-width: 780px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      line-height: 1.75;
+    }
+    .summary-panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 0;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+    }
+    .summary-row:last-child { border-bottom: 0; }
+    .summary-row strong { color: var(--ink); }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      padding: 28px;
+      box-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+      margin-top: 20px;
+    }
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    .panel h2, .panel h3 { margin: 0; }
+    .muted { color: var(--muted); }
+    .auth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    .field label {
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+    .field input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+    }
+    .status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .progress-wrap {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .progress {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--sky);
+    }
+    .progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--blue);
+      transition: width 0.25s ease;
+    }
+    .question-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--soft);
+      padding: 22px;
+    }
+    .question-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      border-radius: 999px;
+      background: var(--sky);
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 0.82rem;
+      padding: 6px 12px;
+    }
+    .question {
+      margin: 0 0 18px;
+      font-size: clamp(1.12rem, 2vw, 1.55rem);
+      line-height: 1.55;
+      font-weight: 800;
+    }
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+    .option {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 12px;
+      padding: 14px;
+      text-align: left;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .option:hover {
+      border-color: var(--blue);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(31, 115, 232, 0.12);
+    }
+    .option span:first-child {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: var(--sky);
+      color: var(--blue);
+      font-weight: 900;
+    }
+
+    .score-layout {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .score-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #eef6ff 100%);
+      padding: 24px;
+      text-align: center;
+    }
+    .score-number {
+      font-size: clamp(4rem, 10vw, 6rem);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--blue);
+      margin: 8px 0;
+    }
+    .breakdown {
+      display: grid;
+      gap: 12px;
+    }
+    .bar-row {
+      display: grid;
+      gap: 8px;
+    }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--sky);
+    }
+    .bar span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      background: var(--green);
+    }
+
+    .review-list {
+      display: grid;
+      gap: 12px;
+    }
+    details {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+    summary {
+      cursor: pointer;
+      padding: 16px 18px;
+      font-weight: 900;
+    }
+    .review-body {
+      display: grid;
+      gap: 10px;
+      padding: 0 18px 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .answer-good { color: var(--green); font-weight: 900; }
+    .answer-bad { color: var(--red); font-weight: 900; }
+
+    .payment-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, 0.56);
+    }
+    .payment-modal.open { display: flex; }
+    .payment-box {
+      width: min(100%, 980px);
+      height: min(86vh, 760px);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 28px 80px rgba(15, 23, 42, 0.28);
+    }
+    .payment-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .payment-box iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    @media (max-width: 860px) {
+      .topbar { padding-inline: 18px; }
+      .brand span { display: none; }
+      .hero, .score-layout, .auth-grid { grid-template-columns: 1fr; }
+      .panel { padding: 20px; }
+      .panel-head { display: grid; }
+      .nav-actions { gap: 8px; }
+      .nav-link, .btn { padding-inline: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <img src="/assets/logo.jpg" alt="Logo Jeya's Club" width="500" height="208" decoding="async">
+      <span>Jeya's Club</span>
+    </a>
+    <div class="nav-actions">
+      <a class="nav-link" href="/quiz/">Quiz</a>
+      <a class="nav-link" href="/account/" id="profileLink">Profile</a>
+      <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">TOEFL ITP Readiness</p>
+        <h1>Structure & Written Expressions Test</h1>
+        <p class="lead">Latihan 40 soal untuk membaca kesiapanmu di bagian Structure dan Written Expression. Urutan soal diacak per bagian supaya latihan terasa lebih natural.</p>
+      </div>
+      <aside class="summary-panel" aria-label="Ringkasan test">
+        <div class="summary-row"><span>Bagian</span><strong>2</strong></div>
+        <div class="summary-row"><span>Jumlah soal</span><strong>40</strong></div>
+        <div class="summary-row"><span>Scoring</span><strong>Persentase</strong></div>
+        <div class="summary-row"><span>Unlock pembahasan</span><strong>Rp30.000</strong></div>
+      </aside>
+    </section>
+
+    <section class="panel" id="authPanel">
+      <div class="panel-head">
+        <div>
+          <h2>Login dulu sebelum mulai</h2>
+          <p class="muted">Hasil test akan tersimpan di akunmu, dan akses pembahasan mengikuti email akun yang dipakai saat pembayaran.</p>
+        </div>
+      </div>
+      <div class="auth-grid">
+        <div class="field">
+          <label for="emailInput">Email</label>
+          <input id="emailInput" type="email" autocomplete="email" placeholder="nama@email.com">
+        </div>
+        <div class="field">
+          <label for="passwordInput">Password</label>
+          <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Minimal 6 karakter">
+        </div>
+      </div>
+      <div class="nav-actions" style="justify-content:flex-start;margin-top:16px;">
+        <button class="btn primary" type="button" id="loginButton">Login</button>
+        <button class="btn ghost" type="button" id="signupButton">Daftar</button>
+      </div>
+      <p class="status" id="authStatus"></p>
+    </section>
+
+    <section class="panel hidden" id="startPanel">
+      <div class="panel-head">
+        <div>
+          <h2>Siap mulai?</h2>
+          <p class="muted" id="welcomeText">Kamu sudah login.</p>
+        </div>
+        <button class="btn primary" type="button" id="startButton">Mulai Test</button>
+      </div>
+      <p class="muted">Bagian Structure dan Written Expression tetap dipisah, tapi urutan difficulty di dalam masing-masing bagian sudah diacak.</p>
+    </section>
+
+    <section class="panel hidden" id="quizPanel">
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="partLabel">Structure</span>
+          <span id="questionCounter">1/40</span>
+        </div>
+        <div class="progress"><span id="progressFill"></span></div>
+      </div>
+      <div class="question-card">
+        <div class="question-meta">
+          <span class="pill" id="typeLabel">Sentence Completion</span>
+          <span class="pill" id="difficultyLabel">Mixed</span>
+        </div>
+        <p class="question" id="questionText"></p>
+        <div class="options" id="optionsList"></div>
+      </div>
+      <p class="status" id="quizStatus"></p>
+    </section>
+
+    <section class="panel hidden" id="resultPanel">
+      <div class="panel-head">
+        <div>
+          <h2>Hasil TOEFL SWE Test</h2>
+          <p class="muted" id="resultStatus">Scoring hanya ditampilkan dalam bentuk persentase.</p>
+        </div>
+        <button class="btn ghost" type="button" id="restartButton">Ulangi Test</button>
+      </div>
+      <div class="score-layout">
+        <div class="score-card">
+          <p class="eyebrow">Persentase</p>
+          <div class="score-number" id="scorePercent">0%</div>
+          <strong id="scoreCategory">Ready</strong>
+        </div>
+        <div class="breakdown" id="breakdownList"></div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="reviewPanel">
+      <div class="panel-head">
+        <div>
+          <h2>Kunci & Pembahasan</h2>
+          <p class="muted" id="reviewIntro">Teaser 3 soal pilihan tersedia gratis. Pembahasan lengkap bisa dibuka setelah pembayaran.</p>
+        </div>
+        <div class="nav-actions">
+          <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
+          <button class="btn primary" type="button" id="payButton">Unlock Rp30.000</button>
+        </div>
+      </div>
+      <div class="review-list" id="reviewList"></div>
+    </section>
+  </main>
+
+  <div class="payment-modal" id="paymentModal" aria-hidden="true">
+    <div class="payment-box" role="dialog" aria-modal="true" aria-label="Pembayaran Pembahasan TOEFL Structure & Written Expressions">
+      <div class="payment-head">
+        <strong>Pembayaran Pembahasan TOEFL Structure & Written Expressions</strong>
+        <button class="btn ghost" type="button" id="closePaymentButton">Tutup</button>
+      </div>
+      <iframe id="paymentFrame" title="Pembayaran Pembahasan TOEFL Structure & Written Expressions"></iframe>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./questions.js"></script>
+  <script>
+    const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+    const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+    const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+    const paymentUrl = "https://jeyasclub.myr.id/pl/unlock-pembahasan-toefl-structure-written-expressions?iframe=true";
+    const letters = ["A", "B", "C", "D"];
+    const teaserQuestionIds = [11, 15, 40];
+    const maxPoint = questions.reduce((sum, question) => sum + question.weight, 0);
+
+    const authPanel = document.getElementById("authPanel");
+    const startPanel = document.getElementById("startPanel");
+    const quizPanel = document.getElementById("quizPanel");
+    const resultPanel = document.getElementById("resultPanel");
+    const reviewPanel = document.getElementById("reviewPanel");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const authStatus = document.getElementById("authStatus");
+    const welcomeText = document.getElementById("welcomeText");
+    const logoutButton = document.getElementById("logoutButton");
+    const partLabel = document.getElementById("partLabel");
+    const questionCounter = document.getElementById("questionCounter");
+    const progressFill = document.getElementById("progressFill");
+    const typeLabel = document.getElementById("typeLabel");
+    const difficultyLabel = document.getElementById("difficultyLabel");
+    const questionText = document.getElementById("questionText");
+    const optionsList = document.getElementById("optionsList");
+    const quizStatus = document.getElementById("quizStatus");
+    const scorePercent = document.getElementById("scorePercent");
+    const scoreCategory = document.getElementById("scoreCategory");
+    const breakdownList = document.getElementById("breakdownList");
+    const resultStatus = document.getElementById("resultStatus");
+    const reviewIntro = document.getElementById("reviewIntro");
+    const reviewList = document.getElementById("reviewList");
+    const checkAccessButton = document.getElementById("checkAccessButton");
+    const payButton = document.getElementById("payButton");
+    const paymentModal = document.getElementById("paymentModal");
+    const paymentFrame = document.getElementById("paymentFrame");
+
+    let currentSession = null;
+    let quizOrder = [];
+    let currentIndex = 0;
+    let answers = [];
+    let latestResultId = null;
+    let hasReviewAccess = false;
+
+    function shuffle(items) {
+      const next = [...items];
+      for (let index = next.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
+      }
+      return next;
+    }
+
+    function buildQuizOrder() {
+      const structure = shuffle(questions.filter(question => question.part === "structure"));
+      const written = shuffle(questions.filter(question => question.part === "written"));
+      return [...structure, ...written];
+    }
+
+    function show(panel) {
+      [authPanel, startPanel, quizPanel, resultPanel, reviewPanel].forEach(item => item.classList.add("hidden"));
+      panel.classList.remove("hidden");
+    }
+
+    function setAuthUi(session) {
+      currentSession = session;
+      logoutButton.classList.toggle("hidden", !session);
+      if (!session) {
+        show(authPanel);
+        return;
+      }
+      welcomeText.textContent = `Login sebagai ${session.user.email}.`;
+      show(startPanel);
+      checkReviewAccess();
+    }
+
+    async function initAuth() {
+      if (!supabaseClient) {
+        authStatus.textContent = "Supabase belum tersedia. Coba refresh halaman.";
+        return;
+      }
+      const { data } = await supabaseClient.auth.getSession();
+      setAuthUi(data.session);
+      supabaseClient.auth.onAuthStateChange((_event, session) => setAuthUi(session));
+    }
+
+    async function login() {
+      authStatus.textContent = "Login...";
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      });
+      authStatus.textContent = error ? error.message : "Berhasil login.";
+    }
+
+    async function signup() {
+      authStatus.textContent = "Mendaftarkan akun...";
+      const { error } = await supabaseClient.auth.signUp({
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      });
+      authStatus.textContent = error ? error.message : "Akun dibuat. Cek email jika diminta konfirmasi, lalu login.";
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      authStatus.textContent = "Kamu sudah logout.";
+    }
+
+    function startQuiz() {
+      quizOrder = buildQuizOrder();
+      currentIndex = 0;
+      answers = [];
+      latestResultId = null;
+      resultPanel.classList.add("hidden");
+      reviewPanel.classList.add("hidden");
+      show(quizPanel);
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const question = quizOrder[currentIndex];
+      const progress = Math.round((currentIndex / quizOrder.length) * 100);
+      partLabel.textContent = question.partName;
+      questionCounter.textContent = `${currentIndex + 1}/${quizOrder.length}`;
+      progressFill.style.width = `${progress}%`;
+      typeLabel.textContent = question.type;
+      difficultyLabel.textContent = "Mixed difficulty";
+      questionText.textContent = question.question;
+      quizStatus.textContent = "";
+      optionsList.innerHTML = question.options.map((option, index) => `
+        <button class="option" type="button" data-index="${index}">
+          <span>${letters[index]}</span>
+          <strong>${escapeHtml(option)}</strong>
+        </button>
+      `).join("");
+      optionsList.querySelectorAll(".option").forEach(button => {
+        button.addEventListener("click", () => submitAnswer(Number(button.dataset.index)));
+      });
+    }
+
+    function submitAnswer(selectedIndex) {
+      const question = quizOrder[currentIndex];
+      answers.push({
+        id: question.id,
+        part: question.part,
+        partName: question.partName,
+        type: question.type,
+        difficulty: question.difficulty,
+        question: question.question,
+        options: question.options,
+        selected: selectedIndex,
+        correct: question.correct,
+        weight: question.weight,
+        isCorrect: selectedIndex === question.correct,
+        explanation: question.explanation
+      });
+      currentIndex += 1;
+      if (currentIndex >= quizOrder.length) {
+        progressFill.style.width = "100%";
+        finishQuiz();
+        return;
+      }
+      renderQuestion();
+    }
+
+    async function finishQuiz() {
+      const earned = answers.reduce((sum, item) => sum + (item.isCorrect ? item.weight : 0), 0);
+      const percent = Math.round((earned / maxPoint) * 100);
+      const category = getCategory(percent);
+      const breakdown = buildBreakdown();
+      scorePercent.textContent = `${percent}%`;
+      scoreCategory.textContent = category;
+      breakdownList.innerHTML = breakdown.map(item => `
+        <div class="bar-row">
+          <div class="bar-label"><span>${item.label}</span><strong>${item.percent}%</strong></div>
+          <div class="bar" aria-hidden="true"><span style="--value:${item.percent}%"></span></div>
+        </div>
+      `).join("");
+      show(resultPanel);
+      reviewPanel.classList.remove("hidden");
+      renderReviews(hasReviewAccess);
+      await saveResult({ earned, percent, category, breakdown });
+    }
+
+    function buildBreakdown() {
+      return ["structure", "written"].map(part => {
+        const related = answers.filter(item => item.part === part);
+        const total = related.reduce((sum, item) => sum + item.weight, 0);
+        const earned = related.reduce((sum, item) => sum + (item.isCorrect ? item.weight : 0), 0);
+        return {
+          label: part === "structure" ? "Structure" : "Written Expressions",
+          percent: total ? Math.round((earned / total) * 100) : 0
+        };
+      });
+    }
+
+    function getCategory(percent) {
+      if (percent >= 90) return "TOEFL Ready";
+      if (percent >= 75) return "Strong Foundation";
+      if (percent >= 60) return "Developing";
+      return "Needs Practice";
+    }
+
+    async function saveResult(result) {
+      if (!supabaseClient || !currentSession) return;
+      resultStatus.textContent = "Menyimpan hasil...";
+      const user = currentSession.user;
+      const payload = {
+        user_id: user.id,
+        email: user.email,
+        username: user.user_metadata?.username || user.user_metadata?.full_name || "",
+        test_name: "TOEFL ITP Structure & Written Expressions",
+        score: result.earned,
+        total_point: maxPoint,
+        category: result.category,
+        correct_count: answers.filter(item => item.isCorrect).length,
+        total_questions: answers.length,
+        accuracy: result.percent,
+        category_breakdown: result.breakdown,
+        answers: answers.map(item => ({
+          id: item.id,
+          part: item.part,
+          selected: item.selected,
+          correct: item.correct,
+          isCorrect: item.isCorrect
+        }))
+      };
+      const { data, error } = await supabaseClient
+        .from("swe_test_results")
+        .insert(payload)
+        .select("id")
+        .single();
+      if (error) {
+        console.error("Save SWE result failed:", error);
+        resultStatus.textContent = "Hasil tampil, tapi belum tersimpan. Pastikan SQL SWE sudah dijalankan.";
+        return;
+      }
+      latestResultId = data.id;
+      await supabaseClient.from("swe_test_result_answers").insert({
+        result_id: latestResultId,
+        user_id: user.id,
+        answers
+      });
+      resultStatus.textContent = "Hasil tersimpan di akunmu.";
+    }
+
+    async function checkReviewAccess() {
+      if (!supabaseClient || !currentSession) return false;
+      const { data, error } = await supabaseClient
+        .from("swe_test_review_access")
+        .select("id")
+        .limit(1);
+      hasReviewAccess = Boolean(!error && data && data.length);
+      payButton.classList.toggle("hidden", hasReviewAccess);
+      checkAccessButton.textContent = hasReviewAccess ? "Akses Aktif" : "Cek Akses";
+      if (answers.length) renderReviews(hasReviewAccess);
+      return hasReviewAccess;
+    }
+
+    function renderReviews(showAll) {
+      const source = showAll ? answers : answers.filter(item => teaserQuestionIds.includes(item.id));
+      reviewIntro.textContent = showAll
+        ? "Akses pembahasan lengkap aktif. Semua kunci dan pembahasan ditampilkan."
+        : "Teaser gratis: 3 soal pilihan. Unlock untuk membuka seluruh kunci dan pembahasan.";
+      reviewList.innerHTML = source.map((item, index) => {
+        const isCorrect = item.selected === item.correct;
+        return `
+          <details ${index === 0 ? "open" : ""}>
+            <summary>${item.partName} - Soal ${item.id}: ${escapeHtml(item.question)}</summary>
+            <div class="review-body">
+              <div>Jawaban kamu: <span class="${isCorrect ? "answer-good" : "answer-bad"}">${letters[item.selected]} - ${escapeHtml(item.options[item.selected])}</span></div>
+              <div>Kunci jawaban: <span class="answer-good">${letters[item.correct]} - ${escapeHtml(item.options[item.correct])}</span></div>
+              <div>${escapeHtml(item.explanation)}</div>
+            </div>
+          </details>
+        `;
+      }).join("");
+    }
+
+    function openPayment() {
+      paymentFrame.src = paymentUrl;
+      paymentModal.classList.add("open");
+      paymentModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closePayment() {
+      paymentModal.classList.remove("open");
+      paymentModal.setAttribute("aria-hidden", "true");
+      paymentFrame.src = "";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    document.getElementById("loginButton").addEventListener("click", login);
+    document.getElementById("signupButton").addEventListener("click", signup);
+    logoutButton.addEventListener("click", logout);
+    document.getElementById("startButton").addEventListener("click", startQuiz);
+    document.getElementById("restartButton").addEventListener("click", startQuiz);
+    checkAccessButton.addEventListener("click", async () => {
+      checkAccessButton.textContent = "Mengecek...";
+      await checkReviewAccess();
+    });
+    payButton.addEventListener("click", openPayment);
+    document.getElementById("closePaymentButton").addEventListener("click", closePayment);
+    paymentModal.addEventListener("click", event => {
+      if (event.target === paymentModal) closePayment();
+    });
+
+    initAuth();
+  </script>
+</body>
+</html>

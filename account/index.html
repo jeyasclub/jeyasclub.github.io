@@ -1756,6 +1756,12 @@
       .order("created_at", { ascending: false })
       .limit(1);
 
+    const { data: sweData, error: sweError } = await supabaseClient
+      .from("swe_test_results")
+      .select("id,test_name,score,total_point,category,correct_count,total_questions,accuracy,created_at")
+      .order("created_at", { ascending: false })
+      .limit(1);
+
     if (vocabularyError) {
       console.error("Load vocabulary test result failed:", vocabularyError);
       renderEmptyTestResults("Hasil tes belum bisa dimuat. Coba refresh halaman.");
@@ -1768,6 +1774,10 @@
 
     if (slangError) {
       console.error("Load English Slang Test result failed:", slangError);
+    }
+
+    if (sweError) {
+      console.error("Load TOEFL SWE Test result failed:", sweError);
     }
 
     const vocabularyResult = vocabularyData && vocabularyData.length
@@ -1803,8 +1813,19 @@
           isTaken: false,
           emptyText: "English Slang Test belum diambil."
         };
+    const sweResult = sweData && sweData.length
+      ? { ...sweData[0], isTaken: true, href: "/swe-test/" }
+      : {
+          test_name: "TOEFL ITP Structure & Written Expressions",
+          category: "Ready",
+          total_point: 89,
+          total_questions: 40,
+          href: "/swe-test/",
+          isTaken: false,
+          emptyText: "TOEFL SWE Test belum diambil."
+        };
 
-    renderTestResults([vocabularyResult, grammarResult, slangResult]);
+    renderTestResults([vocabularyResult, grammarResult, slangResult, sweResult]);
   }
 
   function renderHangoutMission(isComplete = false) {
