@@ -74,6 +74,9 @@
     }
     .start-actions #startButton { order: 1; }
     .start-actions #latestResultButton { order: 2; }
+    .start-actions {
+      justify-content: flex-start;
+    }
     .nav-link, .btn {
       display: inline-flex;
       align-items: center;
@@ -611,6 +614,13 @@
       .hero, .score-layout, .auth-grid { grid-template-columns: 1fr; }
       .panel { padding: 20px; }
       .panel-head { display: grid; }
+      .start-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+      .start-actions .btn {
+        flex: 1 1 220px;
+      }
       .paid-title, .answer-grid { display: grid; }
       .nav-actions { gap: 8px; }
       .nav-link, .btn { padding-inline: 12px; }
@@ -1020,7 +1030,7 @@
     function renderResult(result, statusText) {
       const percent = Number(result.accuracy || 0);
       const breakdown = Array.isArray(result.category_breakdown) ? result.category_breakdown : [];
-      const category = result.category || getCategory(percent);
+      const category = getCategory(percent);
       scorePercent.textContent = `${percent}%`;
       scoreCategory.textContent = category;
       scoreCopy.textContent = getCategoryCopy(category);
@@ -1066,8 +1076,8 @@
 
     function getCategory(percent) {
       if (percent >= 90) return "You're all set!";
-      if (percent >= 75) return "Almost there!";
-      if (percent >= 60) return "Nice work!";
+      if (percent >= 79) return "Almost there!";
+      if (percent >= 62) return "Nice work!";
       if (percent >= 45) return "Tunda dulu!";
       return "Tahan dulu!";
     }
