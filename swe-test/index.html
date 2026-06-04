@@ -349,11 +349,38 @@
       align-items: start;
     }
     .score-card {
-      border: 1px solid var(--line);
+      border: 1px solid var(--score-border, var(--line));
       border-radius: 18px;
-      background: linear-gradient(180deg, #ffffff 0%, #eef6ff 100%);
+      background: var(--score-bg, linear-gradient(180deg, #ffffff 0%, #eef6ff 100%));
       padding: 24px;
       text-align: center;
+      box-shadow: 0 18px 44px var(--score-shadow, rgba(15, 23, 42, 0.08));
+      transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .score-card.category-all-set {
+      --score-bg: linear-gradient(180deg, #e4ffdc 0%, #bff6ad 100%);
+      --score-border: #8bd879;
+      --score-shadow: rgba(54, 185, 121, 0.2);
+    }
+    .score-card.category-almost {
+      --score-bg: linear-gradient(180deg, #eef9e9 0%, #d8ecd0 100%);
+      --score-border: #afd39f;
+      --score-shadow: rgba(120, 166, 94, 0.16);
+    }
+    .score-card.category-nice {
+      --score-bg: linear-gradient(180deg, #fff6cf 0%, #ffe89b 100%);
+      --score-border: #f3d66f;
+      --score-shadow: rgba(216, 176, 48, 0.18);
+    }
+    .score-card.category-tunda {
+      --score-bg: linear-gradient(180deg, #ffe6d8 0%, #ffd1bd 100%);
+      --score-border: #f0ac8e;
+      --score-shadow: rgba(226, 117, 62, 0.17);
+    }
+    .score-card.category-tahan {
+      --score-bg: linear-gradient(180deg, #ffd9dc 0%, #ffbdc3 100%);
+      --score-border: #ef9aa2;
+      --score-shadow: rgba(224, 72, 86, 0.18);
     }
     .score-number {
       font-size: clamp(4rem, 10vw, 6rem);
@@ -364,9 +391,10 @@
     }
     .score-emoji {
       display: block;
-      font-size: clamp(2.4rem, 7vw, 4rem);
+      font-size: clamp(5rem, 16vw, 8rem);
       line-height: 1;
-      margin-bottom: 10px;
+      margin: 2px 0 14px;
+      filter: drop-shadow(0 12px 18px rgba(15, 23, 42, 0.14));
     }
     .score-copy {
       margin: 14px auto 0;
@@ -727,7 +755,7 @@
         <button class="btn ghost" type="button" id="restartButton">Ulangi Test</button>
       </div>
       <div class="score-layout">
-        <div class="score-card">
+        <div class="score-card" id="scoreCard">
           <p class="eyebrow">Persentase</p>
           <span class="score-emoji" id="scoreEmoji" aria-hidden="true">👍🏻</span>
           <div class="score-number" id="scorePercent">0%</div>
@@ -797,6 +825,7 @@
     const optionsList = document.getElementById("optionsList");
     const quizStatus = document.getElementById("quizStatus");
     const scorePercent = document.getElementById("scorePercent");
+    const scoreCard = document.getElementById("scoreCard");
     const scoreEmoji = document.getElementById("scoreEmoji");
     const scoreCategory = document.getElementById("scoreCategory");
     const scoreCopy = document.getElementById("scoreCopy");
@@ -1041,6 +1070,7 @@
       const percent = Number(result.accuracy || 0);
       const breakdown = Array.isArray(result.category_breakdown) ? result.category_breakdown : [];
       const category = getCategory(percent);
+      scoreCard.className = `score-card ${getCategoryClass(category)}`;
       scoreEmoji.textContent = getCategoryEmoji(category);
       scorePercent.textContent = `${percent}%`;
       scoreCategory.textContent = category;
@@ -1113,6 +1143,17 @@
         "Tahan dulu!": "🖐🏼"
       };
       return emojis[category] || "👍🏻";
+    }
+
+    function getCategoryClass(category) {
+      const classes = {
+        "You're all set!": "category-all-set",
+        "Almost there!": "category-almost",
+        "Nice work!": "category-nice",
+        "Tunda dulu!": "category-tunda",
+        "Tahan dulu!": "category-tahan"
+      };
+      return classes[category] || "category-nice";
     }
 
     async function saveResult(result) {
