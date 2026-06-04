@@ -730,7 +730,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./questions.js"></script>
+  <script src="/swe-test/questions.js"></script>
   <script>
     const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
     const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
@@ -738,7 +738,10 @@
     const paymentUrl = "https://jeyasclub.myr.id/pl/unlock-pembahasan-toefl-structure-written-expressions?iframe=true";
     const letters = ["A", "B", "C", "D"];
     const teaserQuestionIds = [1, 2, 3];
-    const maxPoint = questions.reduce((sum, question) => sum + question.weight, 0);
+    const sweQuestions = Array.isArray(window.sweQuestions)
+      ? window.sweQuestions
+      : (typeof questions !== "undefined" && Array.isArray(questions) ? questions : []);
+    const maxPoint = sweQuestions.reduce((sum, question) => sum + question.weight, 0);
 
     const authPanel = document.getElementById("authPanel");
     const startPanel = document.getElementById("startPanel");
@@ -779,8 +782,8 @@
     let hasReviewAccess = false;
 
     function buildQuizOrder() {
-      const structure = questions.filter(question => question.part === "structure");
-      const written = questions.filter(question => question.part === "written");
+      const structure = sweQuestions.filter(question => question.part === "structure");
+      const written = sweQuestions.filter(question => question.part === "written");
       return [...structure, ...written];
     }
 
@@ -895,6 +898,11 @@
       currentIndex = 0;
       answers = [];
       latestResultId = null;
+      if (!quizOrder.length) {
+        quizStatus.textContent = "Data soal belum termuat. Refresh halaman atau buka /swe-test/ dengan trailing slash.";
+        show(quizPanel);
+        return;
+      }
       resultPanel.classList.add("hidden");
       reviewPanel.classList.add("hidden");
       show(quizPanel);

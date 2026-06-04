@@ -680,3 +680,4 @@ const questions = [
     "explanation": "'Progress' adalah uncountable noun yang selalu diperlakukan sebagai singular. Kata kerja yang benar adalah 'has been made', bukan 'have been made'. Contoh uncountable nouns lain yang sering memicu kesalahan serupa: information, research, news, advice, equipment, dan knowledge. Semuanya selalu memakai kata kerja singular."
   }
 ];
+window.sweQuestions = questions;
