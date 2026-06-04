@@ -669,7 +669,7 @@
           <button class="btn ghost hidden" type="button" id="latestResultButton">Lihat Hasil Terakhir</button>
         </div>
       </div>
-      <p class="muted">Bagian Structure dan Written Expression tetap dipisah, tapi urutan difficulty di dalam masing-masing bagian sudah diacak.</p>
+      <p class="muted">Bagian Structure dan Written Expression tetap dipisah mengikuti urutan soal TOEFL ITP.</p>
     </section>
 
     <section class="panel hidden" id="quizPanel">
@@ -737,7 +737,7 @@
     const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
     const paymentUrl = "https://jeyasclub.myr.id/pl/unlock-pembahasan-toefl-structure-written-expressions?iframe=true";
     const letters = ["A", "B", "C", "D"];
-    const teaserQuestionIds = [11, 15, 40];
+    const teaserQuestionIds = [1, 2, 3];
     const maxPoint = questions.reduce((sum, question) => sum + question.weight, 0);
 
     const authPanel = document.getElementById("authPanel");
@@ -778,18 +778,9 @@
     let latestResult = null;
     let hasReviewAccess = false;
 
-    function shuffle(items) {
-      const next = [...items];
-      for (let index = next.length - 1; index > 0; index -= 1) {
-        const randomIndex = Math.floor(Math.random() * (index + 1));
-        [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
-      }
-      return next;
-    }
-
     function buildQuizOrder() {
-      const structure = shuffle(questions.filter(question => question.part === "structure"));
-      const written = shuffle(questions.filter(question => question.part === "written"));
+      const structure = questions.filter(question => question.part === "structure");
+      const written = questions.filter(question => question.part === "written");
       return [...structure, ...written];
     }
 
@@ -917,7 +908,7 @@
       questionCounter.textContent = `${currentIndex + 1}/${quizOrder.length}`;
       progressFill.style.width = `${progress}%`;
       typeLabel.textContent = question.type;
-      difficultyLabel.textContent = "Mixed difficulty";
+      difficultyLabel.textContent = question.difficulty;
       questionText.classList.toggle("written-question", question.part === "written");
       quizStatus.textContent = "";
       optionsList.classList.toggle("written-options", question.part === "written");
