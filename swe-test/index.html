@@ -710,12 +710,12 @@
         <div>
           <h2>Kunci Jawaban & Pembahasan</h2>
         </div>
-        <div class="nav-actions">
-          <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
-          <button class="btn primary" type="button" id="payButton">Unlock Rp30.000</button>
-        </div>
       </div>
       <div class="review-list" id="reviewList"></div>
+      <div class="nav-actions hidden" id="reviewActions" style="justify-content:flex-start;margin-top:16px;">
+        <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
+        <button class="btn primary" type="button" id="payButton">Unlock Rp30.000</button>
+      </div>
     </section>
   </main>
 
@@ -768,6 +768,7 @@
     const breakdownList = document.getElementById("breakdownList");
     const resultStatus = document.getElementById("resultStatus");
     const reviewList = document.getElementById("reviewList");
+    const reviewActions = document.getElementById("reviewActions");
     const checkAccessButton = document.getElementById("checkAccessButton");
     const payButton = document.getElementById("payButton");
     const paymentModal = document.getElementById("paymentModal");
@@ -1104,15 +1105,19 @@
         .select("id")
         .limit(1);
       hasReviewAccess = Boolean(!error && data && data.length);
-      payButton.classList.toggle("hidden", hasReviewAccess);
-      checkAccessButton.textContent = hasReviewAccess ? "Akses Aktif" : "Cek Akses";
+      updateReviewActions(!hasReviewAccess);
       if (answers.length) renderReviews(hasReviewAccess);
       return hasReviewAccess;
     }
 
-    function renderLockedReview(message) {
+    function updateReviewActions(showActions) {
+      reviewActions.classList.toggle("hidden", !showActions);
       payButton.classList.toggle("hidden", hasReviewAccess);
       checkAccessButton.textContent = hasReviewAccess ? "Akses Aktif" : "Cek Akses";
+    }
+
+    function renderLockedReview(message) {
+      updateReviewActions(!hasReviewAccess);
       const title = hasReviewAccess ? "Rincian belum tersedia" : "Pembahasan lengkap terkunci";
       const headline = hasReviewAccess
         ? "Rincian jawaban untuk hasil ini belum tersedia"
@@ -1133,6 +1138,7 @@
         return;
       }
       const introTitle = showAll ? "Review setiap soal" : "Teaser pembahasan pilihan";
+      updateReviewActions(!showAll);
       const introCopy = showAll
         ? "Buka soal yang ingin kamu cek untuk melihat jawabanmu, kunci jawaban, dan penjelasan singkatnya."
         : "Ini contoh 3 pembahasan pilihan. Unlock untuk membuka seluruh kunci jawaban dan pembahasan.";
