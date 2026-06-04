@@ -704,6 +704,7 @@ grant select (
   total_questions,
   accuracy,
   category_breakdown,
+  answers,
   created_at
 ) on public.swe_test_results to authenticated;
 grant select on public.swe_test_review_access to authenticated;

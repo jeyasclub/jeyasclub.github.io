@@ -892,7 +892,7 @@
 
       const { data, error } = await supabaseClient
         .from("swe_test_results")
-        .select("id,score,total_point,category,correct_count,total_questions,accuracy,category_breakdown,created_at")
+        .select("id,score,total_point,category,correct_count,total_questions,accuracy,category_breakdown,answers,created_at")
         .order("created_at", { ascending: false })
         .limit(1);
 
@@ -1253,12 +1253,20 @@
     }
 
     function getTeaserAnswers() {
-      return teaserQuestionIds
-        .map(id => {
-          const existing = answers.find(item => item.id === id);
+      const latestAnswerSummary = latestResult && Array.isArray(latestResult.answers)
+        ? latestResult.answers.slice(0, 3)
+        : [];
+      const source = latestAnswerSummary.length
+        ? latestAnswerSummary
+        : teaserQuestionIds.map(id => ({ id }));
+
+      return source
+        .map(summary => {
+          const existing = answers.find(item => item.id === summary.id);
           if (existing) return existing;
-          const question = sweQuestions.find(item => item.id === id);
+          const question = sweQuestions.find(item => item.id === summary.id);
           if (!question) return null;
+          const selected = Number.isInteger(summary.selected) ? summary.selected : null;
           return {
             id: question.id,
             part: question.part,
@@ -1267,10 +1275,10 @@
             difficulty: question.difficulty,
             question: question.question,
             options: question.options,
-            selected: null,
+            selected,
             correct: question.correct,
             weight: question.weight,
-            isCorrect: null,
+            isCorrect: selected === null ? null : selected === question.correct,
             explanation: question.explanation
           };
         })
