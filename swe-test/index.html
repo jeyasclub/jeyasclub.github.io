@@ -681,6 +681,10 @@
         <div class="progress"><span id="progressFill"></span></div>
       </div>
       <div class="question-card">
+        <div class="question-meta">
+          <span class="pill" id="typeLabel">Sentence Completion</span>
+          <span class="pill" id="difficultyLabel">easy</span>
+        </div>
         <p class="question" id="questionText"></p>
         <div class="options" id="optionsList"></div>
       </div>
@@ -916,8 +920,8 @@
       partLabel.textContent = question.partName;
       questionCounter.textContent = `${currentIndex + 1}/${quizOrder.length}`;
       progressFill.style.width = `${progress}%`;
-      typeLabel.textContent = question.type;
-      difficultyLabel.textContent = question.difficulty;
+      if (typeLabel) typeLabel.textContent = question.type;
+      if (difficultyLabel) difficultyLabel.textContent = question.difficulty;
       questionText.classList.toggle("written-question", question.part === "written");
       quizStatus.textContent = "";
       optionsList.classList.toggle("written-options", question.part === "written");
