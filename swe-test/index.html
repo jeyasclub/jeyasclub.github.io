@@ -72,6 +72,8 @@
       flex-wrap: wrap;
       justify-content: flex-end;
     }
+    .start-actions #startButton { order: 1; }
+    .start-actions #latestResultButton { order: 2; }
     .nav-link, .btn {
       display: inline-flex;
       align-items: center;
@@ -356,6 +358,13 @@
       font-weight: 900;
       color: var(--blue);
       margin: 8px 0;
+    }
+    .score-copy {
+      margin: 14px auto 0;
+      max-width: 260px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
     }
     .breakdown {
       display: grid;
@@ -664,7 +673,7 @@
           <h2>Siap mulai?</h2>
           <p class="muted" id="welcomeText">Kamu sudah login.</p>
         </div>
-        <div class="nav-actions">
+        <div class="nav-actions start-actions">
           <button class="btn primary" type="button" id="startButton">Mulai Test</button>
           <button class="btn ghost hidden" type="button" id="latestResultButton">Lihat Hasil Terakhir</button>
         </div>
@@ -704,6 +713,7 @@
           <p class="eyebrow">Persentase</p>
           <div class="score-number" id="scorePercent">0%</div>
           <strong id="scoreCategory">Ready</strong>
+          <p class="score-copy" id="scoreCopy"></p>
         </div>
         <div class="breakdown" id="breakdownList"></div>
       </div>
@@ -769,6 +779,7 @@
     const quizStatus = document.getElementById("quizStatus");
     const scorePercent = document.getElementById("scorePercent");
     const scoreCategory = document.getElementById("scoreCategory");
+    const scoreCopy = document.getElementById("scoreCopy");
     const breakdownList = document.getElementById("breakdownList");
     const resultStatus = document.getElementById("resultStatus");
     const reviewList = document.getElementById("reviewList");
@@ -1009,8 +1020,10 @@
     function renderResult(result, statusText) {
       const percent = Number(result.accuracy || 0);
       const breakdown = Array.isArray(result.category_breakdown) ? result.category_breakdown : [];
+      const category = result.category || getCategory(percent);
       scorePercent.textContent = `${percent}%`;
-      scoreCategory.textContent = result.category || getCategory(percent);
+      scoreCategory.textContent = category;
+      scoreCopy.textContent = getCategoryCopy(category);
       resultStatus.textContent = statusText || "Scoring hanya ditampilkan dalam bentuk persentase.";
       breakdownList.innerHTML = breakdown.map(item => `
         <div class="bar-row">
@@ -1035,7 +1048,7 @@
       if (storedAnswers.length) {
         renderReviews(hasReviewAccess);
       } else {
-        renderLockedReview("Rincian jawaban untuk hasil terakhir hanya bisa dibuka setelah unlock pembahasan.");
+        renderLockedReview("Cek jawaban benar dan salah kamu serta baca pembahasan soalnya secara rinci.");
       }
     }
 
@@ -1052,10 +1065,22 @@
     }
 
     function getCategory(percent) {
-      if (percent >= 90) return "TOEFL Ready";
-      if (percent >= 75) return "Strong Foundation";
-      if (percent >= 60) return "Developing";
-      return "Needs Practice";
+      if (percent >= 90) return "You're all set!";
+      if (percent >= 75) return "Almost there!";
+      if (percent >= 60) return "Nice work!";
+      if (percent >= 45) return "Tunda dulu!";
+      return "Tahan dulu!";
+    }
+
+    function getCategoryCopy(category) {
+      const copies = {
+        "You're all set!": "Grammar dan structure kamu udah kuat banget. Kamu udah paham pola-pola yang sering keluar di TOEFL dan siap menghadapi tes yang sesungguhnya. Tinggal jaga konsistensi latihan dan jangan lupa review tipis-tipis sebelum hari H. Good luck!",
+        "Almost there!": "Kamu udah di jalur yang benar. Sebagian besar materi udah kamu kuasai, cuma masih ada beberapa bagian yang perlu dirapikan. Sedikit latihan tambahan dan evaluasi kesalahan yang sering muncul bisa bikin skormu naik cukup signifikan.",
+        "Nice work!": "Kamu udah punya dasar yang cukup, tapi masih ada beberapa konsep grammar dan structure yang perlu diperkuat. Jangan buru-buru daftar TOEFL dulu kalau target skormu tinggi. Fokus belajar dan latihan dulu, hasilnya pasti akan jauh lebih baik.",
+        "Tunda dulu!": "Saat ini masih ada cukup banyak materi yang perlu kamu pelajari lagi. Kalau langsung ikut TOEFL sekarang, kemungkinan besar hasilnya belum maksimal. Coba perkuat grammar dasarnya dulu, lalu kerjakan lebih banyak latihan soal sebelum daftar tes.",
+        "Tahan dulu!": "Mending jangan buru-buru ikut TOEFL saat ini. Masih ada banyak konsep grammar dan structure yang perlu dipahami biar kamu ga kesulitan saat mengerjakan soal. Coba mulai dari materi dasar, bangun pemahaman, lalu tes lagi setelah kemampuanmu meningkat."
+      };
+      return copies[category] || "";
     }
 
     async function saveResult(result) {
@@ -1141,7 +1166,7 @@
         renderLockedReview("Rincian jawaban belum tersedia untuk hasil ini. Retake test untuk menyimpan rincian terbaru, atau unlock pembahasan jika hasil ini sudah punya rincian tersimpan.");
         return;
       }
-      const introTitle = showAll ? "Review setiap soal" : "Teaser pembahasan pilihan";
+      const introTitle = showAll ? "Review setiap soal" : "Pembahasan Soal";
       updateReviewActions(!showAll);
       const introCopy = showAll
         ? "Buka soal yang ingin kamu cek untuk melihat jawabanmu, kunci jawaban, dan penjelasan singkatnya."
