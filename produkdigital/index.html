@@ -338,12 +338,24 @@
     .shell {
       width: min(1180px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 44px 0 64px;
+      padding: 0 0 64px;
     }
 
     .hero {
+      position: relative;
+      overflow: hidden;
+      width: 100vw;
+      max-width: none;
+      margin-left: calc(50% - 50vw);
+      margin-bottom: 34px;
+      padding: 70px max(20px, calc((100vw - 1180px) / 2)) 64px;
+      background:
+        linear-gradient(180deg, rgba(232,241,253,0.78), rgba(255,255,255,0.95)),
+        url('/assets/optimized/bg.jpg') center/cover;
+    }
+
+    .hero > div {
       max-width: 780px;
-      padding-bottom: 28px;
     }
 
     .eyebrow {
@@ -1019,7 +1031,11 @@
     @media (max-width: 560px) {
       .shell {
         width: min(100% - 28px, 1180px);
-        padding-top: 34px;
+      }
+
+      .hero {
+        padding-top: 42px;
+        padding-bottom: 50px;
       }
 
     }

@@ -269,19 +269,14 @@
   .article-hero {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(180deg, #dce8f7 0%, #eef5ff 70%, #ffffff 100%);
+    background:
+      linear-gradient(180deg, rgba(232,241,253,0.78), rgba(255,255,255,0.95)),
+      url('/assets/optimized/bg.jpg') center/cover;
     padding: 76px 24px 58px;
   }
 
   .article-hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url('../assets/optimized/bg.jpg');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.38;
-    pointer-events: none;
+    display: none;
   }
 
   .article-hero-inner {
