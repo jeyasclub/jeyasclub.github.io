@@ -494,6 +494,8 @@
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
+      background: var(--sky);
+      color: var(--blue);
       font-size: 0.72rem;
       font-weight: 900;
       padding: 5px 9px;
@@ -1058,7 +1060,7 @@
       if (storedAnswers.length) {
         renderReviews(hasReviewAccess);
       } else {
-        renderLockedReview("Cek jawaban benar dan salah kamu serta baca pembahasan soalnya secara rinci.");
+        renderReviews(false);
       }
     }
 
@@ -1171,7 +1173,7 @@
     }
 
     function renderReviews(showAll) {
-      const source = showAll ? answers : answers.filter(item => teaserQuestionIds.includes(item.id));
+      const source = showAll ? answers : getTeaserAnswers();
       if (!source.length) {
         renderLockedReview("Rincian jawaban belum tersedia untuk hasil ini. Retake test untuk menyimpan rincian terbaru, atau unlock pembahasan jika hasil ini sudah punya rincian tersimpan.");
         return;
@@ -1189,19 +1191,20 @@
         </div>
       `;
       const accordions = source.map((item, index) => {
-        const isCorrect = item.selected === item.correct;
+        const hasUserAnswer = Number.isInteger(item.selected);
+        const isCorrect = hasUserAnswer ? item.selected === item.correct : null;
         return `
-          <details class="accordion-item ${isCorrect ? "ok" : "bad"}" ${index === 0 ? "open" : ""}>
+          <details class="accordion-item ${isCorrect === true ? "ok" : (isCorrect === false ? "bad" : "")}" ${index === 0 ? "open" : ""}>
             <summary>
               <span class="accordion-question">${item.id}. ${escapeHtml(item.question)}</span>
-              <span class="accordion-status">${isCorrect ? "Benar" : "Salah"}</span>
+              <span class="accordion-status">${isCorrect === null ? "Teaser" : (isCorrect ? "Benar" : "Salah")}</span>
               <span class="accordion-arrow" aria-hidden="true"></span>
             </summary>
             <div class="accordion-body">
               <div class="answer-grid">
                 <div class="answer-box">
                   <span>Jawaban kamu</span>
-                  <strong>${letters[item.selected]} - ${escapeHtml(item.options[item.selected] || "-")}</strong>
+                  <strong>${hasUserAnswer ? `${letters[item.selected]} - ${escapeHtml(item.options[item.selected] || "-")}` : "-"}</strong>
                 </div>
                 <div class="answer-box">
                   <span>Jawaban benar</span>
@@ -1227,6 +1230,31 @@
           <div class="accordion-list">${accordions}</div>
         </div>
       `;
+    }
+
+    function getTeaserAnswers() {
+      return teaserQuestionIds
+        .map(id => {
+          const existing = answers.find(item => item.id === id);
+          if (existing) return existing;
+          const question = sweQuestions.find(item => item.id === id);
+          if (!question) return null;
+          return {
+            id: question.id,
+            part: question.part,
+            partName: question.partName,
+            type: question.type,
+            difficulty: question.difficulty,
+            question: question.question,
+            options: question.options,
+            selected: null,
+            correct: question.correct,
+            weight: question.weight,
+            isCorrect: null,
+            explanation: question.explanation
+          };
+        })
+        .filter(Boolean);
     }
 
     function openPayment() {
