@@ -664,7 +664,10 @@
           <h2>Siap mulai?</h2>
           <p class="muted" id="welcomeText">Kamu sudah login.</p>
         </div>
-        <button class="btn primary" type="button" id="startButton">Mulai Test</button>
+        <div class="nav-actions">
+          <button class="btn primary" type="button" id="startButton">Mulai Test</button>
+          <button class="btn ghost hidden" type="button" id="latestResultButton">Lihat Hasil Terakhir</button>
+        </div>
       </div>
       <p class="muted">Bagian Structure dan Written Expression tetap dipisah, tapi urutan difficulty di dalam masing-masing bagian sudah diacak.</p>
     </section>
@@ -678,10 +681,6 @@
         <div class="progress"><span id="progressFill"></span></div>
       </div>
       <div class="question-card">
-        <div class="question-meta">
-          <span class="pill" id="typeLabel">Sentence Completion</span>
-          <span class="pill" id="difficultyLabel">Mixed</span>
-        </div>
         <p class="question" id="questionText"></p>
         <div class="options" id="optionsList"></div>
       </div>
@@ -751,6 +750,8 @@
     const authStatus = document.getElementById("authStatus");
     const welcomeText = document.getElementById("welcomeText");
     const logoutButton = document.getElementById("logoutButton");
+    const startButton = document.getElementById("startButton");
+    const latestResultButton = document.getElementById("latestResultButton");
     const partLabel = document.getElementById("partLabel");
     const questionCounter = document.getElementById("questionCounter");
     const progressFill = document.getElementById("progressFill");
@@ -774,6 +775,7 @@
     let currentIndex = 0;
     let answers = [];
     let latestResultId = null;
+    let latestResult = null;
     let hasReviewAccess = false;
 
     function shuffle(items) {
@@ -796,16 +798,24 @@
       panel.classList.remove("hidden");
     }
 
-    function setAuthUi(session) {
+    function updateStartLabel() {
+      startButton.textContent = latestResult ? "Retake Test" : "Mulai Test";
+      latestResultButton.classList.toggle("hidden", !latestResult);
+    }
+
+    async function setAuthUi(session) {
       currentSession = session;
       logoutButton.classList.toggle("hidden", !session);
       if (!session) {
+        latestResult = null;
+        updateStartLabel();
         show(authPanel);
         return;
       }
       welcomeText.textContent = `Login sebagai ${session.user.email}.`;
       show(startPanel);
-      checkReviewAccess();
+      await checkReviewAccess();
+      await loadLatestResult();
     }
 
     async function initAuth() {
@@ -814,8 +824,10 @@
         return;
       }
       const { data } = await supabaseClient.auth.getSession();
-      setAuthUi(data.session);
-      supabaseClient.auth.onAuthStateChange((_event, session) => setAuthUi(session));
+      await setAuthUi(data.session);
+      supabaseClient.auth.onAuthStateChange((_event, session) => {
+        setAuthUi(session);
+      });
     }
 
     async function login() {
@@ -838,7 +850,53 @@
 
     async function logout() {
       await supabaseClient.auth.signOut();
+      latestResult = null;
+      updateStartLabel();
       authStatus.textContent = "Kamu sudah logout.";
+    }
+
+    async function loadLatestResult() {
+      latestResult = null;
+      updateStartLabel();
+      if (!supabaseClient || !currentSession) return;
+
+      const { data, error } = await supabaseClient
+        .from("swe_test_results")
+        .select("id,score,total_point,category,correct_count,total_questions,accuracy,category_breakdown,created_at")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error("Load SWE latest result failed:", error);
+        welcomeText.textContent = `Login sebagai ${currentSession.user.email}. Hasil terakhir belum bisa dimuat.`;
+        return;
+      }
+
+      if (!data || !data.length) {
+        welcomeText.textContent = `Login sebagai ${currentSession.user.email}.`;
+        return;
+      }
+
+      latestResult = data[0];
+      welcomeText.textContent = `Login sebagai ${currentSession.user.email}. Hasil terakhir: ${latestResult.accuracy}%.`;
+      updateStartLabel();
+    }
+
+    async function loadResultAnswers(resultId) {
+      if (!supabaseClient || !currentSession || !hasReviewAccess || !resultId) return [];
+
+      const { data, error } = await supabaseClient
+        .from("swe_test_result_answers")
+        .select("answers")
+        .eq("result_id", resultId)
+        .limit(1);
+
+      if (error) {
+        console.error("Load SWE answer details failed:", error);
+        return [];
+      }
+
+      return data && data.length ? data[0].answers || [] : [];
     }
 
     function startQuiz() {
@@ -933,18 +991,48 @@
       const percent = Math.round((earned / maxPoint) * 100);
       const category = getCategory(percent);
       const breakdown = buildBreakdown();
-      scorePercent.textContent = `${percent}%`;
-      scoreCategory.textContent = category;
-      breakdownList.innerHTML = breakdown.map(item => `
-        <div class="bar-row">
-          <div class="bar-label"><span>${item.label}</span><strong>${item.percent}%</strong></div>
-          <div class="bar" aria-hidden="true"><span style="--value:${item.percent}%"></span></div>
-        </div>
-      `).join("");
+      renderResult({
+        accuracy: percent,
+        category,
+        category_breakdown: breakdown
+      }, "Scoring hanya ditampilkan dalam bentuk persentase.");
       show(resultPanel);
       reviewPanel.classList.remove("hidden");
       renderReviews(hasReviewAccess);
       await saveResult({ earned, percent, category, breakdown });
+    }
+
+    function renderResult(result, statusText) {
+      const percent = Number(result.accuracy || 0);
+      const breakdown = Array.isArray(result.category_breakdown) ? result.category_breakdown : [];
+      scorePercent.textContent = `${percent}%`;
+      scoreCategory.textContent = result.category || getCategory(percent);
+      resultStatus.textContent = statusText || "Scoring hanya ditampilkan dalam bentuk persentase.";
+      breakdownList.innerHTML = breakdown.map(item => `
+        <div class="bar-row">
+          <div class="bar-label"><span>${escapeHtml(item.label || item.name || "")}</span><strong>${Number(item.percent || 0)}%</strong></div>
+          <div class="bar" aria-hidden="true"><span style="--value:${Number(item.percent || 0)}%"></span></div>
+        </div>
+      `).join("");
+    }
+
+    async function showLatestResult() {
+      if (!latestResult) return;
+      await checkReviewAccess();
+      const storedAnswers = await loadResultAnswers(latestResult.id);
+      answers = storedAnswers;
+      latestResultId = latestResult.id;
+      renderResult(
+        latestResult,
+        `Hasil ini tersimpan pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`
+      );
+      show(resultPanel);
+      reviewPanel.classList.remove("hidden");
+      if (storedAnswers.length) {
+        renderReviews(hasReviewAccess);
+      } else {
+        renderLockedReview("Rincian jawaban untuk hasil terakhir hanya bisa dibuka setelah unlock pembahasan.");
+      }
     }
 
     function buildBreakdown() {
@@ -1007,6 +1095,7 @@
         answers
       });
       resultStatus.textContent = "Hasil tersimpan di akunmu.";
+      await loadLatestResult();
     }
 
     async function checkReviewAccess() {
@@ -1022,8 +1111,28 @@
       return hasReviewAccess;
     }
 
+    function renderLockedReview(message) {
+      payButton.classList.toggle("hidden", hasReviewAccess);
+      checkAccessButton.textContent = hasReviewAccess ? "Akses Aktif" : "Cek Akses";
+      const title = hasReviewAccess ? "Rincian belum tersedia" : "Pembahasan lengkap terkunci";
+      const headline = hasReviewAccess
+        ? "Rincian jawaban untuk hasil ini belum tersedia"
+        : "Unlock kunci jawaban & pembahasan hanya dengan Rp30.000";
+      reviewList.innerHTML = `
+        <div class="locked">
+          <span>${title}</span>
+          <strong>${headline}</strong>
+          <p>${escapeHtml(message || "Gunakan email yang sama dengan akun Jeya's Club supaya akses pembahasan otomatis aktif setelah pembayaran.")}</p>
+        </div>
+      `;
+    }
+
     function renderReviews(showAll) {
       const source = showAll ? answers : answers.filter(item => teaserQuestionIds.includes(item.id));
+      if (!source.length) {
+        renderLockedReview("Rincian jawaban belum tersedia untuk hasil ini. Retake test untuk menyimpan rincian terbaru, atau unlock pembahasan jika hasil ini sudah punya rincian tersimpan.");
+        return;
+      }
       const introTitle = showAll ? "Review setiap soal" : "Teaser pembahasan pilihan";
       const introCopy = showAll
         ? "Buka soal yang ingin kamu cek untuk melihat jawabanmu, kunci jawaban, dan penjelasan singkatnya."
@@ -1104,7 +1213,8 @@
     document.getElementById("loginButton").addEventListener("click", login);
     document.getElementById("signupButton").addEventListener("click", signup);
     logoutButton.addEventListener("click", logout);
-    document.getElementById("startButton").addEventListener("click", startQuiz);
+    startButton.addEventListener("click", startQuiz);
+    latestResultButton.addEventListener("click", showLatestResult);
     document.getElementById("restartButton").addEventListener("click", startQuiz);
     checkAccessButton.addEventListener("click", async () => {
       checkAccessButton.textContent = "Mengecek...";
