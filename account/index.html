@@ -1351,20 +1351,6 @@
                   <strong id="missionsCompletedCount">0</strong>
                 </div>
               </div>
-              <div class="mission-card" id="hangoutMissionCard">
-                <div class="mission-star" aria-hidden="true">★</div>
-                <div class="mission-copy">
-                  <strong>Join English Hangout Club</strong>
-                  <span id="hangoutMissionStatus">Belum join</span>
-                </div>
-                <a
-                  class="mission-join-button"
-                  id="hangoutMissionButton"
-                  href="https://jeyasclub.myr.id/pl/english-hangout-club-by-jeyas-club-may-2026-di9e"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >Join</a>
-              </div>
               <div class="mission-card" id="vocaquizUnlockMissionCard">
                 <div class="mission-star" aria-hidden="true">★</div>
                 <div class="mission-copy">
@@ -1527,9 +1513,6 @@
   const missionsCompletedCount = document.getElementById("missionsCompletedCount");
   const logoutButton = document.getElementById("logoutButton");
   const testResultsList = document.getElementById("testResultsList");
-  const hangoutMissionCard = document.getElementById("hangoutMissionCard");
-  const hangoutMissionStatus = document.getElementById("hangoutMissionStatus");
-  const hangoutMissionButton = document.getElementById("hangoutMissionButton");
   const vocaquizUnlockMissionCard = document.getElementById("vocaquizUnlockMissionCard");
   const vocaquizUnlockMissionStatus = document.getElementById("vocaquizUnlockMissionStatus");
   const vocaquizUnlockMissionButton = document.getElementById("vocaquizUnlockMissionButton");
@@ -1546,7 +1529,6 @@
   const tanyaJeyaList = document.getElementById("tanyaJeyaList");
   const tanyaJeyaCount = document.getElementById("tanyaJeyaCount");
   const tanyaJeyaRefresh = document.getElementById("tanyaJeyaRefresh");
-  const HANGOUT_COURSE_KEY = "english-hangout-club";
   const JEYA_DASHBOARD_EMAIL = "jihamalia@gmail.com";
 
   function getRedirectTarget() {
@@ -1828,35 +1810,6 @@
     renderTestResults([vocabularyResult, grammarResult, slangResult, sweResult]);
   }
 
-  function renderHangoutMission(isComplete = false) {
-    hangoutMissionCard.classList.toggle("is-complete", isComplete);
-    hangoutMissionStatus.textContent = isComplete ? "Sudah join" : "Belum join";
-    hangoutMissionButton.textContent = isComplete ? "Joined" : "Join";
-    hangoutMissionButton.setAttribute("aria-label", isComplete
-      ? "English Hangout Club sudah aktif"
-      : "Join English Hangout Club");
-    updateMissionsCompletedCount();
-  }
-
-  async function loadHangoutMission() {
-    renderHangoutMission(false);
-
-    if (!supabaseClient || !currentSession || !currentSession.user) return;
-
-    const { data, error } = await supabaseClient
-      .from("jeyasclub_course_access")
-      .select("id")
-      .eq("course_key", HANGOUT_COURSE_KEY)
-      .limit(1);
-
-    if (error) {
-      console.error("Load mission access failed:", error);
-      return;
-    }
-
-    renderHangoutMission(Boolean(data && data.length));
-  }
-
   function renderVocaquizUnlockMission(isComplete = false) {
     vocaquizUnlockMissionCard.classList.toggle("is-complete", isComplete);
     vocaquizUnlockMissionStatus.textContent = isComplete ? "Sudah unlock" : "Belum unlock";
@@ -2120,7 +2073,6 @@
       memberSince.textContent = formatMemberDate(profile.createdAt);
       authMessage.className = "status good";
       authMessage.textContent = "Akun Jeya's Club siap digunakan.";
-      loadHangoutMission();
       loadVocaquizUnlockMission();
       loadVocaquizScoreMissions();
       loadGrammarPerfectMission();
@@ -2136,7 +2088,6 @@
     memberSince.textContent = "-";
     authMessage.className = "status";
     authMessage.textContent = "Login atau buat akun Jeya's Club untuk mulai.";
-    renderHangoutMission(false);
     renderVocaquizUnlockMission(false);
     renderVocaquizScoreMissions(null);
     renderGrammarPerfectMission(null);
