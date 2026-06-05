@@ -99,6 +99,16 @@
     .btn.primary:hover { background: var(--blue-dark); }
     .btn.ghost { background: var(--soft); }
     .btn.danger { color: var(--red); border-color: #ffd5d5; background: #fff8f8; }
+    .unlock-email-note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .unlock-email-note strong {
+      color: var(--ink);
+      font-weight: 900;
+    }
 
     .shell {
       width: min(100% - 36px, 1120px);
@@ -870,7 +880,11 @@
       <div class="nav-actions hidden" id="reviewActions" style="justify-content:flex-start;margin-top:16px;">
         <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
         <button class="btn primary" type="button" id="payButton">Unlock Rp30.000</button>
+        <button class="btn ghost" type="button" id="copyEmailButton">Copy Email</button>
       </div>
+      <p class="unlock-email-note hidden" id="unlockEmailHint">
+        Gunakan email yang sama saat pembayaran: <strong id="unlockEmailValue">-</strong>
+      </p>
     </section>
 
     <section class="panel other-tests" aria-label="Coba tes lainnya">
@@ -965,6 +979,9 @@
     const reviewActions = document.getElementById("reviewActions");
     const checkAccessButton = document.getElementById("checkAccessButton");
     const payButton = document.getElementById("payButton");
+    const copyEmailButton = document.getElementById("copyEmailButton");
+    const unlockEmailHint = document.getElementById("unlockEmailHint");
+    const unlockEmailValue = document.getElementById("unlockEmailValue");
     const paymentModal = document.getElementById("paymentModal");
     const paymentFrame = document.getElementById("paymentFrame");
 
@@ -1370,7 +1387,36 @@
     function updateReviewActions(showActions) {
       reviewActions.classList.toggle("hidden", !showActions);
       payButton.classList.toggle("hidden", hasReviewAccess);
+      copyEmailButton.classList.toggle("hidden", hasReviewAccess);
+      unlockEmailHint.classList.toggle("hidden", !showActions || hasReviewAccess);
+      unlockEmailValue.textContent = currentSession?.user?.email || "email akunmu";
       checkAccessButton.textContent = hasReviewAccess ? "Akses Aktif" : "Cek Akses";
+    }
+
+    async function copyUnlockEmail() {
+      const email = currentSession?.user?.email || "";
+      if (!email) {
+        copyEmailButton.textContent = "Email belum ada";
+        setTimeout(() => { copyEmailButton.textContent = "Copy Email"; }, 1400);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(email);
+      } catch (error) {
+        const tempInput = document.createElement("textarea");
+        tempInput.value = email;
+        tempInput.setAttribute("readonly", "");
+        tempInput.style.position = "fixed";
+        tempInput.style.opacity = "0";
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        tempInput.remove();
+      }
+
+      copyEmailButton.textContent = "Email disalin";
+      setTimeout(() => { copyEmailButton.textContent = "Copy Email"; }, 1400);
     }
 
     function renderLockedReview(message) {
@@ -1517,6 +1563,7 @@
       await checkReviewAccess();
     });
     payButton.addEventListener("click", openPayment);
+    copyEmailButton.addEventListener("click", copyUnlockEmail);
     document.getElementById("closePaymentButton").addEventListener("click", closePayment);
     paymentModal.addEventListener("click", event => {
       if (event.target === paymentModal) closePayment();
