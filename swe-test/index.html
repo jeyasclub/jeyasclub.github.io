@@ -897,7 +897,22 @@
       }
       const { data } = await supabaseClient.auth.getSession();
       await setAuthUi(data.session);
-      supabaseClient.auth.onAuthStateChange((_event, session) => {
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "TOKEN_REFRESHED" || event === "INITIAL_SESSION") {
+          currentSession = session;
+          return;
+        }
+
+        const sameUser = currentSession?.user?.id && session?.user?.id === currentSession.user.id;
+        const isWorkingView = !quizPanel.classList.contains("hidden")
+          || !resultPanel.classList.contains("hidden")
+          || !reviewPanel.classList.contains("hidden");
+
+        if (sameUser && isWorkingView && event === "SIGNED_IN") {
+          currentSession = session;
+          return;
+        }
+
         setAuthUi(session);
       });
     }
