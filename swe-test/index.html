@@ -629,6 +629,55 @@
       color: var(--muted);
       padding: 12px;
     }
+    .other-tests {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .other-test-list {
+      display: grid;
+      gap: 12px;
+    }
+    .other-test-card {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 14px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .other-test-card:hover {
+      border-color: rgba(31, 115, 232, 0.42);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+      transform: translateY(-1px);
+    }
+    .other-test-emoji {
+      width: 54px;
+      height: 54px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      background: var(--sky);
+      font-size: 1.6rem;
+    }
+    .other-test-card h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+    .other-test-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .other-test-action {
+      color: var(--blue);
+      font-weight: 900;
+      white-space: nowrap;
+    }
 
     .payment-modal {
       position: fixed;
@@ -681,6 +730,12 @@
       }
       #restartButton {
         width: 100%;
+      }
+      .other-test-card {
+        grid-template-columns: 48px minmax(0, 1fr);
+      }
+      .other-test-action {
+        grid-column: 2;
       }
       .paid-title, .answer-grid { display: grid; }
       .nav-actions { gap: 8px; }
@@ -799,6 +854,41 @@
       <div class="nav-actions hidden" id="reviewActions" style="justify-content:flex-start;margin-top:16px;">
         <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
         <button class="btn primary" type="button" id="payButton">Unlock Rp30.000</button>
+      </div>
+    </section>
+
+    <section class="panel other-tests" aria-label="Coba tes lainnya">
+      <div class="panel-head">
+        <div>
+          <h2>Coba tes lainnya</h2>
+          <p class="muted">Lanjut cek area bahasa Inggris lain yang bisa bantu kamu belajar lebih terarah.</p>
+        </div>
+      </div>
+      <div class="other-test-list">
+        <a class="other-test-card" href="/vocabulary-test/">
+          <span class="other-test-emoji" aria-hidden="true">🔤</span>
+          <div>
+            <h3>Vocabulary Test</h3>
+            <p>Cek seberapa luas kosakata bahasa Inggrismu.</p>
+          </div>
+          <span class="other-test-action">Mulai</span>
+        </a>
+        <a class="other-test-card" href="/grammar-test/">
+          <span class="other-test-emoji" aria-hidden="true">✍️</span>
+          <div>
+            <h3>Grammar Test</h3>
+            <p>Latihan grammar singkat dari tenses sampai conditionals.</p>
+          </div>
+          <span class="other-test-action">Mulai</span>
+        </a>
+        <a class="other-test-card" href="/english-slang-test/">
+          <span class="other-test-emoji" aria-hidden="true">💬</span>
+          <div>
+            <h3>English Slang Test</h3>
+            <p>Uji pemahaman slang, meme words, dan internet culture.</p>
+          </div>
+          <span class="other-test-action">Mulai</span>
+        </a>
       </div>
     </section>
   </main>
