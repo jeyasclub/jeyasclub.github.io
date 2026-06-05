@@ -253,6 +253,12 @@
       font-size: 0.82rem;
       padding: 6px 12px;
     }
+    .question-instruction {
+      margin: -4px 0 14px;
+      color: var(--blue);
+      font-size: 0.95rem;
+      font-weight: 900;
+    }
     .question {
       margin: 0 0 18px;
       font-size: clamp(1.12rem, 2vw, 1.55rem);
@@ -828,6 +834,7 @@
           <span class="pill" id="typeLabel">Sentence Completion</span>
           <span class="pill" id="difficultyLabel">easy</span>
         </div>
+        <p class="question-instruction hidden" id="questionInstruction">Spot the mistake!</p>
         <p class="question" id="questionText"></p>
         <div class="options" id="optionsList"></div>
       </div>
@@ -943,6 +950,7 @@
     const progressFill = document.getElementById("progressFill");
     const typeLabel = document.getElementById("typeLabel");
     const difficultyLabel = document.getElementById("difficultyLabel");
+    const questionInstruction = document.getElementById("questionInstruction");
     const questionText = document.getElementById("questionText");
     const optionsList = document.getElementById("optionsList");
     const quizStatus = document.getElementById("quizStatus");
@@ -1119,6 +1127,8 @@
       progressFill.style.width = `${progress}%`;
       if (typeLabel) typeLabel.textContent = question.type;
       if (difficultyLabel) difficultyLabel.textContent = question.difficulty;
+      const shouldShowSpotInstruction = question.part === "written" && question.type === "Error Identification";
+      questionInstruction.classList.toggle("hidden", !shouldShowSpotInstruction);
       questionText.classList.toggle("written-question", question.part === "written");
       quizStatus.textContent = "";
       optionsList.classList.toggle("written-options", question.part === "written");
