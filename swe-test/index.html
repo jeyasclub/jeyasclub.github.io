@@ -545,6 +545,15 @@
       line-height: 1.45;
       overflow-wrap: anywhere;
     }
+    .accordion-question.written-question {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      line-height: 2.05;
+    }
+    .review-written-choice {
+      cursor: default;
+      pointer-events: none;
+    }
     .accordion-status {
       min-height: 26px;
       display: inline-flex;
@@ -1137,16 +1146,24 @@
       });
     }
 
-    function renderWrittenQuestion(question) {
+    function renderWrittenQuestion(question, interactive = true) {
       let html = escapeHtml(question.question);
       question.options.forEach((option, index) => {
         const marker = `\\(${letters[index]}\\)`;
         const segment = escapeHtml(stripChoiceLabel(option));
         const pattern = new RegExp(`${marker}\\s*${escapeRegExp(segment)}`);
-        const replacement = `<button class="written-choice" type="button" data-index="${index}" data-letter="${letters[index]}">${segment}</button>`;
+        const replacement = interactive
+          ? `<button class="written-choice" type="button" data-index="${index}" data-letter="${letters[index]}">${segment}</button>`
+          : `<span class="written-choice review-written-choice" data-letter="${letters[index]}">${segment}</span>`;
         html = html.replace(pattern, replacement);
       });
       return html;
+    }
+
+    function renderReviewQuestion(item) {
+      const number = `${item.id}. `;
+      if (item.part === "written") return `${escapeHtml(number)}${renderWrittenQuestion(item, false)}`;
+      return `${escapeHtml(number + item.question)}`;
     }
 
     function stripChoiceLabel(option) {
@@ -1385,7 +1402,7 @@
         return `
           <details class="accordion-item ${isCorrect === true ? "ok" : (isCorrect === false ? "bad" : "")}" ${index === 0 ? "open" : ""}>
             <summary>
-              <span class="accordion-question">${item.id}. ${escapeHtml(item.question)}</span>
+              <span class="accordion-question ${item.part === "written" ? "written-question" : ""}">${renderReviewQuestion(item)}</span>
               <span class="accordion-status">${isCorrect === null ? "Teaser" : (isCorrect ? "Benar" : "Salah")}</span>
               <span class="accordion-arrow" aria-hidden="true"></span>
             </summary>
