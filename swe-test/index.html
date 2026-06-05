@@ -34,7 +34,7 @@
       margin: 0;
       font-family: "Poppins", Arial, sans-serif;
       color: var(--ink);
-      background: linear-gradient(180deg, #ffffff 0%, #f5f8fd 58%, #ffffff 100%);
+      background: #ffffff;
     }
     button, input { font: inherit; }
     a { color: inherit; text-decoration: none; }
@@ -103,14 +103,22 @@
     .shell {
       width: min(100% - 36px, 1120px);
       margin: 0 auto;
-      padding: 54px 0 72px;
+      padding: 0 0 72px;
     }
     .hero {
+      position: relative;
+      overflow: hidden;
       display: grid;
       grid-template-columns: minmax(0, 1fr) 320px;
       gap: 28px;
       align-items: end;
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
       margin-bottom: 28px;
+      padding: 70px max(18px, calc((100vw - 1120px) / 2)) 64px;
+      background:
+        linear-gradient(180deg, rgba(232,241,253,0.78), rgba(255,255,255,0.95)),
+        url('/assets/optimized/bg.jpg') center/cover;
     }
     .eyebrow {
       margin: 0 0 10px;
