@@ -1284,9 +1284,9 @@
     background: var(--white);
   }
 
-  .result-recommendations {
+  .other-tests {
     display: grid;
-    gap: 18px;
+    gap: 16px;
     padding: 18px;
     border: 1px solid rgba(26, 111, 232, 0.12);
     border-radius: 18px;
@@ -1294,14 +1294,14 @@
       linear-gradient(145deg, rgba(255,255,255,0.98), rgba(247,249,252,0.98));
   }
 
-  .recommendation-head {
+  .other-tests-head {
     display: flex;
     justify-content: space-between;
     gap: 18px;
     align-items: flex-end;
   }
 
-  .recommendation-head span {
+  .other-tests-head span {
     color: var(--blue);
     font-size: 12px;
     font-weight: 900;
@@ -1309,100 +1309,76 @@
     text-transform: uppercase;
   }
 
-  .recommendation-head h3 {
+  .other-tests-head h3 {
     margin-top: 6px;
     color: var(--text);
     font-size: 22px;
     line-height: 1.2;
   }
 
-  .recommendation-head p {
+  .other-tests-head p {
     max-width: 470px;
     color: var(--text-muted);
     font-size: 13px;
     line-height: 1.65;
   }
 
-  .recommendation-section {
+  .other-test-list {
     display: grid;
-    gap: 10px;
-  }
-
-  .recommendation-section-title {
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 900;
-  }
-
-  .recommendation-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .recommendation-item {
-    display: grid;
-    grid-template-columns: 54px minmax(0, 1fr);
     gap: 12px;
+  }
+
+  .other-test-card {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    gap: 14px;
     align-items: center;
-    padding: 12px;
     border: 1px solid var(--border);
     border-radius: 14px;
     background: var(--white);
     color: inherit;
-    font: inherit;
-    text-align: left;
+    padding: 14px;
     text-decoration: none;
-    cursor: pointer;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   }
 
-  .recommendation-item:hover {
+  .other-test-card:hover {
     transform: translateY(-2px);
     border-color: rgba(26, 111, 232, 0.28);
     box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
   }
 
-  .recommendation-media {
+  .other-test-emoji {
     width: 54px;
     height: 54px;
     border-radius: 14px;
     background: var(--blue-light);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    font-size: 1.6rem;
   }
 
-  .recommendation-media img {
-    width: 86%;
-    height: 86%;
-    object-fit: contain;
-    display: block;
-  }
-
-  .recommendation-item strong {
-    display: block;
+  .other-test-card h3 {
+    margin: 0 0 4px;
     color: var(--text);
     font-size: 14px;
     line-height: 1.25;
   }
 
-  .recommendation-item small {
-    display: block;
-    margin-top: 4px;
+  .other-test-card p {
+    margin: 0;
     color: var(--text-muted);
     font-size: 12px;
     font-weight: 700;
     line-height: 1.45;
   }
 
-  .recommendation-action {
-    margin-top: 8px;
-    display: inline-flex;
+  .other-test-action {
     color: var(--blue);
     font-size: 12px;
     font-weight: 900;
+    white-space: nowrap;
   }
 
   .program-modal {
@@ -1917,13 +1893,17 @@
       grid-template-columns: 1fr;
     }
 
-    .recommendation-head {
+    .other-tests-head {
       display: grid;
       gap: 10px;
     }
 
-    .recommendation-list {
-      grid-template-columns: 1fr;
+    .other-test-card {
+      grid-template-columns: 48px minmax(0, 1fr);
+    }
+
+    .other-test-action {
+      grid-column: 2;
     }
 
     .program-modal {
@@ -2153,73 +2133,39 @@
               <span>Rincian jawaban</span>
               <div class="answer-review" id="answerReview"></div>
             </div>
-            <div class="result-recommendations">
-              <div class="recommendation-head">
+            <div class="other-tests">
+              <div class="other-tests-head">
                 <div>
-                  <span>Langkah berikutnya</span>
-                  <h3>Lanjut belajar bareng Jeya's Club</h3>
+                  <span>Quiz lainnya</span>
+                  <h3>Coba quiz lainnya</h3>
                 </div>
-                <p>Pakai hasil vocabulary test ini sebagai petunjuk area yang perlu dilatih lagi, lalu pilih program atau materi mandiri yang paling cocok buat target belajarmu.</p>
+                <p>Coba quiz lainnya dari Jeya's Club untuk cek kemampuan bahasa Inggrismu dari sisi yang berbeda.</p>
               </div>
-
-              <div class="recommendation-section">
-                <div class="recommendation-section-title">Rekomendasi program belajar</div>
-                <div class="recommendation-list">
-                  <button class="recommendation-item" type="button" data-program="basic">
-                    <span class="recommendation-media"><img src="/assets/optimized/ok.png" alt="" width="203" height="260" loading="lazy" decoding="async"></span>
-                    <span>
-                      <strong>Kursus Dasar Bahasa Inggris</strong>
-                      <small>Mulai dari grammar dan kosakata dasar dengan tutor online.</small>
-                      <span class="recommendation-action">Lihat program</span>
-                    </span>
-                  </button>
-                  <button class="recommendation-item" type="button" data-program="speaking">
-                    <span class="recommendation-media"><img src="/assets/optimized/laptop.png" alt="" width="208" height="260" loading="lazy" decoding="async"></span>
-                    <span>
-                      <strong>Private Speaking Practice</strong>
-                      <small>Latihan speaking private supaya lebih lancar dan percaya diri.</small>
-                      <span class="recommendation-action">Lihat program</span>
-                    </span>
-                  </button>
-                  <button class="recommendation-item" type="button" data-program="writing">
-                    <span class="recommendation-media"><img src="/assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async"></span>
-                    <span>
-                      <strong>Private Writing Practice</strong>
-                      <small>Perkuat struktur kalimat, writing, dan reading comprehension.</small>
-                      <span class="recommendation-action">Lihat program</span>
-                    </span>
-                  </button>
-                  <button class="recommendation-item" type="button" data-program="kids">
-                    <span class="recommendation-media"><img src="/assets/optimized/kids.png" alt="" width="208" height="260" loading="lazy" decoding="async"></span>
-                    <span>
-                      <strong>English Course for Kids</strong>
-                      <small>Kelas bahasa Inggris online untuk anak dengan materi yang menyenangkan.</small>
-                      <span class="recommendation-action">Lihat program</span>
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="recommendation-section">
-                <div class="recommendation-section-title">Rekomendasi produk digital</div>
-                <div class="recommendation-list">
-                  <button class="recommendation-item" type="button" data-product="english-journey">
-                    <span class="recommendation-media"><img src="/assets/moduleng.jpg" alt="" width="422" height="596" loading="lazy" decoding="async"></span>
-                    <span>
-                      <strong>E-Modul 30-Day English Journey</strong>
-                      <small>Materi harian ringan untuk belajar bahasa Inggris mandiri selama 30 hari.</small>
-                      <span class="recommendation-action">Lihat produk</span>
-                    </span>
-                  </button>
-                  <button class="recommendation-item" type="button" data-product="toefl-package">
-                    <span class="recommendation-media"><img src="/assets/toefl.jpeg" alt="" width="1080" height="1080" loading="lazy" decoding="async"></span>
-                    <span>
-                      <strong>Paket Belajar TOEFL</strong>
-                      <small>Video, PPT, strategi, dan latihan untuk persiapan TOEFL ITP.</small>
-                      <span class="recommendation-action">Lihat produk</span>
-                    </span>
-                  </button>
-                </div>
+              <div class="other-test-list">
+                <a class="other-test-card" href="/grammar-test/">
+                  <span class="other-test-emoji" aria-hidden="true">✍️</span>
+                  <div>
+                    <h3>Grammar Test</h3>
+                    <p>Cek penguasaan grammar dasar sampai menengah.</p>
+                  </div>
+                  <span class="other-test-action">Mulai</span>
+                </a>
+                <a class="other-test-card" href="/swe-test/">
+                  <span class="other-test-emoji" aria-hidden="true">📝</span>
+                  <div>
+                    <h3>TOEFL SWE Test</h3>
+                    <p>Latihan Structure dan Written Expressions untuk TOEFL ITP.</p>
+                  </div>
+                  <span class="other-test-action">Mulai</span>
+                </a>
+                <a class="other-test-card" href="/english-slang-test/">
+                  <span class="other-test-emoji" aria-hidden="true">💬</span>
+                  <div>
+                    <h3>English Slang Test</h3>
+                    <p>Cek pemahaman slang, meme words, dan internet culture.</p>
+                  </div>
+                  <span class="other-test-action">Mulai</span>
+                </a>
               </div>
             </div>
             <div class="result-profile-actions">
