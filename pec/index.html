@@ -29,7 +29,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="/assets/optimized/bg.jpg" fetchpriority="high">
-<link rel="preload" as="image" href="/assets/optimized/normal-min.png" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -391,23 +390,10 @@
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.48fr);
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     align-items: center;
     padding: 64px 0 48px;
-  }
-
-  .hero-visual {
-    display: flex;
-    align-items: end;
-    justify-content: center;
-    min-height: 360px;
-  }
-
-  .hero-visual img {
-    width: min(330px, 72vw);
-    display: block;
-    filter: drop-shadow(10px 14px 0 rgba(255, 224, 120, 0.85)) drop-shadow(0 22px 24px rgba(0, 0, 0, 0.18));
   }
 
   .eyebrow {
@@ -941,9 +927,6 @@
     .cta-card {
       grid-template-columns: 1fr;
     }
-    .hero-visual {
-      min-height: auto;
-    }
     .price-card { max-width: 520px; }
     .benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1055,9 +1038,6 @@
           </div>
         </div>
 
-        <div class="hero-visual" aria-hidden="true">
-          <img src="/assets/optimized/normal-min.png" alt="" width="570" height="760" decoding="async" fetchpriority="high">
-        </div>
       </div>
     </section>
 
@@ -1076,10 +1056,6 @@
 
           <aside class="price-card" aria-label="Ringkasan Premium English Club">
             <h2>Premium English Club Juli 2026</h2>
-            <div class="price-row">
-              <span>Biaya pendaftaran</span>
-              <strong>Rp35.000</strong>
-            </div>
             <ul class="summary-list">
               <li><span>Periode</span><strong>1 - 31 Juli 2026</strong></li>
               <li><span>Tema</span><strong>Road to Intermediate</strong></li>
