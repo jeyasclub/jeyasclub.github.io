@@ -28,7 +28,7 @@
 <link rel="manifest" href="/assets/favicon/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="image" href="/assets/optimized/bg.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/intip.png" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script type="application/ld+json">
 {
@@ -390,10 +390,45 @@
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.82fr);
+    gap: 34px;
     align-items: center;
     padding: 64px 0 48px;
+  }
+
+  .hero-gallery {
+    position: relative;
+    align-self: center;
+    border: 4px solid var(--ink);
+    border-radius: 22px;
+    background: var(--white);
+    box-shadow: 9px 10px 0 var(--ink);
+    overflow: hidden;
+    transform: rotate(-1.2deg);
+  }
+
+  .hero-gallery::before {
+    content: "Intip keseruan";
+    position: absolute;
+    left: 18px;
+    top: 16px;
+    z-index: 1;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    background: var(--yellow);
+    box-shadow: 3px 4px 0 var(--ink);
+    color: var(--ink);
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 7px 12px;
+  }
+
+  .hero-gallery img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
 
   .eyebrow {
@@ -836,33 +871,6 @@
     padding: 8px 14px;
   }
 
-  .gallery-card {
-    display: grid;
-    gap: 18px;
-    border: 4px solid var(--ink);
-    border-radius: 24px;
-    background:
-      linear-gradient(135deg, rgba(255, 224, 120, 0.2), rgba(255, 255, 255, 0.96)),
-      var(--white);
-    box-shadow: 9px 10px 0 var(--ink);
-    padding: clamp(18px, 4vw, 28px);
-  }
-
-  .gallery-image-wrap {
-    overflow: hidden;
-    border: 4px solid var(--ink);
-    border-radius: 18px;
-    background: var(--white);
-    box-shadow: 5px 6px 0 var(--ink);
-  }
-
-  .gallery-image {
-    width: 100%;
-    display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-  }
-
   .benefit-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1146,6 +1154,10 @@
     .cta-card {
       grid-template-columns: 1fr;
     }
+    .hero-gallery {
+      max-width: 680px;
+      transform: rotate(0deg);
+    }
     .price-card { max-width: 520px; }
     .benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1274,6 +1286,9 @@
           </div>
         </div>
 
+        <div class="hero-gallery" aria-label="Galeri keseruan Premium English Club">
+          <img src="/assets/intip.png" alt="Suasana belajar Premium English Club" width="960" height="540" decoding="async" fetchpriority="high">
+        </div>
       </div>
     </section>
 
@@ -1369,21 +1384,6 @@
             <p>Premium English Club akan dipandu oleh Miss Rae, tutor berpengalaman yang sudah mengajar bahasa Inggris sejak 2018. Sesi belajar dibuat jelas, suportif, dan mudah diikuti untuk membantu peserta bergerak menuju level intermediate.</p>
           </div>
         </article>
-      </div>
-    </section>
-
-    <section class="section" id="gallery">
-      <div class="shell">
-        <div class="section-head">
-          <span class="eyebrow">Galeri Keseruan</span>
-          <h2>Intip vibes belajar bareng Premium English Club.</h2>
-          <p>Suasana belajar dibuat interaktif, ringan, dan tetap terarah supaya peserta bisa latihan bareng tanpa merasa sendirian.</p>
-        </div>
-        <div class="gallery-card">
-          <div class="gallery-image-wrap">
-            <img class="gallery-image" src="/assets/intip.png" alt="Galeri keseruan Premium English Club" width="960" height="540" loading="lazy" decoding="async">
-          </div>
-        </div>
       </div>
     </section>
 
