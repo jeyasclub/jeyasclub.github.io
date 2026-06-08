@@ -401,7 +401,7 @@
     align-self: center;
     border-radius: 0;
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
     transform: rotate(-1.2deg);
   }
 
@@ -412,8 +412,8 @@
   .hero-gallery img {
     width: 100%;
     display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
   }
 
   .eyebrow {
@@ -809,12 +809,12 @@
   .tutor-photo {
     position: relative;
     width: 100%;
-    aspect-ratio: 1;
+    height: auto;
     display: block;
     border: 0;
     border-radius: 0;
     background: transparent;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .tutor-copy {
