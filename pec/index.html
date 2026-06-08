@@ -661,6 +661,73 @@
     line-height: 1.75;
   }
 
+  .countdown-card {
+    display: grid;
+    gap: 14px;
+    border: 4px solid var(--ink);
+    border-radius: 22px;
+    background: #fff9dc;
+    box-shadow: 9px 10px 0 var(--ink);
+    margin-top: 18px;
+    padding: 18px;
+  }
+
+  .countdown-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    color: var(--ink);
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: 1.08rem;
+    font-weight: 700;
+  }
+
+  .countdown-title span {
+    color: #8b691d;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .countdown-unit {
+    display: grid;
+    gap: 4px;
+    justify-items: center;
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: 3px 4px 0 var(--ink);
+    padding: 12px 8px;
+    text-align: center;
+  }
+
+  .countdown-value {
+    color: var(--yellow);
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: clamp(1.65rem, 3vw, 2.45rem);
+    font-weight: 700;
+    line-height: 1;
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+  }
+
+  .countdown-label {
+    color: var(--ink);
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   .section {
     padding: 82px 0;
   }
@@ -693,6 +760,107 @@
     font-size: 1.02rem;
     font-weight: 700;
     line-height: 1.75;
+  }
+
+  .tutor-card {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.38fr) minmax(0, 1fr);
+    gap: 26px;
+    align-items: center;
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    background:
+      linear-gradient(135deg, rgba(255, 224, 120, 0.34), rgba(255, 255, 255, 0.96)),
+      var(--white);
+    box-shadow: 9px 10px 0 var(--ink);
+    padding: clamp(20px, 4vw, 34px);
+  }
+
+  .tutor-photo-wrap {
+    position: relative;
+    width: min(100%, 300px);
+    margin: 0 auto;
+  }
+
+  .tutor-photo-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 8px -8px -8px 8px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 4px solid var(--ink);
+  }
+
+  .tutor-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    display: block;
+    border: 5px solid var(--ink);
+    border-radius: 50%;
+    background: var(--white);
+    object-fit: cover;
+  }
+
+  .tutor-copy {
+    display: grid;
+    gap: 12px;
+  }
+
+  .tutor-copy h2 {
+    color: var(--ink);
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: clamp(2.3rem, 5vw, 4rem);
+    line-height: 0.95;
+  }
+
+  .tutor-copy p {
+    color: var(--ink);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.75;
+  }
+
+  .tutor-badge {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    background: var(--yellow);
+    box-shadow: 3px 4px 0 var(--ink);
+    color: var(--ink);
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding: 8px 14px;
+  }
+
+  .gallery-card {
+    display: grid;
+    gap: 18px;
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    background:
+      linear-gradient(135deg, rgba(255, 224, 120, 0.2), rgba(255, 255, 255, 0.96)),
+      var(--white);
+    box-shadow: 9px 10px 0 var(--ink);
+    padding: clamp(18px, 4vw, 28px);
+  }
+
+  .gallery-image-wrap {
+    overflow: hidden;
+    border: 4px solid var(--ink);
+    border-radius: 18px;
+    background: var(--white);
+    box-shadow: 5px 6px 0 var(--ink);
+  }
+
+  .gallery-image {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
 
   .benefit-grid {
@@ -974,6 +1142,7 @@
     .hero { min-height: auto; }
     .hero-grid,
     .detail-grid,
+    .tutor-card,
     .cta-card {
       grid-template-columns: 1fr;
     }
@@ -1003,10 +1172,23 @@
     .footer-top {
       grid-template-columns: 1fr;
     }
+    .tutor-card {
+      text-align: center;
+    }
+    .tutor-badge {
+      margin: 0 auto;
+    }
     .summary-item {
       grid-template-columns: 1fr;
       gap: 10px;
       padding: 14px 0;
+    }
+    .countdown-title {
+      display: grid;
+      gap: 4px;
+    }
+    .countdown-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .schedule-row {
       grid-template-columns: 1fr;
@@ -1102,6 +1284,30 @@
             <span class="eyebrow">Detail Program</span>
             <h2>Program satu bulan untuk naik level dengan ritme belajar yang jelas.</h2>
             <p>Kamu akan belajar melalui kombinasi materi WhatsApp, quiz evaluasi, live class Zoom, diskusi grup, rekaman kelas, dan feedback tutor.</p>
+            <div class="countdown-card" aria-label="Countdown menuju program dimulai">
+              <div class="countdown-title">
+                <strong>Program dimulai 1 Juli 2026</strong>
+                <span>Countdown</span>
+              </div>
+              <div class="countdown-grid">
+                <div class="countdown-unit">
+                  <strong class="countdown-value" id="countdownDays">0</strong>
+                  <span class="countdown-label">Hari</span>
+                </div>
+                <div class="countdown-unit">
+                  <strong class="countdown-value" id="countdownHours">0</strong>
+                  <span class="countdown-label">Jam</span>
+                </div>
+                <div class="countdown-unit">
+                  <strong class="countdown-value" id="countdownMinutes">0</strong>
+                  <span class="countdown-label">Menit</span>
+                </div>
+                <div class="countdown-unit">
+                  <strong class="countdown-value" id="countdownSeconds">0</strong>
+                  <span class="countdown-label">Detik</span>
+                </div>
+              </div>
+            </div>
             <div class="cta-actions">
               <button class="button primary" type="button" data-open-payment>Daftar Sekarang</button>
               <a class="button" href="#benefit">Lihat Benefit</a>
@@ -1146,6 +1352,37 @@
               </li>
             </ul>
           </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft" id="tutor">
+      <div class="shell">
+        <article class="tutor-card">
+          <div class="tutor-photo-wrap">
+            <img class="tutor-photo" src="/assets/rae.png" alt="Miss Rae, tutor Premium English Club" width="827" height="827" loading="lazy" decoding="async">
+          </div>
+          <div class="tutor-copy">
+            <span class="eyebrow">Tutor</span>
+            <h2>Miss Rae</h2>
+            <span class="tutor-badge">Mengajar sejak 2018</span>
+            <p>Premium English Club akan dipandu oleh Miss Rae, tutor berpengalaman yang sudah mengajar bahasa Inggris sejak 2018. Sesi belajar dibuat jelas, suportif, dan mudah diikuti untuk membantu peserta bergerak menuju level intermediate.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="gallery">
+      <div class="shell">
+        <div class="section-head">
+          <span class="eyebrow">Galeri Keseruan</span>
+          <h2>Intip vibes belajar bareng Premium English Club.</h2>
+          <p>Suasana belajar dibuat interaktif, ringan, dan tetap terarah supaya peserta bisa latihan bareng tanpa merasa sendirian.</p>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-image-wrap">
+            <img class="gallery-image" src="/assets/intip.png" alt="Galeri keseruan Premium English Club" width="960" height="540" loading="lazy" decoding="async">
+          </div>
         </div>
       </div>
     </section>
@@ -1323,6 +1560,11 @@
   const paymentModal = document.getElementById('paymentModal');
   const paymentFrame = document.getElementById('paymentFrame');
   const paymentUrl = 'https://jeyasclub.myr.id/pl/premium-english-club-juli-2026?iframe=true';
+  const countdownTarget = new Date('2026-07-01T00:00:00+07:00').getTime();
+  const countdownDays = document.getElementById('countdownDays');
+  const countdownHours = document.getElementById('countdownHours');
+  const countdownMinutes = document.getElementById('countdownMinutes');
+  const countdownSeconds = document.getElementById('countdownSeconds');
 
   function getNavLoginUrl() {
     const redirect = `${window.location.pathname}${window.location.search}${window.location.hash}` || '/pec/';
@@ -1411,6 +1653,21 @@
     if (paymentFrame) paymentFrame.src = '';
   }
 
+  function updateCountdown() {
+    if (!countdownDays || !countdownHours || !countdownMinutes || !countdownSeconds) return;
+
+    const distance = Math.max(0, countdownTarget - Date.now());
+    const days = Math.floor(distance / 86400000);
+    const hours = Math.floor((distance % 86400000) / 3600000);
+    const minutes = Math.floor((distance % 3600000) / 60000);
+    const seconds = Math.floor((distance % 60000) / 1000);
+
+    countdownDays.textContent = String(days);
+    countdownHours.textContent = String(hours).padStart(2, '0');
+    countdownMinutes.textContent = String(minutes).padStart(2, '0');
+    countdownSeconds.textContent = String(seconds).padStart(2, '0');
+  }
+
   if (mobileMenuToggle && mobileMenu) {
     mobileMenuToggle.addEventListener('click', () => {
       const isOpen = mobileMenu.classList.toggle('open');
@@ -1452,6 +1709,8 @@
 
   if (navLogoutButton) navLogoutButton.addEventListener('click', logoutNavUser);
   if (mobileLogoutButton) mobileLogoutButton.addEventListener('click', logoutNavUser);
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
   initNavAuth();
 </script>
 </body>
