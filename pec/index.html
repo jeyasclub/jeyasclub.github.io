@@ -799,8 +799,8 @@
 
   .tutor-card {
     display: grid;
-    grid-template-columns: minmax(220px, 0.38fr) minmax(0, 1fr);
-    gap: 26px;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 24px;
     align-items: center;
     border: 4px solid var(--ink);
     border-radius: 24px;
@@ -808,22 +808,22 @@
       linear-gradient(135deg, rgba(255, 224, 120, 0.34), rgba(255, 255, 255, 0.96)),
       var(--white);
     box-shadow: 9px 10px 0 var(--ink);
-    padding: clamp(20px, 4vw, 34px);
+    padding: clamp(18px, 3vw, 28px);
   }
 
   .tutor-photo-wrap {
     position: relative;
-    width: min(100%, 300px);
+    width: min(100%, 170px);
     margin: 0 auto;
   }
 
   .tutor-photo-wrap::before {
     content: "";
     position: absolute;
-    inset: 8px -8px -8px 8px;
+    inset: 6px -6px -6px 6px;
     border-radius: 50%;
     background: var(--yellow);
-    border: 4px solid var(--ink);
+    border: 3px solid var(--ink);
   }
 
   .tutor-photo {
@@ -831,7 +831,7 @@
     width: 100%;
     aspect-ratio: 1;
     display: block;
-    border: 5px solid var(--ink);
+    border: 4px solid var(--ink);
     border-radius: 50%;
     background: var(--white);
     object-fit: cover;
@@ -845,13 +845,13 @@
   .tutor-copy h2 {
     color: var(--ink);
     font-family: Fredoka, Poppins, Arial, sans-serif;
-    font-size: clamp(2.3rem, 5vw, 4rem);
-    line-height: 0.95;
+    font-size: clamp(2.1rem, 4vw, 3.25rem);
+    line-height: 1;
   }
 
   .tutor-copy p {
     color: var(--ink);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 800;
     line-height: 1.75;
   }
