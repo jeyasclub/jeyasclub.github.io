@@ -557,24 +557,74 @@
 
   .summary-list {
     display: grid;
-    gap: 10px;
+    gap: 0;
     list-style: none;
   }
 
-  .summary-list li {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
+  .summary-item {
+    display: grid;
+    grid-template-columns: minmax(118px, 0.32fr) minmax(0, 1fr);
+    gap: 18px;
     border-top: 2px dashed rgba(0, 0, 0, 0.18);
-    padding-top: 10px;
+    padding: 16px 0;
     color: var(--ink);
     font-size: 0.92rem;
     font-weight: 700;
   }
 
-  .summary-list strong {
+  .summary-item:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .summary-label {
     color: var(--ink);
-    text-align: right;
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .summary-value {
+    color: var(--ink);
+    font-family: Fredoka, Poppins, Arial, sans-serif;
+    font-size: clamp(1.05rem, 1.55vw, 1.28rem);
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  .schedule-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .schedule-row {
+    display: grid;
+    grid-template-columns: minmax(126px, 0.36fr) minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    background: #fff9dc;
+    padding: 12px;
+    box-shadow: 3px 4px 0 var(--ink);
+  }
+
+  .schedule-day {
+    color: #8b691d;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.35;
+  }
+
+  .schedule-activity {
+    color: var(--ink);
+    font-size: 0.98rem;
+    font-weight: 900;
+    line-height: 1.35;
   }
 
   .detail-grid {
@@ -953,11 +1003,15 @@
     .footer-top {
       grid-template-columns: 1fr;
     }
-    .summary-list li {
-      display: grid;
-      gap: 4px;
+    .summary-item {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 14px 0;
     }
-    .summary-list strong { text-align: left; }
+    .schedule-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
     .section { padding: 58px 0; }
     .payment-panel {
       height: min(88vh, 720px);
@@ -1057,10 +1111,39 @@
           <aside class="price-card" aria-label="Ringkasan Premium English Club">
             <h2>Premium English Club Juli 2026</h2>
             <ul class="summary-list">
-              <li><span>Periode</span><strong>1 - 31 Juli 2026</strong></li>
-              <li><span>Tema</span><strong>Road to Intermediate</strong></li>
-              <li><span>Jadwal</span><strong>Materi & Latihan soal Setiap Senin - Kamis</strong><br><strong>Quiz Evaluasi Setiap Jumat</strong><br><strong>Live Class Setiap Minggu, 15.30 - 17.00 WIB</strong></li>
-              <li><span>Platform</span><strong>WhatsApp + Zoom</strong></li>
+              <li class="summary-item">
+                <span class="summary-label">Biaya</span>
+                <strong class="summary-value">Rp35.000</strong>
+              </li>
+              <li class="summary-item">
+                <span class="summary-label">Periode</span>
+                <strong class="summary-value">1 - 31 Juli 2026</strong>
+              </li>
+              <li class="summary-item">
+                <span class="summary-label">Tema</span>
+                <strong class="summary-value">Road to Intermediate</strong>
+              </li>
+              <li class="summary-item">
+                <span class="summary-label">Jadwal</span>
+                <div class="schedule-list">
+                  <div class="schedule-row">
+                    <span class="schedule-day">Senin - Kamis</span>
+                    <strong class="schedule-activity">Materi & latihan soal</strong>
+                  </div>
+                  <div class="schedule-row">
+                    <span class="schedule-day">Jumat</span>
+                    <strong class="schedule-activity">Quiz evaluasi</strong>
+                  </div>
+                  <div class="schedule-row">
+                    <span class="schedule-day">Minggu</span>
+                    <strong class="schedule-activity">Live class, 15.30 - 17.00 WIB</strong>
+                  </div>
+                </div>
+              </li>
+              <li class="summary-item">
+                <span class="summary-label">Platform</span>
+                <strong class="summary-value">WhatsApp + Zoom</strong>
+              </li>
             </ul>
           </aside>
         </div>
