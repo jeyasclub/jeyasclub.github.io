@@ -405,11 +405,21 @@
   h1 {
     max-width: 820px;
     color: var(--ink);
-    font-size: clamp(3.35rem, 8vw, 6.8rem);
+    font-size: clamp(2.85rem, 6vw, 5rem);
     font-weight: 900;
-    line-height: 0.98;
+    line-height: 1;
     letter-spacing: 0;
-    margin: 18px 0 18px;
+    margin: 18px 0 10px;
+  }
+
+  .hero-theme {
+    display: block;
+    max-width: 720px;
+    color: var(--blue);
+    font-size: clamp(1.55rem, 3.2vw, 2.55rem);
+    font-weight: 900;
+    line-height: 1.12;
+    margin: 0 0 18px;
   }
 
   .hero-copy p {
@@ -865,7 +875,8 @@
   @media (max-width: 640px) {
     .shell { width: min(100% - 28px, 1120px); }
     .hero-grid { padding: 48px 0 34px; }
-    h1 { font-size: clamp(3rem, 16vw, 4.2rem); }
+    h1 { font-size: clamp(2.65rem, 12vw, 3.5rem); }
+    .hero-theme { font-size: clamp(1.35rem, 7vw, 2rem); }
     .hero-actions,
     .cta-actions {
       display: grid;
@@ -952,8 +963,9 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">Premium English Club</span>
-          <h1>Road to Intermediate</h1>
+          <span class="eyebrow">Program Juli 2026</span>
+          <h1>Premium English Club</h1>
+          <strong class="hero-theme">Road to Intermediate</strong>
           <p>Program belajar bahasa Inggris intensif selama Juli 2026 untuk kamu yang ingin naik level dengan materi harian, latihan terarah, quiz evaluasi, live class, dan feedback tutor.</p>
           <div class="hero-actions">
             <button class="button primary" type="button" data-open-payment>Daftar Sekarang</button>
@@ -989,7 +1001,7 @@
             <ul class="summary-list">
               <li><span>Periode</span><strong>1 - 31 Juli 2026</strong></li>
               <li><span>Tema</span><strong>Road to Intermediate</strong></li>
-              <li><span>Live class</span><strong>Minggu, 15.30 - 17.00 WIB</strong></li>
+              <li><span>Live class</span><strong>Setiap Minggu, 15.30 - 17.00 WIB</strong></li>
               <li><span>Platform</span><strong>WhatsApp + Zoom</strong></li>
             </ul>
           </aside>
