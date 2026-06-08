@@ -390,8 +390,8 @@
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.82fr);
-    gap: 34px;
+    grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1fr);
+    gap: 44px;
     align-items: center;
     padding: 64px 0 48px;
   }
@@ -399,6 +399,8 @@
   .hero-gallery {
     position: relative;
     align-self: center;
+    width: min(100%, 720px);
+    justify-self: end;
     border-radius: 0;
     background: transparent;
     overflow: visible;
@@ -1134,8 +1136,11 @@
     .cta-card {
       grid-template-columns: 1fr;
     }
+    .hero-copy { order: 2; }
     .hero-gallery {
+      order: 1;
       max-width: 680px;
+      justify-self: center;
       transform: rotate(0deg);
     }
     .price-card { max-width: 520px; }
