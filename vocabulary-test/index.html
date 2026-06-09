@@ -1088,6 +1088,17 @@
     line-height: 1.7;
   }
 
+  .answer-review-quote {
+    padding: 12px 14px;
+    border: 1px dashed rgba(26, 111, 232, 0.28);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--blue-dark);
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.55;
+  }
+
   .answer-review-benefits {
     display: grid;
     gap: 8px;
@@ -3091,6 +3102,10 @@
     const copy = document.createElement("p");
     copy.textContent = "Dapatkan akses ke detail hasil Vocabulary Test kamu setelah melakukan pembayaran.";
 
+    const quote = document.createElement("p");
+    quote.className = "answer-review-quote";
+    quote.textContent = "\"The best way to learn is by learning from your mistakes.\"";
+
     const benefits = document.createElement("ul");
     benefits.className = "answer-review-benefits";
     ["Cek rincian jawaban yang salah dan benar", "Kunci jawaban soal"].forEach((text) => {
@@ -3140,7 +3155,7 @@
     checkButton.addEventListener("click", refreshAnswerReviewAccess);
 
     actions.append(payLink, checkButton);
-    lock.append(title, copy, benefits, emailBox, actions);
+    lock.append(title, copy, quote, benefits, emailBox, actions);
     answerReview.appendChild(lock);
   }
 

@@ -503,6 +503,15 @@
       color: var(--muted);
       line-height: 1.65;
     }
+    .locked .unlock-quote {
+      padding: 12px 14px;
+      border: 1px dashed rgba(31, 115, 232, 0.28);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--blue);
+      font-weight: 900;
+      line-height: 1.55;
+    }
     .paid-count {
       flex: 0 0 auto;
       min-height: 34px;
@@ -1429,6 +1438,7 @@
         <div class="locked">
           <span>${title}</span>
           <strong>${headline}</strong>
+          ${hasReviewAccess ? "" : `<p class="unlock-quote">"The best way to learn is by learning from your mistakes."</p>`}
           <p>${escapeHtml(message || "Gunakan email yang sama dengan akun Jeya's Club supaya akses pembahasan otomatis aktif setelah pembayaran.")}</p>
         </div>
       `;
@@ -1449,6 +1459,7 @@
         <div class="locked">
           <span>Pembahasan lengkap terkunci</span>
           <strong>Unlock kunci jawaban & pembahasan hanya dengan Rp30.000</strong>
+          <p class="unlock-quote">"The best way to learn is by learning from your mistakes."</p>
           <p>Gunakan email yang sama dengan akun Jeya's Club supaya akses pembahasan otomatis aktif setelah pembayaran.</p>
         </div>
       `;
