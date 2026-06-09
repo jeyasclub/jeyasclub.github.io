@@ -1873,6 +1873,166 @@
     background: var(--white);
   }
 
+  .pec-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 260;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+  }
+
+  .pec-popup.open {
+    display: flex;
+  }
+
+  .pec-popup-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(6px);
+  }
+
+  .pec-popup-panel {
+    position: relative;
+    z-index: 1;
+    width: min(920px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+    overflow: hidden;
+    border: 3px solid #0b0b0b;
+    border-radius: 26px;
+    background: #fffaf0;
+    box-shadow: 12px 14px 0 #0b0b0b, 0 28px 90px rgba(15, 23, 42, 0.28);
+  }
+
+  .pec-popup-content {
+    padding: clamp(26px, 4vw, 46px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .pec-popup-badge {
+    align-self: flex-start;
+    border: 3px solid #0b0b0b;
+    border-radius: 999px;
+    background: #ffe27a;
+    box-shadow: 0 7px 0 #0b0b0b;
+    color: #0b0b0b;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    padding: 9px 16px;
+    text-transform: uppercase;
+  }
+
+  .pec-popup-title {
+    color: #ffe27a;
+    font-size: clamp(38px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    -webkit-text-stroke: 4px #0b0b0b;
+    text-shadow: 5px 6px 0 #0b0b0b;
+  }
+
+  .pec-popup-subtitle {
+    width: fit-content;
+    border-bottom: 3px solid #0b0b0b;
+    color: #0b0b0b;
+    font-size: clamp(22px, 3.2vw, 34px);
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .pec-popup-copy {
+    max-width: 540px;
+    color: #0b0b0b;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.75;
+  }
+
+  .pec-popup-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 4px;
+  }
+
+  .pec-popup-button {
+    min-height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #0b0b0b;
+    border-radius: 14px;
+    box-shadow: 0 7px 0 #0b0b0b;
+    color: #0b0b0b;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+    padding: 14px 22px;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .pec-popup-button.primary {
+    background: #ffe27a;
+  }
+
+  .pec-popup-button.secondary {
+    background: #fff;
+  }
+
+  .pec-popup-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 0 #0b0b0b;
+  }
+
+  .pec-popup-media {
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 28px 24px 0;
+  }
+
+  .pec-popup-media img {
+    width: min(100%, 390px);
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .pec-popup-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #0b0b0b;
+    border-radius: 50%;
+    background: #fff;
+    color: #0b0b0b;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: 0 5px 0 #0b0b0b;
+  }
+
   .module-detail-title {
     padding-right: 48px;
     text-align: center;
@@ -3296,6 +3456,76 @@
 
   /* ── MOBILE RESPONSIVE ── */
   @media (max-width: 768px) {
+    .pec-popup {
+      align-items: flex-start;
+      padding: 18px 14px;
+      overflow-y: auto;
+    }
+
+    .pec-popup-panel {
+      grid-template-columns: 1fr;
+      width: min(100%, 420px);
+      margin: auto 0;
+      border-radius: 22px;
+      box-shadow: 7px 9px 0 #0b0b0b, 0 22px 70px rgba(15, 23, 42, 0.24);
+    }
+
+    .pec-popup-media {
+      order: -1;
+      min-height: 0;
+      padding: 34px 20px 0;
+    }
+
+    .pec-popup-media img {
+      width: min(100%, 320px);
+    }
+
+    .pec-popup-content {
+      align-items: center;
+      gap: 13px;
+      padding: 22px 20px 28px;
+      text-align: center;
+    }
+
+    .pec-popup-badge {
+      align-self: center;
+      font-size: 11px;
+      padding: 8px 13px;
+    }
+
+    .pec-popup-title {
+      font-size: clamp(34px, 12vw, 50px);
+      -webkit-text-stroke: 3px #0b0b0b;
+      text-shadow: 3px 4px 0 #0b0b0b;
+    }
+
+    .pec-popup-subtitle {
+      font-size: 22px;
+    }
+
+    .pec-popup-copy {
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .pec-popup-actions {
+      width: 100%;
+      flex-direction: column;
+    }
+
+    .pec-popup-button {
+      width: 100%;
+      min-height: 50px;
+    }
+
+    .pec-popup-close {
+      top: 10px;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      font-size: 24px;
+    }
+
     nav { padding: 0 16px; }
     .nav-links, .nav-actions { display: none; }
     .nav-hamburger { display: flex; }
@@ -3797,6 +4027,26 @@
   <div class="image-preview-panel">
     <button class="image-preview-close" type="button" aria-label="Tutup preview gambar" data-close-sheet-preview>&times;</button>
     <img id="sheetImagePreview" src="" alt="">
+  </div>
+</div>
+
+<div class="pec-popup" id="pecPopup" role="dialog" aria-modal="true" aria-labelledby="pecPopupTitle" aria-hidden="true">
+  <div class="pec-popup-backdrop" data-close-pec-popup></div>
+  <div class="pec-popup-panel">
+    <button class="pec-popup-close" type="button" aria-label="Tutup pop up Premium English Club" data-close-pec-popup>&times;</button>
+    <div class="pec-popup-content">
+      <span class="pec-popup-badge">Program Juli-Agustus 2026</span>
+      <h2 class="pec-popup-title" id="pecPopupTitle">Premium English Club</h2>
+      <p class="pec-popup-subtitle">Road to Intermediate</p>
+      <p class="pec-popup-copy">Materi harian, latihan terarah, quiz evaluasi, live class, dan feedback tutor untuk bantu kamu naik level.</p>
+      <div class="pec-popup-actions">
+        <a class="pec-popup-button primary" href="/pec/">Lihat Program</a>
+        <button class="pec-popup-button secondary" type="button" data-close-pec-popup>Nanti Dulu</button>
+      </div>
+    </div>
+    <div class="pec-popup-media" aria-hidden="true">
+      <img src="assets/intip.png" alt="" width="1164" height="768" loading="lazy" decoding="async">
+    </div>
   </div>
 </div>
 
@@ -4893,7 +5143,40 @@
     el.addEventListener('click', closeSheetImagePreview);
   });
 
+  const pecPopup = document.getElementById('pecPopup');
+  const pecPopupCloseButton = pecPopup ? pecPopup.querySelector('.pec-popup-close') : null;
+  let pecPopupOpened = false;
+
+  function openPecPopup() {
+    if (!pecPopup || pecPopupOpened) return;
+    pecPopupOpened = true;
+    pecPopup.classList.add('open');
+    pecPopup.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (pecPopupCloseButton) pecPopupCloseButton.focus();
+  }
+
+  function closePecPopup(event) {
+    if (event) event.preventDefault();
+    if (!pecPopup) return;
+    pecPopup.classList.remove('open');
+    pecPopup.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('[data-close-pec-popup]').forEach(el => {
+    el.addEventListener('click', closePecPopup);
+  });
+
+  if (pecPopup) {
+    window.setTimeout(openPecPopup, 650);
+  }
+
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && pecPopup && pecPopup.classList.contains('open')) {
+      closePecPopup(event);
+      return;
+    }
     if (event.key === 'Escape' && sheetImagePreviewModal && sheetImagePreviewModal.classList.contains('open')) {
       closeSheetImagePreview(event);
       return;
