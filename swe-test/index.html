@@ -192,6 +192,33 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .auth-tab {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 900;
+    }
+    .auth-tab.active {
+      border-color: var(--blue);
+      background: var(--sky);
+      color: var(--blue);
+    }
+    .auth-form {
+      display: grid;
+      gap: 16px;
+    }
+    #nameField {
+      grid-column: 1 / -1;
+    }
     .field {
       display: grid;
       gap: 8px;
@@ -806,24 +833,33 @@
     <section class="panel" id="authPanel">
       <div class="panel-head">
         <div>
-          <h2>Login dulu sebelum mulai</h2>
+          <h2>Login atau daftar untuk mulai</h2>
           <p class="muted">Hasil test akan tersimpan di akunmu, dan akses pembahasan mengikuti email akun yang dipakai saat pembayaran.</p>
         </div>
       </div>
-      <div class="auth-grid">
-        <div class="field">
-          <label for="emailInput">Email</label>
-          <input id="emailInput" type="email" autocomplete="email" placeholder="nama@email.com">
-        </div>
-        <div class="field">
-          <label for="passwordInput">Password</label>
-          <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Minimal 6 karakter">
-        </div>
+      <div class="auth-tabs" role="tablist" aria-label="Pilih login atau daftar">
+        <button class="auth-tab active" type="button" data-auth-mode="login">Login</button>
+        <button class="auth-tab" type="button" data-auth-mode="signup">Daftar</button>
       </div>
-      <div class="nav-actions" style="justify-content:flex-start;margin-top:16px;">
-        <button class="btn primary" type="button" id="loginButton">Login</button>
-        <button class="btn ghost" type="button" id="signupButton">Daftar</button>
-      </div>
+      <form class="auth-form" id="authForm">
+        <div class="auth-grid">
+          <div class="field hidden" id="nameField">
+            <label for="nameInput">Nama</label>
+            <input id="nameInput" type="text" autocomplete="name" placeholder="Nama kamu" disabled>
+          </div>
+          <div class="field">
+            <label for="emailInput">Email</label>
+            <input id="emailInput" type="email" autocomplete="email" placeholder="nama@email.com">
+          </div>
+          <div class="field">
+            <label for="passwordInput">Password</label>
+            <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Minimal 6 karakter">
+          </div>
+        </div>
+        <div class="nav-actions" style="justify-content:flex-start;">
+          <button class="btn primary" type="submit" id="authSubmitButton">Login</button>
+        </div>
+      </form>
       <p class="status" id="authStatus"></p>
     </section>
 
@@ -961,8 +997,13 @@
     const quizPanel = document.getElementById("quizPanel");
     const resultPanel = document.getElementById("resultPanel");
     const reviewPanel = document.getElementById("reviewPanel");
+    const authForm = document.getElementById("authForm");
+    const authTabs = document.querySelectorAll("[data-auth-mode]");
+    const nameField = document.getElementById("nameField");
+    const nameInput = document.getElementById("nameInput");
     const emailInput = document.getElementById("emailInput");
     const passwordInput = document.getElementById("passwordInput");
+    const authSubmitButton = document.getElementById("authSubmitButton");
     const authStatus = document.getElementById("authStatus");
     const welcomeText = document.getElementById("welcomeText");
     const logoutButton = document.getElementById("logoutButton");
@@ -1001,6 +1042,7 @@
     let latestResultId = null;
     let latestResult = null;
     let hasReviewAccess = false;
+    let authMode = "login";
 
     function buildQuizOrder() {
       const structure = sweQuestions.filter(question => question.part === "structure");
@@ -1016,6 +1058,56 @@
     function updateStartLabel() {
       startButton.textContent = latestResult ? "Retake Test" : "Mulai Test";
       latestResultButton.classList.toggle("hidden", !latestResult);
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      authTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.authMode === mode);
+      });
+      nameField.classList.toggle("hidden", mode !== "signup");
+      nameInput.disabled = mode !== "signup";
+      nameInput.required = mode === "signup";
+      passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
+      authSubmitButton.textContent = mode === "signup" ? "Daftar" : "Login";
+      authStatus.className = "status";
+      authStatus.textContent = mode === "signup"
+        ? "Isi nama, email aktif, dan password untuk membuat akun."
+        : "Login dengan email dan password yang sudah terdaftar.";
+    }
+
+    function getAuthErrorMessage(error, mode) {
+      const message = error && error.message ? error.message : "";
+      const lowerMessage = message.toLowerCase();
+
+      if (lowerMessage.includes("invalid login credentials")) {
+        return "Login gagal. Cek email dan password kamu.";
+      }
+
+      if (lowerMessage.includes("already registered") || lowerMessage.includes("already exists")) {
+        return "Email ini sudah terdaftar. Coba login, atau gunakan email lain.";
+      }
+
+      if (lowerMessage.includes("email rate limit")) {
+        return "Terlalu banyak email konfirmasi. Tunggu beberapa menit, atau login kalau akun sudah dibuat.";
+      }
+
+      if (lowerMessage.includes("password")) {
+        return "Password minimal 6 karakter.";
+      }
+
+      return mode === "signup"
+        ? `Daftar gagal: ${message || "cek format email dan password kamu."}`
+        : `Login gagal: ${message || "cek email dan password kamu."}`;
+    }
+
+    function withTimeout(promise, timeoutMs = 15000) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("auth_timeout")), timeoutMs);
+        })
+      ]);
     }
 
     async function setAuthUi(session) {
@@ -1060,28 +1152,90 @@
       });
     }
 
-    async function login() {
-      authStatus.textContent = "Login...";
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email: emailInput.value.trim(),
-        password: passwordInput.value
-      });
-      authStatus.textContent = error ? error.message : "Berhasil login.";
-    }
+    async function handleAuthSubmit(event) {
+      event.preventDefault();
+      if (!supabaseClient) {
+        authStatus.className = "status";
+        authStatus.textContent = "Supabase belum tersedia. Coba refresh halaman.";
+        return;
+      }
 
-    async function signup() {
-      authStatus.textContent = "Mendaftarkan akun...";
-      const { error } = await supabaseClient.auth.signUp({
-        email: emailInput.value.trim(),
-        password: passwordInput.value
-      });
-      authStatus.textContent = error ? error.message : "Akun dibuat. Cek email jika diminta konfirmasi, lalu login.";
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
+      const displayName = nameInput.value.trim();
+
+      if (!email.includes("@")) {
+        authStatus.className = "status";
+        authStatus.textContent = "Masukkan email yang valid.";
+        return;
+      }
+
+      if (password.length < 6) {
+        authStatus.className = "status";
+        authStatus.textContent = "Password minimal 6 karakter.";
+        return;
+      }
+
+      if (authMode === "signup" && displayName.length < 2) {
+        authStatus.className = "status";
+        authStatus.textContent = "Masukkan nama kamu.";
+        return;
+      }
+
+      authSubmitButton.disabled = true;
+      authStatus.className = "status";
+      authStatus.textContent = authMode === "signup" ? "Mendaftarkan akun..." : "Login...";
+
+      const fallbackName = displayName || email.split("@")[0];
+      const authRequest = authMode === "signup"
+        ? supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                username: fallbackName,
+                full_name: fallbackName,
+                name: fallbackName
+              },
+              emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+            }
+          })
+        : supabaseClient.auth.signInWithPassword({ email, password });
+
+      let data;
+      let error;
+
+      try {
+        const response = await withTimeout(authRequest);
+        data = response.data;
+        error = response.error;
+      } catch (requestError) {
+        error = requestError;
+      } finally {
+        authSubmitButton.disabled = false;
+      }
+
+      if (error) {
+        console.error("SWE Test auth error:", error);
+        authStatus.textContent = error.message === "auth_timeout"
+          ? "Login terlalu lama. Cek koneksi internet kamu lalu coba lagi."
+          : getAuthErrorMessage(error, authMode);
+        return;
+      }
+
+      passwordInput.value = "";
+      if (authMode === "signup" && !data.session) {
+        authStatus.textContent = "Akun dibuat. Cek email kamu lalu klik link konfirmasi sebelum login.";
+      } else {
+        authStatus.textContent = authMode === "signup" ? "Akun dibuat dan kamu sudah login." : "Berhasil login.";
+      }
     }
 
     async function logout() {
       await supabaseClient.auth.signOut();
       latestResult = null;
       updateStartLabel();
+      setAuthMode("login");
       authStatus.textContent = "Kamu sudah logout.";
     }
 
@@ -1563,8 +1717,10 @@
       return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
-    document.getElementById("loginButton").addEventListener("click", login);
-    document.getElementById("signupButton").addEventListener("click", signup);
+    authForm.addEventListener("submit", handleAuthSubmit);
+    authTabs.forEach(tab => {
+      tab.addEventListener("click", () => setAuthMode(tab.dataset.authMode));
+    });
     logoutButton.addEventListener("click", logout);
     startButton.addEventListener("click", startQuiz);
     latestResultButton.addEventListener("click", showLatestResult);
@@ -1580,6 +1736,7 @@
       if (event.target === paymentModal) closePayment();
     });
 
+    setAuthMode("login");
     initAuth();
   </script>
 </body>
