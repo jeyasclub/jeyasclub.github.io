@@ -150,7 +150,7 @@
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div><button class="btn" type="button" id="exportTracker">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -820,6 +820,7 @@
     els.trackerBody.innerHTML = rows.map((row) => `
       <tr>
         <td>${formatDate(row.order_date)}</td>
+        <td>${formatDate(getTrackerValidUntil(row))}</td>
         <td>${escapeHTML(row.student_name)}</td>
         <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name)}</td>
@@ -831,6 +832,19 @@
         <td><button class="btn" type="button" data-payment-edit="${escapeHTML(row.id)}" data-payment-value="${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}">Edit Payment</button></td>
       </tr>
     `).join("");
+  }
+
+  function getTrackerValidUntil(row) {
+    if (row.valid_until) return row.valid_until;
+    const byId = bookingRows.find((booking) => booking.id === row.booking_id);
+    if (byId) return byId.valid_until;
+    const byDetails = bookingRows.find((booking) => (
+      booking.order_date === row.order_date
+      && booking.program_name === row.program_name
+      && booking.tutor === row.tutor
+      && booking.student_name === row.student_name
+    ));
+    return byDetails ? byDetails.valid_until : "";
   }
 
   async function editPaymentStatus(trackerId, currentValue) {
@@ -1130,10 +1144,11 @@
 
   function exportTrackerRows() {
     downloadExcel("class-tracker", [
-      "Tanggal Pemesanan", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Tutor",
+      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Tutor",
       "Total Meeting Realized", "Status Payment", "To Be Paid", "Remaining Fee"
     ], trackerRows.map((row) => [
       row.order_date,
+      getTrackerValidUntil(row),
       row.student_name,
       Number(row.student_count || 1),
       row.program_name,

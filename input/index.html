@@ -126,7 +126,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -512,7 +512,7 @@
 
   async function loadTrackers() {
     if (!supabaseClient || !hasInputAccess()) return;
-    els.trackerBody.innerHTML = `<tr><td colspan="10">Memuat tracker...</td></tr>`;
+    els.trackerBody.innerHTML = `<tr><td colspan="11">Memuat tracker...</td></tr>`;
     const { data, error } = await supabaseClient
       .from("class_tracker")
       .select("*")
@@ -522,18 +522,20 @@
 
     if (error) {
       console.error(error);
-      els.trackerBody.innerHTML = `<tr><td colspan="10">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="11">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
       return;
     }
 
     if (!data || !data.length) {
-      els.trackerBody.innerHTML = `<tr><td colspan="10">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="11">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
       return;
     }
 
+    const bookingMap = await loadTrackerBookingMap(data);
     els.trackerBody.innerHTML = data.map((row) => `
       <tr>
         <td>${formatDate(row.order_date)}</td>
+        <td>${formatDate(getTrackerValidUntil(row, bookingMap))}</td>
         <td>${escapeHTML(row.student_name || "-")}</td>
         <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name || "-")}</td>
@@ -552,6 +554,25 @@
         if (row) updateMeetingRealized(row);
       });
     });
+  }
+
+  async function loadTrackerBookingMap(rows) {
+    const ids = [...new Set(rows.map((row) => row.booking_id).filter(Boolean))];
+    if (!ids.length) return new Map();
+    const { data, error } = await supabaseClient
+      .from("class_bookings")
+      .select("id,valid_until")
+      .in("id", ids);
+    if (error) {
+      console.warn("Booking valid_until load failed:", error);
+      return new Map();
+    }
+    return new Map((data || []).map((booking) => [booking.id, booking.valid_until]));
+  }
+
+  function getTrackerValidUntil(row, bookingMap) {
+    if (row.valid_until) return row.valid_until;
+    return bookingMap.get(row.booking_id) || "";
   }
 
   async function updateMeetingRealized(row) {
