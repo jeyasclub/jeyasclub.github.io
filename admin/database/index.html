@@ -66,6 +66,11 @@
   .bar-track { height:18px; overflow:hidden; border:2px solid var(--ink); border-radius:999px; background:#fff; box-shadow:2px 3px 0 var(--shadow); }
   .bar-fill { width:var(--value, 0%); height:100%; border-radius:999px; background:var(--blue); }
   .bar-fill.tutor { background:var(--green); }
+  .overview-metrics { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+  .overview-metric { min-height:118px; display:grid; align-content:center; gap:8px; padding:16px; border:2.5px solid var(--ink); border-radius:16px; background:var(--blue-light); box-shadow:4px 5px 0 var(--shadow); }
+  .overview-metric:nth-child(2) { background:var(--yellow-soft); }
+  .overview-metric span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
+  .overview-metric strong { color:var(--text); font-size:clamp(32px, 5vw, 46px); line-height:1; font-weight:900; }
   .grid { display:grid; gap:18px; }
   .master-grid { display:grid; grid-template-columns:1fr; gap:18px; }
   .panel { overflow:hidden; }
@@ -155,9 +160,9 @@
           <h2>Database Overview</h2>
           <p class="muted">Perbandingan jumlah program dan tutor.</p>
         </div>
-        <div class="bar-chart">
-          <div class="bar-row"><span>Program</span><div class="bar-track"><div class="bar-fill" id="programBar"></div></div><strong id="programTotal">0</strong></div>
-          <div class="bar-row"><span>Total Tutor</span><div class="bar-track"><div class="bar-fill tutor" id="tutorBar"></div></div><strong id="tutorTotalBar">0</strong></div>
+        <div class="overview-metrics">
+          <div class="overview-metric"><span>Program</span><strong id="programTotal">0</strong></div>
+          <div class="overview-metric"><span>Total Tutor</span><strong id="tutorTotalBar">0</strong></div>
         </div>
       </article>
     </section>
@@ -255,7 +260,7 @@
     logout:$("logoutButton"), sessionLabel:$("sessionLabel"), refresh:$("refreshButton"),
     programTotal:$("programTotal"), tutorActiveTotal:$("tutorActiveTotal"), tutorInactiveTotal:$("tutorInactiveTotal"),
     tutorTotal:$("tutorTotal"), tutorTotalBar:$("tutorTotalBar"), tutorStatusDonut:$("tutorStatusDonut"),
-    tutorActivePercent:$("tutorActivePercent"), programBar:$("programBar"), tutorBar:$("tutorBar"),
+    tutorActivePercent:$("tutorActivePercent"),
     programForm:$("programForm"), programInput:$("programNameInput"), programBody:$("programBody"), programEmpty:$("programEmpty"),
     tutorForm:$("tutorForm"), tutorInput:$("tutorNameInput"), tutorBody:$("tutorBody"), tutorEmpty:$("tutorEmpty"),
     feeForm:$("feeForm"), feeProgramInput:$("feeProgramInput"), feeStudentCountInput:$("feeStudentCountInput"),
@@ -344,7 +349,6 @@
     const activeTutors = tutorRows.filter((row) => row.is_active).length;
     const inactiveTutors = Math.max(tutorRows.length - activeTutors, 0);
     const activePercent = tutorRows.length ? Math.round((activeTutors / tutorRows.length) * 100) : 0;
-    const maxOverview = Math.max(programRows.length, tutorRows.length, 1);
     els.programTotal.textContent = programRows.length;
     els.tutorActiveTotal.textContent = activeTutors;
     els.tutorInactiveTotal.textContent = inactiveTutors;
@@ -352,8 +356,6 @@
     els.tutorTotalBar.textContent = tutorRows.length;
     els.tutorActivePercent.textContent = `${activePercent}%`;
     els.tutorStatusDonut.style.setProperty("--active", `${activePercent}%`);
-    els.programBar.style.setProperty("--value", `${Math.round((programRows.length / maxOverview) * 100)}%`);
-    els.tutorBar.style.setProperty("--value", `${Math.round((tutorRows.length / maxOverview) * 100)}%`);
   }
 
   function getMasterConfig(type) {
