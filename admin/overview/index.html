@@ -65,7 +65,16 @@
   .bar-fill.tutor { background:var(--green); }
   .bar-fill.revenue { background:var(--amber); }
   .finance-panel { grid-column:1 / -1; }
-  .finance-chart .bar-row { grid-template-columns:minmax(150px, 1fr) minmax(0, 2fr) minmax(118px, auto); }
+  .line-chart { display:grid; gap:14px; }
+  .line-chart svg { width:100%; min-height:280px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); overflow:visible; }
+  .line-chart .axis { stroke:#cbd5e1; stroke-width:1.5; }
+  .line-chart .trend-line { fill:none; stroke:var(--blue); stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
+  .line-chart .trend-area { fill:rgba(26,111,232,.12); }
+  .line-chart .point { fill:var(--yellow); stroke:var(--ink); stroke-width:3; }
+  .line-chart .label { fill:var(--text); font-size:12px; font-weight:900; }
+  .line-chart .value-label { fill:var(--blue-dark); font-size:12px; font-weight:900; }
+  .line-chart-summary { display:flex; gap:10px; flex-wrap:wrap; }
+  .line-chart-summary span { display:inline-flex; align-items:center; min-height:32px; border:2px solid #bfdbfe; border-radius:999px; background:var(--blue-light); color:var(--blue-dark); padding:6px 10px; font-size:12px; font-weight:900; }
   .donut-wrap { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
   .donut-box { position:relative; display:grid; place-items:center; width:156px; }
   .donut-chart { --active:0%; width:156px; aspect-ratio:1; border:3px solid var(--ink); border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--green) 0 var(--active), var(--blue) var(--active) 100%); box-shadow:4px 5px 0 var(--shadow); }
@@ -135,7 +144,7 @@
     <section class="grid-2">
       <article class="panel finance-panel hidden" id="financeSection">
         <div class="panel-head"><h2>Finance</h2><p class="muted" id="financeSubtitle">Grafik pendapatan dari booking kelas.</p></div>
-        <div class="chart-body"><div class="bar-chart finance-chart" id="revenueChart"></div></div>
+        <div class="chart-body"><div class="line-chart" id="revenueChart"></div></div>
       </article>
 
       <article class="panel">
@@ -281,20 +290,48 @@
     `).join("");
   }
 
-  function renderMoneyBarChart(container, dataMap) {
+  function renderMoneyLineChart(container, dataMap) {
     const entries = Object.entries(dataMap).sort((a, b) => a[0].localeCompare(b[0]));
     if (!entries.length) {
       container.innerHTML = `<p class="empty">Belum ada pendapatan untuk filter ini.</p>`;
       return;
     }
-    const max = Math.max(...entries.map((entry) => entry[1]), 1);
-    container.innerHTML = entries.map(([label, value]) => `
-      <div class="bar-row">
-        <span class="bar-label">${escapeHTML(label)}</span>
-        <div class="bar-track"><div class="bar-fill revenue" style="--value:${Math.round((value / max) * 100)}%"></div></div>
-        <strong>${formatMoney(value)}</strong>
+    const width = 920;
+    const height = 300;
+    const pad = { top:38, right:32, bottom:54, left:56 };
+    const values = entries.map((entry) => Number(entry[1] || 0));
+    const max = Math.max(...values, 1);
+    const min = Math.min(...values, 0);
+    const range = Math.max(max - min, 1);
+    const xStep = entries.length > 1 ? (width - pad.left - pad.right) / (entries.length - 1) : 0;
+    const yFor = (value) => pad.top + ((max - value) / range) * (height - pad.top - pad.bottom);
+    const points = entries.map(([label, value], index) => {
+      const x = entries.length > 1 ? pad.left + index * xStep : width / 2;
+      const y = yFor(Number(value || 0));
+      return { label, value:Number(value || 0), x, y };
+    });
+    const line = points.map((point) => `${point.x},${point.y}`).join(" ");
+    const area = `${pad.left},${height - pad.bottom} ${line} ${points[points.length - 1].x},${height - pad.bottom}`;
+    const total = values.reduce((sum, value) => sum + value, 0);
+    const latest = points[points.length - 1];
+
+    container.innerHTML = `
+      <div class="line-chart-summary">
+        <span>Total: ${formatMoney(total)}</span>
+        <span>Bulan terakhir: ${escapeHTML(latest.label)} (${formatMoney(latest.value)})</span>
       </div>
-    `).join("");
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart total pendapatan per bulan">
+        <line class="axis" x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}"></line>
+        <line class="axis" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}"></line>
+        <polygon class="trend-area" points="${area}"></polygon>
+        <polyline class="trend-line" points="${line}"></polyline>
+        ${points.map((point) => `
+          <circle class="point" cx="${point.x}" cy="${point.y}" r="7"></circle>
+          <text class="value-label" x="${point.x}" y="${Math.max(18, point.y - 14)}" text-anchor="middle">${formatMoney(point.value).replace(/\s/g, " ")}</text>
+          <text class="label" x="${point.x}" y="${height - 20}" text-anchor="middle">${escapeHTML(point.label)}</text>
+        `).join("")}
+      </svg>
+    `;
   }
 
   function revenueByMonth(rows) {
@@ -370,7 +407,7 @@
     els.financeSection.classList.toggle("hidden", !canViewFinance());
     if (canViewFinance()) {
       els.financeSubtitle.textContent = "Grafik total pendapatan per bulan dari semua booking.";
-      renderMoneyBarChart(els.revenueChart, revenueByMonth(groupedFinanceBookings));
+      renderMoneyLineChart(els.revenueChart, revenueByMonth(groupedFinanceBookings));
     }
 
     els.courseActiveLegend.textContent = activeCourses;
