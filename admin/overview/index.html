@@ -49,7 +49,7 @@
   .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
   .filter-card { display:flex; align-items:end; gap:12px; flex-wrap:wrap; padding:18px; background:#fff; border:3px solid var(--ink); border-radius:18px; box-shadow:6px 7px 0 var(--shadow); }
   .filter-card label { min-width:220px; }
-  .metrics { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px; }
+  .metrics { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
   .metric { padding:18px; display:grid; gap:5px; }
   .metric span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
   .metric strong { color:var(--text); font-size:24px; line-height:1.15; }
@@ -64,6 +64,8 @@
   .bar-fill { width:var(--value, 0%); height:100%; border-radius:999px; background:var(--blue); }
   .bar-fill.tutor { background:var(--green); }
   .bar-fill.revenue { background:var(--amber); }
+  .finance-panel { grid-column:1 / -1; }
+  .finance-chart .bar-row { grid-template-columns:minmax(150px, 1fr) minmax(0, 2fr) minmax(118px, auto); }
   .donut-wrap { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
   .donut-box { position:relative; display:grid; place-items:center; width:156px; }
   .donut-chart { --active:0%; width:156px; aspect-ratio:1; border:3px solid var(--ink); border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--green) 0 var(--active), var(--blue) var(--active) 100%); box-shadow:4px 5px 0 var(--shadow); }
@@ -126,12 +128,16 @@
     <section class="metrics">
       <div class="metric"><span>Total Bookings</span><strong id="totalBookings">0</strong></div>
       <div class="metric"><span>Total Pendapatan</span><strong id="totalRevenue">Rp0</strong></div>
-      <div class="metric"><span>Tutor Aktif / Nonaktif</span><strong id="tutorStatus">0 / 0</strong></div>
       <div class="metric"><span>Course Active</span><strong id="courseActive">0</strong></div>
       <div class="metric"><span>Course Completed</span><strong id="courseCompleted">0</strong></div>
     </section>
 
     <section class="grid-2">
+      <article class="panel finance-panel hidden" id="financeSection">
+        <div class="panel-head"><h2>Finance</h2><p class="muted" id="financeSubtitle">Grafik pendapatan dari booking kelas.</p></div>
+        <div class="chart-body"><div class="bar-chart finance-chart" id="revenueChart"></div></div>
+      </article>
+
       <article class="panel">
         <div class="panel-head"><h2>Booking per Program</h2><p class="muted">Breakdown total booking berdasarkan program.</p></div>
         <div class="chart-body"><div class="bar-chart" id="programChart"></div></div>
@@ -183,8 +189,9 @@
     loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
     email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
     logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), reset:$("resetFilter"), refresh:$("refreshButton"),
-    totalBookings:$("totalBookings"), totalRevenue:$("totalRevenue"), tutorStatus:$("tutorStatus"),
+    totalBookings:$("totalBookings"), totalRevenue:$("totalRevenue"),
     courseActive:$("courseActive"), courseCompleted:$("courseCompleted"), programChart:$("programChart"), tutorChart:$("tutorChart"),
+    financeSection:$("financeSection"), financeSubtitle:$("financeSubtitle"), revenueChart:$("revenueChart"),
     courseDonut:$("courseDonut"), courseActivePercent:$("courseActivePercent"),
     courseActiveLegend:$("courseActiveLegend"), courseCompletedLegend:$("courseCompletedLegend"),
     tutorActiveBar:$("tutorActiveBar"), tutorInactiveBar:$("tutorInactiveBar"), tutorActiveCount:$("tutorActiveCount"), tutorInactiveCount:$("tutorInactiveCount")
@@ -193,6 +200,10 @@
   function isAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
     return adminEmails.has(email);
+  }
+
+  function canViewFinance(session = currentSession) {
+    return Boolean(session && session.user && String(session.user.email || "").toLowerCase() === "jihamalia@gmail.com");
   }
 
   function setAuthMessage(message, type = "") {
@@ -270,6 +281,38 @@
     `).join("");
   }
 
+  function renderMoneyBarChart(container, dataMap) {
+    const entries = Object.entries(dataMap).sort((a, b) => b[1] - a[1]);
+    if (!entries.length) {
+      container.innerHTML = `<p class="empty">Belum ada pendapatan untuk filter ini.</p>`;
+      return;
+    }
+    const max = Math.max(...entries.map((entry) => entry[1]), 1);
+    container.innerHTML = entries.map(([label, value]) => `
+      <div class="bar-row">
+        <span class="bar-label">${escapeHTML(label)}</span>
+        <div class="bar-track"><div class="bar-fill revenue" style="--value:${Math.round((value / max) * 100)}%"></div></div>
+        <strong>${formatMoney(value)}</strong>
+      </div>
+    `).join("");
+  }
+
+  function revenueByProgram(rows) {
+    return rows.reduce((map, row) => {
+      const label = row.program_name || "-";
+      map[label] = (map[label] || 0) + Number(row.price || 0);
+      return map;
+    }, {});
+  }
+
+  function revenueByMonth(rows) {
+    return rows.reduce((map, row) => {
+      const label = row.order_date ? String(row.order_date).slice(0, 7) : "-";
+      map[label] = (map[label] || 0) + Number(row.price || 0);
+      return map;
+    }, {});
+  }
+
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
   }
@@ -321,12 +364,19 @@
 
     els.totalBookings.textContent = groupedBookings.length;
     els.totalRevenue.textContent = formatMoney(groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0));
-    els.tutorStatus.textContent = `${activeTutors} / ${inactiveTutors}`;
     els.courseActive.textContent = activeCourses;
     els.courseCompleted.textContent = completedCourses;
 
     renderBarChart(els.programChart, countBy(groupedBookings, "program_name"));
     renderBarChart(els.tutorChart, countBy(groupedBookings, "tutor"), "tutor");
+    els.financeSection.classList.toggle("hidden", !canViewFinance());
+    if (canViewFinance()) {
+      const hasMonthFilter = Boolean(els.month.value);
+      els.financeSubtitle.textContent = hasMonthFilter
+        ? "Grafik pendapatan per program untuk bulan yang dipilih."
+        : "Grafik pendapatan per bulan dari semua booking.";
+      renderMoneyBarChart(els.revenueChart, hasMonthFilter ? revenueByProgram(groupedBookings) : revenueByMonth(groupedBookings));
+    }
 
     els.courseActiveLegend.textContent = activeCourses;
     els.courseCompletedLegend.textContent = completedCourses;
