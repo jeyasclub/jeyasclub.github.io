@@ -282,7 +282,7 @@
   }
 
   function renderMoneyBarChart(container, dataMap) {
-    const entries = Object.entries(dataMap).sort((a, b) => b[1] - a[1]);
+    const entries = Object.entries(dataMap).sort((a, b) => a[0].localeCompare(b[0]));
     if (!entries.length) {
       container.innerHTML = `<p class="empty">Belum ada pendapatan untuk filter ini.</p>`;
       return;
@@ -295,14 +295,6 @@
         <strong>${formatMoney(value)}</strong>
       </div>
     `).join("");
-  }
-
-  function revenueByProgram(rows) {
-    return rows.reduce((map, row) => {
-      const label = row.program_name || "-";
-      map[label] = (map[label] || 0) + Number(row.price || 0);
-      return map;
-    }, {});
   }
 
   function revenueByMonth(rows) {
@@ -330,6 +322,9 @@
     const range = monthRange(els.month.value);
     let bookingQuery = supabaseClient.from("class_bookings").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
     let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    const financeBookingQuery = canViewFinance()
+      ? supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,price").order("order_date", { ascending:true }).order("created_at", { ascending:true })
+      : Promise.resolve({ data:[], error:null });
     if (range) {
       bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
       trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
@@ -337,24 +332,27 @@
     const [
       { data: bookings, error: bookingError },
       { data: trackers, error: trackerError },
-      { data: tutors, error: tutorError }
+      { data: tutors, error: tutorError },
+      { data: financeBookings, error: financeBookingError }
     ] = await Promise.all([
       bookingQuery,
       trackerQuery,
-      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true })
+      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true }),
+      financeBookingQuery
     ]);
     els.refresh.disabled = false;
     els.refresh.textContent = "Refresh";
-    if (bookingError || trackerError || tutorError) {
-      console.error("Overview load failed:", bookingError || trackerError || tutorError);
+    if (bookingError || trackerError || tutorError || financeBookingError) {
+      console.error("Overview load failed:", bookingError || trackerError || tutorError || financeBookingError);
       els.sessionLabel.textContent = "Overview belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
       return;
     }
-    renderOverview(bookings || [], trackers || [], tutors || []);
+    renderOverview(bookings || [], trackers || [], tutors || [], financeBookings || []);
   }
 
-  function renderOverview(bookings, trackers, tutors) {
+  function renderOverview(bookings, trackers, tutors, financeBookings = []) {
     const groupedBookings = groupBookings(bookings);
+    const groupedFinanceBookings = groupBookings(financeBookings);
     const activeTutors = tutors.filter((row) => row.is_active).length;
     const inactiveTutors = Math.max(tutors.length - activeTutors, 0);
     const completedCourses = trackers.filter(isCompletedCourse).length;
@@ -371,11 +369,8 @@
     renderBarChart(els.tutorChart, countBy(groupedBookings, "tutor"), "tutor");
     els.financeSection.classList.toggle("hidden", !canViewFinance());
     if (canViewFinance()) {
-      const hasMonthFilter = Boolean(els.month.value);
-      els.financeSubtitle.textContent = hasMonthFilter
-        ? "Grafik pendapatan per program untuk bulan yang dipilih."
-        : "Grafik pendapatan per bulan dari semua booking.";
-      renderMoneyBarChart(els.revenueChart, hasMonthFilter ? revenueByProgram(groupedBookings) : revenueByMonth(groupedBookings));
+      els.financeSubtitle.textContent = "Grafik total pendapatan per bulan dari semua booking.";
+      renderMoneyBarChart(els.revenueChart, revenueByMonth(groupedFinanceBookings));
     }
 
     els.courseActiveLegend.textContent = activeCourses;
