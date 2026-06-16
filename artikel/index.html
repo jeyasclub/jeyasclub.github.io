@@ -1009,7 +1009,7 @@
   const articleGrid = document.getElementById('articleGrid');
   const supabaseUrl = 'https://ingeqwcpfuugcyafbecl.supabase.co';
   const supabaseAnonKey = 'sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM';
-  const articleFields = 'id,title,category,image,excerpt,body,author_name,author_avatar,created_at,published';
+  const articleFields = 'id,title,category,image,excerpt,body,author_name,author_avatar,author_email,created_at,published';
 
   function escapeHTML(value) {
     return String(value || '').replace(/[&<>"']/g, char => ({
@@ -1121,10 +1121,17 @@
       });
   }
 
-  fetchSupabaseArticles()
-    .catch(fetchLocalArticles)
-    .then(response => {
-      renderArticles(response);
+  Promise.all([
+    fetchSupabaseArticles().catch(() => []),
+    fetchLocalArticles().catch(() => [])
+  ])
+    .then(([supabaseArticles, localArticles]) => {
+      const articleMap = new Map();
+      [...localArticles, ...supabaseArticles].forEach(article => {
+        if (!article || !article.id) return;
+        articleMap.set(String(article.id), article);
+      });
+      renderArticles([...articleMap.values()]);
     })
     .catch(() => {});
 </script>

@@ -13,7 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Baca Artikel - Jeya's Club</title>
 <meta name="description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri.">
-<meta name="robots" content="noindex,follow">
+<meta name="robots" content="index,follow">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Jeya's Club">
 <meta property="og:title" content="Baca Artikel - Jeya's Club" id="metaOgTitle">
@@ -1158,7 +1158,8 @@
   }
 
   fetchSupabaseArticle()
-    .catch(fetchLocalArticle)
+    .catch(() => null)
+    .then(article => article || fetchLocalArticle())
     .then(async article => {
       if (article) {
         await renderArticle(article);
