@@ -474,6 +474,45 @@
     margin-top: 0;
   }
 
+  .article-body .cta-card {
+    margin: 28px 0;
+    padding: 22px;
+    border: 1px solid rgba(26, 111, 232, 0.18);
+    border-radius: 22px;
+    background: linear-gradient(135deg, #eef6ff 0%, #ffffff 62%, #fff8e6 100%);
+    box-shadow: 0 18px 42px rgba(26, 111, 232, 0.1);
+  }
+
+  .article-body .cta-card h2 {
+    margin-top: 0;
+  }
+
+  .article-body .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .article-body .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 11px 16px;
+    border-radius: 14px;
+    background: var(--blue);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 900;
+    text-decoration: none;
+    box-shadow: 0 12px 24px rgba(26, 111, 232, 0.18);
+  }
+
+  .article-body .cta-button:hover {
+    background: #1558c0;
+  }
+
   .article-body .article-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -489,6 +528,7 @@
   }
 
   .article-body .stat-card {
+    margin-bottom: 0;
     padding: 16px;
     border: 1px solid rgba(26, 111, 232, 0.16);
     border-radius: 18px;
@@ -729,9 +769,107 @@
       gap: 14px;
     }
     .article-cover { border-radius: 16px; }
+    .article-body {
+      font-size: 15px;
+      line-height: 1.86;
+      text-align: left;
+    }
+    .article-body p,
+    .article-body div,
+    .article-body li,
+    .article-body blockquote {
+      text-align: left;
+    }
+    .article-body h2 {
+      font-size: 23px;
+      line-height: 1.24;
+      margin: 30px 0 12px;
+    }
+    .article-body .lead-note,
+    .article-body .info-card,
+    .article-body .toc-card,
+    .article-body .cta-card {
+      margin: 20px 0;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    }
+    .article-body .lead-note {
+      border-left-width: 4px;
+    }
     .article-body .article-grid,
     .article-body .stat-grid {
       grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .article-body .stat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .article-body .stat-card {
+      padding: 14px;
+      border-radius: 15px;
+    }
+    .article-body .stat-card strong {
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+    .article-body .stat-card span {
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .article-body .tag-row {
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .article-body .tag-pill {
+      min-height: 30px;
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+    .article-body .cta-actions {
+      display: grid;
+    }
+    .article-body .cta-button {
+      width: 100%;
+    }
+    .article-body .table-wrap {
+      margin: 20px calc(50% - 50vw);
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .article-body table {
+      min-width: 560px;
+    }
+    .article-body th,
+    .article-body td {
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .article-body .check-list {
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .article-body .check-list li {
+      padding: 11px 12px 11px 36px;
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+    }
+    .article-body .check-list li::before {
+      left: 12px;
+      top: 16px;
+      width: 11px;
+      height: 11px;
+      box-shadow: 0 0 0 4px var(--blue-light);
+    }
+    .article-body blockquote {
+      margin: 20px 0;
+      padding: 16px;
+      border-left-width: 4px;
+      border-radius: 0 14px 14px 0;
     }
     .writer-license { border-radius: 16px; padding: 18px; }
     .writer-license-header { flex-direction: column; }
@@ -976,8 +1114,8 @@
 
   function sanitizeEditorHTML(value) {
     const template = document.createElement('template');
-    const allowedTags = new Set(['P', 'DIV', 'SECTION', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'H2', 'H3', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'TABLE', 'THEAD', 'TBODY', 'TR', 'TH', 'TD', 'SPAN']);
-    const allowedClasses = new Set(['lead-note', 'info-card', 'toc-card', 'article-grid', 'stat-grid', 'stat-card', 'tag-row', 'tag-pill', 'table-wrap', 'check-list']);
+    const allowedTags = new Set(['P', 'DIV', 'SECTION', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'H2', 'H3', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'TABLE', 'THEAD', 'TBODY', 'TR', 'TH', 'TD', 'SPAN', 'A']);
+    const allowedClasses = new Set(['lead-note', 'info-card', 'toc-card', 'cta-card', 'cta-actions', 'cta-button', 'article-grid', 'stat-grid', 'stat-card', 'tag-row', 'tag-pill', 'table-wrap', 'check-list']);
     template.innerHTML = String(value || '');
 
     function clean(node) {
@@ -1000,6 +1138,12 @@
         .split(/\s+/)
         .filter(className => allowedClasses.has(className));
       if (classes.length) element.className = classes.join(' ');
+      if (node.tagName === 'A') {
+        const href = String(node.getAttribute('href') || '');
+        if (/^(\/|https:\/\/www\.jeyasclub\.com\/)/.test(href)) {
+          element.setAttribute('href', href);
+        }
+      }
       node.childNodes.forEach(child => element.appendChild(clean(child)));
       return element;
     }
@@ -1015,7 +1159,7 @@
   function renderBody(body) {
     const decodedBody = decodeHTML(body);
 
-    if (/<\/?(p|div|section|br|strong|b|em|i|u|h2|h3|ul|ol|li|blockquote|table|thead|tbody|tr|th|td|span)\b/i.test(decodedBody)) {
+    if (/<\/?(p|div|section|br|strong|b|em|i|u|h2|h3|ul|ol|li|blockquote|table|thead|tbody|tr|th|td|span|a)\b/i.test(decodedBody)) {
       return sanitizeEditorHTML(decodedBody);
     }
 
