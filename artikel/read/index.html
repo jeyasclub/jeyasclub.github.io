@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RKV5HD60KQ"></script>
 <script>
@@ -14,6 +14,7 @@
 <title>Baca Artikel - Jeya's Club</title>
 <meta name="description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri.">
 <meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.jeyasclub.com/artikel/read/" id="canonicalLink">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Jeya's Club">
 <meta property="og:title" content="Baca Artikel - Jeya's Club" id="metaOgTitle">
@@ -27,6 +28,7 @@
 <meta name="twitter:description" content="Baca artikel Jeya's Club seputar tips belajar bahasa, speaking, vocabulary, dan pengembangan diri." id="metaTwitterDescription">
 <meta name="twitter:image" content="https://www.jeyasclub.com/assets/cover.png" id="metaTwitterImage">
 <meta name="twitter:image:alt" content="Jeya's Club article cover" id="metaTwitterImageAlt">
+<script type="application/ld+json" id="articleJsonLd">{}</script>
 <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
@@ -1307,14 +1309,49 @@
     element.setAttribute('content', value);
   }
 
+  function setArticleJsonLd(article, url, image, description) {
+    const element = document.getElementById('articleJsonLd');
+    if (!element) return;
+
+    const publishedDate = article.created_at || article.createdAt || '2026-06-16T00:00:00+07:00';
+    const authorName = article.author_name || 'Jeya\'s Club Team';
+    element.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title || 'Artikel Jeya\'s Club',
+      description,
+      image,
+      datePublished: publishedDate,
+      dateModified: publishedDate,
+      author: {
+        '@type': 'Person',
+        name: authorName
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Jeya\'s Club',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.jeyasclub.com/assets/logo.jpg'
+        }
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': url
+      }
+    });
+  }
+
   function updateArticleMeta(article) {
     const title = article.title || 'Artikel';
     const description = article.excerpt || stripHTML(article.body).slice(0, 155) || 'Baca artikel Jeya\'s Club seputar tips belajar bahasa.';
     const image = absoluteUrl(article.image);
-    const url = new URL('/artikel/share', 'https://www.jeyasclub.com');
+    const url = new URL('/artikel/read/', 'https://www.jeyasclub.com');
     url.searchParams.set('id', article.id || articleId);
 
     document.title = title;
+    const canonicalLink = document.getElementById('canonicalLink');
+    if (canonicalLink) canonicalLink.href = url.href;
     setMeta('meta[name="description"]', description);
     setMeta('meta[property="og:title"]', title);
     setMeta('meta[property="og:description"]', description);
@@ -1326,6 +1363,7 @@
     setMeta('meta[name="twitter:description"]', description);
     setMeta('meta[name="twitter:image"]', image);
     setMeta('meta[name="twitter:image:alt"]', article.title || 'Jeya\'s Club article cover');
+    setArticleJsonLd(article, url.href, image, description);
   }
 
   function copyArticleUrl(button, article) {
