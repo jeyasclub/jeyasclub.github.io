@@ -876,6 +876,83 @@
       color: var(--muted);
       padding: 12px;
     }
+    .pec-rec {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      margin-top: 20px;
+      padding: 18px;
+      border: 3px solid #070707;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fbff 58%, #fff2bf 100%);
+      box-shadow: 6px 7px 0 #0c1b36;
+      color: var(--ink);
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .pec-rec:hover {
+      transform: translateY(-1px);
+      box-shadow: 7px 8px 0 #0c1b36;
+    }
+    .pec-rec-copy {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+    .pec-rec-copy span {
+      width: fit-content;
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border: 2px solid #070707;
+      border-radius: 999px;
+      background: #ffe078;
+      color: #070707;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .pec-rec-copy h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 1.25rem;
+      line-height: 1.25;
+    }
+    .pec-rec-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.7;
+    }
+    .pec-rec-meta {
+      min-width: 150px;
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+      padding: 14px;
+      border: 2px solid #070707;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 3px 4px 0 #0c1b36;
+      text-align: center;
+    }
+    .pec-rec-meta strong {
+      color: var(--blue);
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .pec-rec-meta span {
+      color: #070707;
+      font-size: 0.68rem;
+      font-weight: 900;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
     .other-tests {
       display: grid;
       gap: 16px;
@@ -966,6 +1043,15 @@
       .topbar { padding-inline: 18px; }
       .brand span { display: none; }
       .hero, .score-layout, .auth-grid, .seo-grid, .faq-grid { grid-template-columns: 1fr; }
+      .pec-rec {
+        grid-template-columns: 1fr;
+        box-shadow: 4px 5px 0 #0c1b36;
+      }
+      .pec-rec-meta {
+        min-width: 0;
+        justify-items: start;
+        text-align: left;
+      }
       .panel { padding: 20px; }
       .panel-head { display: grid; }
       .start-actions {
@@ -1126,6 +1212,17 @@
         </div>
         <div class="breakdown" id="breakdownList"></div>
       </div>
+      <a class="pec-rec" href="/pec/" aria-label="Lihat Premium English Club">
+        <div class="pec-rec-copy">
+          <span>Premium English Club</span>
+          <h3>Naik level dengan ritme belajar satu bulan</h3>
+          <p>Lanjutkan progress hasil tesmu lewat materi WhatsApp, quiz evaluasi, live class Zoom, diskusi grup, rekaman kelas, dan feedback tutor.</p>
+        </div>
+        <div class="pec-rec-meta" aria-hidden="true">
+          <strong>Rp35.000</strong>
+          <span>Road to Intermediate</span>
+        </div>
+      </a>
     </section>
 
     <section class="panel hidden" id="reviewPanel">

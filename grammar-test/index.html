@@ -178,6 +178,15 @@
   .explanation-box { padding:12px; border:1px solid rgba(26,111,232,.12); border-radius:12px; background:#f7fbff; color:var(--muted); font-size:13px; line-height:1.7; }
   .rec-card p { color:var(--muted); font-size:13px; line-height:1.65; margin-top:7px; }
   .rec-card h4 { font-size:15px; }
+  .pec-rec { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:16px; align-items:center; padding:18px; border:3px solid #070707; border-radius:18px; background:linear-gradient(135deg,#fff 0%,#f8fbff 58%,#fff2bf 100%); box-shadow:6px 7px 0 #0c1b36; color:var(--text); text-decoration:none; transition:transform .18s ease, box-shadow .18s ease; }
+  .pec-rec:hover { transform:translateY(-1px); box-shadow:7px 8px 0 #0c1b36; }
+  .pec-rec-copy { display:grid; gap:8px; min-width:0; }
+  .pec-rec-copy span { width:fit-content; min-height:28px; display:inline-flex; align-items:center; padding:6px 10px; border:2px solid #070707; border-radius:999px; background:#ffe078; color:#070707; font-size:11px; font-weight:900; letter-spacing:.04em; text-transform:uppercase; }
+  .pec-rec-copy h3 { color:var(--text); font-size:20px; line-height:1.25; }
+  .pec-rec-copy p { color:var(--muted); font-size:13px; line-height:1.7; }
+  .pec-rec-meta { min-width:150px; display:grid; gap:5px; justify-items:center; padding:14px; border:2px solid #070707; border-radius:16px; background:#fff; box-shadow:3px 4px 0 #0c1b36; text-align:center; }
+  .pec-rec-meta strong { color:var(--blue); font-size:24px; line-height:1; }
+  .pec-rec-meta span { color:#070707; font-size:11px; font-weight:900; line-height:1.35; text-transform:uppercase; }
   .result-actions { display:flex; flex-wrap:wrap; gap:10px; }
   .other-tests {
     display:grid;
@@ -306,6 +315,7 @@
       grid-column:1 / -1;
     }
     .card:has(#resultPanel.active) #paidArea,
+    .card:has(#resultPanel.active) .pec-rec,
     .card:has(#resultPanel.active) .result-actions,
     .card:has(#resultPanel.active) #saveStatus {
       grid-column:1 / -1;
@@ -387,7 +397,7 @@
   }
   @media (max-width:820px){ .grid{grid-template-columns:1fr;} .hero{padding:38px 0 60px;} }
   @media (max-width:820px){ .other-test-list{grid-template-columns:1fr;} .other-tests-head{display:grid;} }
-  @media (max-width:620px){ .shell{width:min(100% - 24px,1120px);} .brand img{width:58px;height:58px;} .top-actions .ghost{display:none;} .card-head,.panel,.result{padding:20px;} .score-box{grid-template-columns:1fr;min-height:auto;padding:24px;} .metrics,.breakdown{grid-template-columns:1fr;} .paid-title{display:grid;} .answer-grid{grid-template-columns:1fr;} .footer{display:grid;} .primary,.ghost{width:100%;} .other-test-action{width:100%;} .footer-grid{grid-template-columns:1fr;} .payment-modal{padding:10px;} .payment-panel{height:88vh;border-radius:18px;} }
+  @media (max-width:620px){ .shell{width:min(100% - 24px,1120px);} .brand img{width:58px;height:58px;} .top-actions .ghost{display:none;} .card-head,.panel,.result{padding:20px;} .score-box,.pec-rec{grid-template-columns:1fr;min-height:auto;padding:24px;} .pec-rec{box-shadow:4px 5px 0 #0c1b36;} .pec-rec-meta{min-width:0;justify-items:start;text-align:left;} .metrics,.breakdown{grid-template-columns:1fr;} .paid-title{display:grid;} .answer-grid{grid-template-columns:1fr;} .footer{display:grid;} .primary,.ghost{width:100%;} .other-test-action{width:100%;} .footer-grid{grid-template-columns:1fr;} .payment-modal{padding:10px;} .payment-panel{height:88vh;border-radius:18px;} }
 </style>
 </head>
 <body>
@@ -474,6 +484,17 @@
           <div class="breakdown" id="breakdown"></div>
         </div>
         <div id="paidArea"></div>
+        <a class="pec-rec" href="/pec/" aria-label="Lihat Premium English Club">
+          <div class="pec-rec-copy">
+            <span>Premium English Club</span>
+            <h3>Naik level dengan ritme belajar satu bulan</h3>
+            <p>Lanjutkan progress hasil tesmu lewat materi WhatsApp, quiz evaluasi, live class Zoom, diskusi grup, rekaman kelas, dan feedback tutor.</p>
+          </div>
+          <div class="pec-rec-meta" aria-hidden="true">
+            <strong>Rp35.000</strong>
+            <span>Road to Intermediate</span>
+          </div>
+        </a>
         <div class="result-actions">
           <button class="primary" type="button" id="resultRetakeButton">Retake Grammar Test</button>
           <a class="ghost" href="/account/">Cek Profile</a>
