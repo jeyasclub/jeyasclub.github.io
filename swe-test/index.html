@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RKV5HD60KQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RKV5HD60KQ');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Latihan Soal TOEFL Structure & Written Expression | Jeya's Club</title>
@@ -1367,6 +1374,29 @@
     let hasReviewAccess = false;
     let authMode = "login";
 
+    function trackUnlockDiscussionClick() {
+      const payload = {
+        event_category: "paid_unlock",
+        event_label: "swe_test_unlock_pembahasan",
+        item_name: "SWE Test Unlock Pembahasan",
+        currency: "IDR",
+        value: 30000
+      };
+
+      if (typeof gtag === "function") {
+        gtag("event", "unlock_discussion_click", payload);
+      }
+
+      if (typeof fbq === "function") {
+        fbq("track", "InitiateCheckout", {
+          content_name: payload.item_name,
+          content_category: payload.event_category,
+          currency: payload.currency,
+          value: payload.value
+        });
+      }
+    }
+
     function buildQuizOrder() {
       const structure = sweQuestions.filter(question => question.part === "structure");
       const written = sweQuestions.filter(question => question.part === "written");
@@ -2016,6 +2046,7 @@
     }
 
     function openPayment() {
+      trackUnlockDiscussionClick();
       paymentFrame.src = paymentUrl;
       paymentModal.classList.add("open");
       paymentModal.setAttribute("aria-hidden", "false");

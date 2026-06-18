@@ -2614,6 +2614,29 @@
   let lastProgramTrigger = null;
   let lastProductTrigger = null;
 
+  function trackUnlockDiscussionClick() {
+    const payload = {
+      event_category: "paid_unlock",
+      event_label: "vocabulary_test_unlock_rincian",
+      item_name: "Vocabulary Test Unlock Rincian",
+      currency: "IDR",
+      value: 5000
+    };
+
+    if (typeof gtag === "function") {
+      gtag("event", "unlock_discussion_click", payload);
+    }
+
+    if (typeof fbq === "function") {
+      fbq("track", "InitiateCheckout", {
+        content_name: payload.item_name,
+        content_category: payload.event_category,
+        currency: payload.currency,
+        value: payload.value
+      });
+    }
+  }
+
   function getSessionBridgePayload() {
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
     const accessToken = hashParams.get("access_token");
@@ -3174,6 +3197,7 @@
   }
 
   function openPaymentModal() {
+    trackUnlockDiscussionClick();
     paymentFrame.src = answerReviewPaymentUrl;
     paymentModal.classList.add("open");
     paymentModal.setAttribute("aria-hidden", "false");
