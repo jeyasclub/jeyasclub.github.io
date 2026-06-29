@@ -162,7 +162,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div><button class="btn" type="button" id="exportBooking">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Sertifikat</th><th>Testimoni</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Total Pertemuan</th><th>Sertifikat</th><th>Testimoni</th><th>Keterangan</th><th>Aksi</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -205,6 +205,7 @@
           <label>Nama program<input type="text" id="bookingProgramName" required></label>
           <label>Harga<input type="number" id="bookingPrice" min="0" step="1000" required></label>
           <label>Tutor<input type="text" id="bookingTutor" required></label>
+          <label>Total pertemuan<input type="number" id="bookingMeetingTotal" min="0" step="1" required></label>
         </div>
         <label>Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
         <div class="modal-grid">
@@ -247,7 +248,7 @@
     bookingOrderDate: $("bookingOrderDate"), bookingValidUntil: $("bookingValidUntil"),
     bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
     bookingProgramName: $("bookingProgramName"), bookingPrice: $("bookingPrice"), bookingTutor: $("bookingTutor"),
-    bookingNote: $("bookingNote"),
+    bookingMeetingTotal: $("bookingMeetingTotal"), bookingNote: $("bookingNote"),
     bookingCertificateIssued: $("bookingCertificateIssued"), bookingTestimonialReceived: $("bookingTestimonialReceived"),
     bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton")
   };
@@ -898,6 +899,7 @@
             <td rowspan="${rowspan}">${escapeHTML(row.program_name)}</td>
             <td rowspan="${rowspan}">${formatMoney(row.price)}</td>
             <td rowspan="${rowspan}">${escapeHTML(row.tutor)}</td>
+            <td rowspan="${rowspan}"><span class="pill">${Number(getBookingMeetingTotal(row) || 0)}</span></td>
           ` : ""}
           <td><span class="pill">${formatDoneStatus(row.certificate_issued)}</span></td>
           <td><span class="pill">${formatDoneStatus(row.testimonial_received)}</span></td>
@@ -938,6 +940,25 @@
       .sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
   }
 
+  function getBookingTracker(row) {
+    if (!row) return null;
+    const groupRows = getBookingGroupRows(row);
+    const firstBookingId = (groupRows[0] && groupRows[0].id) || row.id;
+    return trackerRows.find((tracker) => tracker.booking_id === firstBookingId)
+      || trackerRows.find((tracker) => tracker.booking_id === row.id)
+      || trackerRows.find((tracker) => (
+        tracker.order_date === row.order_date
+        && tracker.program_name === row.program_name
+        && tracker.tutor === row.tutor
+      ))
+      || null;
+  }
+
+  function getBookingMeetingTotal(row) {
+    const tracker = getBookingTracker(row);
+    return tracker ? Number(tracker.meetings_total || 0) : 0;
+  }
+
   function groupBookingRows(rows) {
     const groups = [];
     const seen = new Set();
@@ -962,6 +983,7 @@
     els.bookingProgramName.value = row.program_name || "";
     els.bookingPrice.value = Number(row.price || 0);
     els.bookingTutor.value = row.tutor || "";
+    els.bookingMeetingTotal.value = getBookingMeetingTotal(row);
     els.bookingNote.value = row.note || "";
     els.bookingCertificateIssued.value = Boolean(row.certificate_issued) ? "true" : "false";
     els.bookingTestimonialReceived.value = Boolean(row.testimonial_received) ? "true" : "false";
@@ -993,6 +1015,7 @@
       program_name: els.bookingProgramName.value.trim(),
       price: parseNumberInput(els.bookingPrice.value, 0),
       tutor: els.bookingTutor.value.trim(),
+      meetings_total: Math.max(parseNumberInput(els.bookingMeetingTotal.value, 0), 0),
       note: els.bookingNote.value.trim(),
       certificate_issued: els.bookingCertificateIssued.value === "true",
       testimonial_received: els.bookingTestimonialReceived.value === "true",
@@ -1011,6 +1034,18 @@
 
     if (!payload.order_date || !payload.student_name || !payload.program_name || !payload.tutor) {
       els.sessionLabel.textContent = "Booking belum diupdate. Tanggal, siswa, program, dan tutor wajib diisi.";
+      return;
+    }
+
+    const trackerRow = getBookingTracker(originalRow);
+    const meetingsRealized = Number((trackerRow && trackerRow.meetings_realized) || 0);
+    const paymentsRealized = Number((trackerRow && trackerRow.payments_realized) || 0);
+    if (payload.meetings_total < meetingsRealized) {
+      els.sessionLabel.textContent = "Total pertemuan tidak boleh lebih kecil dari meeting realized.";
+      return;
+    }
+    if (payload.meetings_total < paymentsRealized) {
+      els.sessionLabel.textContent = "Total pertemuan tidak boleh lebih kecil dari payment realized.";
       return;
     }
 
@@ -1069,6 +1104,8 @@
         student_count: payload.student_count,
         program_name: payload.program_name,
         tutor: payload.tutor,
+        meetings_total: payload.meetings_total,
+        payments_total: payload.meetings_total,
         updated_at: new Date().toISOString()
       })
       .eq("booking_id", trackerBookingId);
@@ -1163,7 +1200,7 @@
 
   function exportBookingRows() {
     downloadExcel("class-booking", [
-      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Sertifikat", "Testimoni", "Keterangan"
+      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Total Pertemuan", "Sertifikat", "Testimoni", "Keterangan"
     ], bookingRows.map((row) => [
       row.order_date,
       row.valid_until,
@@ -1172,6 +1209,7 @@
       row.program_name,
       formatExportMoney(row.price),
       row.tutor,
+      getBookingMeetingTotal(row),
       formatDoneStatus(row.certificate_issued),
       formatDoneStatus(row.testimonial_received),
       row.note
