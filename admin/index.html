@@ -60,6 +60,14 @@
   .grid { display:grid; gap:18px; }
   .panel { overflow:hidden; }
   .panel-head { padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, #fff 0%, #f7fbff 70%, var(--yellow-soft) 100%); }
+  .payable-total { min-width:180px; display:grid; justify-items:end; gap:3px; padding:12px 14px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
+  .payable-total span { color:var(--muted); font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
+  .payable-total strong { color:var(--blue-dark); font-size:20px; line-height:1.1; }
+  .payable-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; padding:20px; }
+  .payable-card { display:grid; gap:8px; padding:16px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  .payable-card span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
+  .payable-card strong { color:var(--text); font-size:22px; line-height:1.1; }
+  .payable-card small { color:var(--muted); font-size:12px; font-weight:800; line-height:1.5; }
   .table-wrap { margin:16px 20px 20px; overflow-x:auto; border-radius:10px; }
   table { width:100%; border-collapse:collapse; min-width:760px; border:2.5px solid var(--ink); background:#fff; }
   th, td { padding:14px 18px; text-align:left; border:2px solid var(--ink); font-size:13px; vertical-align:middle; }
@@ -147,6 +155,18 @@
     </div>
 
     <div class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Payable</h2><p class="muted">Total remaining fee berdasarkan masing tutor.</p></div>
+          <div class="payable-total">
+            <span>Total Remaining Fee</span>
+            <strong id="payableGrandTotal">Rp0</strong>
+          </div>
+        </div>
+        <div class="payable-grid" id="payableGrid"></div>
+        <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
+      </section>
+
       <section class="panel">
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div><button class="btn" type="button" id="exportTracker">Export Excel</button></div>
         <div class="table-wrap">
@@ -242,6 +262,7 @@
     programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
+    payableGrid: $("payableGrid"), payableEmpty: $("payableEmpty"), payableGrandTotal: $("payableGrandTotal"),
     zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
     exportTracker: $("exportTracker"), exportBooking: $("exportBooking"), exportZoom: $("exportZoom"),
     bookingModal: $("bookingModal"), bookingEditForm: $("bookingEditForm"), bookingEditId: $("bookingEditId"),
@@ -374,6 +395,13 @@
     if (toBePaid <= 0) return "Lunas";
     const fee = getMeetingFee(row.program_name, row.student_count);
     return fee > 0 ? formatMoney(toBePaid * fee) : "Fee belum diset";
+  }
+
+  function getRemainingFeeAmount(row) {
+    const toBePaid = getToBePaidCount(row);
+    if (toBePaid <= 0) return 0;
+    const fee = getMeetingFee(row.program_name, row.student_count);
+    return fee > 0 ? toBePaid * fee : 0;
   }
 
   function monthRange(monthValue) {
@@ -811,9 +839,43 @@
     }
     trackerRows = trackers || [];
     bookingRows = bookings || [];
+    renderPayable(trackerRows);
     renderTracker(trackerRows);
     renderBookings(bookingRows);
     if (els.monthLabel) els.monthLabel.textContent = els.month.value || "Semua";
+  }
+
+  function renderPayable(rows) {
+    const byTutor = new Map();
+    rows.forEach((row) => {
+      const tutor = row.tutor || "Tanpa Tutor";
+      const current = byTutor.get(tutor) || { tutor, amount: 0, meetings: 0, missingFee: 0 };
+      const toBePaid = getToBePaidCount(row);
+      const fee = getMeetingFee(row.program_name, row.student_count);
+      const amount = getRemainingFeeAmount(row);
+      current.meetings += toBePaid;
+      if (amount > 0) {
+        current.amount += amount;
+      } else if (toBePaid > 0) {
+        current.missingFee += toBePaid;
+      }
+      byTutor.set(tutor, current);
+    });
+
+    const payableRows = [...byTutor.values()]
+      .filter((row) => row.amount > 0 || row.missingFee > 0)
+      .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
+    const grandTotal = payableRows.reduce((sum, row) => sum + row.amount, 0);
+
+    els.payableGrandTotal.textContent = formatMoney(grandTotal);
+    els.payableEmpty.classList.toggle("hidden", payableRows.length > 0);
+    els.payableGrid.innerHTML = payableRows.map((row) => `
+      <article class="payable-card">
+        <span>${escapeHTML(row.tutor)}</span>
+        <strong>${formatMoney(row.amount)}</strong>
+        <small>${row.meetings} meeting belum dibayar${row.missingFee ? `, ${row.missingFee} meeting belum punya fee` : ""}</small>
+      </article>
+    `).join("");
   }
 
   function renderTracker(rows) {
