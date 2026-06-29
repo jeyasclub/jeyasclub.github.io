@@ -69,6 +69,7 @@
   .payable-card strong { color:var(--text); font-size:22px; line-height:1.1; }
   .payable-card small { color:var(--muted); font-size:12px; font-weight:800; line-height:1.5; }
   .table-wrap { margin:16px 20px 20px; overflow-x:auto; border-radius:10px; }
+  .table-more { padding:0 20px 20px; display:flex; justify-content:center; }
   table { width:100%; border-collapse:collapse; min-width:760px; border:2.5px solid var(--ink); background:#fff; }
   th, td { padding:14px 18px; text-align:left; border:2px solid var(--ink); font-size:13px; vertical-align:middle; }
   th { color:#111827; background:#dbeafe; font-size:12px; font-weight:900; letter-spacing:.2px; }
@@ -176,6 +177,7 @@
           </table>
         </div>
         <div class="empty hidden" id="trackerEmpty">Belum ada data Class Tracker untuk filter ini.</div>
+        <div class="table-more"><button class="btn hidden" type="button" id="trackerShowMore">Show more</button></div>
       </section>
 
       <section class="panel">
@@ -187,6 +189,7 @@
           </table>
         </div>
         <div class="empty hidden" id="bookingEmpty">Belum ada data Class Booking untuk filter ini.</div>
+        <div class="table-more"><button class="btn hidden" type="button" id="bookingShowMore">Show more</button></div>
       </section>
 
       <section class="panel">
@@ -253,6 +256,9 @@
   let tutorRows = [];
   let feeRows = [];
   let zoomRows = [];
+  const tablePreviewLimit = 5;
+  let trackerExpanded = false;
+  let bookingExpanded = false;
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -261,6 +267,7 @@
     logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), reset: $("resetFilter"),
     programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
+    trackerShowMore: $("trackerShowMore"), bookingShowMore: $("bookingShowMore"),
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
     payableGrid: $("payableGrid"), payableEmpty: $("payableEmpty"), payableGrandTotal: $("payableGrandTotal"),
     zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
@@ -839,6 +846,8 @@
     }
     trackerRows = trackers || [];
     bookingRows = bookings || [];
+    trackerExpanded = false;
+    bookingExpanded = false;
     renderPayable(trackerRows);
     renderTracker(trackerRows);
     renderBookings(bookingRows);
@@ -879,9 +888,12 @@
   }
 
   function renderTracker(rows) {
+    const visibleRows = trackerExpanded ? rows : rows.slice(0, tablePreviewLimit);
     if (els.trackerCount) els.trackerCount.textContent = rows.length;
     els.trackerEmpty.classList.toggle("hidden", rows.length > 0);
-    els.trackerBody.innerHTML = rows.map((row) => `
+    els.trackerShowMore.classList.toggle("hidden", rows.length <= tablePreviewLimit);
+    els.trackerShowMore.textContent = trackerExpanded ? "Show less" : "Show more";
+    els.trackerBody.innerHTML = visibleRows.map((row) => `
       <tr>
         <td>${formatDate(row.order_date)}</td>
         <td>${formatDate(getTrackerValidUntil(row))}</td>
@@ -944,10 +956,13 @@
 
   function renderBookings(rows) {
     const bookingGroups = groupBookingRows(rows);
+    const visibleGroups = bookingExpanded ? bookingGroups : bookingGroups.slice(0, tablePreviewLimit);
     if (els.bookingCount) els.bookingCount.textContent = rows.length;
     if (els.bookingTotal) els.bookingTotal.textContent = formatMoney(bookingGroups.reduce((sum, group) => sum + Number((group.rows[0] && group.rows[0].price) || 0), 0));
     els.bookingEmpty.classList.toggle("hidden", rows.length > 0);
-    els.bookingBody.innerHTML = bookingGroups.map((group) => {
+    els.bookingShowMore.classList.toggle("hidden", bookingGroups.length <= tablePreviewLimit);
+    els.bookingShowMore.textContent = bookingExpanded ? "Show less" : "Show more";
+    els.bookingBody.innerHTML = visibleGroups.map((group) => {
       const rowspan = group.rows.length;
       return group.rows.map((row, index) => `
         <tr>
@@ -1360,6 +1375,14 @@
   els.exportTracker.addEventListener("click", exportTrackerRows);
   els.exportBooking.addEventListener("click", exportBookingRows);
   els.exportZoom.addEventListener("click", exportZoomRows);
+  els.trackerShowMore.addEventListener("click", () => {
+    trackerExpanded = !trackerExpanded;
+    renderTracker(trackerRows);
+  });
+  els.bookingShowMore.addEventListener("click", () => {
+    bookingExpanded = !bookingExpanded;
+    renderBookings(bookingRows);
+  });
   document.addEventListener("click", (event) => {
     const paymentButton = event.target.closest("[data-payment-edit]");
     const zoomDeleteButton = event.target.closest("[data-zoom-delete]");
