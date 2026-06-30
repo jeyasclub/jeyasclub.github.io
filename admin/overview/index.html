@@ -52,7 +52,7 @@
   .filter-card label { min-width:220px; flex:1 1 260px; grid-template-columns:auto minmax(180px, 1fr); align-items:center; }
   .filter-card input { min-height:42px; }
   .filter-card .btn { min-height:42px; padding:9px 14px; }
-  .metrics { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+  .metrics { display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:12px; }
   .metric { padding:18px; display:grid; gap:5px; }
   .metric span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
   .metric strong { color:var(--text); font-size:24px; line-height:1.15; }
@@ -89,6 +89,7 @@
   .legend-dot.completed { background:var(--blue); }
   .legend-dot.inactive { background:#e2e8f0; border:1px solid #cbd5e1; }
   .empty { padding:4px 0; color:var(--muted); font-size:13px; }
+  @media (max-width:1040px) { .metrics { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
   @media (max-width:900px) { .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .grid-2 { grid-template-columns:1fr; } }
   @media (max-width:760px) { .topbar { align-items:flex-start; flex-direction:column; padding:10px 16px; } .brand span { display:none; } .topbar-actions { width:100%; flex-wrap:nowrap; justify-content:space-between; } .admin-nav { max-width:100%; overflow-x:auto; } .shell { width:min(100% - 24px, 1180px); } .panel-head { align-items:flex-start; } .bar-row { grid-template-columns:1fr; gap:7px; } .filter-card .btn, .filter-card label { width:100%; min-width:0; } }
 </style>
@@ -138,6 +139,7 @@
     </div>
 
     <section class="metrics">
+      <div class="metric"><span>Member</span><strong id="memberTotal">0</strong></div>
       <div class="metric"><span>Total Bookings</span><strong id="totalBookings">0</strong></div>
       <div class="metric"><span>Total Pendapatan</span><strong id="totalRevenue">Rp0</strong></div>
       <div class="metric"><span>Course Active</span><strong id="courseActive">0</strong></div>
@@ -201,7 +203,7 @@
     loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
     email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
     logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), reset:$("resetFilter"), refresh:$("refreshButton"),
-    totalBookings:$("totalBookings"), totalRevenue:$("totalRevenue"),
+    memberTotal:$("memberTotal"), totalBookings:$("totalBookings"), totalRevenue:$("totalRevenue"),
     courseActive:$("courseActive"), courseCompleted:$("courseCompleted"), programChart:$("programChart"), tutorChart:$("tutorChart"),
     financeSection:$("financeSection"), financeSubtitle:$("financeSubtitle"), revenueChart:$("revenueChart"),
     courseDonut:$("courseDonut"), courseActivePercent:$("courseActivePercent"),
@@ -373,12 +375,14 @@
       { data: bookings, error: bookingError },
       { data: trackers, error: trackerError },
       { data: tutors, error: tutorError },
-      { data: financeBookings, error: financeBookingError }
+      { data: financeBookings, error: financeBookingError },
+      { data: memberCount, error: memberCountError }
     ] = await Promise.all([
       bookingQuery,
       trackerQuery,
       supabaseClient.from("class_tutors").select("*").order("name", { ascending:true }),
-      financeBookingQuery
+      financeBookingQuery,
+      supabaseClient.rpc("get_jeyasclub_member_count")
     ]);
     els.refresh.disabled = false;
     els.refresh.textContent = "Refresh";
@@ -387,10 +391,11 @@
       els.sessionLabel.textContent = "Overview belum bisa dimuat. Pastikan SQL terbaru sudah dijalankan.";
       return;
     }
-    renderOverview(bookings || [], trackers || [], tutors || [], financeBookings || []);
+    if (memberCountError) console.warn("Member count load failed:", memberCountError);
+    renderOverview(bookings || [], trackers || [], tutors || [], financeBookings || [], memberCountError ? null : memberCount);
   }
 
-  function renderOverview(bookings, trackers, tutors, financeBookings = []) {
+  function renderOverview(bookings, trackers, tutors, financeBookings = [], memberCount = 0) {
     const groupedBookings = groupBookings(bookings);
     const groupedFinanceBookings = groupBookings(financeBookings);
     const activeTutors = tutors.filter((row) => row.is_active).length;
@@ -400,6 +405,7 @@
     const courseActivePercent = trackers.length ? Math.round((activeCourses / trackers.length) * 100) : 0;
     const tutorMax = Math.max(activeTutors, inactiveTutors, 1);
 
+    els.memberTotal.textContent = memberCount === null ? "-" : Number(memberCount || 0).toLocaleString("id-ID");
     els.totalBookings.textContent = groupedBookings.length;
     els.totalRevenue.textContent = formatMoney(groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0));
     els.courseActive.textContent = activeCourses;

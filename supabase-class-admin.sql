@@ -12,6 +12,30 @@ as $$
   );
 $$;
 
+create or replace function public.get_jeyasclub_member_count()
+returns bigint
+language plpgsql
+stable
+security definer
+set search_path = public, auth
+as $$
+declare
+  member_count bigint;
+begin
+  if not public.is_class_admin() then
+    raise exception 'Not allowed';
+  end if;
+
+  select count(*)
+  into member_count
+  from auth.users;
+
+  return member_count;
+end;
+$$;
+
+grant execute on function public.get_jeyasclub_member_count() to authenticated;
+
 create or replace function public.class_tutor_email(tutor_name text)
 returns text
 language sql
