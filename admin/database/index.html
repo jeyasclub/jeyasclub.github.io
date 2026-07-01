@@ -243,6 +243,29 @@
     </form>
   </div>
 
+  <div class="modal-backdrop hidden" id="feeModal" role="dialog" aria-modal="true" aria-labelledby="feeModalTitle">
+    <form class="modal" id="feeEditForm">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">Edit Fee</p>
+          <h2 id="feeModalTitle">Database Fee per Pertemuan</h2>
+          <p class="muted">Update nama program, jumlah siswa, dan fee untuk setiap pertemuan.</p>
+        </div>
+        <button class="btn" type="button" id="feeModalClose">Tutup</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="feeEditId">
+        <label>Nama program<input type="text" id="feeEditProgram" required></label>
+        <label>Jumlah siswa<input type="number" id="feeEditStudentCount" min="1" step="1" required></label>
+        <label>Fee per pertemuan<input type="number" id="feeEditAmount" min="0" step="1000" required></label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="feeModalCancel">Batal</button>
+        <button class="btn primary" type="submit" id="feeSaveButton">Simpan Fee</button>
+      </div>
+    </form>
+  </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
@@ -271,7 +294,11 @@
     tutorEditName:$("tutorEditName"), tutorEditBankName:$("tutorEditBankName"), tutorEditBankAccount:$("tutorEditBankAccount"),
     tutorEditZoomLink:$("tutorEditZoomLink"),
     tutorEditTestimonialLink:$("tutorEditTestimonialLink"), tutorModalClose:$("tutorModalClose"),
-    tutorModalCancel:$("tutorModalCancel"), tutorSaveButton:$("tutorSaveButton")
+    tutorModalCancel:$("tutorModalCancel"), tutorSaveButton:$("tutorSaveButton"),
+    feeModal:$("feeModal"), feeEditForm:$("feeEditForm"), feeEditId:$("feeEditId"),
+    feeEditProgram:$("feeEditProgram"), feeEditStudentCount:$("feeEditStudentCount"),
+    feeEditAmount:$("feeEditAmount"), feeModalClose:$("feeModalClose"),
+    feeModalCancel:$("feeModalCancel"), feeSaveButton:$("feeSaveButton")
   };
 
   function isAdmin(session = currentSession) {
@@ -526,6 +553,22 @@
     `).join("");
   }
 
+  function openFeeModal(row) {
+    els.feeEditId.value = row.id || "";
+    els.feeEditProgram.value = row.program_name || "";
+    els.feeEditStudentCount.value = Number(row.student_count || 1);
+    els.feeEditAmount.value = Number(row.fee || 0);
+    els.feeModal.classList.remove("hidden");
+    els.feeEditAmount.focus();
+    els.feeEditAmount.select();
+  }
+
+  function closeFeeModal() {
+    els.feeModal.classList.add("hidden");
+    els.feeEditForm.reset();
+    els.feeEditId.value = "";
+  }
+
   async function addFeeItem() {
     const programName = els.feeProgramInput.value.trim();
     const studentCount = Number(els.feeStudentCountInput.value || 0);
@@ -551,28 +594,37 @@
   async function editFeeItem(id) {
     const row = feeRows.find((item) => item.id === id);
     if (!row) return;
-    const programName = window.prompt("Nama program", row.program_name || "");
-    if (programName === null) return;
-    const studentCount = window.prompt("Jumlah siswa", String(row.student_count || 1));
-    if (studentCount === null) return;
-    const fee = window.prompt("Fee per pertemuan", String(Number(row.fee || 0)));
-    if (fee === null) return;
-    const payload = {
-      program_name: programName.trim(),
-      student_count: Math.max(parseNumberInput(studentCount, row.student_count || 1), 1),
-      fee: parseNumberInput(fee, row.fee || 0),
-      updated_at: new Date().toISOString()
-    };
-    if (!payload.program_name) {
-      els.sessionLabel.textContent = "Fee belum terupdate. Nama program wajib diisi.";
+    openFeeModal(row);
+  }
+
+  async function saveFeeEdit(event) {
+    event.preventDefault();
+    const feeId = els.feeEditId.value;
+    const programName = els.feeEditProgram.value.trim();
+    const studentCount = Number(els.feeEditStudentCount.value || 0);
+    const fee = Number(els.feeEditAmount.value || 0);
+    if (!feeId || !programName || !Number.isInteger(studentCount) || studentCount < 1 || fee < 0) {
+      els.sessionLabel.textContent = "Fee belum terupdate. Program, jumlah siswa, dan fee wajib valid.";
       return;
     }
-    const { error } = await supabaseClient.from("class_meeting_fees").update(payload).eq("id", id);
+    const payload = {
+      program_name: programName,
+      student_count: studentCount,
+      fee,
+      updated_at: new Date().toISOString()
+    };
+    els.feeSaveButton.disabled = true;
+    els.feeSaveButton.textContent = "Menyimpan...";
+    const { error } = await supabaseClient.from("class_meeting_fees").update(payload).eq("id", feeId);
+    els.feeSaveButton.disabled = false;
+    els.feeSaveButton.textContent = "Simpan Fee";
     if (error) {
       console.error(error);
       els.sessionLabel.textContent = "Fee belum terupdate. Mungkin kombinasi program dan jumlah siswa sudah ada.";
       return;
     }
+    els.sessionLabel.textContent = "Fee per pertemuan berhasil diupdate.";
+    closeFeeModal();
     await loadDatabase();
   }
 
@@ -699,10 +751,16 @@
   els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
   els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
   els.tutorEditForm.addEventListener("submit", saveTutorEdit);
+  els.feeEditForm.addEventListener("submit", saveFeeEdit);
   els.tutorModalClose.addEventListener("click", closeTutorModal);
   els.tutorModalCancel.addEventListener("click", closeTutorModal);
   els.tutorModal.addEventListener("click", (event) => {
     if (event.target === els.tutorModal) closeTutorModal();
+  });
+  els.feeModalClose.addEventListener("click", closeFeeModal);
+  els.feeModalCancel.addEventListener("click", closeFeeModal);
+  els.feeModal.addEventListener("click", (event) => {
+    if (event.target === els.feeModal) closeFeeModal();
   });
   els.exportProgram.addEventListener("click", exportProgramRows);
   els.exportTutor.addEventListener("click", exportTutorRows);
