@@ -69,15 +69,23 @@
   .bar-fill.revenue { background:var(--amber); }
   .finance-panel { grid-column:1 / -1; }
   .line-chart { display:grid; gap:14px; }
-  .line-chart svg { width:100%; min-height:280px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); overflow:visible; }
+  .line-chart svg { width:100%; min-height:320px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); overflow:visible; touch-action:manipulation; }
   .line-chart .axis { stroke:#cbd5e1; stroke-width:1.5; }
   .line-chart .trend-line { fill:none; stroke:var(--blue); stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
   .line-chart .trend-area { fill:rgba(26,111,232,.12); }
-  .line-chart .point { fill:var(--yellow); stroke:var(--ink); stroke-width:3; }
+  .line-chart .point { fill:var(--yellow); stroke:var(--ink); stroke-width:3; cursor:pointer; transition:r .16s ease, fill .16s ease; }
+  .line-chart .point.is-selected { fill:var(--blue); r:10; }
+  .line-chart .hit-point { fill:transparent; cursor:pointer; }
+  .line-chart .selection-guide { opacity:0; stroke:var(--blue); stroke-width:2; stroke-dasharray:6 6; }
+  .line-chart .selection-guide.is-selected { opacity:.42; }
   .line-chart .label { fill:var(--text); font-size:12px; font-weight:900; }
-  .line-chart .value-label { fill:var(--blue-dark); font-size:12px; font-weight:900; }
+  .line-chart .value-label { fill:var(--blue-dark); font-size:12px; font-weight:900; opacity:.78; }
+  .line-chart .value-label.is-selected { opacity:1; font-size:14px; }
   .line-chart-summary { display:flex; gap:10px; flex-wrap:wrap; }
   .line-chart-summary span { display:inline-flex; align-items:center; min-height:32px; border:2px solid #bfdbfe; border-radius:999px; background:var(--blue-light); color:var(--blue-dark); padding:6px 10px; font-size:12px; font-weight:900; }
+  .line-chart-selected { min-height:58px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; border:2.5px solid var(--ink); border-radius:14px; background:var(--yellow-soft); box-shadow:3px 4px 0 var(--shadow); }
+  .line-chart-selected strong { color:var(--text); font-size:13px; line-height:1.2; }
+  .line-chart-selected span { color:var(--blue-dark); font-size:20px; font-weight:900; line-height:1.1; text-align:right; }
   .donut-wrap { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
   .donut-box { position:relative; display:grid; place-items:center; width:156px; }
   .donut-chart { --active:0%; width:156px; aspect-ratio:1; border:3px solid var(--ink); border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--green) 0 var(--active), var(--blue) var(--active) 100%); box-shadow:4px 5px 0 var(--shadow); }
@@ -105,7 +113,20 @@
     h1 { font-size:clamp(30px, 10vw, 42px); }
     .muted { overflow-wrap:anywhere; }
     .panel-head { align-items:flex-start; }
+    .chart-body { padding:12px; }
     .bar-row { grid-template-columns:1fr; gap:7px; }
+    .line-chart { gap:12px; }
+    .line-chart svg { min-height:420px; border-radius:14px; box-shadow:3px 4px 0 var(--shadow); }
+    .line-chart .label { font-size:15px; }
+    .line-chart .value-label { opacity:0; pointer-events:none; }
+    .line-chart .value-label.is-selected { opacity:1; font-size:18px; }
+    .line-chart .point { r:8; }
+    .line-chart .point.is-selected { r:13; }
+    .line-chart .hit-point { r:28; }
+    .line-chart-summary { display:grid; grid-template-columns:1fr; }
+    .line-chart-summary span { width:calc(100% - 8px); border-radius:14px; justify-content:center; text-align:center; }
+    .line-chart-selected { width:calc(100% - 8px); flex-direction:column; align-items:flex-start; }
+    .line-chart-selected span { font-size:26px; text-align:left; }
     .filter-card { display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
     .filter-card label { width:100%; min-width:0; display:grid; grid-template-columns:1fr; overflow:hidden; }
     .filter-card input { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; -webkit-appearance:none; appearance:none; justify-self:start; }
@@ -320,9 +341,12 @@
       container.innerHTML = `<p class="empty">Belum ada pendapatan untuk filter ini.</p>`;
       return;
     }
-    const width = 920;
-    const height = 300;
-    const pad = { top:38, right:32, bottom:54, left:56 };
+    const isCompact = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
+    const width = isCompact ? 640 : 920;
+    const height = isCompact ? 420 : 340;
+    const pad = isCompact
+      ? { top:62, right:30, bottom:78, left:58 }
+      : { top:48, right:34, bottom:58, left:58 };
     const values = entries.map((entry) => Number(entry[1] || 0));
     const max = Math.max(...values, 1);
     const min = Math.min(...values, 0);
@@ -338,24 +362,52 @@
     const area = `${pad.left},${height - pad.bottom} ${line} ${points[points.length - 1].x},${height - pad.bottom}`;
     const total = values.reduce((sum, value) => sum + value, 0);
     const latest = points[points.length - 1];
+    const selectedIndex = points.length - 1;
 
     container.innerHTML = `
       <div class="line-chart-summary">
         <span>Total: ${formatMoney(total)}</span>
         <span>Bulan terakhir: ${escapeHTML(latest.label)} (${formatMoney(latest.value)})</span>
       </div>
+      <div class="line-chart-selected" data-revenue-selected aria-live="polite">
+        <strong>${escapeHTML(latest.label)}</strong>
+        <span>${formatMoney(latest.value)}</span>
+      </div>
       <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart total pendapatan per bulan">
         <line class="axis" x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}"></line>
         <line class="axis" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}"></line>
+        ${points.map((point, index) => `
+          <line class="selection-guide ${index === selectedIndex ? "is-selected" : ""}" data-index="${index}" x1="${point.x}" y1="${pad.top}" x2="${point.x}" y2="${height - pad.bottom}"></line>
+        `).join("")}
         <polygon class="trend-area" points="${area}"></polygon>
         <polyline class="trend-line" points="${line}"></polyline>
-        ${points.map((point) => `
-          <circle class="point" cx="${point.x}" cy="${point.y}" r="7"></circle>
-          <text class="value-label" x="${point.x}" y="${Math.max(18, point.y - 14)}" text-anchor="middle">${formatMoney(point.value).replace(/\s/g, " ")}</text>
+        ${points.map((point, index) => `
+          <circle class="point ${index === selectedIndex ? "is-selected" : ""}" data-index="${index}" cx="${point.x}" cy="${point.y}" r="7"></circle>
+          <circle class="hit-point" data-index="${index}" cx="${point.x}" cy="${point.y}" r="22" tabindex="0" role="button" aria-label="${escapeHTML(point.label)} ${escapeHTML(formatMoney(point.value))}"></circle>
+          <text class="value-label ${index === selectedIndex ? "is-selected" : ""}" data-index="${index}" x="${point.x}" y="${Math.max(22, point.y - 18)}" text-anchor="middle">${formatMoney(point.value).replace(/\s/g, " ")}</text>
           <text class="label" x="${point.x}" y="${height - 20}" text-anchor="middle">${escapeHTML(point.label)}</text>
         `).join("")}
       </svg>
     `;
+    const selectedBox = container.querySelector("[data-revenue-selected]");
+    const selectPoint = (index) => {
+      const point = points[index];
+      if (!point || !selectedBox) return;
+      selectedBox.innerHTML = `<strong>${escapeHTML(point.label)}</strong><span>${formatMoney(point.value)}</span>`;
+      container.querySelectorAll(".point, .value-label, .selection-guide").forEach((item) => {
+        item.classList.toggle("is-selected", Number(item.dataset.index) === index);
+      });
+    };
+    container.querySelectorAll(".point, .hit-point").forEach((item) => {
+      const index = Number(item.dataset.index);
+      item.addEventListener("click", () => selectPoint(index));
+      item.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectPoint(index);
+        }
+      });
+    });
   }
 
   function revenueByMonth(rows) {
