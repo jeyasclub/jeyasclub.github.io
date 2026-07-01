@@ -38,7 +38,7 @@
   .form { display:grid; gap:14px; }
   .student-name-grid { display:grid; gap:10px; }
   label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
-  input, select, textarea { width:100%; min-height:48px; border:2.5px solid var(--ink); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; box-shadow:2px 3px 0 rgba(12,27,54,.95); font-weight:800; }
+  input, select, textarea { display:block; width:100%; min-width:0; min-height:48px; border:2.5px solid var(--ink); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; box-shadow:2px 3px 0 rgba(12,27,54,.95); font-weight:800; }
   textarea { min-height:94px; resize:vertical; line-height:1.6; }
   input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.18), 2px 3px 0 rgba(12,27,54,.95); }
   .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; white-space:pre-line; }
@@ -82,7 +82,30 @@
   tbody tr:nth-child(even) td { background:#f8fbff; }
   tbody tr:hover td { background:#eef6ff; }
   .pill { display:inline-flex; align-items:center; min-height:28px; border-radius:999px; padding:5px 9px; background:var(--blue-light); color:var(--blue-dark); border:2px solid #bfdbfe; font-size:12px; font-weight:900; white-space:nowrap; }
-  @media (max-width:820px) { .forms-grid, .two-col, .zoom-tools, .info-links { grid-template-columns:1fr; } .info-link-card { grid-template-columns:1fr; } .info-copy { justify-self:start; } .topbar { padding:0 16px; } .brand span { display:none; } .shell { width:min(100% - 24px, 1320px); } .zoom-calendar { grid-template-columns:repeat(7, minmax(108px, 1fr)); } }
+  @media (max-width:820px) {
+    body { overflow-x:hidden; }
+    .topbar { padding:10px 12px; gap:12px; }
+    .brand span { display:none; }
+    .brand img { width:58px; height:58px; }
+    .topbar-actions { min-width:0; flex-wrap:nowrap; gap:10px; }
+    .shell { width:min(100% - 24px, 1320px); padding-top:24px; }
+    .hero-row > div:first-child { min-width:0; }
+    h1 { font-size:clamp(30px, 10vw, 42px); }
+    .muted { overflow-wrap:anywhere; }
+    .forms-grid, .two-col, .zoom-tools, .info-links { grid-template-columns:1fr; }
+    .panel { padding:18px; overflow:hidden; }
+    label { min-width:0; overflow:hidden; }
+    .student-name-grid { min-width:0; overflow:hidden; }
+    input, select, textarea { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; justify-self:start; }
+    input[type="date"], input[type="time"], input[type="month"] { -webkit-appearance:none; appearance:none; }
+    .form > .btn.primary { width:max-content; max-width:calc(100% - 8px); }
+    .zoom-filter { width:100%; display:grid; grid-template-columns:1fr; align-items:stretch; }
+    .zoom-filter label { min-width:0; }
+    .zoom-filter .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); }
+    .info-link-card { grid-template-columns:1fr; }
+    .info-copy { justify-self:start; }
+    .zoom-calendar { grid-template-columns:repeat(7, minmax(108px, 1fr)); }
+  }
 </style>
 </head>
 <body>
