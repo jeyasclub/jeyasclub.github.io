@@ -87,6 +87,7 @@
   tbody tr:hover td { background:#eef6ff; }
   .pill { display:inline-flex; align-items:center; min-height:30px; border-radius:999px; padding:6px 10px; background:var(--blue-light); color:var(--blue-dark); border:2px solid #bfdbfe; font-weight:900; white-space:nowrap; }
   .empty { padding:22px; color:var(--muted); font-size:14px; }
+  .table-more { padding:0 20px 20px; display:flex; justify-content:center; }
   .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
   .row-actions .btn { min-height:34px; padding:7px 10px; font-size:12px; }
   .modal-backdrop { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:18px; background:rgba(15,23,42,.48); }
@@ -197,6 +198,7 @@
           </table>
         </div>
         <div class="empty hidden" id="tutorEmpty">Belum ada tutor. Tambahkan tutor dulu supaya muncul di dropdown input.</div>
+        <div class="table-more"><button class="btn hidden" type="button" id="tutorShowMore">Show more</button></div>
       </article>
 
       <article class="panel">
@@ -214,6 +216,7 @@
           </table>
         </div>
         <div class="empty hidden" id="feeEmpty">Belum ada fee. Tambahkan fee agar Remaining Fee bisa dihitung otomatis.</div>
+        <div class="table-more"><button class="btn hidden" type="button" id="feeShowMore">Show more</button></div>
       </article>
     </section>
   </main>
@@ -276,6 +279,10 @@
   let programRows = [];
   let tutorRows = [];
   let feeRows = [];
+  let tutorExpanded = false;
+  let feeExpanded = false;
+  const tutorPreviewLimit = 1;
+  const feePreviewLimit = 3;
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -287,8 +294,9 @@
     tutorActivePercent:$("tutorActivePercent"),
     programForm:$("programForm"), programInput:$("programNameInput"), programBody:$("programBody"), programEmpty:$("programEmpty"),
     tutorForm:$("tutorForm"), tutorInput:$("tutorNameInput"), tutorBody:$("tutorBody"), tutorEmpty:$("tutorEmpty"),
+    tutorShowMore:$("tutorShowMore"),
     feeForm:$("feeForm"), feeProgramInput:$("feeProgramInput"), feeStudentCountInput:$("feeStudentCountInput"),
-    feeAmountInput:$("feeAmountInput"), feeBody:$("feeBody"), feeEmpty:$("feeEmpty"),
+    feeAmountInput:$("feeAmountInput"), feeBody:$("feeBody"), feeEmpty:$("feeEmpty"), feeShowMore:$("feeShowMore"),
     exportProgram:$("exportProgram"), exportTutor:$("exportTutor"), exportFee:$("exportFee"),
     tutorModal:$("tutorModal"), tutorEditForm:$("tutorEditForm"), tutorEditId:$("tutorEditId"),
     tutorEditName:$("tutorEditName"), tutorEditBankName:$("tutorEditBankName"), tutorEditBankAccount:$("tutorEditBankAccount"),
@@ -398,8 +406,13 @@
 
   function renderMasterRows(type, rows) {
     const config = getMasterConfig(type);
+    const visibleRows = type === "tutor" && !tutorExpanded ? rows.slice(0, tutorPreviewLimit) : rows;
     config.empty.classList.toggle("hidden", rows.length > 0);
-    config.body.innerHTML = rows.map((row) => `
+    if (type === "tutor") {
+      els.tutorShowMore.classList.toggle("hidden", rows.length <= tutorPreviewLimit);
+      els.tutorShowMore.textContent = tutorExpanded ? "Show less" : "Show more";
+    }
+    config.body.innerHTML = visibleRows.map((row) => `
       <tr>
         <td>${escapeHTML(row.name)}</td>
         ${type === "tutor" ? `
@@ -535,8 +548,11 @@
   }
 
   function renderFeeRows(rows) {
+    const visibleRows = feeExpanded ? rows : rows.slice(0, feePreviewLimit);
     els.feeEmpty.classList.toggle("hidden", rows.length > 0);
-    els.feeBody.innerHTML = rows.map((row) => `
+    els.feeShowMore.classList.toggle("hidden", rows.length <= feePreviewLimit);
+    els.feeShowMore.textContent = feeExpanded ? "Show less" : "Show more";
+    els.feeBody.innerHTML = visibleRows.map((row) => `
       <tr>
         <td>${escapeHTML(row.program_name)}</td>
         <td>${Number(row.student_count || 0)} siswa</td>
@@ -747,6 +763,14 @@
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
   els.refresh.addEventListener("click", loadDatabase);
+  els.tutorShowMore.addEventListener("click", () => {
+    tutorExpanded = !tutorExpanded;
+    renderMasterRows("tutor", tutorRows);
+  });
+  els.feeShowMore.addEventListener("click", () => {
+    feeExpanded = !feeExpanded;
+    renderFeeRows(feeRows);
+  });
   els.programForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("program"); });
   els.tutorForm.addEventListener("submit", (event) => { event.preventDefault(); addMasterItem("tutor"); });
   els.feeForm.addEventListener("submit", (event) => { event.preventDefault(); addFeeItem(); });
