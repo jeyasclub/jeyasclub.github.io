@@ -273,15 +273,6 @@
       box-shadow: 0 24px 56px rgba(22, 23, 47, 0.08);
     }
 
-    .hero-card img {
-      position: absolute;
-      top: 22px;
-      right: 18px;
-      width: 142px;
-      opacity: 0.92;
-      filter: drop-shadow(0 18px 28px rgba(31, 115, 232, 0.14));
-    }
-
     .score-band {
       display: grid;
       gap: 12px;
@@ -509,37 +500,107 @@
 
     footer {
       margin-top: 44px;
-      padding: 42px 0;
+      padding: 44px 24px;
       border-top: 1px solid var(--line);
       background: #fff;
     }
 
-    .footer-grid {
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
       display: grid;
-      grid-template-columns: 1.2fr repeat(3, minmax(0, 0.8fr));
-      gap: 24px;
+      grid-template-columns: minmax(220px, 1.2fr) repeat(3, minmax(150px, 1fr));
+      gap: 32px;
+      align-items: start;
     }
 
     .footer-logo {
-      width: 92px;
-      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .footer-grid p,
-    .footer-grid a {
+    .footer-logo-icon {
+      width: 128px;
+      height: 86px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .footer-logo-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .footer-tagline {
+      max-width: 280px;
       color: var(--muted);
-      font-size: 13.5px;
-      line-height: 1.8;
+      font-size: 13px;
+      line-height: 1.7;
     }
 
-    .footer-grid h4 {
-      margin: 0 0 10px;
-      font-size: 0.95rem;
+    .footer-col h4 {
+      margin: 0 0 14px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .footer-links {
-      display: grid;
-      gap: 8px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--blue);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .social-link {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .social-link img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .social-link:hover {
+      background: var(--sky);
+      transform: translateY(-2px);
     }
 
     @media (max-width: 980px) {
@@ -570,7 +631,7 @@
         grid-template-columns: 1fr;
       }
 
-      .footer-grid {
+      .footer-top {
         grid-template-columns: 1fr 1fr;
       }
     }
@@ -592,12 +653,6 @@
         min-height: 0;
       }
 
-      .hero-card img {
-        position: static;
-        width: 108px;
-        margin-left: auto;
-      }
-
       .score-row,
       .structure-row {
         grid-template-columns: 1fr;
@@ -607,8 +662,18 @@
         width: fit-content;
       }
 
-      .footer-grid {
+      .footer-top {
         grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .footer-logo-icon {
+        width: 112px;
+        height: 76px;
+      }
+
+      .footer-tagline {
+        max-width: none;
       }
     }
   </style>
@@ -658,7 +723,6 @@
       </div>
 
       <aside class="hero-card" aria-label="Ringkasan TOEFL ITP">
-        <img src="/assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async">
         <div class="score-band">
           <div class="score-row">
             <strong>Format</strong>
@@ -798,33 +862,43 @@
     </section>
   </main>
 
-  <footer>
-    <div class="shell footer-grid">
-      <div>
-        <img class="footer-logo" src="/assets/logo.jpg" alt="Jeya's Club" width="500" height="208" loading="lazy" decoding="async">
-        <p>Komunitas belajar bahasa Inggris online melalui kursus, quiz, dan aktivitas interaktif.</p>
-      </div>
-      <div>
-        <h4>TOEFL Practice</h4>
-        <div class="footer-links">
-          <a href="/swe-test/">SWE Test</a>
-          <a href="/reading-test/">Reading Test</a>
-          <a href="/quiz/">Semua Quiz</a>
+  <footer id="footer" data-nosnippet>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo"><div class="footer-logo-icon"><img src="/assets/logo.jpg" alt="Logo Jeya's Club" width="500" height="208" loading="lazy" decoding="async"></div></div>
+          <p class="footer-tagline">Komunitas belajar bahasa Inggris online melalui penyediaan kursus dan aktivitas interaktif dan sosial.</p>
         </div>
-      </div>
-      <div>
-        <h4>Belajar</h4>
-        <div class="footer-links">
-          <a href="/artikel/">Artikel</a>
-          <a href="/produkdigital/">Produk Digital</a>
-          <a href="/kursus-bahasa-inggris-online/">Kursus</a>
+
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a></li>
+            <li><a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">+62 851 8330 5497</a></li>
+          </ul>
         </div>
-      </div>
-      <div>
-        <h4>Kontak</h4>
-        <div class="footer-links">
-          <a href="mailto:jeyasclub@gmail.com">jeyasclub@gmail.com</a>
-          <a href="https://wa.link/1k00t6" target="_blank" rel="noreferrer noopener">WhatsApp Jeya's Club</a>
+
+        <div class="footer-col">
+          <h4>Media Sosial</h4>
+          <div class="social-links">
+            <a href="mailto:jeyasclub@gmail.com" class="social-link" aria-label="Email Jeya's Club"><img src="/assets/mail.png" alt="email" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://instagram.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club Instagram"><img src="/assets/ig.png" alt="ig" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://x.com/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club X"><img src="/assets/x.png" alt="x" width="50" height="50" loading="lazy" decoding="async"></a>
+            <a href="https://id.linkedin.com/company/jeyasclub" class="social-link" target="_blank" rel="noreferrer noopener" aria-label="Jeya's Club LinkedIn"><img src="/assets/linkedin.png" alt="" width="50" height="50" loading="lazy" decoding="async"></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Tautan</h4>
+          <ul class="footer-links">
+            <li><a href="/about/">Tentang Kami</a></li>
+            <li><a href="/kursus-bahasa-inggris-online/">Kursus Bahasa Inggris Online</a></li>
+            <li><a href="/english_menfess/">English Menfess</a></li>
+            <li><a href="/english_menfess/#paid-promote">Kerja Sama</a></li>
+            <li><a href="/artikel/">Artikel</a></li>
+            <li><a href="/testimoni/">Testimoni</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+          </ul>
         </div>
       </div>
     </div>
