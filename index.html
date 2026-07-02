@@ -608,6 +608,11 @@
     gap: 14px;
   }
 
+  .test-accordion {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
   .test-card {
     position: relative;
     overflow: hidden;
@@ -628,12 +633,12 @@
   .test-card::after {
     content: "";
     position: absolute;
-    right: 22px;
-    bottom: 18px;
-    width: 76px;
-    height: 76px;
+    right: 18px;
+    bottom: 16px;
+    width: 58px;
+    height: 58px;
     border: 2px solid rgba(26, 111, 232, 0.1);
-    border-radius: 22px;
+    border-radius: 18px;
     transform: rotate(12deg);
     pointer-events: none;
   }
@@ -643,10 +648,10 @@
     z-index: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 18px;
+    gap: 14px;
     align-items: center;
-    min-height: 112px;
-    padding: 20px 22px;
+    min-height: 104px;
+    padding: 18px 20px;
     cursor: pointer;
     list-style: none;
   }
@@ -665,10 +670,10 @@
 
   .test-card-label {
     width: fit-content;
-    min-height: 32px;
+    min-height: 28px;
     display: inline-flex;
     align-items: center;
-    padding: 7px 12px;
+    padding: 6px 11px;
     border-radius: 999px;
     background: var(--white);
     color: var(--blue-dark);
@@ -678,10 +683,10 @@
   }
 
   .test-card h3 {
-    max-width: 520px;
+    max-width: none;
     color: var(--text);
-    font-size: clamp(20px, 3vw, 28px);
-    line-height: 1.16;
+    font-size: clamp(18px, 2vw, 23px);
+    line-height: 1.22;
   }
 
   .test-card p {
@@ -696,7 +701,7 @@
     z-index: 1;
     display: grid;
     gap: 14px;
-    padding: 0 22px 22px;
+    padding: 0 20px 20px;
   }
 
   .test-card-takers {
@@ -3591,6 +3596,10 @@
 
     .test-card {
       text-align: left;
+    }
+
+    .test-accordion {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .test-card summary {
