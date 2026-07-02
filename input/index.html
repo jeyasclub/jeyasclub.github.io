@@ -53,6 +53,16 @@
   .forms-grid.tracker-only .panel { width:100%; }
   .forms-grid.booking-only { grid-template-columns:1fr; }
   .forms-grid.booking-only .panel { width:100%; }
+  .forms-grid.booking-only #bookingForm {
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    column-gap:18px;
+    row-gap:14px;
+  }
+  .booking-note-field,
+  #bookingSubmit,
+  #bookingStatus {
+    grid-column:1 / -1;
+  }
   .panel { padding:22px; display:grid; gap:18px; }
   .panel-head { display:grid; gap:6px; padding-bottom:14px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, transparent 0%, transparent 65%, var(--yellow-soft) 100%); }
   .two-col { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
@@ -92,7 +102,11 @@
     .hero-row > div:first-child { min-width:0; }
     h1 { font-size:clamp(30px, 10vw, 42px); }
     .muted { overflow-wrap:anywhere; }
-    .forms-grid, .two-col, .zoom-tools, .info-links { grid-template-columns:1fr; }
+    .forms-grid,
+    .forms-grid.booking-only #bookingForm,
+    .two-col,
+    .zoom-tools,
+    .info-links { grid-template-columns:1fr; }
     .panel { padding:18px; overflow:hidden; }
     label { min-width:0; overflow:hidden; }
     .student-name-grid { min-width:0; overflow:hidden; }
@@ -171,7 +185,7 @@
           <label>Harga<input type="number" id="bookingPrice" min="0" step="any" required placeholder="250000"></label>
           <label>Tutor<select id="bookingTutor" required></select></label>
           <label>Total Meeting untuk Tracker<input type="number" id="bookingMeetingTotal" min="0" value="0" required></label>
-          <label>Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
+          <label class="booking-note-field">Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
           <button class="btn primary" type="submit" id="bookingSubmit">Simpan Booking</button>
           <p class="status" id="bookingStatus"></p>
         </form>
