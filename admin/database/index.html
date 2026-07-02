@@ -90,6 +90,8 @@
   .table-more { padding:0 20px 20px; display:flex; justify-content:center; }
   .row-actions { display:flex; gap:8px; flex-wrap:wrap; }
   .row-actions .btn { min-height:34px; padding:7px 10px; font-size:12px; }
+  .copy-cell { min-width:140px; }
+  .copy-link-btn { min-height:34px; padding:7px 10px; font-size:12px; white-space:nowrap; }
   .modal-backdrop { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:18px; background:rgba(15,23,42,.48); }
   .modal { width:min(720px, 100%); max-height:min(90vh, 760px); overflow:auto; background:var(--white); border:3px solid var(--ink); border-radius:18px; box-shadow:8px 9px 0 var(--shadow); }
   .modal-head { padding:18px 20px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; border-bottom:3px solid var(--ink); background:var(--blue-light); }
@@ -419,8 +421,8 @@
           <td>${escapeHTML(row.email || tutorEmailFromName(row.name))}</td>
           <td>${escapeHTML(row.bank_name || "-")}</td>
           <td>${escapeHTML(row.bank_account_number || "-")}</td>
-          <td>${row.zoom_link ? `<a href="${escapeHTML(row.zoom_link)}" target="_blank" rel="noopener">${escapeHTML(row.zoom_link)}</a>` : "-"}</td>
-          <td>${row.testimonial_link ? `<a href="${escapeHTML(row.testimonial_link)}" target="_blank" rel="noopener">${escapeHTML(row.testimonial_link)}</a>` : "-"}</td>
+          <td class="copy-cell">${row.zoom_link ? `<button class="btn copy-link-btn" type="button" data-copy-link="${escapeHTML(row.zoom_link)}">Copy Zoom</button>` : "-"}</td>
+          <td class="copy-cell">${row.testimonial_link ? `<button class="btn copy-link-btn" type="button" data-copy-link="${escapeHTML(row.testimonial_link)}">Copy Testimoni</button>` : "-"}</td>
         ` : ""}
         <td><span class="pill">${row.is_active ? "Aktif" : "Nonaktif"}</span></td>
         <td>
@@ -432,6 +434,35 @@
         </td>
       </tr>
     `).join("");
+  }
+
+  async function copyLinkToClipboard(button) {
+    const value = button.dataset.copyLink || "";
+    if (!value) return;
+    const originalText = button.textContent;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const input = document.createElement("textarea");
+        input.value = value;
+        input.setAttribute("readonly", "");
+        input.style.position = "fixed";
+        input.style.opacity = "0";
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        input.remove();
+      }
+      button.textContent = "Copied";
+      els.sessionLabel.textContent = "Link berhasil dicopy.";
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 1200);
+    } catch (error) {
+      console.error("Copy link failed:", error);
+      els.sessionLabel.textContent = "Link belum bisa dicopy. Coba buka edit tutor dan salin manual.";
+    }
   }
 
   async function addMasterItem(type) {
@@ -796,12 +827,14 @@
     const feeEditButton = event.target.closest("[data-fee-edit]");
     const feeToggleButton = event.target.closest("[data-fee-toggle]");
     const feeDeleteButton = event.target.closest("[data-fee-delete]");
+    const copyButton = event.target.closest("[data-copy-link]");
     if (editButton) editMasterItem(editButton.dataset.masterEdit, editButton.dataset.id, editButton.dataset.name);
     if (toggleButton) toggleMasterItem(toggleButton.dataset.masterToggle, toggleButton.dataset.id, toggleButton.dataset.active === "1");
     if (deleteButton) deleteMasterItem(deleteButton.dataset.masterDelete, deleteButton.dataset.id);
     if (feeEditButton) editFeeItem(feeEditButton.dataset.feeEdit);
     if (feeToggleButton) toggleFeeItem(feeToggleButton.dataset.feeToggle, feeToggleButton.dataset.active === "1");
     if (feeDeleteButton) deleteFeeItem(feeDeleteButton.dataset.feeDelete);
+    if (copyButton) copyLinkToClipboard(copyButton);
   });
   init();
 </script>

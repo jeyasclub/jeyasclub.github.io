@@ -60,13 +60,13 @@
   .panel { overflow:hidden; }
   .panel-head { padding:20px 24px; display:grid; gap:5px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, #fff 0%, #f7fbff 70%, var(--yellow-soft) 100%); }
   .chart-body { padding:18px 20px 20px; display:grid; gap:14px; }
-  .bar-chart { display:grid; gap:12px; }
-  .bar-row { display:grid; grid-template-columns:minmax(130px, 1fr) minmax(0, 2fr) 58px; gap:12px; align-items:center; color:var(--text); font-size:13px; font-weight:900; }
-  .bar-label { overflow-wrap:anywhere; }
-  .bar-track { height:18px; overflow:hidden; border:2px solid var(--ink); border-radius:999px; background:#fff; box-shadow:2px 3px 0 var(--shadow); }
-  .bar-fill { width:var(--value, 0%); height:100%; border-radius:999px; background:var(--blue); }
-  .bar-fill.tutor { background:var(--green); }
-  .bar-fill.revenue { background:var(--amber); }
+  .count-list { display:grid; gap:10px; }
+  .count-row { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:12px; align-items:center; min-height:58px; padding:12px 14px; border:2px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
+  .count-label { color:var(--text); font-size:13px; font-weight:900; line-height:1.35; overflow-wrap:anywhere; }
+  .count-value { min-width:54px; min-height:38px; display:inline-flex; align-items:center; justify-content:center; padding:8px 12px; border:2px solid var(--ink); border-radius:12px; background:var(--blue-light); color:var(--blue-dark); box-shadow:2px 3px 0 var(--shadow); font-size:18px; font-weight:900; line-height:1; }
+  .count-row.tutor .count-value,
+  .count-row.active .count-value { background:#dcfce7; color:#15803d; }
+  .count-row.inactive .count-value { background:#f8fafc; color:var(--muted); }
   .finance-panel { grid-column:1 / -1; }
   .line-chart { display:grid; gap:14px; }
   .line-chart svg { width:100%; min-height:320px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); overflow:visible; touch-action:manipulation; }
@@ -114,7 +114,8 @@
     .muted { overflow-wrap:anywhere; }
     .panel-head { align-items:flex-start; }
     .chart-body { padding:12px; }
-    .bar-row { grid-template-columns:1fr; gap:7px; }
+    .count-row { grid-template-columns:minmax(0, 1fr) auto; gap:10px; padding:12px; }
+    .count-value { min-width:48px; }
     .line-chart { gap:12px; }
     .line-chart svg { min-height:420px; border-radius:14px; box-shadow:3px 4px 0 var(--shadow); }
     .line-chart .label { font-size:15px; }
@@ -194,12 +195,12 @@
 
       <article class="panel">
         <div class="panel-head"><h2>Booking per Program</h2><p class="muted">Breakdown total booking berdasarkan program.</p></div>
-        <div class="chart-body"><div class="bar-chart" id="programChart"></div></div>
+        <div class="chart-body"><div class="count-list" id="programChart"></div></div>
       </article>
 
       <article class="panel">
         <div class="panel-head"><h2>Booking per Tutor</h2><p class="muted">Breakdown total booking berdasarkan tutor.</p></div>
-        <div class="chart-body"><div class="bar-chart" id="tutorChart"></div></div>
+        <div class="chart-body"><div class="count-list" id="tutorChart"></div></div>
       </article>
 
       <article class="panel">
@@ -221,9 +222,9 @@
       <article class="panel">
         <div class="panel-head"><h2>Tutor Status</h2><p class="muted">Jumlah tutor aktif dan nonaktif.</p></div>
         <div class="chart-body">
-          <div class="bar-chart">
-            <div class="bar-row"><span class="bar-label">Aktif</span><div class="bar-track"><div class="bar-fill tutor" id="tutorActiveBar"></div></div><strong id="tutorActiveCount">0</strong></div>
-            <div class="bar-row"><span class="bar-label">Nonaktif</span><div class="bar-track"><div class="bar-fill" id="tutorInactiveBar"></div></div><strong id="tutorInactiveCount">0</strong></div>
+          <div class="count-list">
+            <div class="count-row active"><span class="count-label">Aktif</span><strong class="count-value" id="tutorActiveCount">0</strong></div>
+            <div class="count-row inactive"><span class="count-label">Nonaktif</span><strong class="count-value" id="tutorInactiveCount">0</strong></div>
           </div>
         </div>
       </article>
@@ -248,7 +249,7 @@
     financeSection:$("financeSection"), financeSubtitle:$("financeSubtitle"), revenueChart:$("revenueChart"),
     courseDonut:$("courseDonut"), courseActivePercent:$("courseActivePercent"),
     courseActiveLegend:$("courseActiveLegend"), courseCompletedLegend:$("courseCompletedLegend"),
-    tutorActiveBar:$("tutorActiveBar"), tutorInactiveBar:$("tutorInactiveBar"), tutorActiveCount:$("tutorActiveCount"), tutorInactiveCount:$("tutorInactiveCount")
+    tutorActiveCount:$("tutorActiveCount"), tutorInactiveCount:$("tutorInactiveCount")
   };
 
   function isAdmin(session = currentSession) {
@@ -319,18 +320,16 @@
     }, {});
   }
 
-  function renderBarChart(container, dataMap, colorClass = "") {
+  function renderCountList(container, dataMap, colorClass = "") {
     const entries = Object.entries(dataMap).sort((a, b) => b[1] - a[1]);
     if (!entries.length) {
       container.innerHTML = `<p class="empty">Belum ada data untuk filter ini.</p>`;
       return;
     }
-    const max = Math.max(...entries.map((entry) => entry[1]), 1);
     container.innerHTML = entries.map(([label, value]) => `
-      <div class="bar-row">
-        <span class="bar-label">${escapeHTML(label)}</span>
-        <div class="bar-track"><div class="bar-fill ${colorClass}" style="--value:${Math.round((value / max) * 100)}%"></div></div>
-        <strong>${value}</strong>
+      <div class="count-row ${colorClass}">
+        <span class="count-label">${escapeHTML(label)}</span>
+        <strong class="count-value">${value}</strong>
       </div>
     `).join("");
   }
@@ -474,7 +473,6 @@
     const completedCourses = trackers.filter(isCompletedCourse).length;
     const activeCourses = trackers.length - completedCourses;
     const courseActivePercent = trackers.length ? Math.round((activeCourses / trackers.length) * 100) : 0;
-    const tutorMax = Math.max(activeTutors, inactiveTutors, 1);
 
     els.memberTotal.textContent = memberCount === null ? "-" : Number(memberCount || 0).toLocaleString("id-ID");
     els.totalBookings.textContent = groupedBookings.length;
@@ -482,8 +480,8 @@
     els.courseActive.textContent = activeCourses;
     els.courseCompleted.textContent = completedCourses;
 
-    renderBarChart(els.programChart, countBy(groupedBookings, "program_name"));
-    renderBarChart(els.tutorChart, countBy(groupedBookings, "tutor"), "tutor");
+    renderCountList(els.programChart, countBy(groupedBookings, "program_name"));
+    renderCountList(els.tutorChart, countBy(groupedBookings, "tutor"), "tutor");
     els.financeSection.classList.toggle("hidden", !canViewFinance());
     if (canViewFinance()) {
       els.financeSubtitle.textContent = "Grafik total pendapatan per bulan dari semua booking.";
@@ -496,8 +494,6 @@
     els.courseDonut.style.setProperty("--active", `${courseActivePercent}%`);
     els.tutorActiveCount.textContent = activeTutors;
     els.tutorInactiveCount.textContent = inactiveTutors;
-    els.tutorActiveBar.style.setProperty("--value", `${Math.round((activeTutors / tutorMax) * 100)}%`);
-    els.tutorInactiveBar.style.setProperty("--value", `${Math.round((inactiveTutors / tutorMax) * 100)}%`);
     els.sessionLabel.textContent = els.month.value ? `Data bulan ${els.month.value}` : `Data semua bulan`;
   }
 
