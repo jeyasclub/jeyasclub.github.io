@@ -642,10 +642,10 @@
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: 86px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 18px;
     align-items: center;
-    min-height: 126px;
+    min-height: 112px;
     padding: 20px 22px;
     cursor: pointer;
     list-style: none;
@@ -696,7 +696,7 @@
     z-index: 1;
     display: grid;
     gap: 14px;
-    padding: 0 22px 22px 126px;
+    padding: 0 22px 22px;
   }
 
   .test-card-takers {
@@ -751,21 +751,6 @@
     background: var(--blue-dark);
     transform: translateY(-2px);
     box-shadow: 0 16px 30px rgba(26,111,232,0.24);
-  }
-
-  .test-card-visual {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .test-card-visual img {
-    width: min(78px, 100%);
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 18px 24px rgba(26,111,232,0.16));
   }
 
   .test-card-toggle {
@@ -3609,18 +3594,10 @@
     }
 
     .test-card summary {
-      grid-template-columns: 64px minmax(0, 1fr) 34px;
+      grid-template-columns: minmax(0, 1fr) 34px;
       gap: 12px;
-      min-height: 106px;
+      min-height: 96px;
       padding: 18px;
-    }
-
-    .test-card-visual {
-      justify-content: center;
-    }
-
-    .test-card-visual img {
-      width: 58px;
     }
 
     .test-card-content {
@@ -3810,9 +3787,6 @@
     <div class="test-accordion">
       <details class="test-card" name="quick-english-test" open>
         <summary>
-          <div class="test-card-visual" aria-hidden="true">
-            <img src="assets/optimized/king-test.png" alt="" width="360" height="360" loading="lazy" decoding="async">
-          </div>
           <div class="test-card-content">
             <span class="test-card-label">Available</span>
             <h3>Vocabulary Test by Jeya's Club</h3>
@@ -3827,9 +3801,6 @@
       </details>
       <details class="test-card" name="quick-english-test">
         <summary>
-          <div class="test-card-visual" aria-hidden="true">
-            <img src="assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async">
-          </div>
           <div class="test-card-content">
             <span class="test-card-label">Available</span>
             <h3>Grammar Test by Jeya's Club</h3>
@@ -3844,9 +3815,6 @@
       </details>
       <details class="test-card" name="quick-english-test">
         <summary>
-          <div class="test-card-visual" aria-hidden="true">
-            <img src="assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async">
-          </div>
           <div class="test-card-content">
             <span class="test-card-label">Available</span>
             <h3>Latihan Soal TOEFL Structure & Written Expressions</h3>
@@ -3861,9 +3829,6 @@
       </details>
       <details class="test-card" name="quick-english-test">
         <summary>
-          <div class="test-card-visual" aria-hidden="true">
-            <img src="assets/optimized/book.png" alt="" width="218" height="220" loading="lazy" decoding="async">
-          </div>
           <div class="test-card-content">
             <span class="test-card-label">Available</span>
             <h3>Latihan Soal TOEFL Reading Comprehension</h3>
@@ -3878,9 +3843,6 @@
       </details>
       <details class="test-card" name="quick-english-test">
         <summary>
-          <div class="test-card-visual" aria-hidden="true">
-            <img src="assets/optimized/laptop.png" alt="" width="208" height="260" loading="lazy" decoding="async">
-          </div>
           <div class="test-card-content">
             <span class="test-card-label">Available</span>
             <h3>English Slang Test by Jeya's Club</h3>
