@@ -8,6 +8,7 @@ const VOCAQUIZ_PRODUCT_SLUG = 'vocabulary-test-result';
 const GRAMMAR_TEST_PRODUCT_SLUG = 'unlock-grammar-test-recommendation';
 const ENGLISH_SLANG_TEST_PRODUCT_SLUG = 'unlock-english-slang-test';
 const SWE_TEST_PRODUCT_SLUG = 'unlock-pembahasan-toefl-structure-written-expressions';
+const READING_TEST_PRODUCT_SLUG = 'unlock-reading-test-jeyas-club';
 const ENGLISH_HANGOUT_PRODUCT_SLUG = 'english-hangout-club-by-jeyas-club-may-2026-di9e';
 const ENGLISH_HANGOUT_COURSE_KEY = 'english-hangout-club';
 const TOEFL_VOCAB_PRODUCT_SLUG = '300-toefl-vocabulary';
@@ -137,11 +138,12 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   const isGrammarTest = isGrammarTestPayment({ productName, productUrl, productId }, env);
   const isEnglishSlangTest = isEnglishSlangTestPayment({ productName, productUrl, productId }, env);
   const isSweTest = isSweTestPayment({ productName, productUrl, productId }, env);
+  const isReadingTest = isReadingTestPayment({ productName, productUrl, productId }, env);
   const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
   const isToeflVocab = isToeflVocabPayment({ productName, productUrl, productId }, env);
   const isEnglishChallenges = isEnglishChallengesPayment({ productName, productUrl, productId }, env);
 
-  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isSweTest && !isEnglishHangout && !isToeflVocab && !isEnglishChallenges) {
+  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isSweTest && !isReadingTest && !isEnglishHangout && !isToeflVocab && !isEnglishChallenges) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -171,6 +173,10 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   if (isSweTest) {
     rpcName = 'grant_swe_test_review_access_by_email';
+  }
+
+  if (isReadingTest) {
+    rpcName = 'grant_reading_test_review_access_by_email';
   }
 
   if (isEnglishHangout) {
@@ -232,7 +238,7 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
-    product: isEnglishChallenges ? ENGLISH_CHALLENGES_COURSE_KEY : (isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isSweTest ? 'swe-test-review' : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review'))))),
+    product: isEnglishChallenges ? ENGLISH_CHALLENGES_COURSE_KEY : (isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isReadingTest ? 'reading-test-review' : (isSweTest ? 'swe-test-review' : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')))))),
     result: rpcData,
   });
 }
@@ -349,6 +355,15 @@ function isSweTestPayment({ productName, productUrl, productId }, env = {}) {
   const haystack = `${productName} ${productUrl}`.toLowerCase();
   return haystack.includes(SWE_TEST_PRODUCT_SLUG)
     || (haystack.includes('toefl') && haystack.includes('structure') && haystack.includes('written'));
+}
+
+function isReadingTestPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_READING_TEST_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(READING_TEST_PRODUCT_SLUG)
+    || (haystack.includes('reading') && haystack.includes('test') && haystack.includes('jeya'));
 }
 
 function isEnglishHangoutPayment({ productName, productUrl, productId }, env = {}) {
