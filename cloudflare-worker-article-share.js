@@ -125,6 +125,7 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   const productUrl = cleanText(data.productUrl || data.url || '');
   const productId = cleanText(data.productId || '');
   const status = String(data.status || data.transactionStatus || '').toLowerCase();
+  const amount = getMayarAmount(data);
 
   if (eventName !== 'payment.received') {
     return jsonResponse({ ok: true, ignored: true, reason: 'unsupported_event' });
@@ -147,6 +148,17 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
+  const saleProduct = getMayarSaleProduct({
+    isVocaquiz,
+    isGrammarTest,
+    isEnglishSlangTest,
+    isSweTest,
+    isReadingTest,
+    isEnglishHangout,
+    isToeflVocab,
+    isEnglishChallenges,
+  });
+
   if (!customerEmail || !customerEmail.includes('@')) {
     return jsonResponse({ ok: false, error: 'missing_customer_email' }, 400);
   }
@@ -155,6 +167,17 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   if (!serviceRoleKey) {
     return jsonResponse({ ok: false, error: 'missing_supabase_service_role_key' }, 500);
   }
+
+  const saleLogResult = saleProduct
+    ? await logMayarProductSale(env, serviceRoleKey, {
+      productKey: saleProduct.key,
+      productName: saleProduct.name,
+      customerEmail,
+      transactionId,
+      amount,
+      payload: data,
+    })
+    : { ok: true, skipped: true, reason: 'product_not_tracked_for_overview' };
 
   let rpcName = 'grant_vocaquiz_review_access_by_email';
   let rpcBody = {
@@ -239,8 +262,67 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
     product: isEnglishChallenges ? ENGLISH_CHALLENGES_COURSE_KEY : (isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isReadingTest ? 'reading-test-review' : (isSweTest ? 'swe-test-review' : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')))))),
+    saleLog: saleLogResult,
     result: rpcData,
   });
+}
+
+function getMayarSaleProduct(flags = {}) {
+  if (flags.isGrammarTest) return { key: 'grammar-test', name: 'Grammar Test' };
+  if (flags.isEnglishSlangTest) return { key: 'english-slang-test', name: 'Slang Test' };
+  if (flags.isSweTest) return { key: 'swe-test', name: 'SWE Test' };
+  if (flags.isReadingTest) return { key: 'reading-test', name: 'Reading Test' };
+  if (flags.isEnglishHangout) return null;
+  if (flags.isToeflVocab) return { key: TOEFL_VOCAB_COURSE_KEY, name: '300 TOEFL Vocabulary' };
+  if (flags.isEnglishChallenges) return { key: ENGLISH_CHALLENGES_COURSE_KEY, name: '1001 English Challenges' };
+  return { key: 'vocabulary-test', name: 'Vocabulary Test' };
+}
+
+function getMayarAmount(data = {}) {
+  const candidates = [
+    data.amount,
+    data.totalAmount,
+    data.total_amount,
+    data.grossAmount,
+    data.gross_amount,
+    data.price,
+  ];
+  for (const value of candidates) {
+    const normalized = Number(String(value ?? '').replace(/[^\d.-]/g, ''));
+    if (Number.isFinite(normalized) && normalized > 0) return normalized;
+  }
+  return null;
+}
+
+async function logMayarProductSale(env = {}, serviceRoleKey, sale = {}) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/log_mayar_product_sale`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      Authorization: `Bearer ${serviceRoleKey}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      p_product_key: sale.productKey,
+      p_product_name: sale.productName,
+      p_customer_email: sale.customerEmail || null,
+      p_transaction_id: sale.transactionId || null,
+      p_amount: sale.amount,
+      p_payload: sale.payload || {},
+    }),
+  });
+
+  const text = await response.text();
+  let detail = null;
+  try {
+    detail = text ? JSON.parse(text) : null;
+  } catch {
+    detail = text;
+  }
+
+  return response.ok
+    ? { ok: true, result: detail }
+    : { ok: false, status: response.status, detail };
 }
 
 async function handlePrivateCourseDownload(request, env = {}, product = {}) {

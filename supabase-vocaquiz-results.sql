@@ -43,6 +43,19 @@ create table if not exists public.jeyasclub_course_access (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.mayar_product_sales (
+  id uuid primary key default gen_random_uuid(),
+  product_key text not null,
+  product_name text not null,
+  customer_email text,
+  transaction_id text unique,
+  source text not null default 'mayar',
+  amount numeric,
+  payload jsonb not null default '{}'::jsonb,
+  paid_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.grammar_test_results (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -119,6 +132,7 @@ alter table public.vocaquiz_results enable row level security;
 alter table public.vocaquiz_review_access enable row level security;
 alter table public.vocaquiz_result_answers enable row level security;
 alter table public.jeyasclub_course_access enable row level security;
+alter table public.mayar_product_sales enable row level security;
 alter table public.grammar_test_results enable row level security;
 alter table public.grammar_test_review_access enable row level security;
 alter table public.grammar_test_result_answers enable row level security;
@@ -199,6 +213,12 @@ on public.jeyasclub_course_access (user_id, course_key, created_at desc);
 
 create unique index if not exists jeyasclub_course_access_user_course_key
 on public.jeyasclub_course_access (user_id, course_key);
+
+create index if not exists mayar_product_sales_product_paid_idx
+on public.mayar_product_sales (product_key, paid_at desc);
+
+create index if not exists mayar_product_sales_customer_idx
+on public.mayar_product_sales (customer_email, paid_at desc);
 
 create index if not exists grammar_test_results_user_created_idx
 on public.grammar_test_results (user_id, created_at desc);
@@ -653,6 +673,80 @@ $$;
 revoke all on function public.grant_english_slang_test_review_access_by_email(text, text, text) from public;
 grant execute on function public.grant_english_slang_test_review_access_by_email(text, text, text) to service_role;
 
+create or replace function public.log_mayar_product_sale(
+  p_product_key text,
+  p_product_name text,
+  p_customer_email text default null,
+  p_transaction_id text default null,
+  p_amount numeric default null,
+  p_payload jsonb default '{}'::jsonb
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  normalized_product_key text;
+  normalized_product_name text;
+  normalized_email text;
+  normalized_transaction_id text;
+  sale_id uuid;
+begin
+  normalized_product_key := lower(trim(coalesce(p_product_key, '')));
+  normalized_product_name := trim(coalesce(p_product_name, ''));
+  normalized_email := nullif(lower(trim(coalesce(p_customer_email, ''))), '');
+  normalized_transaction_id := nullif(trim(coalesce(p_transaction_id, '')), '');
+
+  if normalized_product_key = '' then
+    return jsonb_build_object('ok', false, 'reason', 'missing_product_key');
+  end if;
+
+  if normalized_product_name = '' then
+    normalized_product_name := normalized_product_key;
+  end if;
+
+  insert into public.mayar_product_sales (
+    product_key,
+    product_name,
+    customer_email,
+    transaction_id,
+    source,
+    amount,
+    payload
+  )
+  values (
+    normalized_product_key,
+    normalized_product_name,
+    normalized_email,
+    normalized_transaction_id,
+    'mayar',
+    p_amount,
+    coalesce(p_payload, '{}'::jsonb)
+  )
+  on conflict (transaction_id) do update
+  set
+    product_key = excluded.product_key,
+    product_name = excluded.product_name,
+    customer_email = coalesce(excluded.customer_email, public.mayar_product_sales.customer_email),
+    amount = coalesce(excluded.amount, public.mayar_product_sales.amount),
+    payload = case
+      when excluded.payload = '{}'::jsonb then public.mayar_product_sales.payload
+      else excluded.payload
+    end
+  returning id into sale_id;
+
+  return jsonb_build_object(
+    'ok', true,
+    'sale_id', sale_id,
+    'product_key', normalized_product_key
+  );
+end;
+$$;
+
+revoke all on function public.log_mayar_product_sale(text, text, text, text, numeric, jsonb) from public;
+grant execute on function public.log_mayar_product_sale(text, text, text, text, numeric, jsonb) to service_role;
+
 create table if not exists public.swe_test_results (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -1031,6 +1125,109 @@ $$;
 
 revoke all on function public.grant_reading_test_review_access_by_email(text, text, text) from public;
 grant execute on function public.grant_reading_test_review_access_by_email(text, text, text) to service_role;
+
+create or replace function public.get_mayar_product_sale_counts(
+  p_start_date date default null,
+  p_end_date date default null
+)
+returns table (
+  product_key text,
+  product_name text,
+  sale_count bigint
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with admin_check as (
+    select lower(coalesce(auth.jwt() ->> 'email', '')) in (
+      'jihamalia@gmail.com',
+      'jeyasclub@gmail.com'
+    ) as allowed
+  ),
+  products(product_key, product_name, sort_order) as (
+    values
+      ('vocabulary-test', 'Vocabulary Test', 1),
+      ('grammar-test', 'Grammar Test', 2),
+      ('english-slang-test', 'Slang Test', 3),
+      ('swe-test', 'SWE Test', 4),
+      ('reading-test', 'Reading Test', 5),
+      ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 6),
+      ('study-sheet-100-english-challenges', '1001 English Challenges', 7)
+  ),
+  logged_sales as (
+    select
+      sales.product_key,
+      count(*)::bigint as sale_count
+    from public.mayar_product_sales sales
+    where sales.source = 'mayar'
+      and (p_start_date is null or sales.paid_at >= p_start_date)
+      and (p_end_date is null or sales.paid_at < p_end_date)
+    group by sales.product_key
+  ),
+  access_sales as (
+    select 'vocabulary-test'::text as product_key, count(*)::bigint as sale_count
+    from public.vocaquiz_review_access
+    where source = 'mayar'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+    union all
+    select 'grammar-test'::text, count(*)::bigint
+    from public.grammar_test_review_access
+    where source = 'mayar'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+    union all
+    select 'english-slang-test'::text, count(*)::bigint
+    from public.english_slang_test_review_access
+    where source = 'mayar'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+    union all
+    select 'swe-test'::text, count(*)::bigint
+    from public.swe_test_review_access
+    where source = 'mayar'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+    union all
+    select 'reading-test'::text, count(*)::bigint
+    from public.reading_test_review_access
+    where source = 'mayar'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+    union all
+    select '300-toefl-vocabulary'::text, count(*)::bigint
+    from public.jeyasclub_course_access
+    where source = 'mayar'
+      and course_key = '300-toefl-vocabulary'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+    union all
+    select 'study-sheet-100-english-challenges'::text, count(*)::bigint
+    from public.jeyasclub_course_access
+    where source = 'mayar'
+      and course_key = 'study-sheet-100-english-challenges'
+      and (p_start_date is null or created_at >= p_start_date)
+      and (p_end_date is null or created_at < p_end_date)
+  )
+  select
+    products.product_key,
+    products.product_name,
+    greatest(
+      coalesce(logged_sales.sale_count, 0),
+      coalesce(access_sales.sale_count, 0)
+    )::bigint as sale_count
+  from products
+  cross join admin_check
+  left join logged_sales on logged_sales.product_key = products.product_key
+  left join access_sales on access_sales.product_key = products.product_key
+  where admin_check.allowed
+  order by products.sort_order;
+$$;
+
+revoke all on function public.get_mayar_product_sale_counts(date, date) from public;
+grant execute on function public.get_mayar_product_sale_counts(date, date) to authenticated;
 
 create table if not exists public.tanya_jeya_questions (
   id uuid primary key default gen_random_uuid(),
