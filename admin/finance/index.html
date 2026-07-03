@@ -215,7 +215,7 @@
         </div>
         <div class="panel-body">
           <div class="statement-paper" id="profitLossStatement"></div>
-          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari transaksi Mayar yang sudah masuk ke log website.</p>
+          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari jumlah checkout Mayar di overview dikali harga produk.</p>
         </div>
       </section>
 
@@ -282,6 +282,15 @@
   let digitalRevenueRows = [];
   let lastFinanceReport = null;
   const adminFilterStorageKey = "jeyasclub_admin_filters";
+  const digitalProductPrices = {
+    "vocabulary-test": 5000,
+    "grammar-test": 15000,
+    "english-slang-test": 10000,
+    "swe-test": 30000,
+    "reading-test": 30000,
+    "300-toefl-vocabulary": 10000,
+    "study-sheet-100-english-challenges": 1000
+  };
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -476,6 +485,19 @@
       .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
   }
 
+  function withDigitalProductRevenue(rows = []) {
+    return rows.map((row) => {
+      const unitPrice = Number(digitalProductPrices[row.product_key] || 0);
+      const saleCount = Number(row.sale_count || 0);
+      return {
+        ...row,
+        sale_count: saleCount,
+        unit_price: unitPrice,
+        revenue_amount: saleCount * unitPrice
+      };
+    });
+  }
+
   function renderMoneyLineChart(container, dataMap) {
     const entries = Object.entries(dataMap).sort((a, b) => a[0].localeCompare(b[0]));
     if (!entries.length) {
@@ -618,7 +640,7 @@
       bookingQuery,
       trackerQuery,
       manualQuery,
-      supabaseClient.rpc("get_mayar_product_revenue_summary", {
+      supabaseClient.rpc("get_mayar_product_sale_counts", {
         p_start_date: range ? range.start : null,
         p_end_date: range ? range.end : null
       })
@@ -631,7 +653,7 @@
       return;
     }
     manualEntryRows = manualEntries || [];
-    digitalRevenueRows = digitalRows || [];
+    digitalRevenueRows = withDigitalProductRevenue(digitalRows || []);
     renderFinance(bookings || [], trackers || [], manualEntryRows, digitalRevenueRows);
   }
 
@@ -670,7 +692,7 @@
       ? report.digitalRows.map((row) => {
         const qty = Number(row.sale_count || 0);
         const amount = Number(row.revenue_amount || 0);
-        const unitPrice = qty > 0 ? amount / qty : 0;
+        const unitPrice = Number(row.unit_price || 0);
         return statementLine(row.product_name, amount, { note: `${formatNumber(qty)} penjualan x ${formatMoney(unitPrice)}` });
       })
       : [statementEmpty("Belum ada digital product revenue")];
@@ -746,7 +768,7 @@
     els.totalPayable.textContent = formatMoney(totalExpense);
     els.netRevenue.textContent = formatMoney(netProfit);
     els.profitLossSubtitle.textContent = `Periode: ${periodLabel()}`;
-    els.digitalRevenueNote.textContent = `Digital Produk Revenue: ${formatNumber(digitalSaleCount)} checkout Mayar yang sudah tercatat di website.`;
+    els.digitalRevenueNote.textContent = `Digital Produk Revenue: ${formatNumber(digitalSaleCount)} checkout Mayar dari data overview x harga produk Mayar.`;
     els.revenueSubtitle.textContent = els.month.value ? `Grafik course revenue untuk ${els.month.value}.` : "Grafik total course revenue per bulan dari semua booking.";
     renderMoneyLineChart(els.revenueChart, revenueByMonth(groupedBookings));
     renderManualEntries(manualEntries);
@@ -830,7 +852,7 @@
       ...lastFinanceReport.digitalRows.map((row) => {
         const qty = Number(row.sale_count || 0);
         const amount = Number(row.revenue_amount || 0);
-        const unitPrice = qty > 0 ? amount / qty : 0;
+        const unitPrice = Number(row.unit_price || 0);
         return [row.product_name, `${formatNumber(qty)} penjualan x ${formatMoney(unitPrice)}`, formatMoney(amount)];
       }),
       ...lastFinanceReport.otherIncomeRows.map((row) => [row.label, formatMoney(row.amount)]),
