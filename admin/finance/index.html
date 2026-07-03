@@ -202,6 +202,7 @@
   let programRows = [];
   let tutorRows = [];
   let feeRows = [];
+  const adminFilterStorageKey = "jeyasclub_admin_filters";
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -215,6 +216,29 @@
   function isFinanceAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
     return email === financeEmail;
+  }
+
+  function getSavedAdminFilters() {
+    try {
+      return JSON.parse(localStorage.getItem(adminFilterStorageKey) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function saveAdminFilters() {
+    localStorage.setItem(adminFilterStorageKey, JSON.stringify({
+      month: els.month.value || "",
+      program: els.programFilter.value || "",
+      tutor: els.tutorFilter.value || ""
+    }));
+  }
+
+  function restoreAdminFilters() {
+    const filters = getSavedAdminFilters();
+    if (filters.month !== undefined) els.month.value = filters.month || "";
+    if (filters.program !== undefined) els.programFilter.value = filters.program || "";
+    if (filters.tutor !== undefined) els.tutorFilter.value = filters.tutor || "";
   }
 
   function setAuthMessage(message, type = "") {
@@ -386,7 +410,7 @@
   }
 
   function renderProgramFilter(programs) {
-    const selectedProgram = els.programFilter.value;
+    const selectedProgram = getSavedAdminFilters().program ?? els.programFilter.value;
     els.programFilter.innerHTML = [`<option value="">Semua Program</option>`]
       .concat(programs.map((program) => `<option value="${escapeHTML(program.name)}">${escapeHTML(program.name)}</option>`))
       .join("");
@@ -394,7 +418,7 @@
   }
 
   function renderTutorFilter(tutors) {
-    const selectedTutor = els.tutorFilter.value;
+    const selectedTutor = getSavedAdminFilters().tutor ?? els.tutorFilter.value;
     els.tutorFilter.innerHTML = [`<option value="">Semua Tutor</option>`]
       .concat(tutors.map((tutor) => `<option value="${escapeHTML(tutor.name)}">${escapeHTML(tutor.name)}</option>`))
       .join("");
@@ -506,8 +530,10 @@
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
-    els.month.value ||= toMonthInput();
+    restoreAdminFilters();
+    if (els.month.value === "" && getSavedAdminFilters().month === undefined) els.month.value = toMonthInput();
     await loadMasterData();
+    restoreAdminFilters();
     await loadFinance();
   }
 
@@ -538,13 +564,14 @@
   });
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
-  els.month.addEventListener("change", loadFinance);
-  els.programFilter.addEventListener("change", loadFinance);
-  els.tutorFilter.addEventListener("change", loadFinance);
+  els.month.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
+  els.programFilter.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
+  els.tutorFilter.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
   els.reset.addEventListener("click", () => {
     els.month.value = "";
     els.programFilter.value = "";
     els.tutorFilter.value = "";
+    saveAdminFilters();
     loadFinance();
   });
   els.refresh.addEventListener("click", async () => { await loadMasterData(); await loadFinance(); });

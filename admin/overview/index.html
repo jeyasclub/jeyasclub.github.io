@@ -212,6 +212,7 @@
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
   const adminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
   let currentSession = null;
+  const adminFilterStorageKey = "jeyasclub_admin_filters";
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -229,6 +230,25 @@
   function isAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
     return adminEmails.has(email);
+  }
+
+  function getSavedAdminFilters() {
+    try {
+      return JSON.parse(localStorage.getItem(adminFilterStorageKey) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function saveOverviewFilter() {
+    const filters = getSavedAdminFilters();
+    filters.month = els.month.value || "";
+    localStorage.setItem(adminFilterStorageKey, JSON.stringify(filters));
+  }
+
+  function restoreOverviewFilter() {
+    const filters = getSavedAdminFilters();
+    if (filters.month !== undefined) els.month.value = filters.month || "";
   }
 
   function setAuthMessage(message, type = "") {
@@ -407,7 +427,8 @@
     els.loginScreen.classList.add("hidden");
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
-    els.month.value ||= toMonthInput();
+    restoreOverviewFilter();
+    if (els.month.value === "" && getSavedAdminFilters().month === undefined) els.month.value = toMonthInput();
     await loadOverview();
   }
 
@@ -438,8 +459,8 @@
   });
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
-  els.month.addEventListener("change", loadOverview);
-  els.reset.addEventListener("click", () => { els.month.value = ""; loadOverview(); });
+  els.month.addEventListener("change", () => { saveOverviewFilter(); loadOverview(); });
+  els.reset.addEventListener("click", () => { els.month.value = ""; saveOverviewFilter(); loadOverview(); });
   els.refresh.addEventListener("click", loadOverview);
   init();
 </script>

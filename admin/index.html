@@ -270,6 +270,7 @@
   const tablePreviewLimit = 5;
   let trackerExpanded = false;
   let bookingExpanded = false;
+  const adminFilterStorageKey = "jeyasclub_admin_filters";
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -294,6 +295,29 @@
   function isAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
     return adminEmails.has(email);
+  }
+
+  function getSavedAdminFilters() {
+    try {
+      return JSON.parse(localStorage.getItem(adminFilterStorageKey) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function saveAdminFilters() {
+    localStorage.setItem(adminFilterStorageKey, JSON.stringify({
+      month: els.month.value || "",
+      program: els.programFilter.value || "",
+      tutor: els.tutorFilter.value || ""
+    }));
+  }
+
+  function restoreAdminFilters() {
+    const filters = getSavedAdminFilters();
+    if (filters.month !== undefined) els.month.value = filters.month || "";
+    if (filters.program !== undefined) els.programFilter.value = filters.program || "";
+    if (filters.tutor !== undefined) els.tutorFilter.value = filters.tutor || "";
   }
 
   function escapeHTML(value) {
@@ -456,8 +480,10 @@
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    restoreAdminFilters();
     els.zoomMonth.value ||= toMonthInput();
     await loadMasterData();
+    restoreAdminFilters();
     await loadData();
     await loadZoomBookings();
   }
@@ -486,7 +512,7 @@
   }
 
   function renderProgramFilter(programs) {
-    const selectedProgram = els.programFilter.value;
+    const selectedProgram = getSavedAdminFilters().program ?? els.programFilter.value;
     const options = [`<option value="">Semua Program</option>`];
     programs.forEach((program) => {
       options.push(`<option value="${escapeHTML(program.name)}">${escapeHTML(program.name)}</option>`);
@@ -496,7 +522,7 @@
   }
 
   function renderTutorFilter(tutors) {
-    const selectedTutor = els.tutorFilter.value;
+    const selectedTutor = getSavedAdminFilters().tutor ?? els.tutorFilter.value;
     const options = [`<option value="">Semua Tutor</option>`];
     tutors.forEach((tutor) => {
       options.push(`<option value="${escapeHTML(tutor.name)}">${escapeHTML(tutor.name)}</option>`);
@@ -1365,10 +1391,16 @@
     if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
     if (zoomDeleteButton) deleteZoomBooking(zoomDeleteButton.dataset.zoomDelete);
   });
-  els.month.addEventListener("change", loadData);
-  els.programFilter.addEventListener("change", loadData);
-  els.tutorFilter.addEventListener("change", loadData);
-  els.reset.addEventListener("click", () => { els.month.value = ""; els.programFilter.value = ""; els.tutorFilter.value = ""; loadData(); });
+  els.month.addEventListener("change", () => { saveAdminFilters(); loadData(); });
+  els.programFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
+  els.tutorFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
+  els.reset.addEventListener("click", () => {
+    els.month.value = "";
+    els.programFilter.value = "";
+    els.tutorFilter.value = "";
+    saveAdminFilters();
+    loadData();
+  });
   els.refresh.addEventListener("click", loadData);
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
