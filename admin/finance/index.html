@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Admin | Jeya's Club</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/assets/favicon/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --yellow:#FFE27A; --yellow-soft:#FFF8DA; --ink:#111322; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f5f9ff; --green:#16a46c; --red:#dc2626; --shadow:#0c1b36; }
+  body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:linear-gradient(135deg, rgba(26,111,232,.08) 0 14px, transparent 14px 120px), linear-gradient(45deg, transparent 0 88px, rgba(255,226,122,.34) 88px 94px, transparent 94px 180px), var(--bg); }
+  button, input, select { font:inherit; }
+  .topbar { position:sticky; top:0; z-index:10; min-height:72px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:18px; background:rgba(255,255,255,.96); border-bottom:3px solid var(--ink); backdrop-filter:blur(10px); }
+  .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
+  .brand img { width:56px; height:56px; object-fit:contain; }
+  .topbar-actions { display:flex; align-items:center; flex-wrap:wrap; gap:12px; justify-content:flex-end; }
+  .admin-nav { display:flex; align-items:center; gap:4px; padding:5px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  .nav-link { min-height:36px; border-radius:10px; padding:8px 12px; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; font-weight:900; text-decoration:none; white-space:nowrap; }
+  .nav-link:hover, .nav-link.active { background:var(--blue-light); color:var(--blue-dark); }
+  .btn { min-height:42px; border-radius:12px; padding:10px 15px; display:inline-flex; align-items:center; justify-content:center; border:2.5px solid var(--ink); background:var(--white); color:var(--text); box-shadow:3px 4px 0 var(--shadow); font-size:13px; font-weight:900; text-decoration:none; cursor:pointer; transition:transform .16s ease, box-shadow .16s ease, background .16s ease; }
+  .btn:hover { transform:translateY(-1px); box-shadow:4px 5px 0 var(--shadow); }
+  .btn.primary { background:var(--blue); color:var(--white); }
+  .btn.danger { color:var(--red); background:#fff1f2; }
+  .shell { width:min(1180px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
+  .login-screen { min-height:calc(100vh - 64px); display:grid; place-items:center; padding:32px 16px; }
+  .login-card, .panel, .metric { background:var(--white); border:3px solid var(--ink); border-radius:18px; box-shadow:8px 9px 0 var(--shadow); }
+  .login-card { width:min(430px, 100%); padding:28px; display:grid; gap:18px; }
+  .eyebrow { width:max-content; max-width:100%; color:var(--ink); background:var(--yellow); border:2.5px solid var(--ink); border-radius:999px; padding:6px 12px; font-size:12px; font-weight:900; letter-spacing:.4px; text-transform:uppercase; box-shadow:3px 4px 0 var(--shadow); }
+  .eyebrow + h1 { margin-top:12px; }
+  h1 { font-size:clamp(32px, 5vw, 48px); line-height:1.04; letter-spacing:0; font-weight:900; }
+  h2 { font-size:22px; line-height:1.18; font-weight:900; }
+  .muted { color:var(--muted); font-size:14px; line-height:1.7; }
+  .form { display:grid; gap:14px; }
+  label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
+  input, select { display:block; width:100%; min-width:0; min-height:48px; border:2.5px solid var(--ink); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; box-shadow:2px 3px 0 rgba(12,27,54,.95); font-weight:800; }
+  input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.18), 2px 3px 0 rgba(12,27,54,.95); }
+  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .status.bad { color:var(--red); }
+  .hidden { display:none !important; }
+  .dashboard { display:none; gap:22px; }
+  .dashboard.open { display:grid; }
+  .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .filter-card { width:100%; display:flex; align-items:end; gap:12px; flex-wrap:wrap; padding:18px; background:#fff; border:3px solid var(--ink); border-radius:18px; box-shadow:6px 7px 0 var(--shadow); }
+  .filter-card label { flex:1 1 220px; min-width:210px; }
+  .metrics { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+  .metric { padding:18px; display:grid; gap:5px; }
+  .metric span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
+  .metric strong { color:var(--text); font-size:24px; line-height:1.15; }
+  .grid { display:grid; gap:18px; }
+  .panel { overflow:hidden; }
+  .panel-head { padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, #fff 0%, #f7fbff 70%, var(--yellow-soft) 100%); }
+  .panel-body { padding:18px 20px 20px; }
+  .payable-total { min-width:180px; display:grid; justify-items:end; gap:3px; padding:12px 14px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
+  .payable-total span { color:var(--muted); font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
+  .payable-total strong { color:var(--blue-dark); font-size:20px; line-height:1.1; }
+  .payable-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; padding:20px; }
+  .payable-card { display:grid; gap:8px; padding:16px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  .payable-card span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
+  .payable-card strong { color:var(--text); font-size:22px; line-height:1.1; }
+  .payable-card small { color:var(--muted); font-size:12px; font-weight:800; line-height:1.5; }
+  .line-chart { display:grid; gap:14px; }
+  .line-chart svg { width:100%; min-height:320px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); overflow:visible; touch-action:manipulation; }
+  .line-chart .axis { stroke:#cbd5e1; stroke-width:1.5; }
+  .line-chart .trend-line { fill:none; stroke:var(--blue); stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
+  .line-chart .trend-area { fill:rgba(26,111,232,.12); }
+  .line-chart .point { fill:var(--yellow); stroke:var(--ink); stroke-width:3; cursor:pointer; transition:r .16s ease, fill .16s ease; }
+  .line-chart .point.is-selected { fill:var(--blue); r:10; }
+  .line-chart .hit-point { fill:transparent; cursor:pointer; }
+  .line-chart .selection-guide { opacity:0; stroke:var(--blue); stroke-width:2; stroke-dasharray:6 6; }
+  .line-chart .selection-guide.is-selected { opacity:.42; }
+  .line-chart .label { fill:var(--text); font-size:12px; font-weight:900; }
+  .line-chart .value-label { fill:var(--blue-dark); font-size:12px; font-weight:900; opacity:.78; }
+  .line-chart .value-label.is-selected { opacity:1; font-size:14px; }
+  .line-chart-summary { display:flex; gap:10px; flex-wrap:wrap; }
+  .line-chart-summary span { display:inline-flex; align-items:center; min-height:32px; border:2px solid #bfdbfe; border-radius:999px; background:var(--blue-light); color:var(--blue-dark); padding:6px 10px; font-size:12px; font-weight:900; }
+  .line-chart-selected { min-height:58px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; border:2.5px solid var(--ink); border-radius:14px; background:var(--yellow-soft); box-shadow:3px 4px 0 var(--shadow); }
+  .line-chart-selected strong { color:var(--text); font-size:13px; line-height:1.2; }
+  .line-chart-selected span { color:var(--blue-dark); font-size:20px; font-weight:900; line-height:1.1; text-align:right; }
+  .empty { padding:22px; color:var(--muted); font-size:14px; }
+  @media (max-width:900px) { .metrics { grid-template-columns:1fr; } }
+  @media (max-width:760px) {
+    body { overflow-x:hidden; }
+    .topbar { align-items:flex-start; flex-direction:column; padding:10px 12px; gap:12px; }
+    .brand span { display:none; }
+    .topbar-actions { width:100%; display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:center; gap:10px; }
+    .admin-nav { max-width:100%; min-width:0; overflow-x:auto; scrollbar-width:none; }
+    .admin-nav::-webkit-scrollbar { display:none; }
+    .nav-link { padding:8px 11px; }
+    .shell { width:min(100% - 24px, 1180px); padding-top:24px; }
+    .hero-row { align-items:stretch; gap:16px; }
+    h1 { font-size:clamp(30px, 10vw, 42px); }
+    .filter-card { display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
+    .filter-card label { width:100%; min-width:0; overflow:hidden; }
+    .filter-card input, .filter-card select, .filter-card .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; }
+    .panel-head { align-items:flex-start; flex-direction:column; padding:18px; }
+    .payable-total { width:100%; min-width:0; justify-items:start; }
+    .payable-grid { grid-template-columns:1fr; padding:16px; }
+    .line-chart svg { min-height:420px; border-radius:14px; box-shadow:3px 4px 0 var(--shadow); }
+    .line-chart .label { font-size:15px; }
+    .line-chart .value-label { opacity:0; pointer-events:none; }
+    .line-chart .value-label.is-selected { opacity:1; font-size:18px; }
+    .line-chart .point { r:8; }
+    .line-chart .point.is-selected { r:13; }
+    .line-chart .hit-point { r:28; }
+    .line-chart-summary { display:grid; grid-template-columns:1fr; }
+    .line-chart-summary span { width:calc(100% - 8px); border-radius:14px; justify-content:center; text-align:center; }
+    .line-chart-selected { width:calc(100% - 8px); flex-direction:column; align-items:flex-start; }
+    .line-chart-selected span { font-size:26px; text-align:left; }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/assets/logo.jpg" alt="Jeya's Club"><span>Jeya's Club Admin</span></a>
+    <div class="topbar-actions">
+      <nav class="admin-nav" aria-label="Admin navigation">
+        <a class="nav-link" href="/admin/">Dashboard</a>
+        <a class="nav-link" href="/admin/overview/">Overview</a>
+        <a class="nav-link active" href="/admin/finance/">Finance</a>
+        <a class="nav-link" href="/admin/database/">Database</a>
+        <a class="nav-link" href="/input/">Input</a>
+      </nav>
+      <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
+    </div>
+  </header>
+
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div>
+        <p class="eyebrow">Jihamalia Only</p>
+        <h1>Finance</h1>
+        <p class="muted">Login memakai akun jihamalia@gmail.com untuk melihat revenue dan payable.</p>
+      </div>
+      <form class="form" id="loginForm">
+        <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
+        <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
+        <button class="btn primary" type="submit" id="loginButton">Login</button>
+        <p class="status" id="authMessage">Hanya jihamalia@gmail.com.</p>
+      </form>
+    </div>
+  </section>
+
+  <main class="shell dashboard" id="dashboard">
+    <div class="hero-row">
+      <div>
+        <p class="eyebrow">Admin Finance</p>
+        <h1>Revenue & Payable</h1>
+        <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
+      </div>
+      <div class="filter-card">
+        <label>Filter bulan<input type="month" id="monthFilter"></label>
+        <label>Filter program<select id="programFilter"><option value="">Semua Program</option></select></label>
+        <label>Filter tutor<select id="tutorFilter"><option value="">Semua Tutor</option></select></label>
+        <button class="btn" type="button" id="resetFilter">Reset Filter</button>
+        <button class="btn primary" type="button" id="refreshButton">Refresh</button>
+      </div>
+    </div>
+
+    <section class="metrics">
+      <div class="metric"><span>Total Revenue</span><strong id="totalRevenue">Rp0</strong></div>
+      <div class="metric"><span>Total Payable</span><strong id="totalPayable">Rp0</strong></div>
+      <div class="metric"><span>Net After Payable</span><strong id="netRevenue">Rp0</strong></div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Revenue</h2><p class="muted" id="revenueSubtitle">Grafik pendapatan dari booking kelas.</p></div>
+        </div>
+        <div class="panel-body"><div class="line-chart" id="revenueChart"></div></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Payable</h2><p class="muted">Total remaining fee berdasarkan masing tutor.</p></div>
+          <div class="payable-total">
+            <span>Total Remaining Fee</span>
+            <strong id="payableGrandTotal">Rp0</strong>
+          </div>
+        </div>
+        <div class="payable-grid" id="payableGrid"></div>
+        <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
+      </section>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  const financeEmail = "jihamalia@gmail.com";
+  let currentSession = null;
+  let programRows = [];
+  let tutorRows = [];
+  let feeRows = [];
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
+    email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
+    logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), reset:$("resetFilter"), refresh:$("refreshButton"),
+    programFilter:$("programFilter"), tutorFilter:$("tutorFilter"), totalRevenue:$("totalRevenue"), totalPayable:$("totalPayable"), netRevenue:$("netRevenue"),
+    revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"), payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty")
+  };
+
+  function isFinanceAdmin(session = currentSession) {
+    const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
+    return email === financeEmail;
+  }
+
+  function setAuthMessage(message, type = "") {
+    els.authMessage.className = `status ${type}`.trim();
+    els.authMessage.textContent = message;
+  }
+
+  function showLogin(message = "Hanya jihamalia@gmail.com.") {
+    els.loginScreen.classList.remove("hidden");
+    els.dashboard.classList.remove("open");
+    els.logout.classList.add("hidden");
+    setAuthMessage(message);
+  }
+
+  function formatMoney(value) {
+    return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
+  }
+
+  function toMonthInput(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${year}-${month}`;
+  }
+
+  function monthRange(monthValue) {
+    if (!monthValue) return null;
+    const [year, month] = monthValue.split("-").map(Number);
+    if (!year || !month) return null;
+    const start = `${year}-${String(month).padStart(2, "0")}-01`;
+    const next = new Date(year, month, 1);
+    const end = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`;
+    return { start, end };
+  }
+
+  function escapeHTML(value) {
+    return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  function getBookingGroupId(row) {
+    return row.booking_group_id || row.id;
+  }
+
+  function groupBookings(rows) {
+    const groups = [];
+    const seen = new Set();
+    rows.forEach((row) => {
+      const groupId = getBookingGroupId(row);
+      if (seen.has(groupId)) return;
+      const groupRows = rows
+        .filter((item) => getBookingGroupId(item) === groupId)
+        .sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+      seen.add(groupId);
+      groups.push(groupRows[0] || row);
+    });
+    return groups;
+  }
+
+  function normalizeProgramName(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  }
+
+  function getMeetingFee(programName, studentCount) {
+    const normalizedProgram = normalizeProgramName(programName);
+    const count = Math.min(Math.max(Number(studentCount || 1), 1), 4);
+    const match = feeRows.find((row) =>
+      row.is_active
+      && Number(row.student_count || 0) === count
+      && normalizeProgramName(row.program_name) === normalizedProgram
+    ) || feeRows.find((row) => {
+      const feeProgram = normalizeProgramName(row.program_name);
+      return row.is_active
+        && Number(row.student_count || 0) === count
+        && feeProgram
+        && normalizedProgram.includes(feeProgram);
+    });
+    return match ? Number(match.fee || 0) : 0;
+  }
+
+  function getToBePaidCount(row) {
+    const meetingsRealized = Number(row.meetings_realized || 0);
+    const paymentsRealized = Number(row.payments_realized || 0);
+    return Math.max(meetingsRealized - paymentsRealized, 0);
+  }
+
+  function getRemainingFeeAmount(row) {
+    const toBePaid = getToBePaidCount(row);
+    if (toBePaid <= 0) return 0;
+    const fee = getMeetingFee(row.program_name, row.student_count);
+    return fee > 0 ? toBePaid * fee : 0;
+  }
+
+  function revenueByMonth(rows) {
+    return rows.reduce((map, row) => {
+      const label = row.order_date ? String(row.order_date).slice(0, 7) : "-";
+      map[label] = (map[label] || 0) + Number(row.price || 0);
+      return map;
+    }, {});
+  }
+
+  function renderMoneyLineChart(container, dataMap) {
+    const entries = Object.entries(dataMap).sort((a, b) => a[0].localeCompare(b[0]));
+    if (!entries.length) {
+      container.innerHTML = `<p class="empty">Belum ada pendapatan untuk filter ini.</p>`;
+      return;
+    }
+    const isCompact = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
+    const width = isCompact ? 640 : 920;
+    const height = isCompact ? 420 : 340;
+    const pad = isCompact ? { top:62, right:30, bottom:78, left:58 } : { top:48, right:34, bottom:58, left:58 };
+    const values = entries.map((entry) => Number(entry[1] || 0));
+    const max = Math.max(...values, 1);
+    const min = Math.min(...values, 0);
+    const range = Math.max(max - min, 1);
+    const xStep = entries.length > 1 ? (width - pad.left - pad.right) / (entries.length - 1) : 0;
+    const yFor = (value) => pad.top + ((max - value) / range) * (height - pad.top - pad.bottom);
+    const points = entries.map(([label, value], index) => {
+      const x = entries.length > 1 ? pad.left + index * xStep : width / 2;
+      const y = yFor(Number(value || 0));
+      return { label, value:Number(value || 0), x, y };
+    });
+    const line = points.map((point) => `${point.x},${point.y}`).join(" ");
+    const area = `${pad.left},${height - pad.bottom} ${line} ${points[points.length - 1].x},${height - pad.bottom}`;
+    const total = values.reduce((sum, value) => sum + value, 0);
+    const latest = points[points.length - 1];
+    const selectedIndex = points.length - 1;
+
+    container.innerHTML = `
+      <div class="line-chart-summary">
+        <span>Total: ${formatMoney(total)}</span>
+        <span>Bulan terakhir: ${escapeHTML(latest.label)} (${formatMoney(latest.value)})</span>
+      </div>
+      <div class="line-chart-selected" data-revenue-selected aria-live="polite">
+        <strong>${escapeHTML(latest.label)}</strong>
+        <span>${formatMoney(latest.value)}</span>
+      </div>
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart total pendapatan per bulan">
+        <line class="axis" x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}"></line>
+        <line class="axis" x1="${pad.left}" y1="${pad.top}" x2="${pad.left}" y2="${height - pad.bottom}"></line>
+        ${points.map((point, index) => `<line class="selection-guide ${index === selectedIndex ? "is-selected" : ""}" data-index="${index}" x1="${point.x}" y1="${pad.top}" x2="${point.x}" y2="${height - pad.bottom}"></line>`).join("")}
+        <polygon class="trend-area" points="${area}"></polygon>
+        <polyline class="trend-line" points="${line}"></polyline>
+        ${points.map((point, index) => `
+          <circle class="point ${index === selectedIndex ? "is-selected" : ""}" data-index="${index}" cx="${point.x}" cy="${point.y}" r="7"></circle>
+          <circle class="hit-point" data-index="${index}" cx="${point.x}" cy="${point.y}" r="22" tabindex="0" role="button" aria-label="${escapeHTML(point.label)} ${escapeHTML(formatMoney(point.value))}"></circle>
+          <text class="value-label ${index === selectedIndex ? "is-selected" : ""}" data-index="${index}" x="${point.x}" y="${Math.max(22, point.y - 18)}" text-anchor="middle">${formatMoney(point.value).replace(/\s/g, " ")}</text>
+          <text class="label" x="${point.x}" y="${height - 20}" text-anchor="middle">${escapeHTML(point.label)}</text>
+        `).join("")}
+      </svg>
+    `;
+    const selectedBox = container.querySelector("[data-revenue-selected]");
+    const selectPoint = (index) => {
+      const point = points[index];
+      if (!point || !selectedBox) return;
+      selectedBox.innerHTML = `<strong>${escapeHTML(point.label)}</strong><span>${formatMoney(point.value)}</span>`;
+      container.querySelectorAll(".point, .value-label, .selection-guide").forEach((item) => {
+        item.classList.toggle("is-selected", Number(item.dataset.index) === index);
+      });
+    };
+    container.querySelectorAll(".point, .hit-point").forEach((item) => {
+      const index = Number(item.dataset.index);
+      item.addEventListener("click", () => selectPoint(index));
+      item.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectPoint(index);
+        }
+      });
+    });
+  }
+
+  function renderProgramFilter(programs) {
+    const selectedProgram = els.programFilter.value;
+    els.programFilter.innerHTML = [`<option value="">Semua Program</option>`]
+      .concat(programs.map((program) => `<option value="${escapeHTML(program.name)}">${escapeHTML(program.name)}</option>`))
+      .join("");
+    els.programFilter.value = programs.some((program) => program.name === selectedProgram) ? selectedProgram : "";
+  }
+
+  function renderTutorFilter(tutors) {
+    const selectedTutor = els.tutorFilter.value;
+    els.tutorFilter.innerHTML = [`<option value="">Semua Tutor</option>`]
+      .concat(tutors.map((tutor) => `<option value="${escapeHTML(tutor.name)}">${escapeHTML(tutor.name)}</option>`))
+      .join("");
+    els.tutorFilter.value = tutors.some((tutor) => tutor.name === selectedTutor) ? selectedTutor : "";
+  }
+
+  async function loadMasterData() {
+    if (!supabaseClient || !isFinanceAdmin()) return;
+    const [
+      { data: programs, error: programError },
+      { data: tutors, error: tutorError },
+      { data: fees, error: feeError }
+    ] = await Promise.all([
+      supabaseClient.from("class_programs").select("*").order("name", { ascending:true }),
+      supabaseClient.from("class_tutors").select("*").order("name", { ascending:true }),
+      supabaseClient.from("class_meeting_fees").select("*").order("program_name", { ascending:true }).order("student_count", { ascending:true })
+    ]);
+    if (programError || tutorError || feeError) {
+      console.error("Finance master data load failed:", programError || tutorError || feeError);
+      els.sessionLabel.textContent = "Master data finance belum bisa dimuat.";
+      return;
+    }
+    programRows = programs || [];
+    tutorRows = tutors || [];
+    feeRows = fees || [];
+    renderProgramFilter(programRows);
+    renderTutorFilter(tutorRows);
+  }
+
+  async function loadFinance() {
+    if (!supabaseClient || !isFinanceAdmin()) return;
+    els.refresh.disabled = true;
+    els.refresh.textContent = "Memuat...";
+    const range = monthRange(els.month.value);
+    const programValue = els.programFilter.value;
+    const tutorValue = els.tutorFilter.value;
+    let bookingQuery = supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,price,program_name,tutor").order("order_date", { ascending:true }).order("created_at", { ascending:true });
+    let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    if (range) {
+      bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
+      trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
+    }
+    if (programValue) {
+      bookingQuery = bookingQuery.eq("program_name", programValue);
+      trackerQuery = trackerQuery.eq("program_name", programValue);
+    }
+    if (tutorValue) {
+      bookingQuery = bookingQuery.eq("tutor", tutorValue);
+      trackerQuery = trackerQuery.eq("tutor", tutorValue);
+    }
+    const [
+      { data: bookings, error: bookingError },
+      { data: trackers, error: trackerError }
+    ] = await Promise.all([bookingQuery, trackerQuery]);
+    els.refresh.disabled = false;
+    els.refresh.textContent = "Refresh";
+    if (bookingError || trackerError) {
+      console.error("Finance load failed:", bookingError || trackerError);
+      els.sessionLabel.textContent = "Data finance belum bisa dimuat.";
+      return;
+    }
+    renderFinance(bookings || [], trackers || []);
+  }
+
+  function renderPayable(rows) {
+    const byTutor = new Map();
+    rows.forEach((row) => {
+      const tutor = row.tutor || "Tanpa Tutor";
+      const current = byTutor.get(tutor) || { tutor, amount: 0, meetings: 0, missingFee: 0 };
+      const toBePaid = getToBePaidCount(row);
+      const amount = getRemainingFeeAmount(row);
+      current.meetings += toBePaid;
+      if (amount > 0) current.amount += amount;
+      else if (toBePaid > 0) current.missingFee += toBePaid;
+      byTutor.set(tutor, current);
+    });
+
+    const payableRows = [...byTutor.values()]
+      .filter((row) => row.amount > 0 || row.missingFee > 0)
+      .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
+    const grandTotal = payableRows.reduce((sum, row) => sum + row.amount, 0);
+
+    els.payableGrandTotal.textContent = formatMoney(grandTotal);
+    els.totalPayable.textContent = formatMoney(grandTotal);
+    els.payableEmpty.classList.toggle("hidden", payableRows.length > 0);
+    els.payableGrid.innerHTML = payableRows.map((row) => `
+      <article class="payable-card">
+        <span>${escapeHTML(row.tutor)}</span>
+        <strong>${formatMoney(row.amount)}</strong>
+        <small>${row.meetings} meeting belum dibayar${row.missingFee ? `, ${row.missingFee} meeting belum punya fee` : ""}</small>
+      </article>
+    `).join("");
+    return grandTotal;
+  }
+
+  function renderFinance(bookings, trackers) {
+    const groupedBookings = groupBookings(bookings);
+    const totalRevenue = groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0);
+    const totalPayable = renderPayable(trackers);
+    els.totalRevenue.textContent = formatMoney(totalRevenue);
+    els.netRevenue.textContent = formatMoney(totalRevenue - totalPayable);
+    els.revenueSubtitle.textContent = els.month.value ? `Grafik pendapatan untuk ${els.month.value}.` : "Grafik total pendapatan per bulan dari semua booking.";
+    renderMoneyLineChart(els.revenueChart, revenueByMonth(groupedBookings));
+    els.sessionLabel.textContent = els.month.value ? `Data finance bulan ${els.month.value}` : "Data finance semua bulan";
+  }
+
+  async function showDashboard() {
+    els.loginScreen.classList.add("hidden");
+    els.dashboard.classList.add("open");
+    els.logout.classList.remove("hidden");
+    els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    els.month.value ||= toMonthInput();
+    await loadMasterData();
+    await loadFinance();
+  }
+
+  async function init() {
+    if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    if (isFinanceAdmin()) showDashboard(); else showLogin();
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentSession = session;
+      if (isFinanceAdmin()) showDashboard(); else showLogin();
+    });
+  }
+
+  els.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = els.email.value.trim().toLowerCase();
+    if (email !== financeEmail) { setAuthMessage("Halaman Finance hanya untuk jihamalia@gmail.com.", "bad"); return; }
+    els.loginButton.disabled = true;
+    els.loginButton.textContent = "Login...";
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: els.password.value });
+    els.loginButton.disabled = false;
+    els.loginButton.textContent = "Login";
+    if (error) { setAuthMessage("Login gagal. Cek email dan password.", "bad"); return; }
+    currentSession = data.session;
+    els.password.value = "";
+    if (isFinanceAdmin()) showDashboard();
+  });
+
+  els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  els.month.addEventListener("change", loadFinance);
+  els.programFilter.addEventListener("change", loadFinance);
+  els.tutorFilter.addEventListener("change", loadFinance);
+  els.reset.addEventListener("click", () => {
+    els.month.value = "";
+    els.programFilter.value = "";
+    els.tutorFilter.value = "";
+    loadFinance();
+  });
+  els.refresh.addEventListener("click", async () => { await loadMasterData(); await loadFinance(); });
+  init();
+</script>
+</body>
+</html>
