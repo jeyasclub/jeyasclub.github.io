@@ -149,6 +149,21 @@ create table if not exists public.class_meeting_fees (
   unique (program_name, student_count)
 );
 
+create table if not exists public.jeyasclub_finance_manual_entries (
+  id uuid primary key default gen_random_uuid(),
+  entry_date date not null default current_date,
+  entry_type text not null,
+  category text not null default 'Lainnya',
+  description text not null default '',
+  amount numeric(12,2) not null default 0,
+  created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint jeyasclub_finance_manual_entries_type_check check (entry_type in ('income', 'expense')),
+  constraint jeyasclub_finance_manual_entries_amount_check check (amount >= 0),
+  constraint jeyasclub_finance_manual_entries_category_length check (char_length(trim(category)) between 1 and 120)
+);
+
 create table if not exists public.class_zoom_bookings (
   id uuid primary key default gen_random_uuid(),
   booking_date date not null,
@@ -191,6 +206,15 @@ add column if not exists bank_account_number text not null default '';
 
 alter table public.class_meeting_fees
 add column if not exists is_active boolean not null default true;
+
+alter table public.jeyasclub_finance_manual_entries
+add column if not exists entry_date date not null default current_date,
+add column if not exists entry_type text not null default 'expense',
+add column if not exists category text not null default 'Lainnya',
+add column if not exists description text not null default '',
+add column if not exists amount numeric(12,2) not null default 0,
+add column if not exists created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
+add column if not exists updated_at timestamptz not null default now();
 
 alter table public.class_zoom_bookings
 drop constraint if exists class_zoom_bookings_no_overlap;
@@ -300,7 +324,10 @@ alter table public.class_bookings enable row level security;
 alter table public.class_programs enable row level security;
 alter table public.class_tutors enable row level security;
 alter table public.class_meeting_fees enable row level security;
+alter table public.jeyasclub_finance_manual_entries enable row level security;
 alter table public.class_zoom_bookings enable row level security;
+
+grant select, insert, update, delete on public.jeyasclub_finance_manual_entries to authenticated;
 
 drop policy if exists "Class admins can read tracker" on public.class_tracker;
 drop policy if exists "Class tutors can read own tracker" on public.class_tracker;
@@ -482,6 +509,36 @@ on public.class_meeting_fees
 for delete
 to authenticated
 using (public.is_class_admin());
+
+drop policy if exists "Only Jeya can read finance manual entries" on public.jeyasclub_finance_manual_entries;
+drop policy if exists "Only Jeya can insert finance manual entries" on public.jeyasclub_finance_manual_entries;
+drop policy if exists "Only Jeya can update finance manual entries" on public.jeyasclub_finance_manual_entries;
+drop policy if exists "Only Jeya can delete finance manual entries" on public.jeyasclub_finance_manual_entries;
+
+create policy "Only Jeya can read finance manual entries"
+on public.jeyasclub_finance_manual_entries
+for select
+to authenticated
+using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+
+create policy "Only Jeya can insert finance manual entries"
+on public.jeyasclub_finance_manual_entries
+for insert
+to authenticated
+with check (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+
+create policy "Only Jeya can update finance manual entries"
+on public.jeyasclub_finance_manual_entries
+for update
+to authenticated
+using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com')
+with check (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+
+create policy "Only Jeya can delete finance manual entries"
+on public.jeyasclub_finance_manual_entries
+for delete
+to authenticated
+using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
 
 drop policy if exists "Class input users can read zoom bookings" on public.class_zoom_bookings;
 

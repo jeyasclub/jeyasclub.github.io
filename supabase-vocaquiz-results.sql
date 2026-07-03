@@ -1238,6 +1238,61 @@ $$;
 revoke all on function public.get_mayar_product_sale_counts(date, date) from public;
 grant execute on function public.get_mayar_product_sale_counts(date, date) to authenticated;
 
+create or replace function public.get_mayar_product_revenue_summary(
+  p_start_date date default null,
+  p_end_date date default null
+)
+returns table (
+  product_key text,
+  product_name text,
+  sale_count bigint,
+  revenue_amount numeric
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  with admin_check as (
+    select lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com' as allowed
+  ),
+  products(product_key, product_name, sort_order) as (
+    values
+      ('vocabulary-test', 'Vocabulary Test', 1),
+      ('grammar-test', 'Grammar Test', 2),
+      ('english-slang-test', 'Slang Test', 3),
+      ('swe-test', 'SWE Test', 4),
+      ('reading-test', 'Reading Test', 5),
+      ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 6),
+      ('study-sheet-100-english-challenges', '1001 English Challenges', 7)
+  ),
+  revenue as (
+    select
+      sales.product_key,
+      count(*)::bigint as sale_count,
+      coalesce(sum(sales.amount), 0)::numeric as revenue_amount
+    from public.mayar_product_sales sales
+    where sales.source = 'mayar'
+      and sales.product_key in (select products.product_key from products)
+      and (p_start_date is null or sales.paid_at >= p_start_date)
+      and (p_end_date is null or sales.paid_at < p_end_date)
+    group by sales.product_key
+  )
+  select
+    products.product_key,
+    products.product_name,
+    coalesce(revenue.sale_count, 0)::bigint as sale_count,
+    coalesce(revenue.revenue_amount, 0)::numeric as revenue_amount
+  from products
+  cross join admin_check
+  left join revenue on revenue.product_key = products.product_key
+  where admin_check.allowed
+  order by products.sort_order;
+$$;
+
+revoke all on function public.get_mayar_product_revenue_summary(date, date) from public;
+grant execute on function public.get_mayar_product_revenue_summary(date, date) to authenticated;
+
 create table if not exists public.tanya_jeya_questions (
   id uuid primary key default gen_random_uuid(),
   topic text not null default 'Lainnya',

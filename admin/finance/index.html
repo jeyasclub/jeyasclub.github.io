@@ -17,7 +17,7 @@
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --yellow:#FFE27A; --yellow-soft:#FFF8DA; --ink:#111322; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f5f9ff; --green:#16a46c; --red:#dc2626; --shadow:#0c1b36; }
   body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:linear-gradient(135deg, rgba(26,111,232,.08) 0 14px, transparent 14px 120px), linear-gradient(45deg, transparent 0 88px, rgba(255,226,122,.34) 88px 94px, transparent 94px 180px), var(--bg); }
-  button, input, select { font:inherit; }
+  button, input, select, textarea { font:inherit; }
   .topbar { position:sticky; top:0; z-index:10; min-height:72px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:18px; background:rgba(255,255,255,.96); border-bottom:3px solid var(--ink); backdrop-filter:blur(10px); }
   .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
   .brand img { width:56px; height:56px; object-fit:contain; }
@@ -40,8 +40,9 @@
   .muted { color:var(--muted); font-size:14px; line-height:1.7; }
   .form { display:grid; gap:14px; }
   label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
-  input, select { display:block; width:100%; min-width:0; min-height:48px; border:2.5px solid var(--ink); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; box-shadow:2px 3px 0 rgba(12,27,54,.95); font-weight:800; }
-  input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.18), 2px 3px 0 rgba(12,27,54,.95); }
+  input, select, textarea { display:block; width:100%; min-width:0; min-height:48px; border:2.5px solid var(--ink); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; box-shadow:2px 3px 0 rgba(12,27,54,.95); font-weight:800; }
+  textarea { min-height:92px; resize:vertical; line-height:1.5; }
+  input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.18), 2px 3px 0 rgba(12,27,54,.95); }
   .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
   .status.bad { color:var(--red); }
   .hidden { display:none !important; }
@@ -66,6 +67,28 @@
   .payable-card span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
   .payable-card strong { color:var(--text); font-size:22px; line-height:1.1; }
   .payable-card small { color:var(--muted); font-size:12px; font-weight:800; line-height:1.5; }
+  .statement-grid { display:grid; gap:10px; }
+  .statement-row { display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:center; gap:16px; padding:13px 14px; border:2px solid #dbeafe; border-radius:12px; background:#fff; }
+  .statement-row span { color:var(--muted); font-size:13px; font-weight:900; }
+  .statement-row strong { color:var(--text); font-size:18px; line-height:1.15; text-align:right; white-space:nowrap; }
+  .statement-row.expense strong { color:var(--red); }
+  .statement-row.total { border:2.5px solid var(--ink); background:var(--yellow-soft); box-shadow:3px 4px 0 var(--shadow); }
+  .statement-row.total strong { color:var(--blue-dark); font-size:24px; }
+  .statement-note { margin-top:12px; color:var(--muted); font-size:12px; line-height:1.6; }
+  .manual-form { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+  .manual-form .full { grid-column:1 / -1; }
+  .manual-form .actions { grid-column:1 / -1; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .table-wrap { width:100%; overflow-x:auto; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  table { width:100%; min-width:720px; border-collapse:collapse; }
+  th, td { padding:12px 13px; border-bottom:1.5px solid #dbeafe; text-align:left; vertical-align:top; font-size:13px; }
+  th { color:var(--muted); background:#f8fbff; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
+  td { color:var(--text); font-weight:700; }
+  tr:last-child td { border-bottom:0; }
+  .money-cell { text-align:right; white-space:nowrap; font-weight:900; }
+  .row-actions { display:flex; justify-content:flex-end; gap:8px; }
+  .btn.small { min-height:34px; border-width:2px; border-radius:10px; padding:7px 10px; box-shadow:2px 3px 0 var(--shadow); font-size:12px; }
+  .pill { display:inline-flex; align-items:center; min-height:28px; border:2px solid #bfdbfe; border-radius:999px; background:var(--blue-light); color:var(--blue-dark); padding:4px 9px; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; }
+  .pill.expense { border-color:#fecdd3; background:#fff1f2; color:var(--red); }
   .line-chart { display:grid; gap:14px; }
   .line-chart svg { width:100%; min-height:320px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); overflow:visible; touch-action:manipulation; }
   .line-chart .axis { stroke:#cbd5e1; stroke-width:1.5; }
@@ -100,6 +123,7 @@
     .filter-card { display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
     .filter-card label { width:100%; min-width:0; overflow:hidden; }
     .filter-card input, .filter-card select, .filter-card .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; }
+    .manual-form { grid-template-columns:1fr; }
     .panel-head { align-items:flex-start; flex-direction:column; padding:18px; }
     .payable-total { width:100%; min-width:0; justify-items:start; }
     .payable-grid { grid-template-columns:1fr; padding:16px; }
@@ -166,11 +190,58 @@
 
     <section class="metrics">
       <div class="metric"><span>Total Revenue</span><strong id="totalRevenue">Rp0</strong></div>
-      <div class="metric"><span>Total Payable</span><strong id="totalPayable">Rp0</strong></div>
-      <div class="metric"><span>Net After Payable</span><strong id="netRevenue">Rp0</strong></div>
+      <div class="metric"><span>Total Expense</span><strong id="totalPayable">Rp0</strong></div>
+      <div class="metric"><span>Net Profit</span><strong id="netRevenue">Rp0</strong></div>
     </section>
 
     <div class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Ringkasan pendapatan dan pengeluaran.</p></div>
+          <button class="btn primary" type="button" id="exportFinance">Export Excel</button>
+        </div>
+        <div class="panel-body">
+          <div class="statement-grid">
+            <div class="statement-row"><span>Course Revenue</span><strong id="courseRevenue">Rp0</strong></div>
+            <div class="statement-row"><span>Digital Produk Revenue</span><strong id="digitalRevenue">Rp0</strong></div>
+            <div class="statement-row"><span>Pendapatan Lain</span><strong id="otherIncome">Rp0</strong></div>
+            <div class="statement-row total"><span>Total Pendapatan</span><strong id="grossRevenue">Rp0</strong></div>
+            <div class="statement-row expense"><span>Fee Tutor</span><strong id="tutorFeeExpense">Rp0</strong></div>
+            <div class="statement-row expense"><span>Pengeluaran Lain</span><strong id="otherExpense">Rp0</strong></div>
+            <div class="statement-row total"><span>Laba Bersih</span><strong id="netProfit">Rp0</strong></div>
+          </div>
+          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari transaksi Mayar yang sudah masuk ke log website.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Input Manual</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
+        </div>
+        <div class="panel-body grid">
+          <form class="manual-form" id="manualEntryForm">
+            <label>Tanggal<input type="date" id="manualDate" required></label>
+            <label>Tipe<select id="manualType" required><option value="income">Pendapatan</option><option value="expense">Pengeluaran</option></select></label>
+            <label>Kategori<input type="text" id="manualCategory" maxlength="120" required placeholder="Contoh: Affiliate, Tools, Bonus"></label>
+            <label>Nominal<input type="number" id="manualAmount" min="0" step="1000" required placeholder="0"></label>
+            <label class="full">Keterangan<textarea id="manualDescription" maxlength="500" placeholder="Catatan singkat"></textarea></label>
+            <div class="actions">
+              <button class="btn primary" type="submit" id="manualSaveButton">Tambah Data</button>
+              <p class="status" id="manualEntryStatus"></p>
+            </div>
+          </form>
+          <div>
+            <div class="table-wrap hidden" id="manualEntryTableWrap">
+              <table>
+                <thead><tr><th>Tanggal</th><th>Tipe</th><th>Kategori</th><th>Keterangan</th><th class="money-cell">Nominal</th><th></th></tr></thead>
+                <tbody id="manualEntryBody"></tbody>
+              </table>
+            </div>
+            <div class="empty" id="manualEntryEmpty">Belum ada input manual untuk filter ini.</div>
+          </div>
+        </div>
+      </section>
+
       <section class="panel">
         <div class="panel-head">
           <div><h2>Revenue</h2><p class="muted" id="revenueSubtitle">Grafik pendapatan dari booking kelas.</p></div>
@@ -202,6 +273,9 @@
   let programRows = [];
   let tutorRows = [];
   let feeRows = [];
+  let manualEntryRows = [];
+  let digitalRevenueRows = [];
+  let lastFinanceReport = null;
   const adminFilterStorageKey = "jeyasclub_admin_filters";
 
   const $ = (id) => document.getElementById(id);
@@ -210,7 +284,13 @@
     email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
     logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), reset:$("resetFilter"), refresh:$("refreshButton"),
     programFilter:$("programFilter"), tutorFilter:$("tutorFilter"), totalRevenue:$("totalRevenue"), totalPayable:$("totalPayable"), netRevenue:$("netRevenue"),
-    revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"), payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty")
+    profitLossSubtitle:$("profitLossSubtitle"), exportFinance:$("exportFinance"), courseRevenue:$("courseRevenue"), digitalRevenue:$("digitalRevenue"),
+    otherIncome:$("otherIncome"), grossRevenue:$("grossRevenue"), tutorFeeExpense:$("tutorFeeExpense"), otherExpense:$("otherExpense"),
+    netProfit:$("netProfit"), digitalRevenueNote:$("digitalRevenueNote"), manualEntryForm:$("manualEntryForm"), manualDate:$("manualDate"),
+    manualType:$("manualType"), manualCategory:$("manualCategory"), manualDescription:$("manualDescription"), manualAmount:$("manualAmount"),
+    manualSaveButton:$("manualSaveButton"), manualEntryStatus:$("manualEntryStatus"), manualEntryTableWrap:$("manualEntryTableWrap"),
+    manualEntryBody:$("manualEntryBody"), manualEntryEmpty:$("manualEntryEmpty"), revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"),
+    payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty")
   };
 
   function isFinanceAdmin(session = currentSession) {
@@ -257,6 +337,26 @@
     return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Number(value || 0));
   }
 
+  function formatNumber(value) {
+    return Number(value || 0).toLocaleString("id-ID", { maximumFractionDigits:0 });
+  }
+
+  function formatDate(value) {
+    if (!value) return "-";
+    const date = new Date(`${String(value).slice(0, 10)}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return String(value);
+    return date.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
+  }
+
+  function todayInput() {
+    const date = new Date();
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function periodLabel() {
+    return els.month.value ? els.month.value : "Semua bulan";
+  }
+
   function toMonthInput(date = new Date()) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -275,6 +375,11 @@
 
   function escapeHTML(value) {
     return String(value || "").replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  function setManualStatus(message, type = "") {
+    els.manualEntryStatus.className = `status ${type}`.trim();
+    els.manualEntryStatus.textContent = message;
   }
 
   function getBookingGroupId(row) {
@@ -457,9 +562,11 @@
     const tutorValue = els.tutorFilter.value;
     let bookingQuery = supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,price,program_name,tutor").order("order_date", { ascending:true }).order("created_at", { ascending:true });
     let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    let manualQuery = supabaseClient.from("jeyasclub_finance_manual_entries").select("*").order("entry_date", { ascending:false }).order("created_at", { ascending:false });
     if (range) {
       bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
       trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
+      manualQuery = manualQuery.gte("entry_date", range.start).lt("entry_date", range.end);
     }
     if (programValue) {
       bookingQuery = bookingQuery.eq("program_name", programValue);
@@ -471,16 +578,28 @@
     }
     const [
       { data: bookings, error: bookingError },
-      { data: trackers, error: trackerError }
-    ] = await Promise.all([bookingQuery, trackerQuery]);
+      { data: trackers, error: trackerError },
+      { data: manualEntries, error: manualError },
+      { data: digitalRows, error: digitalError }
+    ] = await Promise.all([
+      bookingQuery,
+      trackerQuery,
+      manualQuery,
+      supabaseClient.rpc("get_mayar_product_revenue_summary", {
+        p_start_date: range ? range.start : null,
+        p_end_date: range ? range.end : null
+      })
+    ]);
     els.refresh.disabled = false;
     els.refresh.textContent = "Refresh";
-    if (bookingError || trackerError) {
-      console.error("Finance load failed:", bookingError || trackerError);
+    if (bookingError || trackerError || manualError || digitalError) {
+      console.error("Finance load failed:", bookingError || trackerError || manualError || digitalError);
       els.sessionLabel.textContent = "Data finance belum bisa dimuat.";
       return;
     }
-    renderFinance(bookings || [], trackers || []);
+    manualEntryRows = manualEntries || [];
+    digitalRevenueRows = digitalRows || [];
+    renderFinance(bookings || [], trackers || [], manualEntryRows, digitalRevenueRows);
   }
 
   function renderPayable(rows) {
@@ -514,15 +633,158 @@
     return grandTotal;
   }
 
-  function renderFinance(bookings, trackers) {
+  function renderManualEntries(rows) {
+    const hasRows = rows.length > 0;
+    els.manualEntryTableWrap.classList.toggle("hidden", !hasRows);
+    els.manualEntryEmpty.classList.toggle("hidden", hasRows);
+    els.manualEntryBody.innerHTML = rows.map((row) => `
+      <tr>
+        <td>${escapeHTML(formatDate(row.entry_date))}</td>
+        <td><span class="pill ${row.entry_type === "expense" ? "expense" : ""}">${row.entry_type === "expense" ? "Pengeluaran" : "Pendapatan"}</span></td>
+        <td>${escapeHTML(row.category || "Lainnya")}</td>
+        <td>${escapeHTML(row.description || "-")}</td>
+        <td class="money-cell">${formatMoney(row.amount)}</td>
+        <td><div class="row-actions"><button class="btn small danger" type="button" data-delete-manual="${escapeHTML(row.id)}">Hapus</button></div></td>
+      </tr>
+    `).join("");
+    els.manualEntryBody.querySelectorAll("[data-delete-manual]").forEach((button) => {
+      button.addEventListener("click", () => deleteManualEntry(button.dataset.deleteManual));
+    });
+  }
+
+  function renderFinance(bookings, trackers, manualEntries, digitalRows) {
     const groupedBookings = groupBookings(bookings);
-    const totalRevenue = groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0);
-    const totalPayable = renderPayable(trackers);
-    els.totalRevenue.textContent = formatMoney(totalRevenue);
-    els.netRevenue.textContent = formatMoney(totalRevenue - totalPayable);
-    els.revenueSubtitle.textContent = els.month.value ? `Grafik pendapatan untuk ${els.month.value}.` : "Grafik total pendapatan per bulan dari semua booking.";
+    const courseRevenue = groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0);
+    const digitalRevenue = digitalRows.reduce((sum, row) => sum + Number(row.revenue_amount || 0), 0);
+    const otherIncome = manualEntries.filter((row) => row.entry_type === "income").reduce((sum, row) => sum + Number(row.amount || 0), 0);
+    const otherExpense = manualEntries.filter((row) => row.entry_type === "expense").reduce((sum, row) => sum + Number(row.amount || 0), 0);
+    const tutorFee = renderPayable(trackers);
+    const grossRevenue = courseRevenue + digitalRevenue + otherIncome;
+    const totalExpense = tutorFee + otherExpense;
+    const netProfit = grossRevenue - totalExpense;
+    const digitalSaleCount = digitalRows.reduce((sum, row) => sum + Number(row.sale_count || 0), 0);
+
+    els.totalRevenue.textContent = formatMoney(grossRevenue);
+    els.totalPayable.textContent = formatMoney(totalExpense);
+    els.netRevenue.textContent = formatMoney(netProfit);
+    els.courseRevenue.textContent = formatMoney(courseRevenue);
+    els.digitalRevenue.textContent = formatMoney(digitalRevenue);
+    els.otherIncome.textContent = formatMoney(otherIncome);
+    els.grossRevenue.textContent = formatMoney(grossRevenue);
+    els.tutorFeeExpense.textContent = formatMoney(tutorFee);
+    els.otherExpense.textContent = formatMoney(otherExpense);
+    els.netProfit.textContent = formatMoney(netProfit);
+    els.profitLossSubtitle.textContent = `Periode: ${periodLabel()}`;
+    els.digitalRevenueNote.textContent = `Digital Produk Revenue: ${formatNumber(digitalSaleCount)} checkout Mayar yang sudah tercatat di website.`;
+    els.revenueSubtitle.textContent = els.month.value ? `Grafik course revenue untuk ${els.month.value}.` : "Grafik total course revenue per bulan dari semua booking.";
     renderMoneyLineChart(els.revenueChart, revenueByMonth(groupedBookings));
+    renderManualEntries(manualEntries);
+    lastFinanceReport = {
+      period: periodLabel(),
+      courseRevenue,
+      digitalRevenue,
+      otherIncome,
+      grossRevenue,
+      tutorFee,
+      otherExpense,
+      totalExpense,
+      netProfit,
+      digitalRows,
+      manualEntries
+    };
     els.sessionLabel.textContent = els.month.value ? `Data finance bulan ${els.month.value}` : "Data finance semua bulan";
+  }
+
+  async function addManualEntry(event) {
+    event.preventDefault();
+    if (!supabaseClient || !isFinanceAdmin()) return;
+    const amount = Number(els.manualAmount.value || 0);
+    if (!els.manualDate.value || !els.manualCategory.value.trim() || amount <= 0) {
+      setManualStatus("Tanggal, kategori, dan nominal wajib diisi.", "bad");
+      return;
+    }
+    els.manualSaveButton.disabled = true;
+    els.manualSaveButton.textContent = "Menyimpan...";
+    const { error } = await supabaseClient.from("jeyasclub_finance_manual_entries").insert({
+      entry_date: els.manualDate.value,
+      entry_type: els.manualType.value,
+      category: els.manualCategory.value.trim(),
+      description: els.manualDescription.value.trim(),
+      amount
+    });
+    els.manualSaveButton.disabled = false;
+    els.manualSaveButton.textContent = "Tambah Data";
+    if (error) {
+      console.error("Manual finance insert failed:", error);
+      setManualStatus("Data manual belum bisa disimpan.", "bad");
+      return;
+    }
+    els.manualEntryForm.reset();
+    els.manualDate.value = todayInput();
+    setManualStatus("Data manual tersimpan.");
+    await loadFinance();
+  }
+
+  async function deleteManualEntry(id) {
+    if (!id || !supabaseClient || !isFinanceAdmin()) return;
+    if (!confirm("Hapus data manual ini?")) return;
+    const { error } = await supabaseClient.from("jeyasclub_finance_manual_entries").delete().eq("id", id);
+    if (error) {
+      console.error("Manual finance delete failed:", error);
+      setManualStatus("Data manual belum bisa dihapus.", "bad");
+      return;
+    }
+    setManualStatus("Data manual dihapus.");
+    await loadFinance();
+  }
+
+  function excelCell(value) {
+    return `<td>${escapeHTML(value)}</td>`;
+  }
+
+  function exportFinanceReport() {
+    if (!lastFinanceReport) return;
+    const reportRows = [
+      ["Laporan Laba Rugi", ""],
+      ["Periode", lastFinanceReport.period],
+      ["", ""],
+      ["Course Revenue", formatMoney(lastFinanceReport.courseRevenue)],
+      ["Digital Produk Revenue", formatMoney(lastFinanceReport.digitalRevenue)],
+      ["Pendapatan Lain", formatMoney(lastFinanceReport.otherIncome)],
+      ["Total Pendapatan", formatMoney(lastFinanceReport.grossRevenue)],
+      ["Fee Tutor", formatMoney(lastFinanceReport.tutorFee)],
+      ["Pengeluaran Lain", formatMoney(lastFinanceReport.otherExpense)],
+      ["Total Pengeluaran", formatMoney(lastFinanceReport.totalExpense)],
+      ["Laba Bersih", formatMoney(lastFinanceReport.netProfit)]
+    ];
+    const digitalRows = [
+      ["Produk Digital", "Checkout", "Revenue"],
+      ...lastFinanceReport.digitalRows.map((row) => [row.product_name, formatNumber(row.sale_count), formatMoney(row.revenue_amount)])
+    ];
+    const manualRows = [
+      ["Input Manual", "Tipe", "Kategori", "Keterangan", "Nominal"],
+      ...lastFinanceReport.manualEntries.map((row) => [
+        formatDate(row.entry_date),
+        row.entry_type === "expense" ? "Pengeluaran" : "Pendapatan",
+        row.category || "Lainnya",
+        row.description || "",
+        formatMoney(row.amount)
+      ])
+    ];
+    const table = [reportRows, [["", ""]], digitalRows, [["", ""]], manualRows]
+      .flat()
+      .map((row) => `<tr>${row.map(excelCell).join("")}</tr>`)
+      .join("");
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><table>${table}</table></body></html>`;
+    const blob = new Blob([html], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `laporan-laba-rugi-${lastFinanceReport.period.replace(/[^0-9a-zA-Z-]+/g, "-")}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   }
 
   async function showDashboard() {
@@ -532,6 +794,7 @@
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
     restoreAdminFilters();
     if (els.month.value === "" && getSavedAdminFilters().month === undefined) els.month.value = toMonthInput();
+    if (!els.manualDate.value) els.manualDate.value = todayInput();
     await loadMasterData();
     restoreAdminFilters();
     await loadFinance();
@@ -564,6 +827,8 @@
   });
 
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  els.manualEntryForm.addEventListener("submit", addManualEntry);
+  els.exportFinance.addEventListener("click", exportFinanceReport);
   els.month.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
   els.programFilter.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
   els.tutorFilter.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
