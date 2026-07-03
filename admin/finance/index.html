@@ -67,13 +67,23 @@
   .payable-card span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
   .payable-card strong { color:var(--text); font-size:22px; line-height:1.1; }
   .payable-card small { color:var(--muted); font-size:12px; font-weight:800; line-height:1.5; }
-  .statement-grid { display:grid; gap:10px; }
-  .statement-row { display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:center; gap:16px; padding:13px 14px; border:2px solid #dbeafe; border-radius:12px; background:#fff; }
-  .statement-row span { color:var(--muted); font-size:13px; font-weight:900; }
-  .statement-row strong { color:var(--text); font-size:18px; line-height:1.15; text-align:right; white-space:nowrap; }
-  .statement-row.expense strong { color:var(--red); }
-  .statement-row.total { border:2.5px solid var(--ink); background:var(--yellow-soft); box-shadow:3px 4px 0 var(--shadow); }
-  .statement-row.total strong { color:var(--blue-dark); font-size:24px; }
+  .statement-paper { border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:5px 6px 0 var(--shadow); overflow:hidden; }
+  .statement-title { padding:22px 20px 18px; display:grid; gap:4px; justify-items:center; text-align:center; border-bottom:2.5px solid var(--ink); background:#fff; }
+  .statement-title strong { color:var(--ink); font-size:24px; line-height:1.1; font-weight:900; text-transform:uppercase; }
+  .statement-title span { color:var(--text); font-size:15px; font-weight:800; line-height:1.35; }
+  .statement-section-title { padding:9px 14px; color:#fff; background:var(--blue); border-top:2.5px solid var(--ink); border-bottom:2.5px solid var(--ink); font-size:16px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
+  .statement-section-title:first-child { border-top:0; }
+  .statement-lines { display:grid; }
+  .statement-line { display:grid; grid-template-columns:minmax(0, 1fr) minmax(150px, auto); gap:16px; align-items:start; padding:10px 14px; border-bottom:1px solid #e2e8f0; }
+  .statement-line span { min-width:0; color:var(--text); font-size:14px; font-weight:800; line-height:1.45; }
+  .statement-line small { display:block; margin-top:2px; color:var(--muted); font-size:12px; font-weight:800; line-height:1.4; }
+  .statement-line strong { color:var(--text); font-size:15px; line-height:1.35; text-align:right; white-space:nowrap; }
+  .statement-line.subtotal { background:#e5e7eb; border-bottom:2px solid #cbd5e1; }
+  .statement-line.subtotal span, .statement-line.subtotal strong { font-size:16px; font-weight:900; }
+  .statement-line.net { color:#fff; background:var(--blue); border-bottom:0; }
+  .statement-line.net span, .statement-line.net strong { color:#fff; font-size:18px; font-weight:900; text-transform:uppercase; }
+  .statement-line.loss strong { color:var(--red); }
+  .statement-line.net.loss strong { color:#fff; }
   .statement-note { margin-top:12px; color:var(--muted); font-size:12px; line-height:1.6; }
   .manual-form { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
   .manual-form .full { grid-column:1 / -1; }
@@ -124,6 +134,9 @@
     .filter-card label { width:100%; min-width:0; overflow:hidden; }
     .filter-card input, .filter-card select, .filter-card .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; }
     .manual-form { grid-template-columns:1fr; }
+    .statement-title strong { font-size:20px; }
+    .statement-line { grid-template-columns:1fr; gap:4px; }
+    .statement-line strong { text-align:left; white-space:normal; }
     .panel-head { align-items:flex-start; flex-direction:column; padding:18px; }
     .payable-total { width:100%; min-width:0; justify-items:start; }
     .payable-grid { grid-template-columns:1fr; padding:16px; }
@@ -201,15 +214,7 @@
           <button class="btn primary" type="button" id="exportFinance">Export Excel</button>
         </div>
         <div class="panel-body">
-          <div class="statement-grid">
-            <div class="statement-row"><span>Course Revenue</span><strong id="courseRevenue">Rp0</strong></div>
-            <div class="statement-row"><span>Digital Produk Revenue</span><strong id="digitalRevenue">Rp0</strong></div>
-            <div class="statement-row"><span>Pendapatan Lain</span><strong id="otherIncome">Rp0</strong></div>
-            <div class="statement-row total"><span>Total Pendapatan</span><strong id="grossRevenue">Rp0</strong></div>
-            <div class="statement-row expense"><span>Fee Tutor</span><strong id="tutorFeeExpense">Rp0</strong></div>
-            <div class="statement-row expense"><span>Pengeluaran Lain</span><strong id="otherExpense">Rp0</strong></div>
-            <div class="statement-row total"><span>Laba Bersih</span><strong id="netProfit">Rp0</strong></div>
-          </div>
+          <div class="statement-paper" id="profitLossStatement"></div>
           <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari transaksi Mayar yang sudah masuk ke log website.</p>
         </div>
       </section>
@@ -284,9 +289,8 @@
     email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
     logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), reset:$("resetFilter"), refresh:$("refreshButton"),
     programFilter:$("programFilter"), tutorFilter:$("tutorFilter"), totalRevenue:$("totalRevenue"), totalPayable:$("totalPayable"), netRevenue:$("netRevenue"),
-    profitLossSubtitle:$("profitLossSubtitle"), exportFinance:$("exportFinance"), courseRevenue:$("courseRevenue"), digitalRevenue:$("digitalRevenue"),
-    otherIncome:$("otherIncome"), grossRevenue:$("grossRevenue"), tutorFeeExpense:$("tutorFeeExpense"), otherExpense:$("otherExpense"),
-    netProfit:$("netProfit"), digitalRevenueNote:$("digitalRevenueNote"), manualEntryForm:$("manualEntryForm"), manualDate:$("manualDate"),
+    profitLossSubtitle:$("profitLossSubtitle"), exportFinance:$("exportFinance"), profitLossStatement:$("profitLossStatement"),
+    digitalRevenueNote:$("digitalRevenueNote"), manualEntryForm:$("manualEntryForm"), manualDate:$("manualDate"),
     manualType:$("manualType"), manualCategory:$("manualCategory"), manualDescription:$("manualDescription"), manualAmount:$("manualAmount"),
     manualSaveButton:$("manualSaveButton"), manualEntryStatus:$("manualEntryStatus"), manualEntryTableWrap:$("manualEntryTableWrap"),
     manualEntryBody:$("manualEntryBody"), manualEntryEmpty:$("manualEntryEmpty"), revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"),
@@ -441,6 +445,35 @@
       map[label] = (map[label] || 0) + Number(row.price || 0);
       return map;
     }, {});
+  }
+
+  function sumBy(rows, keyGetter, valueGetter) {
+    const map = new Map();
+    rows.forEach((row) => {
+      const key = keyGetter(row) || "Lainnya";
+      map.set(key, (map.get(key) || 0) + Number(valueGetter(row) || 0));
+    });
+    return [...map.entries()]
+      .map(([label, amount]) => ({ label, amount }))
+      .filter((row) => row.amount !== 0)
+      .sort((a, b) => b.amount - a.amount || a.label.localeCompare(b.label));
+  }
+
+  function buildPayableRows(rows) {
+    const byTutor = new Map();
+    rows.forEach((row) => {
+      const tutor = row.tutor || "Tanpa Tutor";
+      const current = byTutor.get(tutor) || { tutor, amount: 0, meetings: 0, missingFee: 0 };
+      const toBePaid = getToBePaidCount(row);
+      const amount = getRemainingFeeAmount(row);
+      current.meetings += toBePaid;
+      if (amount > 0) current.amount += amount;
+      else if (toBePaid > 0) current.missingFee += toBePaid;
+      byTutor.set(tutor, current);
+    });
+    return [...byTutor.values()]
+      .filter((row) => row.amount > 0 || row.missingFee > 0)
+      .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
   }
 
   function renderMoneyLineChart(container, dataMap) {
@@ -603,21 +636,7 @@
   }
 
   function renderPayable(rows) {
-    const byTutor = new Map();
-    rows.forEach((row) => {
-      const tutor = row.tutor || "Tanpa Tutor";
-      const current = byTutor.get(tutor) || { tutor, amount: 0, meetings: 0, missingFee: 0 };
-      const toBePaid = getToBePaidCount(row);
-      const amount = getRemainingFeeAmount(row);
-      current.meetings += toBePaid;
-      if (amount > 0) current.amount += amount;
-      else if (toBePaid > 0) current.missingFee += toBePaid;
-      byTutor.set(tutor, current);
-    });
-
-    const payableRows = [...byTutor.values()]
-      .filter((row) => row.amount > 0 || row.missingFee > 0)
-      .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
+    const payableRows = buildPayableRows(rows);
     const grandTotal = payableRows.reduce((sum, row) => sum + row.amount, 0);
 
     els.payableGrandTotal.textContent = formatMoney(grandTotal);
@@ -631,6 +650,61 @@
       </article>
     `).join("");
     return grandTotal;
+  }
+
+  function statementLine(label, amount, options = {}) {
+    const note = options.note ? `<small>${escapeHTML(options.note)}</small>` : "";
+    const className = ["statement-line", options.className || "", amount < 0 ? "loss" : ""].filter(Boolean).join(" ");
+    return `<div class="${className}"><span>${escapeHTML(label)}${note}</span><strong>${formatMoney(amount)}</strong></div>`;
+  }
+
+  function statementEmpty(label) {
+    return `<div class="statement-line"><span>${escapeHTML(label)}</span><strong>${formatMoney(0)}</strong></div>`;
+  }
+
+  function renderProfitLossStatement(report) {
+    const courseLines = report.courseRows.length
+      ? report.courseRows.map((row) => statementLine(row.label, row.amount))
+      : [statementEmpty("Belum ada course revenue")];
+    const digitalLines = report.digitalRows.length
+      ? report.digitalRows.map((row) => {
+        const qty = Number(row.sale_count || 0);
+        const amount = Number(row.revenue_amount || 0);
+        const unitPrice = qty > 0 ? amount / qty : 0;
+        return statementLine(row.product_name, amount, { note: `${formatNumber(qty)} penjualan x ${formatMoney(unitPrice)}` });
+      })
+      : [statementEmpty("Belum ada digital product revenue")];
+    const otherIncomeLines = report.otherIncomeRows.length
+      ? report.otherIncomeRows.map((row) => statementLine(row.label, row.amount))
+      : [];
+    const tutorFeeLines = report.payableRows.length
+      ? report.payableRows.map((row) => statementLine(`Fee Tutor - ${row.tutor}`, row.amount, { note: `${formatNumber(row.meetings)} meeting belum dibayar${row.missingFee ? `, ${formatNumber(row.missingFee)} meeting belum punya fee` : ""}` }))
+      : [statementEmpty("Belum ada fee tutor payable")];
+    const otherExpenseLines = report.otherExpenseRows.length
+      ? report.otherExpenseRows.map((row) => statementLine(row.label, row.amount))
+      : [];
+
+    els.profitLossStatement.innerHTML = `
+      <div class="statement-title">
+        <strong>Laporan Laba Rugi</strong>
+        <span>Jeya's Club</span>
+        <span>Periode ${escapeHTML(report.period)}</span>
+      </div>
+      <div class="statement-section-title">Pendapatan</div>
+      <div class="statement-lines">
+        ${courseLines.join("")}
+        ${digitalLines.join("")}
+        ${otherIncomeLines.join("")}
+        ${statementLine("Jumlah Pendapatan", report.grossRevenue, { className:"subtotal" })}
+      </div>
+      <div class="statement-section-title">Beban / Kewajiban</div>
+      <div class="statement-lines">
+        ${tutorFeeLines.join("")}
+        ${otherExpenseLines.join("")}
+        ${statementLine("Total Beban", report.totalExpense, { className:"subtotal" })}
+        ${statementLine("Laba Bersih", report.netProfit, { className:"net" })}
+      </div>
+    `;
   }
 
   function renderManualEntries(rows) {
@@ -654,10 +728,14 @@
 
   function renderFinance(bookings, trackers, manualEntries, digitalRows) {
     const groupedBookings = groupBookings(bookings);
+    const courseRows = sumBy(groupedBookings, (row) => row.program_name || "Tanpa Program", (row) => row.price);
+    const payableRows = buildPayableRows(trackers);
+    const otherIncomeRows = sumBy(manualEntries.filter((row) => row.entry_type === "income"), (row) => row.category || "Pendapatan Lain", (row) => row.amount);
+    const otherExpenseRows = sumBy(manualEntries.filter((row) => row.entry_type === "expense"), (row) => row.category || "Pengeluaran Lain", (row) => row.amount);
     const courseRevenue = groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0);
     const digitalRevenue = digitalRows.reduce((sum, row) => sum + Number(row.revenue_amount || 0), 0);
-    const otherIncome = manualEntries.filter((row) => row.entry_type === "income").reduce((sum, row) => sum + Number(row.amount || 0), 0);
-    const otherExpense = manualEntries.filter((row) => row.entry_type === "expense").reduce((sum, row) => sum + Number(row.amount || 0), 0);
+    const otherIncome = otherIncomeRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+    const otherExpense = otherExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const tutorFee = renderPayable(trackers);
     const grossRevenue = courseRevenue + digitalRevenue + otherIncome;
     const totalExpense = tutorFee + otherExpense;
@@ -667,13 +745,6 @@
     els.totalRevenue.textContent = formatMoney(grossRevenue);
     els.totalPayable.textContent = formatMoney(totalExpense);
     els.netRevenue.textContent = formatMoney(netProfit);
-    els.courseRevenue.textContent = formatMoney(courseRevenue);
-    els.digitalRevenue.textContent = formatMoney(digitalRevenue);
-    els.otherIncome.textContent = formatMoney(otherIncome);
-    els.grossRevenue.textContent = formatMoney(grossRevenue);
-    els.tutorFeeExpense.textContent = formatMoney(tutorFee);
-    els.otherExpense.textContent = formatMoney(otherExpense);
-    els.netProfit.textContent = formatMoney(netProfit);
     els.profitLossSubtitle.textContent = `Periode: ${periodLabel()}`;
     els.digitalRevenueNote.textContent = `Digital Produk Revenue: ${formatNumber(digitalSaleCount)} checkout Mayar yang sudah tercatat di website.`;
     els.revenueSubtitle.textContent = els.month.value ? `Grafik course revenue untuk ${els.month.value}.` : "Grafik total course revenue per bulan dari semua booking.";
@@ -681,17 +752,22 @@
     renderManualEntries(manualEntries);
     lastFinanceReport = {
       period: periodLabel(),
+      courseRows,
       courseRevenue,
       digitalRevenue,
       otherIncome,
+      otherIncomeRows,
       grossRevenue,
       tutorFee,
+      payableRows,
       otherExpense,
+      otherExpenseRows,
       totalExpense,
       netProfit,
       digitalRows,
       manualEntries
     };
+    renderProfitLossStatement(lastFinanceReport);
     els.sessionLabel.textContent = els.month.value ? `Data finance bulan ${els.month.value}` : "Data finance semua bulan";
   }
 
@@ -746,20 +822,25 @@
     if (!lastFinanceReport) return;
     const reportRows = [
       ["Laporan Laba Rugi", ""],
+      ["Jeya's Club", ""],
       ["Periode", lastFinanceReport.period],
       ["", ""],
-      ["Course Revenue", formatMoney(lastFinanceReport.courseRevenue)],
-      ["Digital Produk Revenue", formatMoney(lastFinanceReport.digitalRevenue)],
-      ["Pendapatan Lain", formatMoney(lastFinanceReport.otherIncome)],
-      ["Total Pendapatan", formatMoney(lastFinanceReport.grossRevenue)],
-      ["Fee Tutor", formatMoney(lastFinanceReport.tutorFee)],
-      ["Pengeluaran Lain", formatMoney(lastFinanceReport.otherExpense)],
+      ["Pendapatan", ""],
+      ...lastFinanceReport.courseRows.map((row) => [row.label, formatMoney(row.amount)]),
+      ...lastFinanceReport.digitalRows.map((row) => {
+        const qty = Number(row.sale_count || 0);
+        const amount = Number(row.revenue_amount || 0);
+        const unitPrice = qty > 0 ? amount / qty : 0;
+        return [row.product_name, `${formatNumber(qty)} penjualan x ${formatMoney(unitPrice)}`, formatMoney(amount)];
+      }),
+      ...lastFinanceReport.otherIncomeRows.map((row) => [row.label, formatMoney(row.amount)]),
+      ["Jumlah Pendapatan", formatMoney(lastFinanceReport.grossRevenue)],
+      ["", ""],
+      ["Beban / Kewajiban", ""],
+      ...lastFinanceReport.payableRows.map((row) => [`Fee Tutor - ${row.tutor}`, `${formatNumber(row.meetings)} meeting belum dibayar`, formatMoney(row.amount)]),
+      ...lastFinanceReport.otherExpenseRows.map((row) => [row.label, formatMoney(row.amount)]),
       ["Total Pengeluaran", formatMoney(lastFinanceReport.totalExpense)],
       ["Laba Bersih", formatMoney(lastFinanceReport.netProfit)]
-    ];
-    const digitalRows = [
-      ["Produk Digital", "Checkout", "Revenue"],
-      ...lastFinanceReport.digitalRows.map((row) => [row.product_name, formatNumber(row.sale_count), formatMoney(row.revenue_amount)])
     ];
     const manualRows = [
       ["Input Manual", "Tipe", "Kategori", "Keterangan", "Nominal"],
@@ -771,7 +852,7 @@
         formatMoney(row.amount)
       ])
     ];
-    const table = [reportRows, [["", ""]], digitalRows, [["", ""]], manualRows]
+    const table = [reportRows, [["", ""]], manualRows]
       .flat()
       .map((row) => `<tr>${row.map(excelCell).join("")}</tr>`)
       .join("");
