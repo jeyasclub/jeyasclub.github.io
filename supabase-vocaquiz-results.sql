@@ -1156,72 +1156,81 @@ as $$
       ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 6),
       ('study-sheet-100-english-challenges', '1001 English Challenges', 7)
   ),
-  logged_sales as (
+  sale_events as (
     select
       sales.product_key,
-      count(*)::bigint as sale_count
+      coalesce(nullif(sales.transaction_id, ''), 'logged:' || sales.id::text) as sale_key,
+      sales.paid_at as sale_at
     from public.mayar_product_sales sales
     where sales.source = 'mayar'
-      and (p_start_date is null or sales.paid_at >= p_start_date)
-      and (p_end_date is null or sales.paid_at < p_end_date)
-    group by sales.product_key
-  ),
-  access_sales as (
-    select 'vocabulary-test'::text as product_key, count(*)::bigint as sale_count
+    union all
+    select
+      'vocabulary-test'::text as product_key,
+      coalesce(nullif(mayar_transaction_id, ''), 'vocabulary-access:' || id::text) as sale_key,
+      created_at as sale_at
     from public.vocaquiz_review_access
     where source = 'mayar'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
     union all
-    select 'grammar-test'::text, count(*)::bigint
+    select
+      'grammar-test'::text,
+      coalesce(nullif(mayar_transaction_id, ''), 'grammar-access:' || id::text),
+      created_at
     from public.grammar_test_review_access
     where source = 'mayar'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
     union all
-    select 'english-slang-test'::text, count(*)::bigint
+    select
+      'english-slang-test'::text,
+      coalesce(nullif(mayar_transaction_id, ''), 'slang-access:' || id::text),
+      created_at
     from public.english_slang_test_review_access
     where source = 'mayar'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
     union all
-    select 'swe-test'::text, count(*)::bigint
+    select
+      'swe-test'::text,
+      coalesce(nullif(mayar_transaction_id, ''), 'swe-access:' || id::text),
+      created_at
     from public.swe_test_review_access
     where source = 'mayar'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
     union all
-    select 'reading-test'::text, count(*)::bigint
+    select
+      'reading-test'::text,
+      coalesce(nullif(mayar_transaction_id, ''), 'reading-access:' || id::text),
+      created_at
     from public.reading_test_review_access
     where source = 'mayar'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
     union all
-    select '300-toefl-vocabulary'::text, count(*)::bigint
+    select
+      '300-toefl-vocabulary'::text,
+      coalesce(nullif(mayar_transaction_id, ''), 'toefl-vocab-access:' || id::text),
+      created_at
     from public.jeyasclub_course_access
     where source = 'mayar'
       and course_key = '300-toefl-vocabulary'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
     union all
-    select 'study-sheet-100-english-challenges'::text, count(*)::bigint
+    select
+      'study-sheet-100-english-challenges'::text,
+      coalesce(nullif(mayar_transaction_id, ''), 'english-challenges-access:' || id::text),
+      created_at
     from public.jeyasclub_course_access
     where source = 'mayar'
       and course_key = 'study-sheet-100-english-challenges'
-      and (p_start_date is null or created_at >= p_start_date)
-      and (p_end_date is null or created_at < p_end_date)
+  ),
+  sale_counts as (
+    select
+      sale_events.product_key,
+      count(distinct sale_events.sale_key)::bigint as sale_count
+    from sale_events
+    where (p_start_date is null or sale_events.sale_at >= p_start_date)
+      and (p_end_date is null or sale_events.sale_at < p_end_date)
+    group by sale_events.product_key
   )
   select
     products.product_key,
     products.product_name,
-    greatest(
-      coalesce(logged_sales.sale_count, 0),
-      coalesce(access_sales.sale_count, 0)
-    )::bigint as sale_count
+    coalesce(sale_counts.sale_count, 0)::bigint as sale_count
   from products
   cross join admin_check
-  left join logged_sales on logged_sales.product_key = products.product_key
-  left join access_sales on access_sales.product_key = products.product_key
+  left join sale_counts on sale_counts.product_key = products.product_key
   where admin_check.allowed
   order by products.sort_order;
 $$;
