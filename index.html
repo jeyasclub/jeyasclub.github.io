@@ -5155,10 +5155,6 @@
     el.addEventListener('click', closePecPopup);
   });
 
-  if (pecPopup) {
-    window.setTimeout(openPecPopup, 650);
-  }
-
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && pecPopup && pecPopup.classList.contains('open')) {
       closePecPopup(event);
