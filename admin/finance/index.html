@@ -164,8 +164,13 @@
     .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:18px; }
     .manual-form label,
     .manual-form .full,
-    .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
-    .manual-form label { gap:8px; }
+    .manual-form .actions { min-width:0; width:100%; }
+    .manual-form label {
+      gap:8px;
+      overflow:visible;
+      line-height:1.35;
+      overflow-wrap:anywhere;
+    }
     .manual-form input,
     .manual-form select,
     .manual-form textarea {
