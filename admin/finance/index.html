@@ -143,13 +143,15 @@
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:hidden; }
     .panel-body { padding:18px; }
-    .manual-entry-panel .panel-body { padding:20px 24px 24px; }
-    .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; gap:18px; }
+    .manual-entry-panel { padding:18px; display:grid; gap:18px; }
+    .manual-entry-panel .panel-head { padding:0 0 14px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, transparent 0%, transparent 65%, var(--yellow-soft) 100%); }
+    .manual-entry-panel .panel-body { padding:0; overflow:visible; }
+    .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; gap:14px; }
     .manual-form label, .manual-form .full, .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
-    .manual-form input, .manual-form select, .manual-form textarea { width:calc(100% - 14px); max-width:calc(100% - 14px); min-width:0; justify-self:start; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
-    .manual-form textarea { min-height:112px; }
+    .manual-form input, .manual-form select, .manual-form textarea { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; justify-self:start; box-shadow:2px 3px 0 rgba(12,27,54,.95); }
+    .manual-form textarea { min-height:94px; }
     .manual-form .actions { display:grid; grid-template-columns:1fr; }
-    .manual-form .actions .btn { width:calc(100% - 14px); max-width:calc(100% - 14px); justify-self:start; }
+    .manual-form .actions .btn { width:max-content; max-width:calc(100% - 8px); justify-self:start; }
     .statement-title strong { font-size:20px; }
     .statement-line { grid-template-columns:1fr; gap:4px; }
     .statement-line strong { text-align:left; white-space:normal; }
