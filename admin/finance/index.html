@@ -91,9 +91,16 @@
   .statement-line.loss strong { color:var(--red); }
   .statement-line.net.loss strong { color:#fff; }
   .statement-note { margin-top:12px; color:var(--muted); font-size:12px; line-height:1.6; }
-  .manual-form { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
-  .manual-form .full { grid-column:1 / -1; }
-  .manual-form .actions { grid-column:1 / -1; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .manual-form {
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    column-gap:18px;
+    row-gap:14px;
+  }
+  .transaction-note-field,
+  #manualSaveButton,
+  #manualEntryStatus {
+    grid-column:1 / -1;
+  }
   .table-wrap { width:100%; overflow-x:auto; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
   table { width:100%; min-width:720px; border-collapse:collapse; }
   th, td { padding:12px 13px; border-bottom:1.5px solid #dbeafe; text-align:left; vertical-align:top; font-size:13px; }
@@ -161,31 +168,30 @@
       background:linear-gradient(90deg, transparent 0%, transparent 68%, var(--yellow-soft) 100%);
     }
     .manual-entry-panel .panel-body { min-width:0; padding:0; }
-    .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:18px; }
+    .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:14px; }
     .manual-form label,
-    .manual-form .full,
-    .manual-form .actions { min-width:0; width:100%; }
+    .manual-form .transaction-note-field,
+    #manualSaveButton,
+    #manualEntryStatus { min-width:0; width:100%; }
     .manual-form label {
       gap:8px;
-      overflow:visible;
+      overflow:hidden;
       line-height:1.35;
       overflow-wrap:anywhere;
-      padding-right:10px;
     }
     .manual-form input,
     .manual-form select,
     .manual-form textarea {
-      width:100%;
-      max-width:100%;
+      width:calc(100% - 8px);
+      max-width:calc(100% - 8px);
       min-width:0;
       justify-self:start;
     }
     .manual-form input::placeholder,
     .manual-form textarea::placeholder { color:#8a8f98; opacity:1; }
     .manual-form input[type="date"] { -webkit-appearance:none; appearance:none; }
-    .manual-form textarea { min-height:124px; line-height:1.55; resize:vertical; }
-    .manual-form .actions { display:grid; grid-template-columns:1fr; gap:10px; }
-    .manual-form .actions .btn {
+    .manual-form textarea { min-height:94px; line-height:1.6; resize:vertical; }
+    .manual-form > .btn.primary {
       width:max-content;
       max-width:calc(100% - 8px);
       justify-self:start;
@@ -281,21 +287,19 @@
         <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
       </section>
 
-      <section class="panel">
+      <section class="panel manual-entry-panel">
         <div class="panel-head">
           <div><h2>Input Transaksi</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
         </div>
         <div class="panel-body grid">
-          <form class="manual-form" id="manualEntryForm">
+          <form class="form manual-form" id="manualEntryForm">
             <label>Tanggal<input type="date" id="manualDate" required></label>
             <label>Tipe<select id="manualType" required><option value="income">Pendapatan</option><option value="expense">Pengeluaran</option></select></label>
             <label>Kategori<input type="text" id="manualCategory" maxlength="120" required placeholder="Contoh: Affiliate, Tools, Bonus"></label>
             <label>Nominal<input type="number" id="manualAmount" min="0" step="1000" required placeholder="0"></label>
-            <label class="full">Keterangan<textarea id="manualDescription" maxlength="500" placeholder="Catatan singkat"></textarea></label>
-            <div class="actions">
-              <button class="btn primary" type="submit" id="manualSaveButton">Simpan Transaksi</button>
-              <p class="status" id="manualEntryStatus"></p>
-            </div>
+            <label class="transaction-note-field">Keterangan<textarea id="manualDescription" maxlength="500" placeholder="Catatan singkat"></textarea></label>
+            <button class="btn primary" type="submit" id="manualSaveButton">Simpan Transaksi</button>
+            <p class="status" id="manualEntryStatus"></p>
           </form>
           <div>
             <div class="table-wrap hidden" id="manualEntryTableWrap">
