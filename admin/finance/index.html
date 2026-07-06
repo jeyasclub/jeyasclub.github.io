@@ -122,25 +122,27 @@
   .empty { padding:22px; color:var(--muted); font-size:14px; }
   @media (max-width:900px) { .metrics { grid-template-columns:1fr; } }
   @media (max-width:760px) {
-    html, body { width:100%; max-width:100%; overflow-x:clip; }
-    .topbar { align-items:flex-start; flex-direction:column; padding:10px 14px; gap:12px; overflow:hidden; }
+    body { overflow-x:hidden; }
+    .topbar { align-items:flex-start; flex-direction:column; padding:10px 12px; gap:12px; }
     .brand span { display:none; }
-    .topbar-actions { width:100%; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; }
-    .topbar-actions .btn { width:calc(100% - 6px); max-width:calc(100% - 6px); justify-self:start; }
-    .admin-nav { width:calc(100% - 6px); max-width:calc(100% - 6px); min-width:0; overflow-x:auto; scrollbar-width:none; box-shadow:3px 4px 0 var(--shadow); justify-self:start; }
+    .topbar-actions { width:100%; display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:center; gap:10px; }
+    .admin-nav { max-width:100%; min-width:0; overflow-x:auto; scrollbar-width:none; }
     .admin-nav::-webkit-scrollbar { display:none; }
     .nav-link { padding:8px 11px; }
-    .shell { width:calc(100% - 34px); max-width:1180px; padding-top:24px; overflow:hidden; }
-    .dashboard, .grid, .metrics { width:100%; min-width:0; justify-items:start; }
+    .shell { width:min(100% - 24px, 1180px); padding-top:24px; }
+    .dashboard, .grid, .metrics { width:100%; min-width:0; }
     .hero-row { align-items:stretch; gap:16px; }
-    h1 { max-width:100%; font-size:clamp(28px, 8vw, 34px); overflow-wrap:break-word; }
-    .filter-card { width:calc(100% - 10px); max-width:calc(100% - 10px); min-width:0; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; padding:12px; box-shadow:4px 5px 0 var(--shadow); justify-self:start; }
-    .filter-card label { width:100%; min-width:0; overflow:hidden; }
-    .filter-card input, .filter-card select, .filter-card .btn { width:100%; max-width:100%; min-width:0; -webkit-appearance:none; appearance:none; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
-    .metric, .panel { width:calc(100% - 10px); max-width:calc(100% - 10px); justify-self:start; }
+    .hero-row > div:first-child { min-width:0; }
+    h1 { font-size:clamp(30px, 10vw, 42px); }
+    .muted { overflow-wrap:anywhere; }
+    .filter-card { width:100%; min-width:0; display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
+    .filter-card label { width:100%; min-width:0; display:grid; grid-template-columns:1fr; overflow:hidden; }
+    .filter-card input, .filter-card select { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; -webkit-appearance:none; appearance:none; justify-self:start; }
+    .filter-card .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); }
+    .metric, .panel { width:100%; max-width:100%; }
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
-    .panel { overflow:visible; }
-    .panel-body { padding:16px; overflow:hidden; }
+    .panel { overflow:hidden; }
+    .panel-body { padding:16px; }
     .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; }
     .manual-form label, .manual-form .full, .manual-form .actions { min-width:0; width:100%; }
     .manual-form input, .manual-form select, .manual-form textarea { width:100%; max-width:100%; min-width:0; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
