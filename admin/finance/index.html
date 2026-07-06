@@ -123,19 +123,20 @@
   @media (max-width:900px) { .metrics { grid-template-columns:1fr; } }
   @media (max-width:760px) {
     html, body { width:100%; max-width:100%; overflow-x:hidden; }
-    .topbar { align-items:flex-start; flex-direction:column; padding:10px 12px; gap:12px; }
+    .topbar { align-items:flex-start; flex-direction:column; padding:10px 14px; gap:12px; overflow:hidden; }
     .brand span { display:none; }
     .topbar-actions { width:100%; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; }
-    .topbar-actions .btn { width:100%; }
-    .admin-nav { width:100%; max-width:100%; min-width:0; overflow-x:auto; scrollbar-width:none; box-shadow:3px 4px 0 var(--shadow); }
+    .topbar-actions .btn { width:calc(100% - 6px); max-width:calc(100% - 6px); justify-self:start; }
+    .admin-nav { width:calc(100% - 6px); max-width:calc(100% - 6px); min-width:0; overflow-x:auto; scrollbar-width:none; box-shadow:3px 4px 0 var(--shadow); justify-self:start; }
     .admin-nav::-webkit-scrollbar { display:none; }
     .nav-link { padding:8px 11px; }
-    .shell { width:calc(100% - 24px); max-width:1180px; padding-top:24px; }
+    .shell { width:min(calc(100% - 48px), 1180px); padding-top:24px; }
     .hero-row { align-items:stretch; gap:16px; }
-    h1 { font-size:clamp(30px, 10vw, 42px); }
-    .filter-card { width:100%; min-width:0; display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:end; gap:10px; padding:12px; }
+    h1 { max-width:100%; font-size:clamp(30px, 9vw, 38px); overflow-wrap:break-word; }
+    .filter-card { width:100%; min-width:0; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; padding:12px; box-shadow:4px 5px 0 var(--shadow); }
     .filter-card label { width:100%; min-width:0; overflow:hidden; }
     .filter-card input, .filter-card select, .filter-card .btn { width:100%; max-width:100%; min-width:0; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
+    .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:visible; }
     .panel-body { padding:16px; overflow:hidden; }
     .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; }
