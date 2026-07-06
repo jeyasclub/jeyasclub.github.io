@@ -147,15 +147,60 @@
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:hidden; }
     .panel-body { padding:18px; }
-    .manual-entry-panel { padding:18px; overflow:hidden; }
-    .manual-entry-panel .panel-head { align-items:initial; flex-direction:initial; padding:0 0 14px; }
+    .manual-entry-panel {
+      width:100%;
+      max-width:100%;
+      padding:22px 18px 24px;
+      overflow:hidden;
+      border-width:2px;
+      border-radius:14px;
+      box-shadow:none;
+    }
+    .manual-entry-panel .panel-head {
+      align-items:initial;
+      flex-direction:initial;
+      padding:0 0 18px;
+      border-bottom:3px solid var(--ink);
+      background:linear-gradient(90deg, transparent 0%, transparent 68%, var(--yellow-soft) 100%);
+    }
+    .manual-entry-panel .panel-head h2 { font-size:26px; line-height:1.15; }
+    .manual-entry-panel .panel-head .muted { font-size:16px; line-height:1.75; }
     .manual-entry-panel .panel-body { padding:0; }
-    .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:14px; }
-    .manual-form label, .manual-form .full, .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
-    .manual-form input, .manual-form select, .manual-form textarea { width:100%; max-width:100%; min-width:0; justify-self:stretch; }
+    .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:18px; }
+    .manual-form label,
+    .manual-form .full,
+    .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
+    .manual-form label { gap:10px; font-size:17px; line-height:1.25; }
+    .manual-form input,
+    .manual-form select,
+    .manual-form textarea {
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      justify-self:stretch;
+      min-height:56px;
+      border-width:1.5px;
+      border-radius:10px;
+      padding:14px 16px;
+      box-shadow:none;
+      font-size:16px;
+      font-weight:600;
+    }
+    .manual-form input::placeholder,
+    .manual-form textarea::placeholder { color:#8a8f98; opacity:1; }
     .manual-form input[type="date"] { -webkit-appearance:none; appearance:none; }
-    .manual-form .actions { display:grid; grid-template-columns:1fr; }
-    .manual-form .actions .btn { width:100%; max-width:100%; justify-self:stretch; }
+    .manual-form textarea { min-height:124px; line-height:1.55; resize:vertical; }
+    .manual-form .actions { display:grid; grid-template-columns:1fr; gap:10px; }
+    .manual-form .actions .btn {
+      width:100%;
+      max-width:100%;
+      justify-self:stretch;
+      min-height:58px;
+      border-width:0;
+      border-radius:10px;
+      box-shadow:none;
+      font-size:16px;
+    }
     .statement-title strong { font-size:20px; }
     .statement-line { grid-template-columns:1fr; gap:4px; }
     .statement-line strong { text-align:left; white-space:normal; }
@@ -259,7 +304,7 @@
             <label>Nominal<input type="number" id="manualAmount" min="0" step="1000" required placeholder="0"></label>
             <label class="full">Keterangan<textarea id="manualDescription" maxlength="500" placeholder="Catatan singkat"></textarea></label>
             <div class="actions">
-              <button class="btn primary" type="submit" id="manualSaveButton">Tambah Data</button>
+              <button class="btn primary" type="submit" id="manualSaveButton">Simpan Transaksi</button>
               <p class="status" id="manualEntryStatus"></p>
             </div>
           </form>
@@ -791,7 +836,7 @@
       amount
     });
     els.manualSaveButton.disabled = false;
-    els.manualSaveButton.textContent = "Tambah Data";
+    els.manualSaveButton.textContent = "Simpan Transaksi";
     if (error) {
       console.error("Manual finance insert failed:", error);
       setManualStatus("Data manual belum bisa disimpan.", "bad");
