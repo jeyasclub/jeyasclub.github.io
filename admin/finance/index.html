@@ -122,7 +122,7 @@
   .empty { padding:22px; color:var(--muted); font-size:14px; }
   @media (max-width:900px) { .metrics { grid-template-columns:1fr; } }
   @media (max-width:760px) {
-    html, body { width:100%; max-width:100%; overflow-x:hidden; }
+    html, body { width:100%; max-width:100%; overflow-x:clip; }
     .topbar { align-items:flex-start; flex-direction:column; padding:10px 14px; gap:12px; overflow:hidden; }
     .brand span { display:none; }
     .topbar-actions { width:100%; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; }
@@ -130,12 +130,14 @@
     .admin-nav { width:calc(100% - 6px); max-width:calc(100% - 6px); min-width:0; overflow-x:auto; scrollbar-width:none; box-shadow:3px 4px 0 var(--shadow); justify-self:start; }
     .admin-nav::-webkit-scrollbar { display:none; }
     .nav-link { padding:8px 11px; }
-    .shell { width:min(calc(100% - 48px), 1180px); padding-top:24px; }
+    .shell { width:calc(100% - 34px); max-width:1180px; padding-top:24px; overflow:hidden; }
+    .dashboard, .grid, .metrics { width:100%; min-width:0; justify-items:start; }
     .hero-row { align-items:stretch; gap:16px; }
-    h1 { max-width:100%; font-size:clamp(30px, 9vw, 38px); overflow-wrap:break-word; }
-    .filter-card { width:100%; min-width:0; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; padding:12px; box-shadow:4px 5px 0 var(--shadow); }
+    h1 { max-width:100%; font-size:clamp(28px, 8vw, 34px); overflow-wrap:break-word; }
+    .filter-card { width:calc(100% - 10px); max-width:calc(100% - 10px); min-width:0; display:grid; grid-template-columns:minmax(0, 1fr); align-items:stretch; gap:10px; padding:12px; box-shadow:4px 5px 0 var(--shadow); justify-self:start; }
     .filter-card label { width:100%; min-width:0; overflow:hidden; }
-    .filter-card input, .filter-card select, .filter-card .btn { width:100%; max-width:100%; min-width:0; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
+    .filter-card input, .filter-card select, .filter-card .btn { width:100%; max-width:100%; min-width:0; -webkit-appearance:none; appearance:none; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
+    .metric, .panel { width:calc(100% - 10px); max-width:calc(100% - 10px); justify-self:start; }
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:visible; }
     .panel-body { padding:16px; overflow:hidden; }
@@ -150,7 +152,8 @@
     .panel-head { align-items:flex-start; flex-direction:column; padding:18px; }
     .payable-total { width:100%; min-width:0; justify-items:start; }
     .payable-grid { grid-template-columns:1fr; padding:16px; }
-    .line-chart svg { min-height:420px; border-radius:14px; box-shadow:3px 4px 0 var(--shadow); }
+    .line-chart, .line-chart svg { width:100%; max-width:100%; min-width:0; }
+    .line-chart svg { display:block; min-height:420px; border-radius:14px; box-shadow:none; overflow:hidden; }
     .line-chart .label { font-size:15px; }
     .line-chart .value-label { opacity:0; pointer-events:none; }
     .line-chart .value-label.is-selected { opacity:1; font-size:18px; }
@@ -158,8 +161,8 @@
     .line-chart .point.is-selected { r:13; }
     .line-chart .hit-point { r:28; }
     .line-chart-summary { display:grid; grid-template-columns:1fr; }
-    .line-chart-summary span { width:calc(100% - 8px); border-radius:14px; justify-content:center; text-align:center; }
-    .line-chart-selected { width:calc(100% - 8px); flex-direction:column; align-items:flex-start; }
+    .line-chart-summary span { width:100%; border-radius:14px; justify-content:center; text-align:center; }
+    .line-chart-selected { width:100%; flex-direction:column; align-items:flex-start; box-shadow:none; }
     .line-chart-selected span { font-size:26px; text-align:left; }
   }
 </style>
