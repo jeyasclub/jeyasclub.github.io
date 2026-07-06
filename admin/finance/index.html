@@ -61,6 +61,10 @@
   .panel { overflow:hidden; }
   .panel-head { padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, #fff 0%, #f7fbff 70%, var(--yellow-soft) 100%); }
   .panel-body { padding:18px 20px 20px; }
+  .manual-entry-panel { padding:22px; display:grid; gap:18px; }
+  .manual-entry-panel .panel-head { display:grid; gap:6px; padding:0 0 14px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, transparent 0%, transparent 65%, var(--yellow-soft) 100%); }
+  .manual-entry-panel .panel-body { padding:0; }
+  .manual-entry-panel .panel-body.grid { gap:18px; }
   .payable-total { min-width:180px; display:grid; justify-items:end; gap:3px; padding:12px 14px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
   .payable-total span { color:var(--muted); font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
   .payable-total strong { color:var(--blue-dark); font-size:20px; line-height:1.1; }
@@ -143,18 +147,15 @@
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:hidden; }
     .panel-body { padding:18px; }
-    .manual-entry-panel { width:calc(100% - 44px); max-width:520px; justify-self:center; padding:18px; display:grid; gap:18px; overflow:hidden; }
-    .manual-entry-panel .panel-head { padding:0 0 14px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, transparent 0%, transparent 68%, var(--yellow-soft) 100%); }
-    .manual-entry-panel .panel-body { min-width:0; padding:0; overflow:hidden; }
-    .manual-entry-panel .panel-body.grid { gap:18px; }
-    .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; gap:14px; min-width:0; }
+    .manual-entry-panel { padding:18px; overflow:hidden; }
+    .manual-entry-panel .panel-head { align-items:initial; flex-direction:initial; padding:0 0 14px; }
+    .manual-entry-panel .panel-body { padding:0; }
+    .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:14px; }
     .manual-form label, .manual-form .full, .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
-    .manual-form input, .manual-form select, .manual-form textarea { width:100%; max-width:100%; min-width:0; justify-self:stretch; min-height:46px; padding:10px 12px; font-size:13px; border-radius:12px; box-shadow:none; }
-    .manual-form input[type="date"] { -webkit-appearance:none; appearance:none; padding-right:8px; font-size:12px; text-align:left; }
-    .manual-form textarea { min-height:112px; line-height:1.5; resize:vertical; }
-    .manual-form .actions { display:grid; grid-template-columns:1fr; gap:10px; }
-    .manual-form .actions .btn { width:100%; max-width:100%; justify-self:stretch; box-shadow:3px 4px 0 var(--shadow); }
-    .manual-entry-panel .table-wrap { width:100%; max-width:100%; box-shadow:none; }
+    .manual-form input, .manual-form select, .manual-form textarea { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; justify-self:start; }
+    .manual-form input[type="date"] { -webkit-appearance:none; appearance:none; }
+    .manual-form .actions { display:grid; grid-template-columns:1fr; }
+    .manual-form .actions .btn { width:max-content; max-width:calc(100% - 8px); justify-self:start; }
     .statement-title strong { font-size:20px; }
     .statement-line { grid-template-columns:1fr; gap:4px; }
     .statement-line strong { text-align:left; white-space:normal; }
