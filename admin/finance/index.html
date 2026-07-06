@@ -216,18 +216,26 @@
     <div class="grid">
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Ringkasan pendapatan dan pengeluaran.</p></div>
-          <button class="btn primary" type="button" id="exportFinance">Export Excel</button>
+          <div><h2>Course Revenue</h2><p class="muted" id="revenueSubtitle">Grafik pendapatan dari booking kelas.</p></div>
         </div>
-        <div class="panel-body">
-          <div class="statement-paper" id="profitLossStatement"></div>
-          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari jumlah checkout Mayar di overview dikali harga produk.</p>
-        </div>
+        <div class="panel-body"><div class="line-chart" id="revenueChart"></div></div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Input Manual</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
+          <div><h2>Payable</h2><p class="muted">Total remaining fee berdasarkan masing tutor.</p></div>
+          <div class="payable-total">
+            <span>Total Remaining Fee</span>
+            <strong id="payableGrandTotal">Rp0</strong>
+          </div>
+        </div>
+        <div class="payable-grid" id="payableGrid"></div>
+        <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Input Transaksi</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
         </div>
         <div class="panel-body grid">
           <form class="manual-form" id="manualEntryForm">
@@ -255,21 +263,13 @@
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Revenue</h2><p class="muted" id="revenueSubtitle">Grafik pendapatan dari booking kelas.</p></div>
+          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Ringkasan pendapatan dan pengeluaran.</p></div>
+          <button class="btn primary" type="button" id="exportFinance">Export Excel</button>
         </div>
-        <div class="panel-body"><div class="line-chart" id="revenueChart"></div></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <div><h2>Payable</h2><p class="muted">Total remaining fee berdasarkan masing tutor.</p></div>
-          <div class="payable-total">
-            <span>Total Remaining Fee</span>
-            <strong id="payableGrandTotal">Rp0</strong>
-          </div>
+        <div class="panel-body">
+          <div class="statement-paper" id="profitLossStatement"></div>
+          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari jumlah checkout Mayar di overview dikali harga produk.</p>
         </div>
-        <div class="payable-grid" id="payableGrid"></div>
-        <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
       </section>
     </div>
   </main>
@@ -831,7 +831,7 @@
       ["Laba Bersih", formatMoney(lastFinanceReport.netProfit)]
     ];
     const manualRows = [
-      ["Input Manual", "Tipe", "Kategori", "Keterangan", "Nominal"],
+      ["Input Transaksi", "Tipe", "Kategori", "Keterangan", "Nominal"],
       ...lastFinanceReport.manualEntries.map((row) => [
         formatDate(row.entry_date),
         row.entry_type === "expense" ? "Pengeluaran" : "Pendapatan",
