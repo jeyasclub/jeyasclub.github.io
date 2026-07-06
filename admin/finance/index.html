@@ -148,13 +148,10 @@
     .panel { overflow:hidden; }
     .panel-body { padding:18px; }
     .manual-entry-panel {
-      width:100%;
-      max-width:100%;
-      padding:22px 18px 24px;
+      width:calc(100% - 8px);
+      max-width:calc(100% - 8px);
+      padding:18px;
       overflow:hidden;
-      border-width:2px;
-      border-radius:14px;
-      box-shadow:none;
     }
     .manual-entry-panel .panel-head {
       align-items:initial;
@@ -163,28 +160,19 @@
       border-bottom:3px solid var(--ink);
       background:linear-gradient(90deg, transparent 0%, transparent 68%, var(--yellow-soft) 100%);
     }
-    .manual-entry-panel .panel-head h2 { font-size:26px; line-height:1.15; }
-    .manual-entry-panel .panel-head .muted { font-size:16px; line-height:1.75; }
-    .manual-entry-panel .panel-body { padding:0; }
+    .manual-entry-panel .panel-body { min-width:0; padding:0; }
     .manual-form { grid-template-columns:1fr; width:100%; max-width:100%; gap:18px; }
     .manual-form label,
     .manual-form .full,
     .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
-    .manual-form label { gap:10px; font-size:17px; line-height:1.25; }
+    .manual-form label { gap:8px; }
     .manual-form input,
     .manual-form select,
     .manual-form textarea {
-      width:100%;
-      max-width:100%;
+      width:calc(100% - 8px);
+      max-width:calc(100% - 8px);
       min-width:0;
-      justify-self:stretch;
-      min-height:56px;
-      border-width:1.5px;
-      border-radius:10px;
-      padding:14px 16px;
-      box-shadow:none;
-      font-size:16px;
-      font-weight:600;
+      justify-self:start;
     }
     .manual-form input::placeholder,
     .manual-form textarea::placeholder { color:#8a8f98; opacity:1; }
@@ -192,14 +180,9 @@
     .manual-form textarea { min-height:124px; line-height:1.55; resize:vertical; }
     .manual-form .actions { display:grid; grid-template-columns:1fr; gap:10px; }
     .manual-form .actions .btn {
-      width:100%;
-      max-width:100%;
-      justify-self:stretch;
-      min-height:58px;
-      border-width:0;
-      border-radius:10px;
-      box-shadow:none;
-      font-size:16px;
+      width:max-content;
+      max-width:calc(100% - 8px);
+      justify-self:start;
     }
     .statement-title strong { font-size:20px; }
     .statement-line { grid-template-columns:1fr; gap:4px; }
