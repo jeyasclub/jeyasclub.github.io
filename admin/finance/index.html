@@ -143,11 +143,13 @@
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:hidden; }
     .panel-body { padding:18px; }
-    .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; }
-    .manual-form label, .manual-form .full, .manual-form .actions { min-width:0; width:100%; }
-    .manual-form input, .manual-form select, .manual-form textarea { width:100%; max-width:100%; min-width:0; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
+    .manual-entry-panel .panel-body { padding:20px 24px 24px; }
+    .manual-form { grid-template-columns:minmax(0, 1fr); width:100%; max-width:100%; gap:18px; }
+    .manual-form label, .manual-form .full, .manual-form .actions { min-width:0; width:100%; overflow:hidden; }
+    .manual-form input, .manual-form select, .manual-form textarea { width:calc(100% - 14px); max-width:calc(100% - 14px); min-width:0; justify-self:start; box-shadow:2px 3px 0 rgba(12,27,54,.95) inset; }
+    .manual-form textarea { min-height:112px; }
     .manual-form .actions { display:grid; grid-template-columns:1fr; }
-    .manual-form .actions .btn { width:100%; }
+    .manual-form .actions .btn { width:calc(100% - 14px); max-width:calc(100% - 14px); justify-self:start; }
     .statement-title strong { font-size:20px; }
     .statement-line { grid-template-columns:1fr; gap:4px; }
     .statement-line strong { text-align:left; white-space:normal; }
@@ -239,7 +241,7 @@
         <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
       </section>
 
-      <section class="panel">
+      <section class="panel manual-entry-panel">
         <div class="panel-head">
           <div><h2>Input Transaksi</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
         </div>
