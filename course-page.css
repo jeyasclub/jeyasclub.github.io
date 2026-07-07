@@ -18,7 +18,7 @@ a { color:inherit; }
 .topbar { position:sticky; top:0; z-index:50; border-bottom:1px solid var(--border); background:rgba(255,255,255,.96); backdrop-filter:blur(10px); }
 .topbar-inner { height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .brand { display:inline-flex; align-items:center; gap:10px; color:var(--text); text-decoration:none; font-weight:900; }
-.brand img { width:132px; height:56px; object-fit:contain; }
+.brand img { width:99px; height:42px; object-fit:contain; }
 .nav { display:flex; align-items:center; gap:16px; }
 .nav a { color:var(--muted); text-decoration:none; font-size:13px; font-weight:800; }
 .button { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--border); border-radius:12px; background:var(--white); color:var(--text); padding:11px 16px; text-decoration:none; font-size:14px; font-weight:900; }
