@@ -41,10 +41,11 @@
   .hero-actions { margin-top:4px; }
   .hero-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:2px; }
   .hero-meta span { min-height:34px; display:inline-flex; align-items:center; border:1px solid rgba(26,111,232,.16); border-radius:999px; background:#fff; color:#1558c0; padding:7px 12px; font-size:12px; font-weight:900; box-shadow:0 10px 22px rgba(26,111,232,.06); }
-  .hero-art { align-self:stretch; display:grid; align-content:center; gap:18px; }
+  .hero-art { align-self:stretch; display:grid; align-content:center; }
   .hero-visual { position:relative; display:grid; place-items:center; min-height:260px; padding:18px 18px 0; border:1px solid #e8edf5; border-radius:22px; background:linear-gradient(145deg,#ffffff 0%,#f3f8ff 62%,#fff8e6 100%); box-shadow:0 24px 60px rgba(15,23,42,.1); overflow:hidden; }
   .hero-visual::before { content:""; position:absolute; inset:auto -34px -64px auto; width:170px; height:170px; border-radius:50%; background:rgba(26,111,232,.1); }
   .hero-visual img { position:relative; z-index:1; width:min(330px,100%); height:auto; display:block; filter:drop-shadow(0 18px 26px rgba(15,23,42,.14)); }
+  .brief-section { padding-top:0; }
   .training-brief { position:relative; display:grid; gap:20px; padding:28px; border:1px solid rgba(15,23,42,.1); border-radius:22px; background:#fff; box-shadow:0 24px 60px rgba(15,23,42,.11); }
   .training-brief::before { content:""; position:absolute; inset:0 0 auto; height:8px; border-radius:22px 22px 0 0; background:linear-gradient(90deg,#1a6fe8,#16a46c,#ffe27a); }
   .brief-label { width:max-content; display:inline-flex; align-items:center; min-height:30px; padding:7px 11px; border-radius:999px; background:#e8f1fd; color:#1558c0; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
@@ -154,20 +155,25 @@
           <a class="button" href="#format">Lihat Format Program</a>
         </div>
       </div>
-      <aside class="hero-art" aria-label="Ringkasan English Course for Employees">
+      <aside class="hero-art" aria-label="Ilustrasi English Course for Employees">
         <div class="hero-visual">
           <img src="/assets/karyawan.png" alt="Ilustrasi karyawan mengikuti English corporate training">
         </div>
-        <div class="training-brief">
-          <span class="brief-label">For companies</span>
-          <div class="brief-title">Training fleksibel untuk kebutuhan komunikasi kerja</div>
-          <div class="brief-list">
-            <div class="brief-item"><div class="brief-mark">01</div><div><strong>Online atau offline</strong><span>Format kelas bisa disesuaikan dengan lokasi dan kebutuhan perusahaan.</span></div></div>
-            <div class="brief-item"><div class="brief-mark">02</div><div><strong>Materi custom</strong><span>Fokus materi dapat diarahkan ke daily work, meeting, email, presentation, atau customer handling.</span></div></div>
-            <div class="brief-item"><div class="brief-mark">03</div><div><strong>Suasana suportif</strong><span>Peserta dilatih secara bertahap agar lebih berani menggunakan bahasa Inggris.</span></div></div>
-          </div>
-        </div>
       </aside>
+    </div>
+  </section>
+
+  <section class="brief-section" aria-labelledby="trainingBriefTitle">
+    <div class="shell">
+      <div class="training-brief">
+        <span class="brief-label">For companies</span>
+        <div class="brief-title" id="trainingBriefTitle">Training fleksibel untuk kebutuhan komunikasi kerja</div>
+        <div class="brief-list">
+          <div class="brief-item"><div class="brief-mark">01</div><div><strong>Online atau offline</strong><span>Format kelas bisa disesuaikan dengan lokasi dan kebutuhan perusahaan.</span></div></div>
+          <div class="brief-item"><div class="brief-mark">02</div><div><strong>Materi custom</strong><span>Fokus materi dapat diarahkan ke daily work, meeting, email, presentation, atau customer handling.</span></div></div>
+          <div class="brief-item"><div class="brief-mark">03</div><div><strong>Suasana suportif</strong><span>Peserta dilatih secara bertahap agar lebih berani menggunakan bahasa Inggris.</span></div></div>
+        </div>
+      </div>
     </div>
   </section>
 
