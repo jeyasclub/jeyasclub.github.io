@@ -53,10 +53,11 @@
   .brief-item span { display:block; margin-top:3px; color:#64748b; font-size:12px; line-height:1.55; }
   .section-head { max-width:820px; }
   .section-head p { color:#64748b; }
-  .achievement-layout { display:grid; grid-template-columns:minmax(0,1fr) 180px; gap:28px; align-items:end; margin-bottom:26px; }
-  .achievement-layout .section-head { margin-bottom:0; }
-  .achievement-art { display:grid; justify-items:end; }
-  .achievement-art img { width:min(170px,100%); height:auto; display:block; filter:drop-shadow(0 18px 28px rgba(181,129,24,.18)); }
+  .achievement-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,320px); gap:36px; align-items:center; }
+  .achievement-content { min-width:0; }
+  .achievement-layout .section-head { margin-bottom:26px; }
+  .achievement-art { display:grid; place-items:center; min-height:100%; padding:26px; border:1px solid #e8edf5; border-radius:18px; background:linear-gradient(145deg,#ffffff 0%,#f8fbff 58%,#fff8e6 100%); box-shadow:0 12px 28px rgba(15,23,42,.06); }
+  .achievement-art img { width:min(230px,100%); height:auto; display:block; filter:drop-shadow(0 18px 28px rgba(181,129,24,.18)); }
   .stats-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
   .stat-card { display:grid; gap:9px; min-height:126px; padding:22px; border:1px solid #e8edf5; border-radius:16px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.06); }
   .stat-card strong { color:#1558c0; font-size:32px; line-height:1; font-weight:900; }
@@ -95,8 +96,9 @@
   .training-whatsapp-float svg { width:30px; height:30px; fill:currentColor; }
   @media (max-width:900px) {
     .hero-grid, .professional-grid, .focus-grid { grid-template-columns:1fr; }
-    .achievement-layout { grid-template-columns:minmax(0,1fr) 140px; align-items:center; }
-    .achievement-art img { width:min(132px,100%); }
+    .achievement-layout { grid-template-columns:minmax(0,1fr) 200px; gap:24px; }
+    .achievement-art { padding:20px; }
+    .achievement-art img { width:min(170px,100%); }
     .stats-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
   }
   @media (max-width:560px) {
@@ -110,8 +112,9 @@
     .brief-item { grid-template-columns:38px minmax(0,1fr); }
     .brief-mark { width:38px; height:38px; }
     .achievement-layout { grid-template-columns:1fr; gap:18px; }
-    .achievement-art { justify-items:start; }
-    .achievement-art img { width:112px; }
+    .achievement-layout .section-head { margin-bottom:20px; }
+    .achievement-art { padding:20px; }
+    .achievement-art img { width:132px; }
     .stats-grid, .format-row, .focus-card { grid-template-columns:1fr; }
     .training-whatsapp-float { right:16px; bottom:16px; width:52px; height:52px; }
     .training-whatsapp-float svg { width:27px; height:27px; }
@@ -163,19 +166,21 @@
   <section>
     <div class="shell">
       <div class="achievement-layout">
-        <div class="section-head">
-          <span class="eyebrow">Jeya's Club in numbers</span>
-          <h2>Pencapaian Jeya's Club sebagai partner belajar bahasa</h2>
-          <p>Jeya's Club membangun ekosistem belajar yang aktif, suportif, dan terus berkembang untuk membantu peserta belajar bahasa Inggris dengan nyaman.</p>
+        <div class="achievement-content">
+          <div class="section-head">
+            <span class="eyebrow">Jeya's Club in numbers</span>
+            <h2>Pencapaian Jeya's Club sebagai partner belajar bahasa</h2>
+            <p>Jeya's Club membangun ekosistem belajar yang aktif, suportif, dan terus berkembang untuk membantu peserta belajar bahasa Inggris dengan nyaman.</p>
+          </div>
+          <div class="stats-grid" aria-label="Pencapaian Jeya's Club">
+            <article class="stat-card"><strong>350K+</strong><span>Followers dari seluruh Indonesia</span></article>
+            <article class="stat-card"><strong>1200+</strong><span>Pertemuan kursus telah diselenggarakan</span></article>
+            <article class="stat-card"><strong>4 Skills</strong><span>Reading, Writing, Speaking, Listening</span></article>
+          </div>
         </div>
         <div class="achievement-art" aria-hidden="true">
           <img src="/assets/optimized/piala.png" alt="" loading="lazy">
         </div>
-      </div>
-      <div class="stats-grid" aria-label="Pencapaian Jeya's Club">
-        <article class="stat-card"><strong>350K+</strong><span>Followers dari seluruh Indonesia</span></article>
-        <article class="stat-card"><strong>1200+</strong><span>Pertemuan kursus telah diselenggarakan</span></article>
-        <article class="stat-card"><strong>4 Skills</strong><span>Reading, Writing, Speaking, Listening</span></article>
       </div>
     </div>
   </section>
