@@ -40,11 +40,11 @@
       #071220;
     color:#e5edf7;
   }
-  .topbar { border-bottom:1px solid rgba(148,163,184,.18); background:rgba(7,18,32,.9); box-shadow:0 8px 24px rgba(0,0,0,.24); }
-  .brand { color:#f8fafc; }
-  .nav a { color:#aebed2; }
-  .nav a:hover { color:#f5b84b; }
-  .topbar .button.primary { border-color:#f5b84b; background:#f5b84b; color:#0f172a; box-shadow:0 12px 24px rgba(245,184,75,.18); }
+  .topbar { border-bottom:1px solid #e5e7eb; background:rgba(255,255,255,.96); box-shadow:0 8px 24px rgba(15,23,42,.04); }
+  .brand { color:#1a1a2e; }
+  .nav a { color:#6b7280; }
+  .nav a:hover { color:#1558c0; }
+  .topbar .button.primary { border-color:#1A6FE8; background:#1A6FE8; color:#fff; box-shadow:0 12px 24px rgba(26,111,232,.18); }
   .hero {
     padding:84px 0 76px;
     background:
@@ -138,9 +138,17 @@
   .cta-box .eyebrow { background:rgba(255,255,255,.16); color:#fff; }
   .cta-box p { color:rgba(255,255,255,.82); }
   .cta-box .button.primary { border-color:#fff; background:#fff; color:#1558c0; box-shadow:none; }
-  footer { border-top:1px solid rgba(148,163,184,.18); background:#06101f; }
-  .footer-inner { color:#aebed2; }
-  .footer-inner a { color:#bfdbfe; }
+  footer { padding:48px 0 34px; border-top:1px solid rgba(148,163,184,.18); background:#06101f; }
+  .training-footer { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(180px,.6fr) minmax(220px,.8fr); gap:28px; align-items:start; color:#aebed2; }
+  .footer-brand { display:grid; gap:12px; }
+  .footer-brand strong { color:#f8fafc; font-size:20px; line-height:1.2; }
+  .footer-brand p, .footer-cta p { color:#aebed2; line-height:1.75; }
+  .footer-links { display:grid; gap:10px; }
+  .footer-links strong, .footer-cta strong { color:#f8fafc; font-size:14px; }
+  .footer-links a, .footer-cta a { color:#bfdbfe; text-decoration:none; font-weight:800; }
+  .footer-links a:hover, .footer-cta a:hover { color:#f5b84b; }
+  .footer-cta { display:grid; gap:10px; }
+  .footer-bottom { margin-top:28px; padding-top:18px; border-top:1px solid rgba(148,163,184,.16); color:#7f8ea3; font-size:12px; }
   .training-whatsapp-float { right:22px; bottom:22px; z-index:180; width:58px; height:58px; min-height:0; padding:0; border-radius:50%; background:#25d366; box-shadow:0 14px 30px rgba(37,211,102,.35); transition:transform .2s, box-shadow .2s; }
   .training-whatsapp-float:hover { background:#25d366; transform:translateY(-3px); box-shadow:0 18px 38px rgba(37,211,102,.42); }
   .training-whatsapp-float svg { width:30px; height:30px; fill:currentColor; }
@@ -150,6 +158,7 @@
     .achievement-art { padding:20px; }
     .achievement-art img { width:min(170px,100%); }
     .stats-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .training-footer { grid-template-columns:1fr 1fr; }
   }
   @media (max-width:560px) {
     .hero { padding:48px 0 54px; }
@@ -169,6 +178,7 @@
     .achievement-art { order:-1; padding:20px; }
     .achievement-art img { width:132px; }
     .stats-grid, .format-row, .focus-card { grid-template-columns:1fr; }
+    .training-footer { grid-template-columns:1fr; }
     .training-whatsapp-float { right:16px; bottom:16px; width:52px; height:52px; }
     .training-whatsapp-float svg { width:27px; height:27px; }
   }
@@ -316,9 +326,27 @@
   </section>
 </main>
 <footer>
-  <div class="shell footer-inner">
-    <span>Jeya's Club</span>
-    <a href="/kursus-bahasa-inggris-online/">Lihat program kursus reguler</a>
+  <div class="shell">
+    <div class="training-footer">
+      <div class="footer-brand">
+        <strong>Jeya's Club Corporate Training</strong>
+        <p>Program English training untuk perusahaan yang ingin membantu tim berkomunikasi lebih percaya diri dalam konteks kerja profesional.</p>
+      </div>
+      <div class="footer-links">
+        <strong>Navigasi</strong>
+        <a href="#benefit">Benefit</a>
+        <a href="#format">Format</a>
+        <a href="#materi">Materi</a>
+        <a href="/kursus-bahasa-inggris-online/">Kursus reguler</a>
+        <a href="/training/">Company Training</a>
+      </div>
+      <div class="footer-cta">
+        <strong>Diskusi training</strong>
+        <p>Ceritakan kebutuhan perusahaan, jumlah peserta, dan target kemampuan tim.</p>
+        <a href="https://wa.me/+6285183305497" target="_blank" rel="noreferrer noopener">Hubungi via WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer-bottom">Jeya's Club. English Course for Employees.</div>
   </div>
 </footer>
 <a href="https://wa.me/+6285183305497" class="whatsapp-float training-whatsapp-float" target="_blank" rel="noreferrer noopener" aria-label="Chat dengan Jeya's Club di WhatsApp">
