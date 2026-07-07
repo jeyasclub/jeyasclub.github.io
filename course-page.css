@@ -100,6 +100,8 @@ footer { padding:34px 0; border-top:1px solid var(--border); background:#fff; }
 .footer-inner { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; color:var(--muted); font-size:13px; }
 .footer-logo-img { width:150px; height:auto; display:block; object-fit:contain; }
 .footer-inner a { text-decoration:none; font-weight:800; color:var(--blue-dark); }
+.footer-link-group { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; }
+.footer-link-group h4 { flex:0 0 100%; color:var(--text); font-size:13px; line-height:1.2; }
 @media (max-width:860px) {
   .nav { display:none; }
   .hero-grid, .grid-2, .grid-3, .faq-grid, .testimonial-grid { grid-template-columns:1fr; }
