@@ -72,6 +72,11 @@ section { padding:72px 0; }
   background-color:#fff8e6;
   background-image:url('/assets/optimized/kids.png');
 }
+.card.has-icon::before { display:none !important; }
+.course-icon { width:54px; height:54px; display:grid; place-items:center; border-radius:16px; background:var(--blue-light); color:var(--blue-dark); font-size:24px; font-weight:900; }
+.course-icon img { width:40px; height:40px; display:block; object-fit:contain; }
+.course-icon.zoom { background:#eef4ff; }
+.course-icon.zoom img { width:42px; height:42px; }
 .card h3, .faq-item h3 { font-size:18px; line-height:1.35; }
 .card-icon { width:56px; height:56px; display:grid; place-items:center; border-radius:16px; background:var(--blue-light); }
 .card-icon img { width:44px; height:44px; object-fit:contain; }
