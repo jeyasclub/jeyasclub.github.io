@@ -831,6 +831,7 @@
   }
 
   function renderFinance(bookings, trackers, manualEntries, digitalRows) {
+    const range = selectedPeriodRange();
     const groupedBookings = groupBookings(bookings);
     const courseRows = sumBy(groupedBookings, (row) => row.program_name || "Tanpa Program", (row) => row.price);
     const payableRows = buildPayableRows(trackers);
