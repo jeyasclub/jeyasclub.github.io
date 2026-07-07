@@ -31,25 +31,46 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/course-page.css?v=20260526-wa">
 <style>
-  .hero-copy h1 { max-width:860px; }
+  body { background:#fbfdff; }
+  .topbar { box-shadow:0 8px 24px rgba(15,23,42,.04); }
+  .hero { padding:84px 0 76px; background:linear-gradient(180deg,#f3f8ff 0%,#ffffff 82%); }
+  .hero::before { opacity:.08; }
+  .hero-grid { grid-template-columns:minmax(0,1.08fr) minmax(330px,460px); gap:clamp(34px,6vw,78px); align-items:center; }
+  .hero-copy h1 { max-width:900px; font-size:clamp(44px,6vw,72px); letter-spacing:0; }
+  .hero-copy p { max-width:720px; color:#516173; font-size:18px; line-height:1.75; }
+  .hero-actions { margin-top:4px; }
+  .hero-meta { display:flex; flex-wrap:wrap; gap:10px; margin-top:2px; }
+  .hero-meta span { min-height:34px; display:inline-flex; align-items:center; border:1px solid rgba(26,111,232,.16); border-radius:999px; background:#fff; color:#1558c0; padding:7px 12px; font-size:12px; font-weight:900; box-shadow:0 10px 22px rgba(26,111,232,.06); }
   .hero-art { align-self:stretch; display:grid; align-content:center; }
-  .training-brief { position:relative; overflow:hidden; display:grid; gap:18px; padding:28px; border:1px solid rgba(26,111,232,.16); border-radius:24px; background:linear-gradient(145deg,#ffffff 0%,#f5f9ff 64%,#fff8e6 100%); box-shadow:0 24px 54px rgba(26,111,232,.12); }
-  .training-brief::before { content:""; position:absolute; inset:auto -70px -90px auto; width:190px; height:190px; border-radius:50%; background:rgba(26,111,232,.1); }
-  .brief-label { width:max-content; position:relative; z-index:1; display:inline-flex; align-items:center; min-height:30px; padding:7px 11px; border-radius:999px; background:#e8f1fd; color:#1558c0; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
-  .brief-title { position:relative; z-index:1; font-size:25px; line-height:1.2; font-weight:900; color:#102a43; }
-  .brief-list { position:relative; z-index:1; display:grid; gap:10px; }
-  .brief-item { display:grid; grid-template-columns:44px minmax(0,1fr); gap:12px; align-items:center; padding:14px; border:1px solid rgba(26,111,232,.12); border-radius:16px; background:rgba(255,255,255,.84); }
-  .brief-mark { width:44px; height:44px; display:grid; place-items:center; border-radius:14px; background:#1a6fe8; color:#fff; font-size:13px; font-weight:900; }
-  .brief-item strong { display:block; color:#1a1a2e; font-size:14px; line-height:1.35; }
-  .brief-item span { display:block; margin-top:2px; color:#6b7280; font-size:12px; line-height:1.5; }
-  .stats-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
-  .stat-card { display:grid; gap:8px; padding:20px; border:1px solid rgba(26,111,232,.14); border-radius:18px; background:#fff; box-shadow:0 14px 30px rgba(26,111,232,.07); }
-  .stat-card strong { color:#1558c0; font-size:30px; line-height:1; font-weight:900; }
-  .stat-card span { color:#1a1a2e; font-size:13px; font-weight:900; line-height:1.45; }
+  .training-brief { position:relative; display:grid; gap:20px; padding:28px; border:1px solid rgba(15,23,42,.1); border-radius:22px; background:#fff; box-shadow:0 24px 60px rgba(15,23,42,.11); }
+  .training-brief::before { content:""; position:absolute; inset:0 0 auto; height:8px; border-radius:22px 22px 0 0; background:linear-gradient(90deg,#1a6fe8,#16a46c,#ffe27a); }
+  .brief-label { width:max-content; display:inline-flex; align-items:center; min-height:30px; padding:7px 11px; border-radius:999px; background:#e8f1fd; color:#1558c0; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+  .brief-title { font-size:25px; line-height:1.22; font-weight:900; color:#111827; }
+  .brief-list { display:grid; gap:10px; }
+  .brief-item { display:grid; grid-template-columns:42px minmax(0,1fr); gap:12px; align-items:start; padding:15px; border:1px solid #e8edf5; border-radius:14px; background:#fbfdff; }
+  .brief-mark { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:#1558c0; color:#fff; font-size:12px; font-weight:900; }
+  .brief-item strong { display:block; color:#111827; font-size:14px; line-height:1.35; }
+  .brief-item span { display:block; margin-top:3px; color:#64748b; font-size:12px; line-height:1.55; }
+  .section-head { max-width:820px; }
+  .section-head p { color:#64748b; }
+  .stats-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+  .stat-card { display:grid; gap:9px; min-height:126px; padding:22px; border:1px solid #e8edf5; border-radius:16px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.06); }
+  .stat-card strong { color:#1558c0; font-size:32px; line-height:1; font-weight:900; }
+  .stat-card span { color:#111827; font-size:13px; font-weight:900; line-height:1.45; }
+  .professional-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+  .professional-card { min-height:100%; display:grid; align-content:start; gap:12px; padding:22px; border:1px solid #e8edf5; border-radius:16px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.06); }
+  .professional-card .tag { width:max-content; display:inline-flex; align-items:center; border-radius:999px; background:#f3f8ff; color:#1558c0; padding:6px 10px; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+  .professional-card h3 { color:#111827; font-size:18px; line-height:1.35; }
+  .professional-card p { color:#64748b; line-height:1.75; }
   .format-list { display:grid; gap:12px; }
-  .format-row { display:grid; grid-template-columns:150px minmax(0,1fr); gap:14px; align-items:start; padding:18px; border:1px solid rgba(26,111,232,.14); border-radius:18px; background:#fff; box-shadow:0 14px 30px rgba(26,111,232,.07); }
-  .format-row strong { color:#1558c0; font-size:15px; }
-  .format-row p { color:#6b7280; line-height:1.75; }
+  .format-row { display:grid; grid-template-columns:170px minmax(0,1fr); gap:18px; align-items:start; padding:20px; border:1px solid #e8edf5; border-radius:16px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.06); }
+  .format-row strong { color:#1558c0; font-size:15px; line-height:1.45; }
+  .format-row p { color:#64748b; line-height:1.75; }
+  .focus-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .focus-card { display:grid; grid-template-columns:58px minmax(0,1fr); gap:14px; align-items:start; padding:20px; border:1px solid #e8edf5; border-radius:16px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.06); }
+  .focus-icon { width:58px; height:58px; display:grid; place-items:center; border-radius:14px; background:#e8f1fd; color:#1558c0; font-size:18px; font-weight:900; }
+  .focus-card h3 { margin-bottom:6px; color:#111827; font-size:18px; line-height:1.35; }
+  .focus-card p { color:#64748b; line-height:1.75; }
   .grid-2 > .card:not(.step-card)::before,
   .grid-3 > .card:not(.step-card)::before { background-image:none; background:linear-gradient(135deg,#e8f1fd,#ffffff); border:1px solid rgba(26,111,232,.14); box-shadow:inset 0 0 0 16px rgba(26,111,232,.14); }
   .grid-2 > .card:nth-child(2n):not(.step-card)::before,
@@ -58,17 +79,31 @@
   .grid-3 > .card:nth-child(3n):not(.step-card)::before,
   .grid-2 > .card:nth-child(4n):not(.step-card)::before,
   .grid-3 > .card:nth-child(4n):not(.step-card)::before { background-image:none; }
-  .cta-box { align-items:start; }
+  .steps .grid-3 { gap:18px; }
+  .step-card { border-color:#e8edf5; box-shadow:0 12px 28px rgba(15,23,42,.06); }
+  .cta { padding-top:32px; }
+  .cta-box { align-items:start; border:1px solid rgba(26,111,232,.18); border-radius:22px; background:linear-gradient(135deg,#0f3e85 0%,#1a6fe8 56%,#16a46c 100%); color:#fff; box-shadow:0 24px 60px rgba(26,111,232,.18); }
+  .cta-box .eyebrow { background:rgba(255,255,255,.16); color:#fff; }
+  .cta-box p { color:rgba(255,255,255,.82); }
+  .cta-box .button.primary { border-color:#fff; background:#fff; color:#1558c0; box-shadow:none; }
   .training-whatsapp-float { right:22px; bottom:22px; z-index:180; width:58px; height:58px; min-height:0; padding:0; border-radius:50%; background:#25d366; box-shadow:0 14px 30px rgba(37,211,102,.35); transition:transform .2s, box-shadow .2s; }
   .training-whatsapp-float:hover { background:#25d366; transform:translateY(-3px); box-shadow:0 18px 38px rgba(37,211,102,.42); }
   .training-whatsapp-float svg { width:30px; height:30px; fill:currentColor; }
-  @media (max-width:900px) { .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width:900px) {
+    .hero-grid, .professional-grid, .focus-grid { grid-template-columns:1fr; }
+    .stats-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  }
   @media (max-width:560px) {
+    .hero { padding:48px 0 54px; }
+    .hero-copy h1 { font-size:40px; }
+    .hero-copy p { font-size:16px; }
+    .hero-meta { display:grid; grid-template-columns:1fr; }
+    .hero-meta span { width:100%; justify-content:center; text-align:center; }
     .training-brief { padding:22px; }
     .brief-title { font-size:22px; }
     .brief-item { grid-template-columns:38px minmax(0,1fr); }
     .brief-mark { width:38px; height:38px; }
-    .stats-grid, .format-row { grid-template-columns:1fr; }
+    .stats-grid, .format-row, .focus-card { grid-template-columns:1fr; }
     .training-whatsapp-float { right:16px; bottom:16px; width:52px; height:52px; }
     .training-whatsapp-float svg { width:27px; height:27px; }
   }
@@ -92,6 +127,11 @@
         <span class="eyebrow">Corporate English Training</span>
         <h1>English Course for Employees</h1>
         <p>Program pelatihan bahasa Inggris untuk perusahaan yang ingin membantu karyawan berkomunikasi lebih percaya diri dalam pekerjaan, meeting, presentasi, email, dan interaksi profesional.</p>
+        <div class="hero-meta" aria-label="Ringkasan format training">
+          <span>Online, offline, atau hybrid</span>
+          <span>Materi sesuai kebutuhan tim</span>
+          <span>Untuk staff, sales, CS, dan management</span>
+        </div>
         <div class="hero-actions">
           <a class="button primary" href="https://wa.me/+6285183305497" target="_blank" rel="noreferrer noopener">Diskusi Lebih Lanjut</a>
           <a class="button" href="#format">Lihat Format Program</a>
@@ -118,7 +158,7 @@
         <h2>Pencapaian Jeya's Club sebagai partner belajar bahasa</h2>
         <p>Jeya's Club membangun ekosistem belajar yang aktif, suportif, dan terus berkembang untuk membantu peserta belajar bahasa Inggris dengan nyaman.</p>
       </div>
-      <div class="stats-grid">
+      <div class="stats-grid" aria-label="Pencapaian Jeya's Club">
         <article class="stat-card"><strong>350K+</strong><span>Followers dari seluruh Indonesia</span></article>
         <article class="stat-card"><strong>1200+</strong><span>Pertemuan kursus telah diselenggarakan</span></article>
         <article class="stat-card"><strong>4 Skills</strong><span>Reading, Writing, Speaking, Listening</span></article>
@@ -133,10 +173,10 @@
         <h2>Bahasa Inggris yang relevan untuk kebutuhan kerja</h2>
         <p>Program dirancang agar peserta tidak hanya menghafal grammar, tapi juga bisa menggunakan bahasa Inggris dalam situasi profesional sehari-hari.</p>
       </div>
-      <div class="grid-3">
-        <article class="card"><h3>Lebih percaya diri saat meeting</h3><p>Peserta berlatih membuka diskusi, menyampaikan pendapat, bertanya, dan merespons dalam bahasa Inggris.</p></article>
-        <article class="card"><h3>Komunikasi kerja lebih rapi</h3><p>Latihan vocabulary, phrasing, email, dan kalimat profesional yang bisa langsung dipakai di kantor.</p></article>
-        <article class="card"><h3>Materi sesuai industri</h3><p>Topik bisa disesuaikan dengan kebutuhan tim, level peserta, dan konteks pekerjaan perusahaan.</p></article>
+      <div class="professional-grid">
+        <article class="professional-card"><span class="tag">Meetings</span><h3>Lebih percaya diri saat meeting</h3><p>Peserta berlatih membuka diskusi, menyampaikan pendapat, bertanya, dan merespons dalam bahasa Inggris.</p></article>
+        <article class="professional-card"><span class="tag">Workplace</span><h3>Komunikasi kerja lebih rapi</h3><p>Latihan vocabulary, phrasing, email, dan kalimat profesional yang bisa langsung dipakai di kantor.</p></article>
+        <article class="professional-card"><span class="tag">Custom</span><h3>Materi sesuai industri</h3><p>Topik bisa disesuaikan dengan kebutuhan tim, level peserta, dan konteks pekerjaan perusahaan.</p></article>
       </div>
     </div>
   </section>
@@ -162,11 +202,11 @@
         <span class="eyebrow">Materi training</span>
         <h2>Fokus yang bisa dipilih perusahaan</h2>
       </div>
-      <div class="grid-2">
-        <article class="card"><h3>Business Conversation</h3><p>Small talk profesional, diskusi tim, menyampaikan ide, clarification, dan handling questions.</p></article>
-        <article class="card"><h3>Presentation Skills</h3><p>Latihan membuka presentasi, menjelaskan data, memberi transisi, dan menutup presentasi dengan jelas.</p></article>
-        <article class="card"><h3>Email & Written Communication</h3><p>Menulis email kerja yang sopan, ringkas, dan mudah dipahami untuk komunikasi internal maupun eksternal.</p></article>
-        <article class="card"><h3>Customer & Client Communication</h3><p>Frasa untuk melayani customer, menjawab pertanyaan, menangani komplain, dan menjaga tone profesional.</p></article>
+      <div class="focus-grid">
+        <article class="focus-card"><div class="focus-icon">01</div><div><h3>Business Conversation</h3><p>Small talk profesional, diskusi tim, menyampaikan ide, clarification, dan handling questions.</p></div></article>
+        <article class="focus-card"><div class="focus-icon">02</div><div><h3>Presentation Skills</h3><p>Latihan membuka presentasi, menjelaskan data, memberi transisi, dan menutup presentasi dengan jelas.</p></div></article>
+        <article class="focus-card"><div class="focus-icon">03</div><div><h3>Email & Written Communication</h3><p>Menulis email kerja yang sopan, ringkas, dan mudah dipahami untuk komunikasi internal maupun eksternal.</p></div></article>
+        <article class="focus-card"><div class="focus-icon">04</div><div><h3>Customer & Client Communication</h3><p>Frasa untuk melayani customer, menjawab pertanyaan, menangani komplain, dan menjaga tone profesional.</p></div></article>
       </div>
     </div>
   </section>
