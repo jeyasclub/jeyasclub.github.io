@@ -49,9 +49,9 @@
   .dashboard { display:none; gap:22px; }
   .dashboard.open { display:grid; }
   .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
-  .filter-card { width:auto; min-width:240px; display:flex; align-items:end; gap:10px; padding:12px; background:#fff; border:3px solid var(--ink); border-radius:16px; box-shadow:5px 6px 0 var(--shadow); }
+  .filter-card { width:auto; min-width:240px; display:flex; align-items:end; flex-wrap:wrap; gap:10px; padding:12px; background:#fff; border:3px solid var(--ink); border-radius:16px; box-shadow:5px 6px 0 var(--shadow); }
   .filter-card label { flex:0 0 170px; min-width:0; }
-  .filter-card input { min-height:42px; padding:8px 11px; }
+  .filter-card input, .filter-card select { min-height:42px; padding:8px 11px; }
   .filter-card .btn { min-height:42px; padding:8px 12px; }
   .metrics { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
   .metric { padding:18px; display:grid; gap:5px; }
@@ -262,7 +262,10 @@
         <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
       </div>
       <div class="filter-card">
-        <label>Filter bulan<input type="month" id="monthFilter"></label>
+        <label>Jenis periode<select id="periodMode"><option value="month">Per bulan</option><option value="range">Range bulan</option><option value="all">All time</option></select></label>
+        <label id="singleMonthField">Filter bulan<input type="month" id="monthFilter"></label>
+        <label id="rangeStartField" class="hidden">Dari bulan<input type="month" id="startMonthFilter"></label>
+        <label id="rangeEndField" class="hidden">Sampai bulan<input type="month" id="endMonthFilter"></label>
         <button class="btn primary" type="button" id="refreshButton">Refresh</button>
       </div>
     </div>
@@ -358,7 +361,9 @@
   const els = {
     loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
     email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
-    logout:$("logoutButton"), sessionLabel:$("sessionLabel"), month:$("monthFilter"), refresh:$("refreshButton"),
+    logout:$("logoutButton"), sessionLabel:$("sessionLabel"), periodMode:$("periodMode"), month:$("monthFilter"),
+    startMonth:$("startMonthFilter"), endMonth:$("endMonthFilter"), singleMonthField:$("singleMonthField"),
+    rangeStartField:$("rangeStartField"), rangeEndField:$("rangeEndField"), refresh:$("refreshButton"),
     totalRevenue:$("totalRevenue"), totalPayable:$("totalPayable"), netRevenue:$("netRevenue"),
     profitLossSubtitle:$("profitLossSubtitle"), exportFinance:$("exportFinance"), profitLossStatement:$("profitLossStatement"),
     digitalRevenueNote:$("digitalRevenueNote"), manualEntryForm:$("manualEntryForm"), manualDate:$("manualDate"),
@@ -383,13 +388,20 @@
 
   function saveAdminFilters() {
     localStorage.setItem(adminFilterStorageKey, JSON.stringify({
-      month: els.month.value || ""
+      periodMode: els.periodMode.value || "month",
+      month: els.month.value || "",
+      startMonth: els.startMonth.value || "",
+      endMonth: els.endMonth.value || ""
     }));
   }
 
   function restoreAdminFilters() {
     const filters = getSavedAdminFilters();
+    if (filters.periodMode !== undefined) els.periodMode.value = filters.periodMode || "month";
     if (filters.month !== undefined) els.month.value = filters.month || "";
+    if (filters.startMonth !== undefined) els.startMonth.value = filters.startMonth || "";
+    if (filters.endMonth !== undefined) els.endMonth.value = filters.endMonth || "";
+    updatePeriodControls();
   }
 
   function setAuthMessage(message, type = "") {
@@ -425,6 +437,14 @@
   }
 
   function periodLabel() {
+    const mode = els.periodMode.value || "month";
+    if (mode === "all") return "All time";
+    if (mode === "range") {
+      const start = els.startMonth.value || els.month.value || "-";
+      const end = els.endMonth.value || start;
+      if (start !== "-" && end !== "-" && start > end) return `${end} sampai ${start}`;
+      return `${start} sampai ${end}`;
+    }
     return els.month.value ? els.month.value : "Semua bulan";
   }
 
@@ -442,6 +462,35 @@
     const next = new Date(year, month, 1);
     const end = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`;
     return { start, end };
+  }
+
+  function selectedPeriodRange() {
+    const mode = els.periodMode.value || "month";
+    if (mode === "all") return null;
+    if (mode === "range") {
+      const startMonth = els.startMonth.value || els.month.value;
+      const endMonth = els.endMonth.value || startMonth;
+      const startRange = monthRange(startMonth);
+      const endRange = monthRange(endMonth);
+      if (!startRange || !endRange) return null;
+      return startRange.start <= endRange.start
+        ? { start:startRange.start, end:endRange.end }
+        : { start:endRange.start, end:startRange.end };
+    }
+    return monthRange(els.month.value);
+  }
+
+  function updatePeriodControls() {
+    const mode = els.periodMode.value || "month";
+    const currentMonth = toMonthInput();
+    if (mode === "month" && !els.month.value) els.month.value = currentMonth;
+    if (mode === "range") {
+      if (!els.startMonth.value) els.startMonth.value = els.month.value || currentMonth;
+      if (!els.endMonth.value) els.endMonth.value = els.startMonth.value;
+    }
+    els.singleMonthField.classList.toggle("hidden", mode !== "month");
+    els.rangeStartField.classList.toggle("hidden", mode !== "range");
+    els.rangeEndField.classList.toggle("hidden", mode !== "range");
   }
 
   function escapeHTML(value) {
@@ -653,7 +702,8 @@
     if (!supabaseClient || !isFinanceAdmin()) return;
     els.refresh.disabled = true;
     els.refresh.textContent = "Memuat...";
-    const range = monthRange(els.month.value);
+    updatePeriodControls();
+    const range = selectedPeriodRange();
     let bookingQuery = supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,price,program_name,tutor").order("order_date", { ascending:true }).order("created_at", { ascending:true });
     let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
     let manualQuery = supabaseClient.from("jeyasclub_finance_manual_entries").select("*").order("entry_date", { ascending:true }).order("created_at", { ascending:true });
@@ -801,7 +851,7 @@
     els.netRevenue.textContent = formatMoney(netProfit);
     els.profitLossSubtitle.textContent = `Periode: ${periodLabel()}`;
     els.digitalRevenueNote.textContent = `Digital Produk Revenue: ${formatNumber(digitalSaleCount)} checkout Mayar dari data overview x harga produk Mayar.`;
-    els.revenueSubtitle.textContent = els.month.value ? `Grafik course revenue untuk ${els.month.value}.` : "Grafik total course revenue per bulan dari semua booking.";
+    els.revenueSubtitle.textContent = range ? `Grafik course revenue periode ${periodLabel()}.` : "Grafik total course revenue per bulan dari semua booking.";
     renderMoneyLineChart(els.revenueChart, revenueByMonth(groupedBookings));
     renderManualEntries(manualEntries);
     lastFinanceReport = {
@@ -822,7 +872,7 @@
       manualEntries
     };
     renderProfitLossStatement(lastFinanceReport);
-    els.sessionLabel.textContent = els.month.value ? `Data finance bulan ${els.month.value}` : "Data finance semua bulan";
+    els.sessionLabel.textContent = `Data finance periode ${periodLabel()}`;
   }
 
   async function addManualEntry(event) {
@@ -964,7 +1014,13 @@
   els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
   els.manualEntryForm.addEventListener("submit", addManualEntry);
   els.exportFinance.addEventListener("click", exportFinanceReport);
-  els.month.addEventListener("change", () => { saveAdminFilters(); loadFinance(); });
+  [els.periodMode, els.month, els.startMonth, els.endMonth].forEach((control) => {
+    control.addEventListener("change", () => {
+      updatePeriodControls();
+      saveAdminFilters();
+      loadFinance();
+    });
+  });
   els.refresh.addEventListener("click", async () => { await loadMasterData(); await loadFinance(); });
   init();
 </script>
