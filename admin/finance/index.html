@@ -453,6 +453,13 @@
     els.manualEntryStatus.textContent = message;
   }
 
+  function compareEntryDateAsc(a, b) {
+    const dateA = String(a.entry_date || "").slice(0, 10);
+    const dateB = String(b.entry_date || "").slice(0, 10);
+    if (dateA !== dateB) return dateA.localeCompare(dateB);
+    return String(a.created_at || "").localeCompare(String(b.created_at || ""));
+  }
+
   function getBookingGroupId(row) {
     return row.booking_group_id || row.id;
   }
@@ -649,7 +656,7 @@
     const range = monthRange(els.month.value);
     let bookingQuery = supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,price,program_name,tutor").order("order_date", { ascending:true }).order("created_at", { ascending:true });
     let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
-    let manualQuery = supabaseClient.from("jeyasclub_finance_manual_entries").select("*").order("entry_date", { ascending:false }).order("created_at", { ascending:false });
+    let manualQuery = supabaseClient.from("jeyasclub_finance_manual_entries").select("*").order("entry_date", { ascending:true }).order("created_at", { ascending:true });
     if (range) {
       bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
       trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
@@ -754,10 +761,11 @@
   }
 
   function renderManualEntries(rows) {
+    const sortedRows = [...rows].sort(compareEntryDateAsc);
     const hasRows = rows.length > 0;
     els.manualEntryTableWrap.classList.toggle("hidden", !hasRows);
     els.manualEntryEmpty.classList.toggle("hidden", hasRows);
-    els.manualEntryBody.innerHTML = rows.map((row) => `
+    els.manualEntryBody.innerHTML = sortedRows.map((row) => `
       <tr>
         <td>${escapeHTML(formatDate(row.entry_date))}</td>
         <td><span class="pill ${row.entry_type === "expense" ? "expense" : ""}">${row.entry_type === "expense" ? "Pengeluaran" : "Pendapatan"}</span></td>
