@@ -40,11 +40,12 @@
   .topbar { box-shadow:0 8px 24px rgba(15,23,42,.04); }
   .hero {
     padding:84px 0 76px;
-    background:
-      linear-gradient(135deg, rgba(26,111,232,.08) 0 1px, transparent 1px 96px),
-      linear-gradient(180deg,#f3f8ff 0%,rgba(255,255,255,.92) 82%);
+    background:linear-gradient(180deg, #dce8f7 0%, #eaf2fd 50%, #f0f6ff 80%, #ffffff 100%);
   }
-  .hero::before { opacity:.06; }
+  .hero::before {
+    background:url('/assets/optimized/bg.jpg') center/cover;
+    opacity:.7;
+  }
   .soft {
     background:
       linear-gradient(90deg, rgba(26,111,232,.035) 1px, transparent 1px) 0 0 / 86px 86px,
