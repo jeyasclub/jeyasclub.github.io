@@ -78,6 +78,7 @@
   .zoom-event { display:grid; gap:3px; padding:8px; border-radius:10px; background:#e8f1fd; color:#1558c0; font-size:12px; line-height:1.35; border:2px solid var(--ink); box-shadow:2px 3px 0 var(--shadow); }
   .zoom-event strong { color:#111827; font-size:12px; }
   .zoom-event button { justify-self:start; min-height:28px; padding:5px 8px; font-size:11px; }
+  .zoom-event-actions { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
   .info-links { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; padding:18px 20px 20px; }
   .info-link-card { min-height:82px; padding:14px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px; border:2.5px solid var(--ink); border-radius:12px; background:#f8fbff; box-shadow:3px 4px 0 var(--shadow); }
   .info-link { display:grid; align-content:center; gap:6px; color:var(--text); text-decoration:none; min-width:0; }
@@ -231,6 +232,7 @@
             <label>Jam Selesai<input type="time" id="zoomEnd" required></label>
           </div>
           <button class="btn primary" type="submit" id="zoomSubmit">Simpan Zoom Booking</button>
+          <button class="btn hidden" type="button" id="zoomCancelEdit">Batal Edit</button>
           <p class="status" id="zoomStatus"></p>
         </form>
         <div class="zoom-filter">
@@ -253,6 +255,7 @@
   let programOptions = [];
   let tutorOptions = [];
   let feeRows = [];
+  let editingZoomBookingId = "";
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -265,7 +268,7 @@
     copyZoomLink:$("copyZoomLink"), copyTestimonialLink:$("copyTestimonialLink"),
     trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus"), zoomForm:$("zoomForm"), zoomDate:$("zoomDate"),
     zoomStart:$("zoomStart"), zoomEnd:$("zoomEnd"), zoomNote:$("zoomNote"), zoomSubmit:$("zoomSubmit"), zoomStatus:$("zoomStatus"),
-    zoomMonth:$("zoomMonth"), zoomRefresh:$("zoomRefresh"), zoomCalendar:$("zoomCalendar")
+    zoomMonth:$("zoomMonth"), zoomRefresh:$("zoomRefresh"), zoomCalendar:$("zoomCalendar"), zoomCancelEdit:$("zoomCancelEdit")
   };
 
   function isAdmin(session = currentSession) {
@@ -663,7 +666,7 @@
     renderZoomCalendar(data || []);
   }
 
-  function canDeleteZoomBooking(row) {
+  function canManageZoomBooking(row) {
     return isAdmin() || String(row.tutor_email || "").toLowerCase() === getCurrentEmail();
   }
 
@@ -694,7 +697,12 @@
               <strong>${formatTime(event.start_time)}-${formatTime(event.end_time)}</strong>
               <span>${escapeHTML(event.tutor_name || event.tutor_email)}</span>
               ${event.note ? `<span>${escapeHTML(event.note)}</span>` : ""}
-              ${canDeleteZoomBooking(event) ? `<button class="btn danger" type="button" data-zoom-delete="${escapeHTML(event.id)}">Hapus</button>` : ""}
+              ${canManageZoomBooking(event) ? `
+                <div class="zoom-event-actions">
+                  <button class="btn" type="button" data-zoom-edit="${escapeHTML(event.id)}">Edit</button>
+                  <button class="btn danger" type="button" data-zoom-delete="${escapeHTML(event.id)}">Hapus</button>
+                </div>
+              ` : ""}
             </div>
           `).join("")}
         </div>
@@ -702,9 +710,36 @@
     }
 
     els.zoomCalendar.innerHTML = cells.join("");
+    els.zoomCalendar.querySelectorAll("[data-zoom-edit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const row = rows.find((item) => item.id === button.dataset.zoomEdit);
+        if (row) startZoomEdit(row);
+      });
+    });
     els.zoomCalendar.querySelectorAll("[data-zoom-delete]").forEach((button) => {
       button.addEventListener("click", () => deleteZoomBooking(button.dataset.zoomDelete));
     });
+  }
+
+  function resetZoomForm(message = "") {
+    editingZoomBookingId = "";
+    els.zoomForm.reset();
+    els.zoomDate.value = toDateInput();
+    els.zoomSubmit.textContent = "Simpan Zoom Booking";
+    els.zoomCancelEdit.classList.add("hidden");
+    if (message) setStatus(els.zoomStatus, message, "good");
+  }
+
+  function startZoomEdit(row) {
+    editingZoomBookingId = row.id;
+    els.zoomDate.value = row.booking_date || toDateInput();
+    els.zoomStart.value = formatTime(row.start_time);
+    els.zoomEnd.value = formatTime(row.end_time);
+    els.zoomNote.value = row.note || "";
+    els.zoomSubmit.textContent = "Update Zoom Booking";
+    els.zoomCancelEdit.classList.remove("hidden");
+    setStatus(els.zoomStatus, `Mode edit: ${formatDate(row.booking_date)} ${formatTime(row.start_time)}-${formatTime(row.end_time)}.`);
+    els.zoomForm.scrollIntoView({ behavior:"smooth", block:"center" });
   }
 
   async function deleteZoomBooking(bookingId) {
@@ -809,29 +844,35 @@
   els.bookingStudentCount.addEventListener("change", handleStudentCountChange);
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
+  els.zoomCancelEdit.addEventListener("click", () => {
+    resetZoomForm("Mode edit dibatalkan.");
+  });
 
   els.zoomForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     await ensureCurrentSession();
     if (!currentSession || !currentSession.user) { setStatus(els.zoomStatus, "Sesi login habis. Login ulang dulu.", "bad"); return; }
     els.zoomSubmit.disabled = true;
-    setStatus(els.zoomStatus, "Menyimpan Zoom Booking...");
-    const { error } = await supabaseClient.rpc("create_class_zoom_booking", {
+    const wasEditingZoomBooking = Boolean(editingZoomBookingId);
+    const savedZoomDate = els.zoomDate.value;
+    setStatus(els.zoomStatus, wasEditingZoomBooking ? "Mengupdate Zoom Booking..." : "Menyimpan Zoom Booking...");
+    const rpcName = wasEditingZoomBooking ? "update_class_zoom_booking" : "create_class_zoom_booking";
+    const rpcPayload = {
       p_booking_date: els.zoomDate.value,
       p_start_time: els.zoomStart.value,
       p_end_time: els.zoomEnd.value,
       p_note: els.zoomNote.value.trim()
-    });
+    };
+    if (editingZoomBookingId) rpcPayload.p_booking_id = editingZoomBookingId;
+    const { error } = await supabaseClient.rpc(rpcName, rpcPayload);
     els.zoomSubmit.disabled = false;
     if (error) {
       console.error(error);
       setStatus(els.zoomStatus, getZoomBookingErrorMessage(error), "bad");
       return;
     }
-    els.zoomForm.reset();
-    els.zoomDate.value = toDateInput();
-    els.zoomMonth.value ||= toMonthInput();
-    setStatus(els.zoomStatus, "Zoom Booking berhasil tersimpan.", "good");
+    els.zoomMonth.value = savedZoomDate ? savedZoomDate.slice(0, 7) : (els.zoomMonth.value || toMonthInput());
+    resetZoomForm(wasEditingZoomBooking ? "Zoom Booking berhasil diupdate." : "Zoom Booking berhasil tersimpan.");
     await loadZoomBookings();
   });
 

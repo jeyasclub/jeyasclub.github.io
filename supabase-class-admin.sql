@@ -634,6 +634,79 @@ $$;
 
 grant execute on function public.create_class_zoom_booking(date, time, time, text) to authenticated;
 
+create or replace function public.update_class_zoom_booking(
+  p_booking_id uuid,
+  p_booking_date date,
+  p_start_time time,
+  p_end_time time,
+  p_note text default ''
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_email text;
+  zoom_record public.class_zoom_bookings;
+begin
+  current_email := lower(coalesce(auth.jwt() ->> 'email', ''));
+
+  if current_email = '' then
+    raise exception 'Not allowed';
+  end if;
+
+  if p_booking_id is null then
+    raise exception 'Zoom booking not found';
+  end if;
+
+  if p_booking_date is null or p_start_time is null or p_end_time is null then
+    raise exception 'Tanggal, jam mulai, dan jam selesai wajib diisi';
+  end if;
+
+  if p_start_time >= p_end_time then
+    raise exception 'Jam selesai harus lebih besar dari jam mulai';
+  end if;
+
+  select *
+  into zoom_record
+  from public.class_zoom_bookings
+  where id = p_booking_id;
+
+  if not found then
+    raise exception 'Zoom booking not found';
+  end if;
+
+  if not (public.is_class_admin() or lower(zoom_record.tutor_email) = current_email) then
+    raise exception 'Not allowed';
+  end if;
+
+  perform pg_advisory_xact_lock(hashtext('class_zoom_bookings:' || p_booking_date::text));
+
+  if (
+    select count(*)
+    from public.class_zoom_bookings zoom
+    where zoom.id <> p_booking_id
+      and zoom.booking_date = p_booking_date
+      and zoom.start_time < p_end_time
+      and zoom.end_time > p_start_time
+  ) >= 2 then
+    raise exception 'Slot Zoom sudah penuh/overlap. Pilihan solusi: Hubungi admin untuk meminta link zoom baru; atau gunakan zoom pribadi (jangan lupa tetap record)';
+  end if;
+
+  update public.class_zoom_bookings
+  set
+    booking_date = p_booking_date,
+    start_time = p_start_time,
+    end_time = p_end_time,
+    note = coalesce(p_note, ''),
+    updated_at = now()
+  where id = p_booking_id;
+end;
+$$;
+
+grant execute on function public.update_class_zoom_booking(uuid, date, time, time, text) to authenticated;
+
 create or replace function public.delete_class_zoom_booking(
   p_booking_id uuid
 )
