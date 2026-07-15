@@ -9,6 +9,7 @@ const GRAMMAR_TEST_PRODUCT_SLUG = 'unlock-grammar-test-recommendation';
 const ENGLISH_SLANG_TEST_PRODUCT_SLUG = 'unlock-english-slang-test';
 const SWE_TEST_PRODUCT_SLUG = 'unlock-pembahasan-toefl-structure-written-expressions';
 const READING_TEST_PRODUCT_SLUG = 'unlock-reading-test-jeyas-club';
+const ACCENT_TEST_PRODUCT_SLUG = 'unlock-accent-test';
 const ENGLISH_HANGOUT_PRODUCT_SLUG = 'english-hangout-club-by-jeyas-club-may-2026-di9e';
 const ENGLISH_HANGOUT_COURSE_KEY = 'english-hangout-club';
 const TOEFL_VOCAB_PRODUCT_SLUG = '300-toefl-vocabulary';
@@ -140,11 +141,12 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
   const isEnglishSlangTest = isEnglishSlangTestPayment({ productName, productUrl, productId }, env);
   const isSweTest = isSweTestPayment({ productName, productUrl, productId }, env);
   const isReadingTest = isReadingTestPayment({ productName, productUrl, productId }, env);
+  const isAccentTest = isAccentTestPayment({ productName, productUrl, productId }, env);
   const isEnglishHangout = isEnglishHangoutPayment({ productName, productUrl, productId }, env);
   const isToeflVocab = isToeflVocabPayment({ productName, productUrl, productId }, env);
   const isEnglishChallenges = isEnglishChallengesPayment({ productName, productUrl, productId }, env);
 
-  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isSweTest && !isReadingTest && !isEnglishHangout && !isToeflVocab && !isEnglishChallenges) {
+  if (!isVocaquiz && !isGrammarTest && !isEnglishSlangTest && !isSweTest && !isReadingTest && !isAccentTest && !isEnglishHangout && !isToeflVocab && !isEnglishChallenges) {
     return jsonResponse({ ok: true, ignored: true, reason: 'unmatched_product', productName, productId });
   }
 
@@ -154,6 +156,7 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     isEnglishSlangTest,
     isSweTest,
     isReadingTest,
+    isAccentTest,
     isEnglishHangout,
     isToeflVocab,
     isEnglishChallenges,
@@ -200,6 +203,10 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
 
   if (isReadingTest) {
     rpcName = 'grant_reading_test_review_access_by_email';
+  }
+
+  if (isAccentTest) {
+    rpcName = 'grant_accent_test_review_access_by_email';
   }
 
   if (isEnglishHangout) {
@@ -259,15 +266,32 @@ async function handleMayarVocaquizWebhook(request, env = {}) {
     }, 500);
   }
 
+  const unlockedProduct = isAccentTest
+    ? 'accent-test-review'
+    : (isEnglishChallenges
+      ? ENGLISH_CHALLENGES_COURSE_KEY
+      : (isToeflVocab
+        ? TOEFL_VOCAB_COURSE_KEY
+        : (isEnglishHangout
+          ? ENGLISH_HANGOUT_COURSE_KEY
+          : (isReadingTest
+            ? 'reading-test-review'
+            : (isSweTest
+              ? 'swe-test-review'
+              : (isEnglishSlangTest
+                ? 'english-slang-test-review'
+                : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')))))));
+
   return jsonResponse({
     ok: Boolean(rpcData && rpcData.ok),
-    product: isEnglishChallenges ? ENGLISH_CHALLENGES_COURSE_KEY : (isToeflVocab ? TOEFL_VOCAB_COURSE_KEY : (isEnglishHangout ? ENGLISH_HANGOUT_COURSE_KEY : (isReadingTest ? 'reading-test-review' : (isSweTest ? 'swe-test-review' : (isEnglishSlangTest ? 'english-slang-test-review' : (isGrammarTest ? 'grammar-test-review' : 'vocaquiz-review')))))),
+    product: unlockedProduct,
     saleLog: saleLogResult,
     result: rpcData,
   });
 }
 
 function getMayarSaleProduct(flags = {}) {
+  if (flags.isAccentTest) return { key: 'accent-test', name: 'Accent Test' };
   if (flags.isGrammarTest) return { key: 'grammar-test', name: 'Grammar Test' };
   if (flags.isEnglishSlangTest) return { key: 'english-slang-test', name: 'Slang Test' };
   if (flags.isSweTest) return { key: 'swe-test', name: 'SWE Test' };
@@ -446,6 +470,15 @@ function isReadingTestPayment({ productName, productUrl, productId }, env = {}) 
   const haystack = `${productName} ${productUrl}`.toLowerCase();
   return haystack.includes(READING_TEST_PRODUCT_SLUG)
     || (haystack.includes('reading') && haystack.includes('test') && haystack.includes('jeya'));
+}
+
+function isAccentTestPayment({ productName, productUrl, productId }, env = {}) {
+  const configuredProductId = cleanText(env.MAYAR_ACCENT_TEST_PRODUCT_ID || '');
+  if (configuredProductId && productId === configuredProductId) return true;
+
+  const haystack = `${productName} ${productUrl}`.toLowerCase();
+  return haystack.includes(ACCENT_TEST_PRODUCT_SLUG)
+    || (haystack.includes('accent') && haystack.includes('test'));
 }
 
 function isEnglishHangoutPayment({ productName, productUrl, productId }, env = {}) {
