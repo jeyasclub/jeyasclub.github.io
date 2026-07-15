@@ -650,11 +650,22 @@
       margin: 8px 0 0;
     }
     .score-emoji {
-      display: block;
-      font-size: clamp(5.4rem, 17vw, 8.4rem);
-      line-height: 1;
+      min-height: 138px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       margin: 0 0 14px;
+    }
+    .score-emoji img {
+      width: min(100%, 150px);
+      height: 138px;
+      object-fit: contain;
       filter: drop-shadow(0 12px 18px rgba(15, 23, 42, 0.14));
+    }
+    .score-emoji.mixed img {
+      width: min(46%, 112px);
+      height: 112px;
     }
     .score-copy {
       margin: 14px auto 0;
@@ -1229,7 +1240,9 @@
       <div class="score-layout">
         <div class="score-card" id="scoreCard">
           <strong class="score-category" id="scoreCategory">Ready</strong>
-          <span class="score-emoji" id="scoreEmoji" aria-hidden="true">👍🏻</span>
+          <div class="score-emoji" id="scoreEmoji" aria-hidden="true">
+            <img src="/assets/street.png" alt="">
+          </div>
           <div class="score-number" id="scorePercent">0%</div>
           <p class="score-copy" id="scoreCopy"></p>
         </div>
@@ -1361,7 +1374,7 @@
     function submitAnswer(selected){const q=questions[currentIndex];answers.push({...q,selected,selectedAccent:q.accents[selected]});currentIndex++;if(currentIndex>=questions.length){progressFill.style.width="100%";finishQuiz()}else renderQuestion()}
     function calculateResult(source=answers){const american=source.filter(x=>x.selectedAccent==="american").length,british=source.filter(x=>x.selectedAccent==="british").length,total=american+british||questions.length,americanPercent=Math.round(american/total*100),britishPercent=100-americanPercent;let category="Perfectly Mixed";if(american>british)category="More American";if(british>american)category="More British";return{american,british,total,americanPercent,britishPercent,category}}
     async function finishQuiz(){const result=calculateResult();renderResult(result,"Fun result unlocked! Ini cuma soal kebiasaan kata, bukan nilai kemampuanmu.");show(resultPanel);reviewPanel.classList.remove("hidden");renderReviews(hasReviewAccess);await saveResult(result)}
-    function renderResult(r,status){scoreCard.className="score-card category-nice";scoreCategory.textContent=categoryLabel(r.category);scoreEmoji.textContent=r.category==="More American"?"🇺🇸":r.category==="More British"?"🇬🇧":"🇺🇸🇬🇧";scorePercent.textContent=r.category==="Perfectly Mixed"?"50 / 50":`${Math.max(r.americanPercent,r.britishPercent)}%`;scoreCopy.textContent=r.category==="More American"?"Kata-kata pilihanmu lebih sering punya American vibe. Hollywood effect, perhaps?":r.category==="More British"?"Vocabulary-mu lumayan British-coded. Fancy a cup of tea?":"Kamu ambil enaknya dua dunia—American masuk, British juga nyambung.";resultStatus.textContent=status;breakdownList.innerHTML=`<div class="accent-results"><div class="accent-result-row american"><div class="accent-result-label"><span>🇺🇸 American vibe</span><strong>${r.american} dari ${r.total} · ${r.americanPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.americanPercent}%"></span></div></div><div class="accent-result-row british"><div class="accent-result-label"><span>🇬🇧 British vibe</span><strong>${r.british} dari ${r.total} · ${r.britishPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.britishPercent}%"></span></div></div></div>`}
+    function renderResult(r,status){scoreCard.className="score-card category-nice";scoreCategory.textContent=categoryLabel(r.category);scoreEmoji.classList.toggle("mixed",r.category==="Perfectly Mixed");scoreEmoji.innerHTML=r.category==="More American"?'<img src="/assets/street.png" alt="">':r.category==="More British"?'<img src="/assets/king.png" alt="">':'<img src="/assets/street.png" alt=""><img src="/assets/king.png" alt="">';scorePercent.textContent=r.category==="Perfectly Mixed"?"50 / 50":`${Math.max(r.americanPercent,r.britishPercent)}%`;scoreCopy.textContent=r.category==="More American"?"Kata-kata pilihanmu lebih sering punya American vibe. Hollywood effect, perhaps?":r.category==="More British"?"Vocabulary-mu lumayan British-coded. Fancy a cup of tea?":"Kamu ambil enaknya dua dunia—American masuk, British juga nyambung.";resultStatus.textContent=status;breakdownList.innerHTML=`<div class="accent-results"><div class="accent-result-row american"><div class="accent-result-label"><span>🇺🇸 American vibe</span><strong>${r.american} dari ${r.total} · ${r.americanPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.americanPercent}%"></span></div></div><div class="accent-result-row british"><div class="accent-result-label"><span>🇬🇧 British vibe</span><strong>${r.british} dari ${r.total} · ${r.britishPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.britishPercent}%"></span></div></div></div>`}
     async function saveResult(r){if(!currentSession)return;resultStatus.textContent="Menyimpan hasil...";const u=currentSession.user,summary=answers.map(x=>({id:x.id,selected:x.selected,selectedAccent:x.selectedAccent})),payload={user_id:u.id,email:u.email,username:u.user_metadata?.username||u.user_metadata?.full_name||"",test_name:"American or British Accent Test",category:r.category,american_count:r.american,british_count:r.british,total_questions:r.total,american_percent:r.americanPercent,british_percent:r.britishPercent,answers:summary};const{data,error}=await supabaseClient.from("accent_test_results").insert(payload).select("id").single();if(error){console.error(error);resultStatus.textContent="Hasil tampil, tapi belum tersimpan. Pastikan SQL Accent Test sudah dijalankan.";return}await supabaseClient.from("accent_test_result_answers").insert({result_id:data.id,user_id:u.id,answers});resultStatus.textContent="Hasil tersimpan di akunmu.";await loadLatestResult()}
     async function showLatestResult(){if(!latestResult)return;await checkReviewAccess();answers=[];if(hasReviewAccess){const{data}=await supabaseClient.from("accent_test_result_answers").select("answers").eq("result_id",latestResult.id).limit(1);answers=data?.[0]?.answers||[]}const r={category:latestResult.category,american:latestResult.american_count,british:latestResult.british_count,total:latestResult.total_questions,americanPercent:latestResult.american_percent,britishPercent:latestResult.british_percent};renderResult(r,`Nostalgia dikit—ini hasil mainmu pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`);show(resultPanel);reviewPanel.classList.remove("hidden");renderReviews(hasReviewAccess)}
     async function checkReviewAccess(){if(!currentSession)return false;const{data,error}=await supabaseClient.from("accent_test_review_access").select("id").limit(1);hasReviewAccess=Boolean(!error&&data?.length);updateReviewActions(!hasReviewAccess);if(answers.length||latestResult)renderReviews(hasReviewAccess);return hasReviewAccess}
