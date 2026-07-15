@@ -89,36 +89,6 @@
         }
       },
       {
-        "@type": "FAQPage",
-        "@id": "https://www.jeyasclub.com/accent-test/#faq",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Apa isi Accent Test ini?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Nggak perlu jago bahasa Inggris. Tinggal pilih kata yang paling familiar atau paling sering kamu pakai."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Apakah hasil Accent Test langsung keluar?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Nggak ada jawaban salah. Kuis ini hanya melihat kebiasaan vocabulary, bukan menilai kemampuan bahasa Inggris."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Apakah kunci vocabulary tersedia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Dua contoh bisa dilihat gratis. Seluruh pasangan vocabulary American dan British bisa dibuka seharga Rp5.000."
-            }
-          }
-        ]
-      },
-      {
         "@type": "BreadcrumbList",
         "@id": "https://www.jeyasclub.com/accent-test/#breadcrumb",
         "itemListElement": [
@@ -343,28 +313,6 @@
       color: var(--muted);
       line-height: 1.7;
     }
-    .faq-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-    .faq-item {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: #fff;
-      padding: 16px;
-    }
-    .faq-item h3 {
-      margin: 0 0 8px;
-      font-size: 1rem;
-      line-height: 1.35;
-    }
-    .faq-item p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
     .panel {
       border: 2px solid var(--line);
       border-radius: 24px;
@@ -1062,7 +1010,7 @@
     @media (max-width: 860px) {
       .topbar { padding-inline: 18px; }
       .brand span { display: none; }
-      .hero, .score-layout, .auth-grid, .seo-grid, .faq-grid { grid-template-columns: 1fr; }
+      .hero, .score-layout, .auth-grid, .seo-grid { grid-template-columns: 1fr; }
       .pec-rec {
         grid-template-columns: 1fr;
         box-shadow: 4px 5px 0 #0c1b36;
@@ -1265,30 +1213,6 @@
       <p class="unlock-email-note hidden" id="unlockEmailHint">
         Biar langsung kebuka, pakai email ini saat bayar: <strong id="unlockEmailValue">-</strong>
       </p>
-    </section>
-
-    <section class="panel" id="faq">
-      <div class="panel-head">
-        <div>
-          <p class="eyebrow">FAQ</p>
-          <h2>Masih penasaran?</h2>
-          <p class="muted">Tenang, ini kuis santai. Tapi siapa tahu pertanyaanmu ada di sini.</p>
-        </div>
-      </div>
-      <div class="faq-grid">
-        <article class="faq-item">
-          <h3>Harus jago bahasa Inggris?</h3>
-          <p>Nggak. Tinggal pilih kata yang paling familiar atau paling sering kamu pakai.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Ada jawaban yang salah?</h3>
-          <p>Nggak ada. Kita lagi melihat kebiasaan vocabulary, bukan mengoreksi kemampuanmu.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Bisa lihat semua pasangan katanya?</h3>
-          <p>Bisa. Dua contoh gratis dulu, lalu seluruh pasangan American–British bisa dibuka seharga Rp5.000.</p>
-        </article>
-      </div>
     </section>
 
     <section class="panel other-tests" aria-label="Coba tes lainnya">
