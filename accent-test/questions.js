@@ -1,0 +1,24 @@
+const accentQuestions = [
+  { id: 1, label: "Liburan", image: "/assets/accent-test/Liburan.png", options: ["Holiday", "Vacation"], accents: ["british", "american"], explanation: "Holiday lebih umum dalam British English, sedangkan vacation lebih umum dalam American English." },
+  { id: 2, label: "Senter", image: "/assets/accent-test/Senter.png", options: ["Flashlight", "Torch"], accents: ["american", "british"], explanation: "Flashlight adalah pilihan American English; torch lebih umum dalam British English." },
+  { id: 3, label: "Kentang goreng", image: "/assets/accent-test/Kentang goreng.png", options: ["Chips", "Fries"], accents: ["british", "american"], explanation: "Kentang goreng disebut chips dalam British English dan fries dalam American English." },
+  { id: 4, label: "Trotoar", image: "/assets/accent-test/Trotoar.png", options: ["Sidewalk", "Pavement"], accents: ["american", "british"], explanation: "Sidewalk lebih umum di Amerika, sementara pavement dipakai dalam British English." },
+  { id: 5, label: "Sepak bola", image: "/assets/accent-test/Sepakbola.png", options: ["Football", "Soccer"], accents: ["british", "american"], explanation: "Football adalah istilah British English; soccer lebih umum dipakai di Amerika." },
+  { id: 6, label: "Lift", image: "/assets/accent-test/Lift.png", options: ["Elevator", "Lift"], accents: ["american", "british"], explanation: "Elevator adalah istilah American English, sedangkan lift adalah istilah British English." },
+  { id: 7, label: "Sepatu olahraga", image: "/assets/accent-test/Sepatuolahraga.png", options: ["Sneakers", "Trainers"], accents: ["american", "british"], explanation: "Sneakers lebih umum dalam American English dan trainers dalam British English." },
+  { id: 8, label: "Keran air", image: "/assets/accent-test/Keran.png", options: ["Tap", "Faucet"], accents: ["british", "american"], explanation: "Tap adalah pilihan British English, sedangkan faucet lebih umum di Amerika." },
+  { id: 9, label: "Bagasi mobil (belakang)", image: "/assets/accent-test/Bagasi.png", options: ["Boot", "Trunk"], accents: ["british", "american"], explanation: "Bagasi belakang mobil disebut boot dalam British English dan trunk dalam American English." },
+  { id: 10, label: "Truk", image: "/assets/accent-test/Truk.png", options: ["Lorry", "Truck"], accents: ["british", "american"], explanation: "Lorry adalah istilah British English; truck adalah istilah American English." },
+  { id: 11, label: "Popok bayi", image: "/assets/accent-test/Popok.png", options: ["Nappy", "Diaper"], accents: ["british", "american"], explanation: "Nappy lebih umum di Inggris, sedangkan diaper lebih umum di Amerika." },
+  { id: 12, label: "Keripik kentang", image: "/assets/accent-test/Keripik.png", options: ["Chips", "Crisps"], accents: ["american", "british"], explanation: "Keripik kentang disebut chips dalam American English dan crisps dalam British English." },
+  { id: 13, label: "Penghapus pensil", image: "/assets/accent-test/Penghapus.png", options: ["Eraser", "Rubber"], accents: ["american", "british"], explanation: "Eraser lebih umum dalam American English; rubber dipakai dalam British English." },
+  { id: 14, label: "Permen", image: "/assets/accent-test/Permen.png", options: ["Candy", "Sweets"], accents: ["american", "british"], explanation: "Candy adalah pilihan American English, sedangkan sweets lebih umum dalam British English." },
+  { id: 15, label: "Apartemen", image: "/assets/accent-test/Apartemen.png", options: ["Apartment", "Flat"], accents: ["american", "british"], explanation: "Apartment lebih umum di Amerika, sementara flat lebih umum di Inggris." },
+  { id: 16, label: "Tempat sampah", image: "/assets/accent-test/Tempatsampah.png", options: ["Rubbish Bin", "Trash Can"], accents: ["british", "american"], explanation: "Rubbish bin adalah istilah British English; trash can adalah istilah American English." },
+  { id: 17, label: "Bensin", image: "/assets/accent-test/Bensin.png", options: ["Gas", "Petrol"], accents: ["american", "british"], explanation: "Gas lebih umum dalam American English dan petrol dalam British English." },
+  { id: 18, label: "Sweater rajut", image: "/assets/accent-test/Sweater.png", options: ["Sweater", "Jumper"], accents: ["american", "british"], explanation: "Sweater adalah pilihan American English; jumper lebih umum dalam British English." },
+  { id: 19, label: "Surat / pos", image: "/assets/accent-test/Surat.png", options: ["Mail", "Post"], accents: ["american", "british"], explanation: "Mail lebih umum dalam American English, sedangkan post lebih umum dalam British English." },
+  { id: 20, label: "Biskuit / kue kering manis", image: "/assets/accent-test/Biskuit.png", options: ["Biscuit", "Cookie"], accents: ["british", "american"], explanation: "Untuk kue kering manis ini, biscuit adalah istilah British English dan cookie adalah istilah American English." }
+];
+
+window.accentQuestions = accentQuestions;
