@@ -97,7 +97,7 @@
             "name": "Apa isi Accent Test ini?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Kuis ini berisi 20 gambar. Pilih kata yang paling sering kamu gunakan untuk setiap benda."
+              "text": "Nggak perlu jago bahasa Inggris. Tinggal pilih kata yang paling familiar atau paling sering kamu pakai."
             }
           },
           {
@@ -105,7 +105,7 @@
             "name": "Apakah hasil Accent Test langsung keluar?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Ya. Setelah selesai, kamu akan melihat kecenderungan American atau British beserta persentasenya."
+              "text": "Nggak ada jawaban salah. Kuis ini hanya melihat kebiasaan vocabulary, bukan menilai kemampuan bahasa Inggris."
             }
           },
           {
@@ -113,7 +113,7 @@
             "name": "Apakah kunci vocabulary tersedia?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Dua soal tersedia sebagai teaser. Kunci lengkap bisa di-unlock seharga Rp5.000."
+              "text": "Dua contoh bisa dilihat gratis. Seluruh pasangan vocabulary American dan British bisa dibuka seharga Rp5.000."
             }
           }
         ]
@@ -149,11 +149,11 @@
     :root {
       --ink: #171832;
       --muted: #66738c;
-      --blue: #2477e8;
-      --blue-dark: #1558c0;
-      --sky: #eaf4ff;
-      --line: #dfe7f2;
-      --soft: #f6f8fc;
+      --blue: #7c3aed;
+      --blue-dark: #5b21b6;
+      --sky: #f1eafe;
+      --line: #e8ddf7;
+      --soft: #faf7ff;
       --panel: #ffffff;
       --green: #23a66d;
       --yellow: #ffd15d;
@@ -258,8 +258,9 @@
       margin-bottom: 28px;
       padding: 70px max(18px, calc((100vw - 1120px) / 2)) 64px;
       background:
-        linear-gradient(180deg, rgba(232,241,253,0.78), rgba(255,255,255,0.95)),
-        url('/assets/optimized/bg.jpg') center/cover;
+        radial-gradient(circle at 12% 24%, rgba(255, 209, 93, 0.7) 0 8%, transparent 8.5%),
+        radial-gradient(circle at 88% 18%, rgba(255, 161, 189, 0.45) 0 10%, transparent 10.5%),
+        linear-gradient(135deg, #fff8dc 0%, #f5ebff 52%, #eaf7ff 100%);
     }
     .eyebrow {
       margin: 0 0 10px;
@@ -284,11 +285,12 @@
       line-height: 1.75;
     }
     .summary-panel {
-      border: 1px solid var(--line);
-      border-radius: 18px;
+      border: 3px solid var(--ink);
+      border-radius: 22px;
       background: #fff;
       padding: 20px;
-      box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+      box-shadow: 7px 8px 0 var(--ink);
+      transform: rotate(1deg);
     }
     .summary-row {
       display: flex;
@@ -304,8 +306,8 @@
       display: grid;
       gap: 18px;
       margin: 0 0 20px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
+      border: 2px solid var(--line);
+      border-radius: 24px;
       background: #fff;
       padding: 26px;
       box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
@@ -364,8 +366,8 @@
     }
 
     .panel {
-      border: 1px solid var(--line);
-      border-radius: 18px;
+      border: 2px solid var(--line);
+      border-radius: 24px;
       background: var(--panel);
       padding: 28px;
       box-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
@@ -557,8 +559,8 @@
     }
     .option {
       width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 14px;
+      border: 2px solid var(--line);
+      border-radius: 18px;
       background: #fff;
       cursor: pointer;
       color: var(--ink);
@@ -571,8 +573,8 @@
     }
     .option:hover {
       border-color: var(--blue);
-      transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(31, 115, 232, 0.12);
+      transform: translateY(-2px) rotate(-0.3deg);
+      box-shadow: 4px 5px 0 rgba(23, 24, 50, 0.16);
     }
     .option span:first-child {
       width: 34px;
@@ -1081,7 +1083,7 @@
       .nav-actions { gap: 8px; }
       .nav-link, .btn { padding-inline: 12px; }
     }
-    .accent-question-image { display:block; width:min(100%,250px); aspect-ratio:1; object-fit:contain; margin:4px auto 20px; border-radius:20px; background:var(--soft); }
+    .accent-question-image { display:block; width:min(100%,250px); aspect-ratio:1; object-fit:contain; margin:4px auto 20px; border:3px solid var(--ink); border-radius:24px; background:#fff9df; box-shadow:6px 7px 0 var(--ink); transform:rotate(-1deg); }
     .accent-question-label { text-align:center; margin-bottom:18px; }
     .accent-results { display:grid; gap:16px; }
     .accent-result-row { display:grid; gap:8px; }
@@ -1110,50 +1112,50 @@
   <main class="shell">
     <section class="hero">
       <div>
-        <p class="eyebrow">Fun vocabulary quiz</p>
-        <h1>American or British Accent Tests</h1>
-        <p class="lead">Pilih kata yang paling sering kamu pakai untuk 20 benda. Dari pilihan vocabulary-mu, lihat apakah English-mu lebih cenderung American, British, atau campuran keduanya.</p>
+        <p class="eyebrow">No grammar police here ✌️</p>
+        <h1>Vocabulary kamu anak 🇺🇸 atau 🇬🇧?</h1>
+        <p class="lead">Cuma pilih kata yang paling sering keluar dari mulutmu. Nggak ada jawaban salah, nggak ada nilai jelek—kita cuma mau kepo kamu lebih American, British, atau campur aduk.</p>
       </div>
       <aside class="summary-panel" aria-label="Ringkasan accent test">
-        <div class="summary-row"><span>Total pertanyaan</span><strong>20 Soal</strong></div>
-        <div class="summary-row"><span>American vs British</span><strong>2 Pilihan</strong></div>
-        <div class="summary-row"><span>Gambar vocabulary</span><strong>20 Gambar</strong></div>
-        <div class="summary-row"><span>Hasil</span><strong>Kecenderungan aksen</strong></div>
+        <div class="summary-row"><span>Tinggal pilih</span><strong>20 Gambar</strong></div>
+        <div class="summary-row"><span>Tiap gambar</span><strong>2 Kata</strong></div>
+        <div class="summary-row"><span>Jawaban salah</span><strong>Nggak ada!</strong></div>
+        <div class="summary-row"><span>Hasilnya</span><strong>Langsung keluar</strong></div>
       </aside>
     </section>
 
     <section class="seo-panel" aria-labelledby="latihan-toefl-title">
       <div>
-        <p class="eyebrow">Fun vocabulary quiz</p>
-        <h2 id="latihan-toefl-title">Cari tahu: vocabulary kamu lebih American atau British?</h2>
+        <p class="eyebrow">Cuma pilih, jangan overthink</p>
+        <h2 id="latihan-toefl-title">Kata yang kamu pilih ternyata punya “vibe” sendiri 👀</h2>
       </div>
-      <p>Accent Test ini adalah fun quiz, bukan penilaian benar atau salah. Setiap pilihan menunjukkan vocabulary yang lebih umum dalam American English atau British English.</p>
+      <p>Orang Amerika dan Inggris kadang punya kata berbeda untuk benda yang sama. Pilihan spontanmu bisa kasih sedikit gambaran: selama ini vocabulary kamu lebih sering nongkrong di sisi mana?</p>
       <div class="seo-grid">
         <article class="seo-card">
-          <h3>20 gambar yang fun</h3>
-          <p>Setiap soal menampilkan satu gambar benda dan dua pilihan vocabulary.</p>
+          <h3>🖼️ Lihat gambarnya</h3>
+          <p>Kami kasih satu gambar dan dua kata. Simpel banget.</p>
         </article>
         <article class="seo-card">
-          <h3>Hasil langsung terlihat</h3>
-          <p>Setelah selesai, kamu akan melihat persentase kecenderungan American dan British.</p>
+          <h3>👆 Pilih spontan</h3>
+          <p>Klik kata yang paling natural buatmu. Jangan buka kamus, ya!</p>
         </article>
         <article class="seo-card">
-          <h3>Kunci vocabulary tersedia</h3>
-          <p>Lihat 2 soal teaser, lalu unlock seluruh pasangan vocabulary seharga Rp5.000.</p>
+          <h3>🎉 Lihat hasilnya</h3>
+          <p>Ketemu deh, kamu Team American, Team British, atau best of both.</p>
         </article>
       </div>
       <ul class="seo-list">
-        <li>Cocok untuk siapa pun yang penasaran dengan kebiasaan vocabulary-nya.</li>
-        <li>Tidak ada jawaban salah—pilih kata yang paling sering kamu pakai.</li>
-        <li>Bisa dikerjakan dengan cepat dari HP atau laptop.</li>
+        <li>Bukan tes kemampuan dan bukan tes pronunciation.</li>
+        <li>Nggak ada jawaban benar atau salah—serius, santai aja.</li>
+        <li>Bonus: kamu bisa intip perbedaan vocabulary yang mungkin belum pernah kamu sadari.</li>
       </ul>
     </section>
 
     <section class="panel" id="authPanel">
       <div class="panel-head">
         <div>
-          <h2>Login atau daftar untuk mulai</h2>
-          <p class="muted">Hasil quiz akan tersimpan di akunmu, dan akses kunci lengkap mengikuti email akun yang dipakai saat pembayaran.</p>
+          <h2>Masuk dulu, biar hasilmu nggak kabur 👋</h2>
+          <p class="muted">Login sebentar supaya hasil kuismu bisa disimpan dan dibuka lagi kapan pun.</p>
         </div>
       </div>
       <div class="auth-tabs" role="tablist" aria-label="Pilih login atau daftar">
@@ -1185,12 +1187,12 @@
     <section class="panel hidden" id="startPanel">
       <div class="panel-head">
         <div>
-          <h2>Siap mulai?</h2>
-          <p class="muted" id="welcomeText">Kamu sudah login.</p>
+          <h2>Oke, waktunya pilih-pilih!</h2>
+          <p class="muted" id="welcomeText">Kamu sudah login. Jawab spontan aja—nggak perlu dipikirin serius.</p>
         </div>
         <div class="nav-actions start-actions">
-          <button class="btn primary" type="button" id="startButton">Mulai Quiz</button>
-          <button class="btn ghost hidden" type="button" id="latestResultButton">Lihat Hasil Terakhir</button>
+          <button class="btn primary" type="button" id="startButton">Gas, mulai! 🚀</button>
+          <button class="btn ghost hidden" type="button" id="latestResultButton">Intip hasil yang kemarin</button>
         </div>
       </div>
     </section>
@@ -1205,7 +1207,7 @@
       </div>
       <div class="question-card">
         <div class="question-meta">
-          <span class="pill" id="typeLabel">Pilih yang paling sering kamu pakai</span>
+          <span class="pill" id="typeLabel">Quick pick—jangan kelamaan mikir!</span>
           <span class="pill hidden" id="difficultyLabel"></span>
         </div>
         <p class="question-instruction hidden" id="questionInstruction"></p>
@@ -1219,10 +1221,10 @@
     <section class="panel hidden" id="resultPanel">
       <div class="panel-head">
         <div>
-          <h2>Hasil Accent Test</h2>
-          <p class="muted" id="resultStatus">Ini kecenderungan vocabulary-mu, bukan penilaian kemampuan atau pelafalan.</p>
+          <h2>And the vibe is... 🥁</h2>
+          <p class="muted" id="resultStatus">Ingat, ini fun quiz—bukan rapor kemampuan bahasa Inggrismu.</p>
         </div>
-        <button class="btn ghost" type="button" id="restartButton">Ulangi Quiz</button>
+        <button class="btn ghost" type="button" id="restartButton">Coba lagi 🔄</button>
       </div>
       <div class="score-layout">
         <div class="score-card" id="scoreCard">
@@ -1238,17 +1240,17 @@
     <section class="panel hidden" id="reviewPanel">
       <div class="panel-head">
         <div>
-          <h2>Kunci Vocabulary American vs British</h2>
+          <h2>Kepo sama semua pasangannya? 👀</h2>
         </div>
       </div>
       <div class="review-list" id="reviewList"></div>
       <div class="nav-actions hidden" id="reviewActions" style="justify-content:flex-start;margin-top:16px;">
         <button class="btn ghost" type="button" id="checkAccessButton">Cek Akses</button>
-        <button class="btn primary" type="button" id="payButton">Unlock Rp5.000</button>
+        <button class="btn primary" type="button" id="payButton">Buka semuanya — Rp5.000</button>
         <button class="btn ghost" type="button" id="copyEmailButton">Copy Email</button>
       </div>
       <p class="unlock-email-note hidden" id="unlockEmailHint">
-        Gunakan email yang sama saat pembayaran: <strong id="unlockEmailValue">-</strong>
+        Biar langsung kebuka, pakai email ini saat bayar: <strong id="unlockEmailValue">-</strong>
       </p>
     </section>
 
@@ -1256,22 +1258,22 @@
       <div class="panel-head">
         <div>
           <p class="eyebrow">FAQ</p>
-          <h2>Pertanyaan tentang Accent Test</h2>
-          <p class="muted">Jawaban singkat sebelum kamu mulai memilih vocabulary yang paling sering kamu pakai.</p>
+          <h2>Masih penasaran?</h2>
+          <p class="muted">Tenang, ini kuis santai. Tapi siapa tahu pertanyaanmu ada di sini.</p>
         </div>
       </div>
       <div class="faq-grid">
         <article class="faq-item">
-          <h3>Apa isi Accent Test ini?</h3>
-          <p>Kuis ini berisi 20 gambar. Pilih kata yang paling sering kamu gunakan untuk setiap benda.</p>
+          <h3>Harus jago bahasa Inggris?</h3>
+          <p>Nggak. Tinggal pilih kata yang paling familiar atau paling sering kamu pakai.</p>
         </article>
         <article class="faq-item">
-          <h3>Apakah hasil Accent Test langsung keluar?</h3>
-          <p>Ya. Setelah selesai, kamu akan melihat kecenderungan American atau British beserta persentasenya.</p>
+          <h3>Ada jawaban yang salah?</h3>
+          <p>Nggak ada. Kita lagi melihat kebiasaan vocabulary, bukan mengoreksi kemampuanmu.</p>
         </article>
         <article class="faq-item">
-          <h3>Apakah kunci vocabulary tersedia?</h3>
-          <p>Dua soal tersedia sebagai teaser. Kunci lengkap bisa di-unlock seharga Rp5.000.</p>
+          <h3>Bisa lihat semua pasangan katanya?</h3>
+          <p>Bisa. Dua contoh gratis dulu, lalu seluruh pasangan American–British bisa dibuka seharga Rp5.000.</p>
         </article>
       </div>
     </section>
@@ -1323,7 +1325,7 @@
   <div class="payment-modal" id="paymentModal" aria-hidden="true">
     <div class="payment-box" role="dialog" aria-modal="true" aria-label="Unlock Kunci Accent Test">
       <div class="payment-head">
-        <strong>Unlock Kunci Accent Test</strong>
+        <strong>Buka semua vocabulary 🇺🇸🇬🇧</strong>
         <button class="btn ghost" type="button" id="closePaymentButton">Tutup</button>
       </div>
       <iframe id="paymentFrame" title="Unlock Kunci Accent Test"></iframe>
@@ -1346,25 +1348,26 @@
     let currentSession=null,currentIndex=0,answers=[],latestResult=null,hasReviewAccess=false,authMode="login";
     function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
     function show(panel){panels.forEach(x=>x.classList.add("hidden"));panel.classList.remove("hidden")}
-    function setAuthMode(mode){authMode=mode;authTabs.forEach(t=>t.classList.toggle("active",t.dataset.authMode===mode));nameField.classList.toggle("hidden",mode!=="signup");nameInput.disabled=mode!=="signup";nameInput.required=mode==="signup";passwordInput.autocomplete=mode==="signup"?"new-password":"current-password";authSubmitButton.textContent=mode==="signup"?"Daftar":"Login";authStatus.textContent=mode==="signup"?"Isi nama, email aktif, dan password untuk membuat akun.":"Login dengan email dan password yang sudah terdaftar."}
-    function updateStartLabel(){startButton.textContent=latestResult?"Ulangi Quiz":"Mulai Quiz";latestResultButton.classList.toggle("hidden",!latestResult)}
-    async function setAuthUi(session){currentSession=session;logoutButton.classList.toggle("hidden",!session);if(!session){latestResult=null;updateStartLabel();show(authPanel);return}welcomeText.textContent=`Login sebagai ${session.user.email}.`;show(startPanel);await checkReviewAccess();await loadLatestResult()}
+    function setAuthMode(mode){authMode=mode;authTabs.forEach(t=>t.classList.toggle("active",t.dataset.authMode===mode));nameField.classList.toggle("hidden",mode!=="signup");nameInput.disabled=mode!=="signup";nameInput.required=mode==="signup";passwordInput.autocomplete=mode==="signup"?"new-password":"current-password";authSubmitButton.textContent=mode==="signup"?"Daftar":"Login";authStatus.textContent=mode==="signup"?"Kenalan dulu, yuk. Isi nama, email aktif, dan password.":"Masuk pakai akun Jeya's Club kamu."}
+    function categoryLabel(category){return category==="More American"?"Team American 🇺🇸":category==="More British"?"Team British 🇬🇧":"Best of Both 🇺🇸🇬🇧"}
+    function updateStartLabel(){startButton.textContent=latestResult?"Main lagi 🔄":"Gas, mulai! 🚀";latestResultButton.textContent="Intip hasil yang kemarin";latestResultButton.classList.toggle("hidden",!latestResult)}
+    async function setAuthUi(session){currentSession=session;logoutButton.classList.toggle("hidden",!session);if(!session){latestResult=null;updateStartLabel();show(authPanel);return}welcomeText.textContent=`Hai, ${session.user.email}! Jawab spontan aja—nggak perlu dipikirin serius.`;show(startPanel);await checkReviewAccess();await loadLatestResult()}
     async function initAuth(){if(!supabaseClient){authStatus.textContent="Layanan akun belum tersedia. Coba refresh halaman.";return}const{data}=await supabaseClient.auth.getSession();await setAuthUi(data.session);supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==="TOKEN_REFRESHED"||event==="INITIAL_SESSION"){currentSession=session;return}setAuthUi(session)})}
     async function handleAuthSubmit(e){e.preventDefault();const email=emailInput.value.trim().toLowerCase(),password=passwordInput.value,name=nameInput.value.trim();if(!email.includes("@")||password.length<6||(authMode==="signup"&&name.length<2)){authStatus.textContent="Cek kembali email, nama, dan password minimal 6 karakter.";return}authSubmitButton.disabled=true;authStatus.textContent=authMode==="signup"?"Mendaftarkan akun...":"Login...";const fallback=name||email.split("@")[0];const req=authMode==="signup"?supabaseClient.auth.signUp({email,password,options:{data:{username:fallback,full_name:fallback,name:fallback},emailRedirectTo:`${location.origin}${location.pathname}`}}):supabaseClient.auth.signInWithPassword({email,password});const{data,error}=await req;authSubmitButton.disabled=false;if(error){authStatus.textContent=error.message.toLowerCase().includes("invalid login")?"Login gagal. Cek email dan password kamu.":`Proses gagal: ${error.message}`;return}passwordInput.value="";authStatus.textContent=authMode==="signup"&&!data.session?"Akun dibuat. Cek email untuk konfirmasi.":"Berhasil login."}
     async function logout(){await supabaseClient.auth.signOut();latestResult=null;updateStartLabel()}
-    async function loadLatestResult(){latestResult=null;updateStartLabel();const{data,error}=await supabaseClient.from("accent_test_results").select("id,category,american_count,british_count,total_questions,american_percent,british_percent,answers,created_at").order("created_at",{ascending:false}).limit(1);if(error||!data?.length)return;latestResult=data[0];welcomeText.textContent=`Login sebagai ${currentSession.user.email}. Hasil terakhir: ${latestResult.category}.`;updateStartLabel()}
+    async function loadLatestResult(){latestResult=null;updateStartLabel();const{data,error}=await supabaseClient.from("accent_test_results").select("id,category,american_count,british_count,total_questions,american_percent,british_percent,answers,created_at").order("created_at",{ascending:false}).limit(1);if(error||!data?.length)return;latestResult=data[0];welcomeText.textContent=`Hasil terakhirmu: ${categoryLabel(latestResult.category)}. Mau lihat atau main lagi?`;updateStartLabel()}
     function startQuiz(){currentIndex=0;answers=[];resultPanel.classList.add("hidden");reviewPanel.classList.add("hidden");if(!questions.length){quizStatus.textContent="Data soal belum termuat. Refresh halaman lalu coba lagi.";show(quizPanel);return}show(quizPanel);renderQuestion()}
-    function renderQuestion(){const q=questions[currentIndex];questionCounter.textContent=`${currentIndex+1}/${questions.length}`;progressFill.style.width=`${Math.round(currentIndex/questions.length*100)}%`;$("partLabel").textContent="American vs British";$("typeLabel").textContent="Pilih yang paling sering kamu pakai";$("difficultyLabel").classList.add("hidden");$("questionInstruction").classList.add("hidden");questionImage.src=q.image;questionImage.alt=`Ilustrasi ${q.label}`;questionText.textContent="Kalau melihat gambar ini, kamu biasanya menyebutnya apa?";optionsList.innerHTML=q.options.map((o,i)=>`<button class="option" type="button" data-index="${i}"><span>${i?"B":"A"}</span><strong>${esc(o)}</strong></button>`).join("");optionsList.querySelectorAll(".option").forEach(b=>b.addEventListener("click",()=>submitAnswer(Number(b.dataset.index))))}
+    function renderQuestion(){const q=questions[currentIndex];questionCounter.textContent=`${currentIndex+1}/${questions.length}`;progressFill.style.width=`${Math.round(currentIndex/questions.length*100)}%`;$("partLabel").textContent="Pilih spontan aja ✨";$("typeLabel").textContent="Quick pick—jangan kelamaan mikir!";$("difficultyLabel").classList.add("hidden");$("questionInstruction").classList.add("hidden");questionImage.src=q.image;questionImage.alt=`Ilustrasi ${q.label}`;questionText.textContent="Kalau lihat ini, kata apa yang langsung kepikiran?";optionsList.innerHTML=q.options.map((o,i)=>`<button class="option" type="button" data-index="${i}"><span>${i?"B":"A"}</span><strong>${esc(o)}</strong></button>`).join("");optionsList.querySelectorAll(".option").forEach(b=>b.addEventListener("click",()=>submitAnswer(Number(b.dataset.index))))}
     function submitAnswer(selected){const q=questions[currentIndex];answers.push({...q,selected,selectedAccent:q.accents[selected]});currentIndex++;if(currentIndex>=questions.length){progressFill.style.width="100%";finishQuiz()}else renderQuestion()}
     function calculateResult(source=answers){const american=source.filter(x=>x.selectedAccent==="american").length,british=source.filter(x=>x.selectedAccent==="british").length,total=american+british||questions.length,americanPercent=Math.round(american/total*100),britishPercent=100-americanPercent;let category="Perfectly Mixed";if(american>british)category="More American";if(british>american)category="More British";return{american,british,total,americanPercent,britishPercent,category}}
-    async function finishQuiz(){const result=calculateResult();renderResult(result,"Ini kecenderungan vocabulary-mu, bukan penilaian benar atau salah.");show(resultPanel);reviewPanel.classList.remove("hidden");renderReviews(hasReviewAccess);await saveResult(result)}
-    function renderResult(r,status){scoreCard.className="score-card category-nice";scoreCategory.textContent=r.category;scoreEmoji.textContent=r.category==="More American"?"🇺🇸":r.category==="More British"?"🇬🇧":"🇺🇸🇬🇧";scorePercent.textContent=r.category==="Perfectly Mixed"?"50 / 50":`${Math.max(r.americanPercent,r.britishPercent)}%`;scoreCopy.textContent=r.category==="More American"?"Pilihan vocabulary-mu lebih sering mengikuti American English.":r.category==="More British"?"Pilihan vocabulary-mu lebih sering mengikuti British English.":"Vocabulary-mu seimbang—kamu nyaman memakai kedua variasi English.";resultStatus.textContent=status;breakdownList.innerHTML=`<div class="accent-results"><div class="accent-result-row american"><div class="accent-result-label"><span>🇺🇸 American</span><strong>${r.american} dari ${r.total} · ${r.americanPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.americanPercent}%"></span></div></div><div class="accent-result-row british"><div class="accent-result-label"><span>🇬🇧 British</span><strong>${r.british} dari ${r.total} · ${r.britishPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.britishPercent}%"></span></div></div></div>`}
+    async function finishQuiz(){const result=calculateResult();renderResult(result,"Fun result unlocked! Ini cuma soal kebiasaan kata, bukan nilai kemampuanmu.");show(resultPanel);reviewPanel.classList.remove("hidden");renderReviews(hasReviewAccess);await saveResult(result)}
+    function renderResult(r,status){scoreCard.className="score-card category-nice";scoreCategory.textContent=categoryLabel(r.category);scoreEmoji.textContent=r.category==="More American"?"🇺🇸":r.category==="More British"?"🇬🇧":"🇺🇸🇬🇧";scorePercent.textContent=r.category==="Perfectly Mixed"?"50 / 50":`${Math.max(r.americanPercent,r.britishPercent)}%`;scoreCopy.textContent=r.category==="More American"?"Kata-kata pilihanmu lebih sering punya American vibe. Hollywood effect, perhaps?":r.category==="More British"?"Vocabulary-mu lumayan British-coded. Fancy a cup of tea?":"Kamu ambil enaknya dua dunia—American masuk, British juga nyambung.";resultStatus.textContent=status;breakdownList.innerHTML=`<div class="accent-results"><div class="accent-result-row american"><div class="accent-result-label"><span>🇺🇸 American vibe</span><strong>${r.american} dari ${r.total} · ${r.americanPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.americanPercent}%"></span></div></div><div class="accent-result-row british"><div class="accent-result-label"><span>🇬🇧 British vibe</span><strong>${r.british} dari ${r.total} · ${r.britishPercent}%</strong></div><div class="accent-result-bar"><span style="width:${r.britishPercent}%"></span></div></div></div>`}
     async function saveResult(r){if(!currentSession)return;resultStatus.textContent="Menyimpan hasil...";const u=currentSession.user,summary=answers.map(x=>({id:x.id,selected:x.selected,selectedAccent:x.selectedAccent})),payload={user_id:u.id,email:u.email,username:u.user_metadata?.username||u.user_metadata?.full_name||"",test_name:"American or British Accent Test",category:r.category,american_count:r.american,british_count:r.british,total_questions:r.total,american_percent:r.americanPercent,british_percent:r.britishPercent,answers:summary};const{data,error}=await supabaseClient.from("accent_test_results").insert(payload).select("id").single();if(error){console.error(error);resultStatus.textContent="Hasil tampil, tapi belum tersimpan. Pastikan SQL Accent Test sudah dijalankan.";return}await supabaseClient.from("accent_test_result_answers").insert({result_id:data.id,user_id:u.id,answers});resultStatus.textContent="Hasil tersimpan di akunmu.";await loadLatestResult()}
-    async function showLatestResult(){if(!latestResult)return;await checkReviewAccess();answers=[];if(hasReviewAccess){const{data}=await supabaseClient.from("accent_test_result_answers").select("answers").eq("result_id",latestResult.id).limit(1);answers=data?.[0]?.answers||[]}const r={category:latestResult.category,american:latestResult.american_count,british:latestResult.british_count,total:latestResult.total_questions,americanPercent:latestResult.american_percent,britishPercent:latestResult.british_percent};renderResult(r,`Hasil tersimpan pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`);show(resultPanel);reviewPanel.classList.remove("hidden");renderReviews(hasReviewAccess)}
+    async function showLatestResult(){if(!latestResult)return;await checkReviewAccess();answers=[];if(hasReviewAccess){const{data}=await supabaseClient.from("accent_test_result_answers").select("answers").eq("result_id",latestResult.id).limit(1);answers=data?.[0]?.answers||[]}const r={category:latestResult.category,american:latestResult.american_count,british:latestResult.british_count,total:latestResult.total_questions,americanPercent:latestResult.american_percent,britishPercent:latestResult.british_percent};renderResult(r,`Nostalgia dikit—ini hasil mainmu pada ${new Date(latestResult.created_at).toLocaleString("id-ID")}.`);show(resultPanel);reviewPanel.classList.remove("hidden");renderReviews(hasReviewAccess)}
     async function checkReviewAccess(){if(!currentSession)return false;const{data,error}=await supabaseClient.from("accent_test_review_access").select("id").limit(1);hasReviewAccess=Boolean(!error&&data?.length);updateReviewActions(!hasReviewAccess);if(answers.length||latestResult)renderReviews(hasReviewAccess);return hasReviewAccess}
-    function updateReviewActions(showActions){reviewActions.classList.toggle("hidden",!showActions);payButton.classList.toggle("hidden",hasReviewAccess);copyEmailButton.classList.toggle("hidden",hasReviewAccess);unlockEmailHint.classList.toggle("hidden",!showActions||hasReviewAccess);unlockEmailValue.textContent=currentSession?.user?.email||"email akunmu";checkAccessButton.textContent=hasReviewAccess?"Akses Aktif":"Cek Akses"}
+    function updateReviewActions(showActions){reviewActions.classList.toggle("hidden",!showActions);payButton.classList.toggle("hidden",hasReviewAccess);copyEmailButton.classList.toggle("hidden",hasReviewAccess);unlockEmailHint.classList.toggle("hidden",!showActions||hasReviewAccess);unlockEmailValue.textContent=currentSession?.user?.email||"email akunmu";checkAccessButton.textContent=hasReviewAccess?"Sudah kebuka! 🎉":"Cek aksesku"}
     function materialize(showAll){const ids=showAll?questions.map(x=>x.id):teaserQuestionIds;return ids.map(id=>{const stored=answers.find(x=>x.id===id);if(stored)return stored;const q=questions.find(x=>x.id===id),summary=latestResult?.answers?.find(x=>x.id===id);if(!q)return null;const selected=Number.isInteger(summary?.selected)?summary.selected:null;return{...q,selected,selectedAccent:selected===null?null:q.accents[selected]}}).filter(Boolean)}
-    function renderReviews(showAll){const source=materialize(showAll);updateReviewActions(!showAll);const locked=showAll?"":`<div class="locked"><span>Kunci lengkap terkunci</span><strong>Unlock seluruh kunci vocabulary hanya dengan Rp5.000</strong><p>Gunakan email yang sama dengan akun Jeya's Club agar akses otomatis aktif setelah pembayaran.</p></div>`;const items=source.map((x,i)=>{const selected=Number.isInteger(x.selected)?x.options[x.selected]:"Belum tersedia",american=x.options[x.accents.indexOf("american")],british=x.options[x.accents.indexOf("british")];return`<details class="accordion-item" ${i===0?"open":""}><summary><span class="accordion-question">${x.id}. ${esc(x.label)}</span><span class="accordion-status">${showAll?"Terbuka":"Teaser"}</span><span class="accordion-arrow"></span></summary><div class="accordion-body"><div class="accent-answer-pair"><img class="accent-review-image" src="${x.image}" alt="Ilustrasi ${esc(x.label)}" loading="lazy"><div class="answer-grid"><div class="answer-box"><span>🇺🇸 American</span><strong>${esc(american)}</strong></div><div class="answer-box"><span>🇬🇧 British</span><strong>${esc(british)}</strong></div></div></div><div class="answer-box"><span>Pilihan kamu</span><strong>${esc(selected)}</strong></div><div class="explanation-box">${esc(x.explanation)}</div></div></details>`}).join("");reviewList.innerHTML=`${locked}<div class="paid-detail"><div class="paid-title"><div><span>Kunci vocabulary</span><h3>${showAll?"Semua 20 pasangan kata":"Preview 2 soal"}</h3><p>${showAll?"Buka setiap soal untuk melihat pasangan American dan British English.":"Dua soal ini bisa dilihat gratis sebagai teaser."}</p></div><strong class="paid-count">${source.length} soal</strong></div><div class="accordion-list">${items}</div></div>`}
+    function renderReviews(showAll){const source=materialize(showAll);updateReviewActions(!showAll);const locked=showAll?"":`<div class="locked"><span>Masih ada 18 pasangan lagi 👀</span><strong>Buka semuanya cuma Rp5.000</strong><p>Pakai email akunmu saat bayar, nanti aksesnya langsung nyambung ke sini.</p></div>`;const items=source.map((x,i)=>{const selected=Number.isInteger(x.selected)?x.options[x.selected]:"Belum tersedia",american=x.options[x.accents.indexOf("american")],british=x.options[x.accents.indexOf("british")];return`<details class="accordion-item" ${i===0?"open":""}><summary><span class="accordion-question">${x.id}. ${esc(x.label)}</span><span class="accordion-status">${showAll?"Yay!":"Gratis"}</span><span class="accordion-arrow"></span></summary><div class="accordion-body"><div class="accent-answer-pair"><img class="accent-review-image" src="${x.image}" alt="Ilustrasi ${esc(x.label)}" loading="lazy"><div class="answer-grid"><div class="answer-box"><span>🇺🇸 American</span><strong>${esc(american)}</strong></div><div class="answer-box"><span>🇬🇧 British</span><strong>${esc(british)}</strong></div></div></div><div class="answer-box"><span>Kamu tadi pilih</span><strong>${esc(selected)}</strong></div><div class="explanation-box">${esc(x.explanation)}</div></div></details>`}).join("");reviewList.innerHTML=`${locked}<div class="paid-detail"><div class="paid-title"><div><span>Vocabulary reveal</span><h3>${showAll?"Semua 20 pasangan sudah kebuka 🎉":"Cicip 2 dulu, gratis!"}</h3><p>${showAll?"Klik satu-satu dan temukan kata American–British yang mungkin baru buatmu.":"Ini sneak peek sebelum kamu buka semuanya."}</p></div><strong class="paid-count">${source.length} gambar</strong></div><div class="accordion-list">${items}</div></div>`}
     async function copyUnlockEmail(){const email=currentSession?.user?.email||"";if(!email)return;try{await navigator.clipboard.writeText(email)}catch(_){const i=document.createElement("textarea");i.value=email;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}copyEmailButton.textContent="Email disalin";setTimeout(()=>copyEmailButton.textContent="Copy Email",1400)}
     function openPayment(){if(typeof gtag==="function")gtag("event","unlock_accent_test_click",{event_category:"paid_unlock",currency:"IDR",value:5000});paymentFrame.src=paymentUrl;paymentModal.classList.add("open");paymentModal.setAttribute("aria-hidden","false")}
     function closePayment(){paymentModal.classList.remove("open");paymentModal.setAttribute("aria-hidden","true");paymentFrame.src=""}
