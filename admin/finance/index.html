@@ -262,7 +262,7 @@
         <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
       </div>
       <div class="filter-card">
-        <label>Jenis periode<select id="periodMode"><option value="month">Per bulan</option><option value="range">Range bulan</option><option value="all">All time</option></select></label>
+        <label>Jenis periode<select id="periodMode"><option value="all" selected>All time</option><option value="month">Per bulan</option><option value="range">Range bulan</option></select></label>
         <label id="singleMonthField">Filter bulan<input type="month" id="monthFilter"></label>
         <label id="rangeStartField" class="hidden">Dari bulan<input type="month" id="startMonthFilter"></label>
         <label id="rangeEndField" class="hidden">Sampai bulan<input type="month" id="endMonthFilter"></label>
@@ -389,7 +389,7 @@
 
   function saveAdminFilters() {
     localStorage.setItem(adminFilterStorageKey, JSON.stringify({
-      periodMode: els.periodMode.value || "month",
+      periodMode: els.periodMode.value || "all",
       month: els.month.value || "",
       startMonth: els.startMonth.value || "",
       endMonth: els.endMonth.value || ""
@@ -398,7 +398,7 @@
 
   function restoreAdminFilters() {
     const filters = getSavedAdminFilters();
-    if (filters.periodMode !== undefined) els.periodMode.value = filters.periodMode || "month";
+    els.periodMode.value = "all";
     if (filters.month !== undefined) els.month.value = filters.month || "";
     if (filters.startMonth !== undefined) els.startMonth.value = filters.startMonth || "";
     if (filters.endMonth !== undefined) els.endMonth.value = filters.endMonth || "";
