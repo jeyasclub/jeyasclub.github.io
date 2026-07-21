@@ -1153,12 +1153,16 @@ as $$
       ('english-slang-test', 'Slang Test', 3),
       ('swe-test', 'SWE Test', 4),
       ('reading-test', 'Reading Test', 5),
-      ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 6),
-      ('study-sheet-100-english-challenges', '1001 English Challenges', 7)
+      ('accent-test', 'Accent Test', 6),
+      ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 7),
+      ('study-sheet-100-english-challenges', '1001 English Challenges', 8)
   ),
   sale_events as (
     select
-      sales.product_key,
+      case
+        when sales.product_key in ('accent-test', 'unlock:accent-test') then 'accent-test'
+        else sales.product_key
+      end as product_key,
       coalesce(nullif(sales.transaction_id, ''), 'logged:' || sales.id::text) as sale_key,
       sales.paid_at as sale_at
     from public.mayar_product_sales sales
@@ -1263,20 +1267,30 @@ as $$
       ('english-slang-test', 'Slang Test', 3),
       ('swe-test', 'SWE Test', 4),
       ('reading-test', 'Reading Test', 5),
-      ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 6),
-      ('study-sheet-100-english-challenges', '1001 English Challenges', 7)
+      ('accent-test', 'Accent Test', 6),
+      ('300-toefl-vocabulary', '300 TOEFL Vocabulary', 7),
+      ('study-sheet-100-english-challenges', '1001 English Challenges', 8)
   ),
   revenue as (
     select
-      sales.product_key,
+      case
+        when sales.product_key in ('accent-test', 'unlock:accent-test') then 'accent-test'
+        else sales.product_key
+      end as product_key,
       count(*)::bigint as sale_count,
       coalesce(sum(sales.amount), 0)::numeric as revenue_amount
     from public.mayar_product_sales sales
     where sales.source = 'mayar'
-      and sales.product_key in (select products.product_key from products)
+      and (
+        sales.product_key in (select products.product_key from products)
+        or sales.product_key = 'unlock:accent-test'
+      )
       and (p_start_date is null or sales.paid_at >= p_start_date)
       and (p_end_date is null or sales.paid_at < p_end_date)
-    group by sales.product_key
+    group by case
+      when sales.product_key in ('accent-test', 'unlock:accent-test') then 'accent-test'
+      else sales.product_key
+    end
   )
   select
     products.product_key,
