@@ -302,6 +302,19 @@
     return groups;
   }
 
+  function buildCourseRows(bookings, trackers) {
+    const trackerByBookingId = new Map(trackers.map((row) => [row.booking_id, row]));
+    return groupBookings(bookings).map((booking) => {
+      const groupId = getBookingGroupId(booking);
+      const groupBookingIds = bookings
+        .filter((row) => getBookingGroupId(row) === groupId)
+        .map((row) => row.id);
+      return trackerByBookingId.get(booking.id)
+        || groupBookingIds.map((id) => trackerByBookingId.get(id)).find(Boolean)
+        || { meetings_realized: 0, meetings_total: 0 };
+    });
+  }
+
   function countBy(rows, key) {
     return rows.reduce((map, row) => {
       const label = row[key] || "-";
@@ -400,11 +413,12 @@
 
   function renderOverview(bookings, trackers, tutors, memberCount = 0, productSales = []) {
     const groupedBookings = groupBookings(bookings);
+    const courseRows = buildCourseRows(bookings, trackers);
     const activeTutors = tutors.filter((row) => row.is_active).length;
     const inactiveTutors = Math.max(tutors.length - activeTutors, 0);
-    const completedCourses = trackers.filter(isCompletedCourse).length;
-    const activeCourses = trackers.length - completedCourses;
-    const courseActivePercent = trackers.length ? Math.round((activeCourses / trackers.length) * 100) : 0;
+    const completedCourses = courseRows.filter(isCompletedCourse).length;
+    const activeCourses = courseRows.length - completedCourses;
+    const courseActivePercent = courseRows.length ? Math.round((activeCourses / courseRows.length) * 100) : 0;
 
     els.memberTotal.textContent = memberCount === null ? "-" : Number(memberCount || 0).toLocaleString("id-ID");
     els.totalBookings.textContent = groupedBookings.length;
