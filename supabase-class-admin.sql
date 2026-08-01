@@ -796,3 +796,114 @@ from public.class_tutors
 order by name;
 
 grant select on public.class_tutor_login_accounts to authenticated;
+
+-- Immutable activity history for changes made through /admin/ and /input/.
+create table if not exists public.class_activity_log (
+  id bigint generated always as identity primary key,
+  table_name text not null,
+  record_id text,
+  action text not null check (action in ('INSERT', 'UPDATE', 'DELETE')),
+  actor_email text not null default '',
+  old_data jsonb,
+  new_data jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists class_activity_log_created_at_idx
+on public.class_activity_log (created_at desc);
+
+create index if not exists class_activity_log_actor_email_idx
+on public.class_activity_log (lower(actor_email));
+
+alter table public.class_activity_log enable row level security;
+revoke all on public.class_activity_log from anon, authenticated;
+grant select on public.class_activity_log to authenticated;
+
+drop policy if exists "Class admins can read all activity" on public.class_activity_log;
+drop policy if exists "Class tutors can read own activity" on public.class_activity_log;
+
+create policy "Class admins can read all activity"
+on public.class_activity_log
+for select
+to authenticated
+using (public.is_class_admin());
+
+create policy "Class tutors can read own activity"
+on public.class_activity_log
+for select
+to authenticated
+using (lower(actor_email) = lower(coalesce(auth.jwt() ->> 'email', '')));
+
+create or replace function public.log_class_activity()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  previous_data jsonb;
+  current_data jsonb;
+  activity_record_id text;
+begin
+  previous_data := case when tg_op in ('UPDATE', 'DELETE') then to_jsonb(old) else null end;
+  current_data := case when tg_op in ('INSERT', 'UPDATE') then to_jsonb(new) else null end;
+  activity_record_id := coalesce(current_data ->> 'id', previous_data ->> 'id');
+
+  if tg_op = 'UPDATE' then
+    previous_data := previous_data - 'updated_at';
+    current_data := current_data - 'updated_at';
+    if previous_data = current_data then
+      return new;
+    end if;
+  end if;
+
+  insert into public.class_activity_log (
+    table_name,
+    record_id,
+    action,
+    actor_email,
+    old_data,
+    new_data
+  ) values (
+    tg_table_name,
+    activity_record_id,
+    tg_op,
+    lower(coalesce(auth.jwt() ->> 'email', 'system')),
+    previous_data,
+    current_data
+  );
+
+  if tg_op = 'DELETE' then
+    return old;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists log_class_tracker_activity on public.class_tracker;
+create trigger log_class_tracker_activity after insert or update or delete on public.class_tracker
+for each row execute function public.log_class_activity();
+
+drop trigger if exists log_class_bookings_activity on public.class_bookings;
+create trigger log_class_bookings_activity after insert or update or delete on public.class_bookings
+for each row execute function public.log_class_activity();
+
+drop trigger if exists log_class_programs_activity on public.class_programs;
+create trigger log_class_programs_activity after insert or update or delete on public.class_programs
+for each row execute function public.log_class_activity();
+
+drop trigger if exists log_class_tutors_activity on public.class_tutors;
+create trigger log_class_tutors_activity after insert or update or delete on public.class_tutors
+for each row execute function public.log_class_activity();
+
+drop trigger if exists log_class_meeting_fees_activity on public.class_meeting_fees;
+create trigger log_class_meeting_fees_activity after insert or update or delete on public.class_meeting_fees
+for each row execute function public.log_class_activity();
+
+drop trigger if exists log_class_zoom_bookings_activity on public.class_zoom_bookings;
+create trigger log_class_zoom_bookings_activity after insert or update or delete on public.class_zoom_bookings
+for each row execute function public.log_class_activity();
+
+drop trigger if exists log_class_finance_activity on public.jeyasclub_finance_manual_entries;
+create trigger log_class_finance_activity after insert or update or delete on public.jeyasclub_finance_manual_entries
+for each row execute function public.log_class_activity();

@@ -86,6 +86,7 @@
   .info-link span { color:var(--muted); font-size:13px; overflow-wrap:anywhere; }
   .info-copy { min-height:38px; padding:8px 12px; border-radius:10px; border:2px solid var(--ink); background:#fff; color:var(--blue-dark); box-shadow:2px 3px 0 var(--shadow); font-size:12px; font-weight:900; cursor:pointer; white-space:nowrap; }
   .info-copy:disabled { cursor:not-allowed; opacity:.55; }
+  .activity-footer { padding:0 20px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
   .table-wrap { overflow-x:auto; border-radius:10px; }
   table { width:100%; min-width:960px; border-collapse:collapse; border:2.5px solid var(--ink); background:#fff; }
   th, td { padding:13px 14px; text-align:left; border:2px solid var(--ink); font-size:13px; vertical-align:middle; }
@@ -242,6 +243,23 @@
       </div>
       <div class="zoom-calendar" id="zoomCalendar"></div>
     </section>
+
+    <section class="panel" id="activityPanel">
+      <div class="panel-head">
+        <h2>Activity History</h2>
+        <p class="muted">Admin melihat seluruh aktivitas. Tutor hanya melihat perubahan dari akunnya sendiri.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tanggal</th><th>Pengguna</th><th>Aktivitas</th></tr></thead>
+          <tbody id="activityBody"></tbody>
+        </table>
+      </div>
+      <div class="activity-footer">
+        <p class="status" id="activityStatus"></p>
+        <button class="btn" type="button" id="activityRefresh">Refresh History</button>
+      </div>
+    </section>
   </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -268,7 +286,8 @@
     copyZoomLink:$("copyZoomLink"), copyTestimonialLink:$("copyTestimonialLink"),
     trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus"), zoomForm:$("zoomForm"), zoomDate:$("zoomDate"),
     zoomStart:$("zoomStart"), zoomEnd:$("zoomEnd"), zoomNote:$("zoomNote"), zoomSubmit:$("zoomSubmit"), zoomStatus:$("zoomStatus"),
-    zoomMonth:$("zoomMonth"), zoomRefresh:$("zoomRefresh"), zoomCalendar:$("zoomCalendar"), zoomCancelEdit:$("zoomCancelEdit")
+    zoomMonth:$("zoomMonth"), zoomRefresh:$("zoomRefresh"), zoomCalendar:$("zoomCalendar"), zoomCancelEdit:$("zoomCancelEdit"),
+    activityBody:$("activityBody"), activityStatus:$("activityStatus"), activityRefresh:$("activityRefresh")
   };
 
   function isAdmin(session = currentSession) {
@@ -378,6 +397,68 @@
     const date = new Date(`${value}T00:00:00`);
     if (Number.isNaN(date.getTime())) return "-";
     return date.toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" });
+  }
+
+  function formatDateTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleString("id-ID", { dateStyle:"medium", timeStyle:"short", timeZone:"Asia/Jakarta" });
+  }
+
+  const activityTableLabels = {
+    class_tracker:"Class Tracker", class_bookings:"Class Booking", class_programs:"Program",
+    class_tutors:"Tutor", class_meeting_fees:"Meeting Fee", class_zoom_bookings:"Zoom Booking",
+    jeyasclub_finance_manual_entries:"Transaksi Finance"
+  };
+  const activityFieldLabels = {
+    meetings_realized:"Meeting realized", meetings_total:"Total meeting", payments_realized:"Payment realized",
+    payments_total:"Total payment", student_name:"Nama siswa", student_count:"Jumlah siswa", program_name:"Program",
+    tutor:"Tutor", price:"Harga", order_date:"Tanggal pemesanan", valid_until:"Masa berlaku",
+    certificate_issued:"Sertifikat", testimonial_received:"Testimoni", note:"Catatan", name:"Nama",
+    is_active:"Status aktif", fee:"Fee", booking_date:"Tanggal Zoom", start_time:"Jam mulai", end_time:"Jam selesai",
+    category:"Kategori", description:"Keterangan", amount:"Nominal", entry_type:"Tipe"
+  };
+
+  function formatActivityValue(value) {
+    if (value === null || value === undefined || value === "") return "-";
+    if (typeof value === "boolean") return value ? "Ya" : "Tidak";
+    if (typeof value === "object") return JSON.stringify(value);
+    return String(value);
+  }
+
+  function describeActivity(row) {
+    const tableLabel = activityTableLabels[row.table_name] || row.table_name;
+    const oldData = row.old_data || {};
+    const newData = row.new_data || {};
+    const recordLabel = newData.student_name || oldData.student_name || newData.name || oldData.name || newData.program_name || oldData.program_name || newData.tutor_name || oldData.tutor_name || newData.tutor || oldData.tutor || "";
+    if (row.action === "INSERT") return `Menambahkan ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
+    if (row.action === "DELETE") return `Menghapus ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
+    const ignoredFields = new Set(["id", "created_at", "updated_at", "created_by", "booking_group_id", "booking_student_order"]);
+    const changes = [...new Set([...Object.keys(oldData), ...Object.keys(newData)])]
+      .filter((field) => !ignoredFields.has(field) && JSON.stringify(oldData[field]) !== JSON.stringify(newData[field]))
+      .map((field) => `${activityFieldLabels[field] || field}: ${formatActivityValue(oldData[field])} -> ${formatActivityValue(newData[field])}`);
+    return `Mengubah ${tableLabel}${recordLabel ? ` (${recordLabel})` : ""}${changes.length ? `: ${changes.join("; ")}` : ""}`;
+  }
+
+  async function loadActivityHistory() {
+    if (!supabaseClient || !hasInputAccess()) return;
+    setStatus(els.activityStatus, "Memuat activity history...");
+    const { data, error } = await supabaseClient
+      .from("class_activity_log")
+      .select("table_name,record_id,action,actor_email,old_data,new_data,created_at")
+      .order("created_at", { ascending:false })
+      .limit(60);
+    if (error) {
+      console.error("Activity history load failed:", error);
+      els.activityBody.innerHTML = "";
+      setStatus(els.activityStatus, "History belum bisa dimuat. Jalankan supabase-class-admin.sql terbaru.", "bad");
+      return;
+    }
+    const rows = data || [];
+    els.activityBody.innerHTML = rows.length ? rows.map((row) => `
+      <tr><td>${escapeHTML(formatDateTime(row.created_at))}</td><td>${escapeHTML(row.actor_email || "system")}</td><td>${escapeHTML(describeActivity(row))}</td></tr>
+    `).join("") : `<tr><td colspan="3">Belum ada riwayat perubahan.</td></tr>`;
+    setStatus(els.activityStatus, `${rows.length} aktivitas terbaru.`);
   }
 
   function formatTime(value) {
@@ -642,6 +723,7 @@
     }
     setStatus(els.trackerStatus, "Total Meeting Realized berhasil diupdate.", "good");
     await loadTrackers();
+    await loadActivityHistory();
   }
 
   async function loadZoomBookings() {
@@ -754,6 +836,7 @@
     }
     setStatus(els.zoomStatus, "Zoom Booking berhasil dihapus.", "good");
     await loadZoomBookings();
+    await loadActivityHistory();
   }
 
   function showLogin(message = "Admin atau tutor Jeya's Club bisa login di sini.") {
@@ -782,6 +865,7 @@
     const today = toDateInput();
     els.zoomDate.value ||= today;
     els.zoomMonth.value ||= toMonthInput();
+    loadActivityHistory();
     if (isAdmin()) {
       $("bookingDate").value ||= today;
       renderStudentNameFields();
@@ -844,6 +928,7 @@
   els.bookingStudentCount.addEventListener("change", handleStudentCountChange);
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
+  els.activityRefresh.addEventListener("click", loadActivityHistory);
   els.zoomCancelEdit.addEventListener("click", () => {
     resetZoomForm("Mode edit dibatalkan.");
   });
@@ -874,6 +959,7 @@
     els.zoomMonth.value = savedZoomDate ? savedZoomDate.slice(0, 7) : (els.zoomMonth.value || toMonthInput());
     resetZoomForm(wasEditingZoomBooking ? "Zoom Booking berhasil diupdate." : "Zoom Booking berhasil tersimpan.");
     await loadZoomBookings();
+    await loadActivityHistory();
   });
 
   els.bookingForm.addEventListener("submit", async (event) => {
@@ -939,6 +1025,7 @@
     $("bookingMeetingTotal").value = 0;
     setStatus(els.bookingStatus, `${studentCount} data Class Booking tersimpan dan otomatis muncul di Class Tracker.`, "good");
     await loadTrackers();
+    await loadActivityHistory();
   });
 
   init();

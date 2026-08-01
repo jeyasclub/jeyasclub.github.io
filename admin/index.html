@@ -218,6 +218,17 @@
         <div class="empty hidden" id="zoomEmpty">Belum ada Zoom Booking untuk bulan ini.</div>
       </section>
 
+      <section class="panel">
+        <div class="panel-head"><div><h2>Activity History</h2><p class="muted">Riwayat perubahan data oleh admin dan tutor, terbaru lebih dulu.</p></div><button class="btn" type="button" id="activityRefresh">Refresh</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tanggal</th><th>Pengguna</th><th>Aktivitas</th></tr></thead>
+            <tbody id="activityBody"></tbody>
+          </table>
+        </div>
+        <div class="empty hidden" id="activityEmpty">Belum ada riwayat perubahan. Jalankan SQL terbaru untuk mulai merekam aktivitas.</div>
+      </section>
+
     </div>
   </main>
 
@@ -285,6 +296,7 @@
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
     zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
     exportTracker: $("exportTracker"), exportBooking: $("exportBooking"), exportZoom: $("exportZoom"),
+    activityBody: $("activityBody"), activityEmpty: $("activityEmpty"), activityRefresh: $("activityRefresh"),
     bookingModal: $("bookingModal"), bookingEditForm: $("bookingEditForm"), bookingEditId: $("bookingEditId"),
     bookingOrderDate: $("bookingOrderDate"), bookingValidUntil: $("bookingValidUntil"),
     bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
@@ -338,6 +350,71 @@
     const date = new Date(`${value}T00:00:00`);
     if (Number.isNaN(date.getTime())) return "-";
     return date.toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" });
+  }
+
+  function formatDateTime(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleString("id-ID", { dateStyle:"medium", timeStyle:"short", timeZone:"Asia/Jakarta" });
+  }
+
+  const activityTableLabels = {
+    class_tracker:"Class Tracker", class_bookings:"Class Booking", class_programs:"Program",
+    class_tutors:"Tutor", class_meeting_fees:"Meeting Fee", class_zoom_bookings:"Zoom Booking",
+    jeyasclub_finance_manual_entries:"Transaksi Finance"
+  };
+  const activityFieldLabels = {
+    meetings_realized:"Meeting realized", meetings_total:"Total meeting", payments_realized:"Payment realized",
+    payments_total:"Total payment", student_name:"Nama siswa", student_count:"Jumlah siswa", program_name:"Program",
+    tutor:"Tutor", price:"Harga", order_date:"Tanggal pemesanan", valid_until:"Masa berlaku",
+    certificate_issued:"Sertifikat", testimonial_received:"Testimoni", note:"Catatan", name:"Nama",
+    is_active:"Status aktif", fee:"Fee", booking_date:"Tanggal Zoom", start_time:"Jam mulai", end_time:"Jam selesai",
+    category:"Kategori", description:"Keterangan", amount:"Nominal", entry_type:"Tipe"
+  };
+
+  function formatActivityValue(value) {
+    if (value === null || value === undefined || value === "") return "-";
+    if (typeof value === "boolean") return value ? "Ya" : "Tidak";
+    if (typeof value === "object") return JSON.stringify(value);
+    return String(value);
+  }
+
+  function activityRecordLabel(data = {}) {
+    return data.student_name || data.name || data.program_name || data.tutor_name || data.tutor || data.category || data.note || "";
+  }
+
+  function describeActivity(row) {
+    const tableLabel = activityTableLabels[row.table_name] || row.table_name;
+    const oldData = row.old_data || {};
+    const newData = row.new_data || {};
+    const recordLabel = activityRecordLabel(newData) || activityRecordLabel(oldData);
+    if (row.action === "INSERT") return `Menambahkan ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
+    if (row.action === "DELETE") return `Menghapus ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
+    const ignoredFields = new Set(["id", "created_at", "updated_at", "created_by", "booking_group_id", "booking_student_order"]);
+    const changes = [...new Set([...Object.keys(oldData), ...Object.keys(newData)])]
+      .filter((field) => !ignoredFields.has(field) && JSON.stringify(oldData[field]) !== JSON.stringify(newData[field]))
+      .map((field) => `${activityFieldLabels[field] || field}: ${formatActivityValue(oldData[field])} -> ${formatActivityValue(newData[field])}`);
+    return `Mengubah ${tableLabel}${recordLabel ? ` (${recordLabel})` : ""}${changes.length ? `: ${changes.join("; ")}` : ""}`;
+  }
+
+  async function loadActivityHistory() {
+    if (!supabaseClient || !isAdmin()) return;
+    const { data, error } = await supabaseClient
+      .from("class_activity_log")
+      .select("table_name,record_id,action,actor_email,old_data,new_data,created_at")
+      .order("created_at", { ascending:false })
+      .limit(100);
+    if (error) {
+      console.error("Activity history load failed:", error);
+      els.activityBody.innerHTML = "";
+      els.activityEmpty.classList.remove("hidden");
+      return;
+    }
+    const rows = data || [];
+    els.activityEmpty.classList.toggle("hidden", rows.length > 0);
+    els.activityBody.innerHTML = rows.map((row) => `
+      <tr><td>${escapeHTML(formatDateTime(row.created_at))}</td><td>${escapeHTML(row.actor_email || "system")}</td><td>${escapeHTML(describeActivity(row))}</td></tr>
+    `).join("");
   }
 
   function formatTime(value) {
@@ -858,6 +935,7 @@
     }
     els.sessionLabel.textContent = "Zoom Booking berhasil dihapus.";
     await loadZoomBookings();
+    await loadActivityHistory();
   }
 
   async function loadData() {
@@ -897,6 +975,7 @@
     renderTracker(trackerRows);
     renderBookings(bookingRows);
     if (els.monthLabel) els.monthLabel.textContent = els.month.value || "Semua";
+    await loadActivityHistory();
   }
 
   function renderTracker(rows) {
@@ -1419,6 +1498,7 @@
     loadData();
   });
   els.refresh.addEventListener("click", loadData);
+  els.activityRefresh.addEventListener("click", loadActivityHistory);
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
   init();
