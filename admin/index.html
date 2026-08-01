@@ -968,14 +968,31 @@
       els.sessionLabel.textContent = "Data belum bisa dimuat. Pastikan supabase-class-admin.sql sudah dijalankan.";
       return;
     }
-    trackerRows = trackers || [];
     bookingRows = bookings || [];
+    trackerRows = dedupeTrackerRows(trackers || [], bookingRows);
     trackerExpanded = false;
     bookingExpanded = false;
     renderTracker(trackerRows);
     renderBookings(bookingRows);
     if (els.monthLabel) els.monthLabel.textContent = els.month.value || "Semua";
     await loadActivityHistory();
+  }
+
+  function dedupeTrackerRows(rows, bookings) {
+    const bookingById = new Map(bookings.map((row) => [row.id, row]));
+    const selectedByGroup = new Map();
+    const orphanRows = [];
+    rows.forEach((row) => {
+      const booking = bookingById.get(row.booking_id);
+      if (!booking) { orphanRows.push(row); return; }
+      const groupId = booking.booking_group_id || booking.id;
+      const current = selectedByGroup.get(groupId);
+      if (!current || Number(booking.booking_student_order || 1) < Number(current.booking.booking_student_order || 1)) {
+        selectedByGroup.set(groupId, { row, booking });
+      }
+    });
+    return [...selectedByGroup.values()].map((item) => item.row).concat(orphanRows)
+      .sort((a, b) => String(b.order_date || "").localeCompare(String(a.order_date || "")) || String(b.created_at || "").localeCompare(String(a.created_at || "")));
   }
 
   function renderTracker(rows) {
@@ -1435,9 +1452,11 @@
     const { data } = await supabaseClient.auth.getSession();
     currentSession = data.session;
     if (isAdmin()) showDashboard(); else showLogin();
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      const previousUserId = currentSession && currentSession.user ? currentSession.user.id : "";
       currentSession = session;
-      if (isAdmin()) showDashboard(); else showLogin();
+      if (!session || !isAdmin()) { showLogin(); return; }
+      if (event === "SIGNED_IN" && session.user.id !== previousUserId) showDashboard();
     });
   }
 

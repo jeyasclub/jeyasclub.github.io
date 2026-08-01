@@ -772,9 +772,11 @@
     const { data } = await supabaseClient.auth.getSession();
     currentSession = data.session;
     if (isAdmin()) showDashboard(); else showLogin();
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      const previousUserId = currentSession && currentSession.user ? currentSession.user.id : "";
       currentSession = session;
-      if (isAdmin()) showDashboard(); else showLogin();
+      if (!session || !isAdmin()) { showLogin(); return; }
+      if (event === "SIGNED_IN" && session.user.id !== previousUserId) showDashboard();
     });
   }
 

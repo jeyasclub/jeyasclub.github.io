@@ -654,7 +654,8 @@
     }
 
     const bookingMap = await loadTrackerBookingMap(data);
-    els.trackerBody.innerHTML = data.map((row) => `
+    const displayRows = dedupeTrackerRows(data, bookingMap);
+    els.trackerBody.innerHTML = displayRows.map((row) => `
       <tr>
         <td>${formatDate(row.order_date)}</td>
         <td>${formatDate(getTrackerValidUntil(row, bookingMap))}</td>
@@ -672,7 +673,7 @@
 
     els.trackerBody.querySelectorAll("[data-edit-tracker]").forEach((button) => {
       button.addEventListener("click", () => {
-        const row = data.find((item) => item.id === button.dataset.editTracker);
+        const row = displayRows.find((item) => item.id === button.dataset.editTracker);
         if (row) updateMeetingRealized(row);
       });
     });
@@ -683,18 +684,34 @@
     if (!ids.length) return new Map();
     const { data, error } = await supabaseClient
       .from("class_bookings")
-      .select("id,valid_until")
+      .select("id,valid_until,booking_group_id,booking_student_order")
       .in("id", ids);
     if (error) {
       console.warn("Booking valid_until load failed:", error);
       return new Map();
     }
-    return new Map((data || []).map((booking) => [booking.id, booking.valid_until]));
+    return new Map((data || []).map((booking) => [booking.id, booking]));
+  }
+
+  function dedupeTrackerRows(rows, bookingMap) {
+    const selectedByGroup = new Map();
+    const orphanRows = [];
+    rows.forEach((row) => {
+      const booking = bookingMap.get(row.booking_id);
+      if (!booking) { orphanRows.push(row); return; }
+      const groupId = booking.booking_group_id || booking.id;
+      const current = selectedByGroup.get(groupId);
+      if (!current || Number(booking.booking_student_order || 1) < Number(current.booking.booking_student_order || 1)) {
+        selectedByGroup.set(groupId, { row, booking });
+      }
+    });
+    return [...selectedByGroup.values()].map((item) => item.row).concat(orphanRows);
   }
 
   function getTrackerValidUntil(row, bookingMap) {
     if (row.valid_until) return row.valid_until;
-    return bookingMap.get(row.booking_id) || "";
+    const booking = bookingMap.get(row.booking_id);
+    return booking ? booking.valid_until || "" : "";
   }
 
   async function updateMeetingRealized(row) {
@@ -897,8 +914,11 @@
     if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
     const { data } = await supabaseClient.auth.getSession();
     await renderSession(data.session);
-    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
-      await renderSession(session);
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      const previousUserId = currentSession && currentSession.user ? currentSession.user.id : "";
+      if (!session) { await renderSession(null); return; }
+      if (event === "SIGNED_IN" && session.user.id !== previousUserId) await renderSession(session);
+      else currentSession = session;
     });
   }
 

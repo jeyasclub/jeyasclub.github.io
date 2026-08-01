@@ -283,6 +283,48 @@ do update set
   is_active = excluded.is_active,
   updated_at = now();
 
+-- Older versions backfilled one tracker per student row. Merge those duplicates
+-- into the first booking in each group before removing the redundant trackers.
+with tracker_rollup as (
+  select
+    booking.booking_group_id,
+    min(booking.id::text) filter (where booking.booking_student_order = 1)::uuid as first_booking_id,
+    string_agg(booking.student_name, ', ' order by booking.booking_student_order) as student_names,
+    max(booking.student_count) as student_count,
+    max(tracker.meetings_realized) as meetings_realized,
+    max(tracker.meetings_total) as meetings_total,
+    max(tracker.payments_realized) as payments_realized,
+    max(tracker.payments_total) as payments_total,
+    count(tracker.id) as tracker_count
+  from public.class_bookings booking
+  join public.class_tracker tracker on tracker.booking_id = booking.id
+  group by booking.booking_group_id
+)
+update public.class_tracker tracker
+set
+  student_name = rollup.student_names,
+  student_count = rollup.student_count,
+  meetings_realized = rollup.meetings_realized,
+  meetings_total = rollup.meetings_total,
+  payments_realized = rollup.payments_realized,
+  payments_total = rollup.payments_total,
+  updated_at = now()
+from tracker_rollup rollup
+where rollup.tracker_count > 1
+  and tracker.booking_id = rollup.first_booking_id;
+
+delete from public.class_tracker tracker
+using public.class_bookings booking
+where tracker.booking_id = booking.id
+  and booking.booking_student_order > 1
+  and exists (
+    select 1
+    from public.class_bookings first_booking
+    join public.class_tracker first_tracker on first_tracker.booking_id = first_booking.id
+    where first_booking.booking_group_id = booking.booking_group_id
+      and first_booking.booking_student_order = 1
+  );
+
 insert into public.class_tracker (
   booking_id,
   order_date,
@@ -301,7 +343,11 @@ insert into public.class_tracker (
 select
   booking.id,
   booking.order_date,
-  booking.student_name,
+  (
+    select string_agg(group_booking.student_name, ', ' order by group_booking.booking_student_order)
+    from public.class_bookings group_booking
+    where group_booking.booking_group_id = booking.booking_group_id
+  ),
   booking.student_count,
   booking.program_name,
   booking.tutor,
@@ -313,10 +359,12 @@ select
   booking.created_at,
   now()
 from public.class_bookings booking
-where not exists (
+where booking.booking_student_order = 1
+and not exists (
   select 1
-  from public.class_tracker tracker
-  where tracker.booking_id = booking.id
+  from public.class_bookings group_booking
+  join public.class_tracker tracker on tracker.booking_id = group_booking.id
+  where group_booking.booking_group_id = booking.booking_group_id
 );
 
 alter table public.class_tracker enable row level security;

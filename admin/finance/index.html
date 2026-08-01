@@ -529,6 +529,22 @@
     return groups;
   }
 
+  function dedupeTrackerRows(rows, bookings) {
+    const bookingById = new Map(bookings.map((row) => [row.id, row]));
+    const selectedByGroup = new Map();
+    const orphanRows = [];
+    rows.forEach((row) => {
+      const booking = bookingById.get(row.booking_id);
+      if (!booking) { orphanRows.push(row); return; }
+      const groupId = booking.booking_group_id || booking.id;
+      const current = selectedByGroup.get(groupId);
+      if (!current || Number(booking.booking_student_order || 1) < Number(current.booking.booking_student_order || 1)) {
+        selectedByGroup.set(groupId, { row, booking });
+      }
+    });
+    return [...selectedByGroup.values()].map((item) => item.row).concat(orphanRows);
+  }
+
   function normalizeProgramName(value) {
     return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
   }
@@ -852,6 +868,7 @@
   }
 
   function renderFinance(bookings, trackers, manualEntries, digitalRows) {
+    trackers = dedupeTrackerRows(trackers, bookings);
     const range = selectedPeriodRange();
     const groupedBookings = groupBookings(bookings);
     const courseRows = sumBy(groupedBookings, (row) => row.program_name || "Tanpa Program", (row) => row.price);
@@ -1015,9 +1032,11 @@
     const { data } = await supabaseClient.auth.getSession();
     currentSession = data.session;
     if (isFinanceAdmin()) showDashboard(); else showLogin();
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      const previousUserId = currentSession && currentSession.user ? currentSession.user.id : "";
       currentSession = session;
-      if (isFinanceAdmin()) showDashboard(); else showLogin();
+      if (!session || !isFinanceAdmin()) { showLogin(); return; }
+      if (event === "SIGNED_IN" && session.user.id !== previousUserId) showDashboard();
     });
   }
 
