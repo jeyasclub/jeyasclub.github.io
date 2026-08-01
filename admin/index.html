@@ -28,6 +28,7 @@
   .btn { min-height:42px; border-radius:12px; padding:10px 15px; display:inline-flex; align-items:center; justify-content:center; border:2.5px solid var(--ink); background:var(--white); color:var(--text); box-shadow:3px 4px 0 var(--shadow); font-size:13px; font-weight:900; text-decoration:none; cursor:pointer; transition:transform .16s ease, box-shadow .16s ease, background .16s ease; }
   .btn:hover { transform:translateY(-1px); box-shadow:4px 5px 0 var(--shadow); }
   .btn.primary { border-color:var(--ink); background:var(--blue); color:var(--white); box-shadow:4px 5px 0 var(--shadow); }
+  .btn.active { background:var(--yellow); color:var(--ink); }
   .btn.danger { color:var(--red); background:#fff1f2; border-color:var(--ink); }
   .shell { width:min(1180px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
   .login-screen { min-height:calc(100vh - 64px); display:grid; place-items:center; padding:32px 16px; }
@@ -171,6 +172,7 @@
       </div>
       <div class="filter-card">
         <label>Filter bulan<input type="month" id="monthFilter"></label>
+        <button class="btn" type="button" id="allTimeFilter" aria-pressed="false">All Time</button>
         <label>Filter program<select id="programFilter"><option value="">Semua Program</option></select></label>
         <label>Filter tutor<select id="tutorFilter"><option value="">Semua Tutor</option></select></label>
         <button class="btn" type="button" id="resetFilter">Reset Filter</button>
@@ -276,7 +278,7 @@
   const els = {
     loginScreen: $("loginScreen"), dashboard: $("dashboard"), loginForm: $("loginForm"),
     email: $("emailInput"), password: $("passwordInput"), loginButton: $("loginButton"), authMessage: $("authMessage"),
-    logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), reset: $("resetFilter"),
+    logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), allTime: $("allTimeFilter"), reset: $("resetFilter"),
     programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
     trackerShowMore: $("trackerShowMore"), bookingShowMore: $("bookingShowMore"),
@@ -318,6 +320,13 @@
     if (filters.month !== undefined) els.month.value = filters.month || "";
     if (filters.program !== undefined) els.programFilter.value = filters.program || "";
     if (filters.tutor !== undefined) els.tutorFilter.value = filters.tutor || "";
+    updateAllTimeFilterState();
+  }
+
+  function updateAllTimeFilterState() {
+    const isAllTime = !els.month.value;
+    els.allTime.classList.toggle("active", isAllTime);
+    els.allTime.setAttribute("aria-pressed", String(isAllTime));
   }
 
   function escapeHTML(value) {
@@ -853,6 +862,7 @@
 
   async function loadData() {
     if (!supabaseClient || !isAdmin()) return;
+    updateAllTimeFilterState();
     els.refresh.disabled = true;
     els.refresh.textContent = "Memuat...";
     const range = monthRange(els.month.value);
@@ -1391,13 +1401,20 @@
     if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
     if (zoomDeleteButton) deleteZoomBooking(zoomDeleteButton.dataset.zoomDelete);
   });
-  els.month.addEventListener("change", () => { saveAdminFilters(); loadData(); });
+  els.month.addEventListener("change", () => { updateAllTimeFilterState(); saveAdminFilters(); loadData(); });
+  els.allTime.addEventListener("click", () => {
+    els.month.value = "";
+    updateAllTimeFilterState();
+    saveAdminFilters();
+    loadData();
+  });
   els.programFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
   els.tutorFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
   els.reset.addEventListener("click", () => {
     els.month.value = "";
     els.programFilter.value = "";
     els.tutorFilter.value = "";
+    updateAllTimeFilterState();
     saveAdminFilters();
     loadData();
   });
