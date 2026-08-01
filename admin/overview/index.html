@@ -80,6 +80,12 @@
   .legend-dot { width:10px; height:10px; border-radius:50%; background:var(--green); }
   .legend-dot.completed { background:var(--blue); }
   .legend-dot.inactive { background:#e2e8f0; border:1px solid #cbd5e1; }
+  .tutor-pie-layout { display:grid; grid-template-columns:minmax(190px, 240px) minmax(0, 1fr); align-items:center; gap:24px; }
+  .tutor-pie { width:min(240px, 100%); aspect-ratio:1; justify-self:center; border:3px solid var(--ink); border-radius:50%; box-shadow:5px 6px 0 var(--shadow); }
+  .tutor-pie-legend { display:grid; gap:9px; }
+  .tutor-pie-item { display:grid; grid-template-columns:14px minmax(0, 1fr) auto; align-items:center; gap:9px; color:var(--text); font-size:12px; font-weight:800; }
+  .tutor-pie-swatch { width:14px; height:14px; border:2px solid var(--ink); border-radius:3px; }
+  .tutor-pie-value { color:var(--muted); white-space:nowrap; }
   .empty { padding:4px 0; color:var(--muted); font-size:13px; }
   @media (max-width:1040px) { .metrics { grid-template-columns:repeat(3, minmax(0, 1fr)); } .sales-count-list { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
   @media (max-width:900px) { .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .grid-2 { grid-template-columns:1fr; } .sales-count-list { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
@@ -102,6 +108,7 @@
     .count-value { min-width:48px; }
     .sales-count-list { grid-template-columns:1fr; }
     .sales-count-list .count-row { min-height:58px; }
+    .tutor-pie-layout { grid-template-columns:1fr; }
     .filter-card { display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
     .filter-card label { width:100%; min-width:0; display:grid; grid-template-columns:1fr; overflow:hidden; }
     .filter-card input { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; -webkit-appearance:none; appearance:none; justify-self:start; }
@@ -174,7 +181,7 @@
 
       <article class="panel">
         <div class="panel-head"><h2>Booking per Tutor</h2><p class="muted">Breakdown total booking berdasarkan tutor.</p></div>
-        <div class="chart-body"><div class="count-list" id="tutorChart"></div></div>
+        <div class="chart-body"><div class="tutor-pie-layout" id="tutorChart"></div></div>
       </article>
 
       <article class="panel">
@@ -337,6 +344,36 @@
     `).join("");
   }
 
+  function renderTutorPie(container, dataMap) {
+    const colors = ["#1A6FE8", "#16A46C", "#F59E0B", "#EF476F", "#8B5CF6", "#06B6D4", "#F97316", "#84CC16", "#EC4899", "#6366F1", "#14B8A6", "#A16207"];
+    const entries = Object.entries(dataMap).sort((a, b) => b[1] - a[1]);
+    const total = entries.reduce((sum, [, value]) => sum + Number(value || 0), 0);
+    if (!entries.length || total <= 0) {
+      container.innerHTML = `<p class="empty">Belum ada data untuk filter ini.</p>`;
+      return;
+    }
+    let cumulative = 0;
+    const segments = entries.map(([, value], index) => {
+      const start = cumulative;
+      cumulative += (Number(value) / total) * 100;
+      return `${colors[index % colors.length]} ${start}% ${cumulative}%`;
+    });
+    const legend = entries.map(([label, value], index) => {
+      const percentage = Math.round((Number(value) / total) * 100);
+      return `
+        <div class="tutor-pie-item">
+          <span class="tutor-pie-swatch" style="background:${colors[index % colors.length]}"></span>
+          <span>${escapeHTML(label)}</span>
+          <span class="tutor-pie-value">${value} (${percentage}%)</span>
+        </div>
+      `;
+    }).join("");
+    container.innerHTML = `
+      <div class="tutor-pie" role="img" aria-label="Distribusi ${total} booking berdasarkan tutor" style="background:conic-gradient(${segments.join(",")})"></div>
+      <div class="tutor-pie-legend">${legend}</div>
+    `;
+  }
+
   const productSaleDefaults = [
     { product_key:"vocabulary-test", product_name:"Vocabulary Test", sale_count:0 },
     { product_key:"grammar-test", product_name:"Grammar Test", sale_count:0 },
@@ -426,7 +463,7 @@
     els.courseCompleted.textContent = completedCourses;
 
     renderCountList(els.programChart, countBy(groupedBookings, "program_name"));
-    renderCountList(els.tutorChart, countBy(groupedBookings, "tutor"), "tutor");
+    renderTutorPie(els.tutorChart, countBy(groupedBookings, "tutor"));
     renderProductSales(productSales || []);
 
     els.courseActiveLegend.textContent = activeCourses;
