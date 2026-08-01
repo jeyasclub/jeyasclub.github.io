@@ -600,6 +600,26 @@
       .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
   }
 
+  function buildTutorExpenseRows(rows) {
+    const byTutor = new Map();
+    rows.forEach((row) => {
+      const tutor = row.tutor || "Tanpa Tutor";
+      const current = byTutor.get(tutor) || { tutor, amount: 0, meetings: 0, paidMeetings: 0, unpaidMeetings: 0, missingFee: 0 };
+      const meetings = Math.max(Number(row.meetings_realized || 0), 0);
+      const paidMeetings = Math.min(Math.max(Number(row.payments_realized || 0), 0), meetings);
+      const fee = getMeetingFee(row.program_name, row.student_count);
+      current.meetings += meetings;
+      current.paidMeetings += paidMeetings;
+      current.unpaidMeetings += meetings - paidMeetings;
+      if (fee > 0) current.amount += meetings * fee;
+      else if (meetings > 0) current.missingFee += meetings;
+      byTutor.set(tutor, current);
+    });
+    return [...byTutor.values()]
+      .filter((row) => row.amount > 0 || row.missingFee > 0)
+      .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
+  }
+
   function withDigitalProductRevenue(rows = []) {
     return rows.map((row) => {
       const unitPrice = Number(digitalProductPrices[row.product_key] || 0);
@@ -781,9 +801,9 @@
     const otherIncomeLines = report.otherIncomeRows.length
       ? report.otherIncomeRows.map((row) => statementLine(row.label, row.amount))
       : [];
-    const tutorFeeLines = report.payableRows.length
-      ? report.payableRows.map((row) => statementLine(`Fee Tutor - ${row.tutor}`, row.amount, { note: `${formatNumber(row.meetings)} meeting belum dibayar${row.missingFee ? `, ${formatNumber(row.missingFee)} meeting belum punya fee` : ""}` }))
-      : [statementEmpty("Belum ada fee tutor payable")];
+    const tutorFeeLines = report.tutorExpenseRows.length
+      ? report.tutorExpenseRows.map((row) => statementLine(`Fee Tutor - ${row.tutor}`, row.amount, { note: `${formatNumber(row.meetings)} meeting terealisasi: ${formatNumber(row.paidMeetings)} dibayar, ${formatNumber(row.unpaidMeetings)} belum dibayar${row.missingFee ? `, ${formatNumber(row.missingFee)} meeting belum punya fee` : ""}` }))
+      : [statementEmpty("Belum ada expense fee tutor")];
     const otherExpenseLines = report.otherExpenseRows.length
       ? report.otherExpenseRows.map((row) => statementLine(row.label, row.amount))
       : [];
@@ -836,13 +856,15 @@
     const groupedBookings = groupBookings(bookings);
     const courseRows = sumBy(groupedBookings, (row) => row.program_name || "Tanpa Program", (row) => row.price);
     const payableRows = buildPayableRows(trackers);
+    const tutorExpenseRows = buildTutorExpenseRows(trackers);
     const otherIncomeRows = sumBy(manualEntries.filter((row) => row.entry_type === "income"), (row) => row.category || "Pendapatan Lain", (row) => row.amount);
     const otherExpenseRows = sumBy(manualEntries.filter((row) => row.entry_type === "expense"), (row) => row.category || "Pengeluaran Lain", (row) => row.amount);
     const courseRevenue = groupedBookings.reduce((sum, row) => sum + Number(row.price || 0), 0);
     const digitalRevenue = digitalRows.reduce((sum, row) => sum + Number(row.revenue_amount || 0), 0);
     const otherIncome = otherIncomeRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const otherExpense = otherExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-    const tutorFee = renderPayable(trackers);
+    renderPayable(trackers);
+    const tutorFee = tutorExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const grossRevenue = courseRevenue + digitalRevenue + otherIncome;
     const totalExpense = tutorFee + otherExpense;
     const netProfit = grossRevenue - totalExpense;
@@ -866,6 +888,7 @@
       grossRevenue,
       tutorFee,
       payableRows,
+      tutorExpenseRows,
       otherExpense,
       otherExpenseRows,
       totalExpense,
@@ -943,7 +966,7 @@
       ["Jumlah Pendapatan", formatMoney(lastFinanceReport.grossRevenue)],
       ["", ""],
       ["Beban / Kewajiban", ""],
-      ...lastFinanceReport.payableRows.map((row) => [`Fee Tutor - ${row.tutor}`, `${formatNumber(row.meetings)} meeting belum dibayar`, formatMoney(row.amount)]),
+      ...lastFinanceReport.tutorExpenseRows.map((row) => [`Fee Tutor - ${row.tutor}`, `${formatNumber(row.meetings)} meeting terealisasi: ${formatNumber(row.paidMeetings)} dibayar, ${formatNumber(row.unpaidMeetings)} belum dibayar`, formatMoney(row.amount)]),
       ...lastFinanceReport.otherExpenseRows.map((row) => [row.label, formatMoney(row.amount)]),
       ["Total Pengeluaran", formatMoney(lastFinanceReport.totalExpense)],
       ["Laba Bersih", formatMoney(lastFinanceReport.netProfit)]
