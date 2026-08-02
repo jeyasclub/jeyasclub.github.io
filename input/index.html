@@ -87,6 +87,7 @@
   .info-copy { min-height:38px; padding:8px 12px; border-radius:10px; border:2px solid var(--ink); background:#fff; color:var(--blue-dark); box-shadow:2px 3px 0 var(--shadow); font-size:12px; font-weight:900; cursor:pointer; white-space:nowrap; }
   .info-copy:disabled { cursor:not-allowed; opacity:.55; }
   .activity-footer { padding:0 20px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .activity-footer > div { display:flex; gap:10px; flex-wrap:wrap; }
   .table-wrap { overflow-x:auto; border-radius:10px; }
   table { width:100%; min-width:960px; border-collapse:collapse; border:2.5px solid var(--ink); background:#fff; }
   th, td { padding:13px 14px; text-align:left; border:2px solid var(--ink); font-size:13px; vertical-align:middle; }
@@ -257,7 +258,7 @@
       </div>
       <div class="activity-footer">
         <p class="status" id="activityStatus"></p>
-        <button class="btn" type="button" id="activityRefresh">Refresh History</button>
+        <div><button class="btn hidden" type="button" id="activityShowMore">Show More</button> <button class="btn" type="button" id="activityRefresh">Refresh History</button></div>
       </div>
     </section>
   </main>
@@ -274,6 +275,8 @@
   let tutorOptions = [];
   let feeRows = [];
   let editingZoomBookingId = "";
+  let activityRows = [];
+  let activityOffset = 0;
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -287,7 +290,7 @@
     trackerStatus:$("trackerStatus"), bookingStatus:$("bookingStatus"), zoomForm:$("zoomForm"), zoomDate:$("zoomDate"),
     zoomStart:$("zoomStart"), zoomEnd:$("zoomEnd"), zoomNote:$("zoomNote"), zoomSubmit:$("zoomSubmit"), zoomStatus:$("zoomStatus"),
     zoomMonth:$("zoomMonth"), zoomRefresh:$("zoomRefresh"), zoomCalendar:$("zoomCalendar"), zoomCancelEdit:$("zoomCancelEdit"),
-    activityBody:$("activityBody"), activityStatus:$("activityStatus"), activityRefresh:$("activityRefresh")
+    activityBody:$("activityBody"), activityStatus:$("activityStatus"), activityRefresh:$("activityRefresh"), activityShowMore:$("activityShowMore")
   };
 
   function isAdmin(session = currentSession) {
@@ -440,25 +443,44 @@
     return `Mengubah ${tableLabel}${recordLabel ? ` (${recordLabel})` : ""}${changes.length ? `: ${changes.join("; ")}` : ""}`;
   }
 
-  async function loadActivityHistory() {
+  function renderActivityHistory() {
+    els.activityBody.innerHTML = activityRows.length ? activityRows.map((row) => `
+      <tr><td>${escapeHTML(formatDateTime(row.created_at))}</td><td>${escapeHTML(row.actor_email || "system")}</td><td>${escapeHTML(describeActivity(row))}</td></tr>
+    `).join("") : `<tr><td colspan="3">Belum ada riwayat perubahan.</td></tr>`;
+    setStatus(els.activityStatus, `${activityRows.length} aktivitas ditampilkan.`);
+  }
+
+  async function loadActivityHistory({ reset = true, count = 5 } = {}) {
     if (!supabaseClient || !hasInputAccess()) return;
+    if (reset) {
+      activityRows = [];
+      activityOffset = 0;
+      els.activityShowMore.classList.add("hidden");
+    }
     setStatus(els.activityStatus, "Memuat activity history...");
+    els.activityShowMore.disabled = true;
+    els.activityShowMore.textContent = "Memuat...";
     const { data, error } = await supabaseClient
       .from("class_activity_log")
       .select("table_name,record_id,action,actor_email,old_data,new_data,created_at")
       .order("created_at", { ascending:false })
-      .limit(60);
+      .range(activityOffset, activityOffset + count);
     if (error) {
       console.error("Activity history load failed:", error);
-      els.activityBody.innerHTML = "";
+      if (reset) els.activityBody.innerHTML = "";
       setStatus(els.activityStatus, "History belum bisa dimuat. Jalankan supabase-class-admin.sql terbaru.", "bad");
+      els.activityShowMore.disabled = false;
+      els.activityShowMore.textContent = "Show More";
       return;
     }
     const rows = data || [];
-    els.activityBody.innerHTML = rows.length ? rows.map((row) => `
-      <tr><td>${escapeHTML(formatDateTime(row.created_at))}</td><td>${escapeHTML(row.actor_email || "system")}</td><td>${escapeHTML(describeActivity(row))}</td></tr>
-    `).join("") : `<tr><td colspan="3">Belum ada riwayat perubahan.</td></tr>`;
-    setStatus(els.activityStatus, `${rows.length} aktivitas terbaru.`);
+    const visibleRows = rows.slice(0, count);
+    activityRows = activityRows.concat(visibleRows);
+    activityOffset += visibleRows.length;
+    renderActivityHistory();
+    els.activityShowMore.disabled = false;
+    els.activityShowMore.textContent = "Show More";
+    els.activityShowMore.classList.toggle("hidden", rows.length <= count);
   }
 
   function formatTime(value) {
@@ -948,7 +970,8 @@
   els.bookingStudentCount.addEventListener("change", handleStudentCountChange);
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
-  els.activityRefresh.addEventListener("click", loadActivityHistory);
+  els.activityRefresh.addEventListener("click", () => loadActivityHistory());
+  els.activityShowMore.addEventListener("click", () => loadActivityHistory({ reset:false, count:10 }));
   els.zoomCancelEdit.addEventListener("click", () => {
     resetZoomForm("Mode edit dibatalkan.");
   });

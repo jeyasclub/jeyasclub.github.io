@@ -227,6 +227,7 @@
           </table>
         </div>
         <div class="empty hidden" id="activityEmpty">Belum ada riwayat perubahan. Jalankan SQL terbaru untuk mulai merekam aktivitas.</div>
+        <div class="table-more"><button class="btn hidden" type="button" id="activityShowMore">Show More</button></div>
       </section>
 
     </div>
@@ -283,6 +284,8 @@
   const tablePreviewLimit = 5;
   let trackerExpanded = false;
   let bookingExpanded = false;
+  let activityRows = [];
+  let activityOffset = 0;
   const adminFilterStorageKey = "jeyasclub_admin_filters";
 
   const $ = (id) => document.getElementById(id);
@@ -296,7 +299,7 @@
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
     zoomMonth: $("zoomMonth"), zoomRefresh: $("zoomRefresh"), zoomCalendar: $("zoomCalendar"), zoomEmpty: $("zoomEmpty"),
     exportTracker: $("exportTracker"), exportBooking: $("exportBooking"), exportZoom: $("exportZoom"),
-    activityBody: $("activityBody"), activityEmpty: $("activityEmpty"), activityRefresh: $("activityRefresh"),
+    activityBody: $("activityBody"), activityEmpty: $("activityEmpty"), activityRefresh: $("activityRefresh"), activityShowMore: $("activityShowMore"),
     bookingModal: $("bookingModal"), bookingEditForm: $("bookingEditForm"), bookingEditId: $("bookingEditId"),
     bookingOrderDate: $("bookingOrderDate"), bookingValidUntil: $("bookingValidUntil"),
     bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
@@ -397,24 +400,45 @@
     return `Mengubah ${tableLabel}${recordLabel ? ` (${recordLabel})` : ""}${changes.length ? `: ${changes.join("; ")}` : ""}`;
   }
 
-  async function loadActivityHistory() {
+  function renderActivityHistory() {
+    els.activityEmpty.classList.toggle("hidden", activityRows.length > 0);
+    els.activityBody.innerHTML = activityRows.map((row) => `
+      <tr><td>${escapeHTML(formatDateTime(row.created_at))}</td><td>${escapeHTML(row.actor_email || "system")}</td><td>${escapeHTML(describeActivity(row))}</td></tr>
+    `).join("");
+  }
+
+  async function loadActivityHistory({ reset = true, count = 5 } = {}) {
     if (!supabaseClient || !isAdmin()) return;
+    if (reset) {
+      activityRows = [];
+      activityOffset = 0;
+      els.activityShowMore.classList.add("hidden");
+    }
+    els.activityShowMore.disabled = true;
+    els.activityShowMore.textContent = "Memuat...";
     const { data, error } = await supabaseClient
       .from("class_activity_log")
       .select("table_name,record_id,action,actor_email,old_data,new_data,created_at")
       .order("created_at", { ascending:false })
-      .limit(100);
+      .range(activityOffset, activityOffset + count);
     if (error) {
       console.error("Activity history load failed:", error);
-      els.activityBody.innerHTML = "";
-      els.activityEmpty.classList.remove("hidden");
+      if (reset) {
+        els.activityBody.innerHTML = "";
+        els.activityEmpty.classList.remove("hidden");
+      }
+      els.activityShowMore.disabled = false;
+      els.activityShowMore.textContent = "Show More";
       return;
     }
     const rows = data || [];
-    els.activityEmpty.classList.toggle("hidden", rows.length > 0);
-    els.activityBody.innerHTML = rows.map((row) => `
-      <tr><td>${escapeHTML(formatDateTime(row.created_at))}</td><td>${escapeHTML(row.actor_email || "system")}</td><td>${escapeHTML(describeActivity(row))}</td></tr>
-    `).join("");
+    const visibleRows = rows.slice(0, count);
+    activityRows = activityRows.concat(visibleRows);
+    activityOffset += visibleRows.length;
+    renderActivityHistory();
+    els.activityShowMore.disabled = false;
+    els.activityShowMore.textContent = "Show More";
+    els.activityShowMore.classList.toggle("hidden", rows.length <= count);
   }
 
   function formatTime(value) {
@@ -1517,7 +1541,8 @@
     loadData();
   });
   els.refresh.addEventListener("click", loadData);
-  els.activityRefresh.addEventListener("click", loadActivityHistory);
+  els.activityRefresh.addEventListener("click", () => loadActivityHistory());
+  els.activityShowMore.addEventListener("click", () => loadActivityHistory({ reset:false, count:10 }));
   els.zoomMonth.addEventListener("change", loadZoomBookings);
   els.zoomRefresh.addEventListener("click", loadZoomBookings);
   init();
