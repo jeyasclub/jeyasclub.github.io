@@ -881,7 +881,12 @@
     --program-accent: var(--program-color);
     position: relative;
     overflow: hidden;
-    background: transparent;
+    background: linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--program-color) 8%, #f7faff) 0%,
+      rgba(255,255,255,0.96) 58%,
+      #fff3bd 100%
+    );
     border: 4px solid var(--program-color);
     border-radius: 18px;
     padding: 22px 22px 24px;
@@ -908,8 +913,8 @@
     min-height: 28px;
     padding: 6px 10px;
     border-radius: 999px;
-    background: transparent;
-    border: 1.5px solid var(--program-color);
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(255,255,255,0.96);
     color: var(--program-accent);
     font-size: 11px;
     font-weight: 900;
