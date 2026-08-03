@@ -27,9 +27,9 @@ h1 { color:var(--kids-navy); font-weight:700; }
 .hero-actions .button { border:2px solid #ccdaf0; color:var(--kids-navy); background:#fff; }
 .hero-actions .button.primary { border-color:#5777bb; background:#5777bb; color:#fff; box-shadow:4px 5px 0 #d3def2; }
 
-.hero-art { position:relative; gap:0; }
-.kids-hero-photo { position:relative; z-index:0; width:100%; aspect-ratio:16/9; display:block; object-fit:cover; border:3px solid #7898d2; border-radius:8px; box-shadow:7px 8px 0 #dce7f7; }
-.program-brief { z-index:1; width:calc(100% - 28px); min-height:0; margin:-24px auto 0; padding:28px; border:3px solid #7898d2; border-radius:8px; background:linear-gradient(145deg,#fff 0%,#f2f7ff 54%,#fff4c9 100%); box-shadow:7px 8px 0 #dce7f7; }
+.hero-art { position:relative; gap:16px; }
+.hero-art .kids-hero-photo { position:relative; z-index:0; width:100%; aspect-ratio:16/9; display:block; object-fit:cover; border:0; border-radius:8px; box-shadow:none; filter:none; }
+.program-brief { z-index:1; width:100%; min-height:0; margin:0; padding:28px; border:3px solid #7898d2; border-radius:8px; background:linear-gradient(145deg,#fff 0%,#f2f7ff 54%,#fff4c9 100%); box-shadow:7px 8px 0 #dce7f7; }
 .program-brief::before { content:"✦"; inset:auto 22px 18px auto; width:auto; height:auto; background:none; color:var(--kids-pink); font-size:28px; }
 .program-brief::after { content:none; }
 .brief-label { background:#fff; color:#456ab2; border:2px solid #d9e7fb; }
@@ -92,6 +92,6 @@ section { position:relative; }
   .hero-copy::before { left:0; }
   .hero-copy::after { display:none; }
   .kids-hero-photo { aspect-ratio:4/3; }
-  .program-brief { width:calc(100% - 18px); margin-top:-16px; padding:22px; }
+  .program-brief { width:100%; margin-top:0; padding:22px; }
   .price-focus::after { display:none; }
 }
