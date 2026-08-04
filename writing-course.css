@@ -27,8 +27,7 @@ body { color:var(--writing-ink); background:#fff; }
 .hero-art { min-height:560px; display:block; position:relative; align-self:center; }
 .hero-art .writing-hero-photo,.hero-art .grammar-hero-photo { width:100%; height:510px; display:block; object-fit:cover; border:0; border-radius:46% 8px 42% 10%; filter:none; box-shadow:0 24px 54px rgba(11,44,99,.13); }
 .hero-art .grammar-hero-photo { object-position:58% center; border-radius:48% 12% 45% 14% / 34% 14% 40% 16%; box-shadow:none; }
-.hero-art .program-brief { position:absolute; left:-42px; bottom:12px; width:min(390px,76%); margin:0; padding:18px; gap:11px; border:1px solid rgba(11,44,99,.1); border-radius:8px; background:rgba(255,255,255,.96); box-shadow:0 18px 42px rgba(11,44,99,.14); backdrop-filter:blur(10px); }
-.hero-art .grammar-hero-photo + .program-brief { left:-18px; bottom:18px; width:330px; padding:16px; }
+.hero-art .program-brief { position:absolute; right:-18px; bottom:24px; left:auto; width:min(390px,82%); margin:0; padding:18px; gap:11px; border:1px solid rgba(11,44,99,.1); border-radius:8px; background:rgba(255,255,255,.96); box-shadow:0 18px 42px rgba(11,44,99,.14); backdrop-filter:blur(10px); }
 .program-brief::before { display:none; }
 .brief-label { min-height:28px; padding:6px 10px; border:0; background:#eef3e9; color:#587451; letter-spacing:.04em; }
 .brief-title { color:var(--writing-navy); font-size:20px; }
@@ -89,7 +88,7 @@ section { padding:68px 0; }
 
 @media (max-width:1020px) {
   .hero-grid { grid-template-columns:minmax(0,.9fr) minmax(430px,1.1fr); gap:28px; }
-  .hero-art .program-brief { left:-18px; }
+  .hero-art .program-brief { right:0; left:auto; }
 }
 
 @media (max-width:860px) {
@@ -100,7 +99,6 @@ section { padding:68px 0; }
   .hero-art { min-height:0; display:grid; gap:14px; }
   .hero-art .writing-hero-photo,.hero-art .grammar-hero-photo { width:100%; height:auto; aspect-ratio:3/2; border-radius:8px; }
   .hero-art .program-brief { position:relative; inset:auto; width:100%; margin:0; }
-  .hero-art .grammar-hero-photo + .program-brief { position:relative; inset:auto; width:100%; margin:0; padding:18px; }
   .price-focus { grid-template-columns:1fr; }
   .price-focus .section-head { text-align:center; justify-items:center; }
   .price-focus .section-head h2::after { margin-left:auto; }
