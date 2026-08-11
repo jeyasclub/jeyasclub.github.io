@@ -178,6 +178,7 @@
         <button class="btn" type="button" id="allTimeFilter" aria-pressed="false">All Time</button>
         <label>Filter program<select id="programFilter"><option value="">Semua Program</option></select></label>
         <label>Filter tutor<select id="tutorFilter"><option value="">Semua Tutor</option></select></label>
+        <label>Status kelas<select id="completedFilter"><option value="all">Tampilkan semua</option><option value="hide">Sembunyikan kelas selesai</option><option value="only">Hanya kelas selesai</option></select></label>
         <button class="btn" type="button" id="resetFilter">Reset Filter</button>
         <button class="btn primary" type="button" id="refreshButton">Refresh</button>
       </div>
@@ -296,7 +297,7 @@
     loginScreen: $("loginScreen"), dashboard: $("dashboard"), loginForm: $("loginForm"),
     email: $("emailInput"), password: $("passwordInput"), loginButton: $("loginButton"), authMessage: $("authMessage"),
     logout: $("logoutButton"), sessionLabel: $("sessionLabel"), month: $("monthFilter"), allTime: $("allTimeFilter"), reset: $("resetFilter"),
-    programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
+    programFilter: $("programFilter"), tutorFilter: $("tutorFilter"), completedFilter: $("completedFilter"), refresh: $("refreshButton"), trackerBody: $("trackerBody"), bookingBody: $("bookingBody"),
     trackerEmpty: $("trackerEmpty"), bookingEmpty: $("bookingEmpty"), trackerCount: $("trackerCount"),
     trackerShowMore: $("trackerShowMore"), bookingShowMore: $("bookingShowMore"),
     bookingCount: $("bookingCount"), bookingTotal: $("bookingTotal"), monthLabel: $("monthLabel"),
@@ -329,7 +330,8 @@
     localStorage.setItem(adminFilterStorageKey, JSON.stringify({
       month: els.month.value || "",
       program: els.programFilter.value || "",
-      tutor: els.tutorFilter.value || ""
+      tutor: els.tutorFilter.value || "",
+      completed: els.completedFilter.value || "all"
     }));
   }
 
@@ -338,6 +340,7 @@
     if (filters.month !== undefined) els.month.value = filters.month || "";
     if (filters.program !== undefined) els.programFilter.value = filters.program || "";
     if (filters.tutor !== undefined) els.tutorFilter.value = filters.tutor || "";
+    if (["all", "hide", "only"].includes(filters.completed)) els.completedFilter.value = filters.completed;
     updateAllTimeFilterState();
   }
 
@@ -999,7 +1002,7 @@
     trackerRows = dedupeTrackerRows(trackers || [], bookingRows);
     trackerExpanded = false;
     bookingExpanded = false;
-    renderTracker(trackerRows);
+    renderTracker(getFilteredTrackerRows());
     renderBookings(bookingRows);
     if (els.monthLabel) els.monthLabel.textContent = els.month.value || "Semua";
     await loadActivityHistory();
@@ -1031,7 +1034,7 @@
     els.trackerBody.innerHTML = visibleRows.map((row) => {
       const meetingsRealized = Number(row.meetings_realized || 0);
       const meetingsTotal = Number(row.meetings_total || 0);
-      const isCompleted = meetingsTotal > 0 && meetingsRealized === meetingsTotal;
+      const isCompleted = isCompletedCourse(row);
       return `
       <tr class="${isCompleted ? "class-completed" : ""}">
         <td>${formatDate(row.order_date)}</td>
@@ -1048,6 +1051,19 @@
       </tr>
     `;
     }).join("");
+  }
+
+  function isCompletedCourse(row) {
+    const meetingsRealized = Number(row.meetings_realized || 0);
+    const meetingsTotal = Number(row.meetings_total || 0);
+    return meetingsTotal > 0 && meetingsRealized === meetingsTotal;
+  }
+
+  function getFilteredTrackerRows() {
+    const filter = els.completedFilter.value;
+    if (filter === "hide") return trackerRows.filter((row) => !isCompletedCourse(row));
+    if (filter === "only") return trackerRows.filter(isCompletedCourse);
+    return trackerRows;
   }
 
   function getTrackerValidUntil(row) {
@@ -1401,7 +1417,7 @@
     downloadExcel("class-tracker", [
       "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Tutor",
       "Total Meeting Realized", "Status Payment", "To Be Paid", "Remaining Fee"
-    ], trackerRows.map((row) => [
+    ], getFilteredTrackerRows().map((row) => [
       row.order_date,
       getTrackerValidUntil(row),
       row.student_name,
@@ -1519,7 +1535,7 @@
   els.exportZoom.addEventListener("click", exportZoomRows);
   els.trackerShowMore.addEventListener("click", () => {
     trackerExpanded = !trackerExpanded;
-    renderTracker(trackerRows);
+    renderTracker(getFilteredTrackerRows());
   });
   els.bookingShowMore.addEventListener("click", () => {
     bookingExpanded = !bookingExpanded;
@@ -1540,10 +1556,16 @@
   });
   els.programFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
   els.tutorFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
+  els.completedFilter.addEventListener("change", () => {
+    trackerExpanded = false;
+    saveAdminFilters();
+    renderTracker(getFilteredTrackerRows());
+  });
   els.reset.addEventListener("click", () => {
     els.month.value = "";
     els.programFilter.value = "";
     els.tutorFilter.value = "";
+    els.completedFilter.value = "all";
     updateAllTimeFilterState();
     saveAdminFilters();
     loadData();
