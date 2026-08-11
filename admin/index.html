@@ -69,6 +69,9 @@
   td a { color:var(--blue-dark); font-weight:800; overflow-wrap:anywhere; }
   tbody tr:nth-child(even) td { background:#f8fbff; }
   tbody tr:hover td { background:#eef6ff; }
+  /* Kelas selesai: meeting realized sudah mencapai total meeting. */
+  #trackerBody tr.class-completed td { background:#dcfce7; }
+  #trackerBody tr.class-completed:hover td { background:#bbf7d0; }
   tbody tr:last-child td { border-bottom:0; }
   .pill { display:inline-flex; align-items:center; min-height:30px; border-radius:999px; padding:6px 10px; background:var(--blue-light); color:var(--blue-dark); border:2px solid #bfdbfe; font-weight:900; white-space:nowrap; }
   .empty { padding:22px; color:var(--muted); font-size:14px; }
@@ -1025,21 +1028,26 @@
     els.trackerEmpty.classList.toggle("hidden", rows.length > 0);
     els.trackerShowMore.classList.toggle("hidden", rows.length <= tablePreviewLimit);
     els.trackerShowMore.textContent = trackerExpanded ? "Show less" : "Show more";
-    els.trackerBody.innerHTML = visibleRows.map((row) => `
-      <tr>
+    els.trackerBody.innerHTML = visibleRows.map((row) => {
+      const meetingsRealized = Number(row.meetings_realized || 0);
+      const meetingsTotal = Number(row.meetings_total || 0);
+      const isCompleted = meetingsTotal > 0 && meetingsRealized === meetingsTotal;
+      return `
+      <tr class="${isCompleted ? "class-completed" : ""}">
         <td>${formatDate(row.order_date)}</td>
         <td>${formatDate(getTrackerValidUntil(row))}</td>
         <td>${escapeHTML(row.student_name)}</td>
         <td>${Number(row.student_count || 1)}</td>
         <td>${escapeHTML(row.program_name)}</td>
         <td>${escapeHTML(row.tutor)}</td>
-        <td><span class="pill">${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}</span></td>
+        <td><span class="pill">${meetingsRealized}/${meetingsTotal}</span></td>
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
         <td><span class="pill">${escapeHTML(formatToBePaid(row))}</span></td>
         <td><span class="pill">${escapeHTML(formatRemainingFee(row))}</span></td>
         <td><button class="btn" type="button" data-payment-edit="${escapeHTML(row.id)}" data-payment-value="${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}">Edit Payment</button></td>
       </tr>
-    `).join("");
+    `;
+    }).join("");
   }
 
   function getTrackerValidUntil(row) {
