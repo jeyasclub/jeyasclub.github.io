@@ -243,13 +243,13 @@
       <div>
         <p class="eyebrow">Finance Activity</p>
         <h1>Finance</h1>
-        <p class="muted">Login memakai akun jihamalia@gmail.com untuk melihat revenue dan payable.</p>
+        <p class="muted">Login memakai akun admin Jeya's Club untuk melihat revenue dan payable.</p>
       </div>
       <form class="form" id="loginForm">
         <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
         <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
         <button class="btn primary" type="submit" id="loginButton">Login</button>
-        <p class="status" id="authMessage">Hanya jihamalia@gmail.com.</p>
+        <p class="status" id="authMessage">Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.</p>
       </form>
     </div>
   </section>
@@ -340,7 +340,7 @@
   const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
   const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
   const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
-  const financeEmail = "jihamalia@gmail.com";
+  const financeAdminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
   let currentSession = null;
   let feeRows = [];
   let manualEntryRows = [];
@@ -376,7 +376,7 @@
 
   function isFinanceAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
-    return email === financeEmail;
+    return financeAdminEmails.has(email);
   }
 
   function getSavedAdminFilters() {
@@ -410,7 +410,7 @@
     els.authMessage.textContent = message;
   }
 
-  function showLogin(message = "Hanya jihamalia@gmail.com.") {
+  function showLogin(message = "Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.") {
     els.loginScreen.classList.remove("hidden");
     els.dashboard.classList.remove("open");
     els.logout.classList.add("hidden");
@@ -1043,7 +1043,7 @@
   els.loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const email = els.email.value.trim().toLowerCase();
-    if (email !== financeEmail) { setAuthMessage("Halaman Finance hanya untuk jihamalia@gmail.com.", "bad"); return; }
+    if (!financeAdminEmails.has(email)) { setAuthMessage("Halaman Finance hanya untuk akun admin Jeya's Club.", "bad"); return; }
     els.loginButton.disabled = true;
     els.loginButton.textContent = "Login...";
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: els.password.value });

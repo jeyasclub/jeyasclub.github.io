@@ -567,26 +567,26 @@ create policy "Only Jeya can read finance manual entries"
 on public.jeyasclub_finance_manual_entries
 for select
 to authenticated
-using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+using (lower(coalesce(auth.jwt() ->> 'email', '')) in ('jihamalia@gmail.com', 'jeyasclub@gmail.com'));
 
 create policy "Only Jeya can insert finance manual entries"
 on public.jeyasclub_finance_manual_entries
 for insert
 to authenticated
-with check (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+with check (lower(coalesce(auth.jwt() ->> 'email', '')) in ('jihamalia@gmail.com', 'jeyasclub@gmail.com'));
 
 create policy "Only Jeya can update finance manual entries"
 on public.jeyasclub_finance_manual_entries
 for update
 to authenticated
-using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com')
-with check (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+using (lower(coalesce(auth.jwt() ->> 'email', '')) in ('jihamalia@gmail.com', 'jeyasclub@gmail.com'))
+with check (lower(coalesce(auth.jwt() ->> 'email', '')) in ('jihamalia@gmail.com', 'jeyasclub@gmail.com'));
 
 create policy "Only Jeya can delete finance manual entries"
 on public.jeyasclub_finance_manual_entries
 for delete
 to authenticated
-using (lower(coalesce(auth.jwt() ->> 'email', '')) = 'jihamalia@gmail.com');
+using (lower(coalesce(auth.jwt() ->> 'email', '')) in ('jihamalia@gmail.com', 'jeyasclub@gmail.com'));
 
 drop policy if exists "Class input users can read zoom bookings" on public.class_zoom_bookings;
 
