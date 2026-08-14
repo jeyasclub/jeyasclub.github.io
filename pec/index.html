@@ -1321,6 +1321,23 @@
   .hero-theme { color: #ffd86b; text-decoration-color: #9f8cff; }
   .hero-copy p, .section-head p, .cta-card p, .detail-copy p, .tutor-copy p, .benefit-card p, .timeline-card p { color: var(--muted); }
   .eyebrow, .tutor-badge { border-color: #ffd86b; background: #2d2764; color: #ffe7a1; box-shadow: 3px 4px 0 #050a1b; }
+  .hero-rating {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+    border: 2px solid rgba(255,216,107,.8);
+    border-radius: 999px;
+    background: rgba(15,27,67,.78);
+    box-shadow: 0 4px 0 rgba(3,7,23,.72);
+    color: #f4f7ff;
+    padding: 8px 13px;
+  }
+  .hero-rating-stars { color: #ffd86b; font-size: 1.06rem; letter-spacing: 1px; text-shadow: 0 0 12px rgba(255,216,107,.38); }
+  .hero-rating strong { color: #fff; font-size: .92rem; }
+  .hero-rating span { color: #b8c7ed; font-size: .78rem; font-weight: 700; }
 
   .section.soft { background: rgba(17, 29, 66, .48); border-block: 1px solid rgba(142,168,255,.16); }
   .price-card, .detail-copy, .tutor-card, .benefit-card, .timeline-card, .cta-card, .countdown-card {
@@ -1337,12 +1354,41 @@
   .countdown-value, .cta-price strong { color: #ffd86b; -webkit-text-stroke: 0; text-shadow: 0 0 18px rgba(255,216,107,.28); }
   .benefit-icon { border-color: #ffd86b; background: #29235d; }
   .cta-price { border-color: #ffd86b; background: radial-gradient(circle at 35% 28%, #4a3d9a, #151c51 70%); box-shadow: 5px 6px 0 #050a1b; }
+  #registration-flow .timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .testimonial-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding: 4px 3px 18px;
+    scrollbar-color: #8298e8 #111d42;
+  }
+  .testimonial-card {
+    min-width: min(390px, calc(100vw - 54px));
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    scroll-snap-align: start;
+    border: 2px solid rgba(142,168,255,.72);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(35,52,111,.9), rgba(11,21,53,.92));
+    box-shadow: 6px 7px 0 rgba(3,7,23,.8);
+    padding: 22px;
+  }
+  .testimonial-stars { color: #ffd86b; font-size: 1.05rem; letter-spacing: 2px; }
+  .testimonial-card blockquote { color: #eaf0ff; font-size: .94rem; font-weight: 600; line-height: 1.75; }
+  .testimonial-card cite { color: #ffe08a; font-size: .86rem; font-style: normal; font-weight: 900; }
   .payment-panel, .payment-head, .payment-frame { background: #111d42; color: var(--ink); }
   .payment-head { border-color: rgba(142,168,255,.4); }
   .payment-close { border-color: rgba(142,168,255,.6); background: #1f3067; color: var(--ink); }
   footer#footer { border-color: rgba(142,168,255,.28); background: #050a1b; color: var(--muted); }
   footer#footer .footer-col h4, footer#footer .footer-links a, footer#footer .footer-tagline { color: var(--muted); }
   footer#footer .social-link { background: #fff; border-color: rgba(255,255,255,.78); }
+  @media (max-width: 760px) {
+    #registration-flow .timeline { grid-template-columns: 1fr; }
+    .hero-rating { border-radius: 14px; }
+  }
 </style>
 </head>
 <body>
@@ -1411,6 +1457,11 @@
           <h1>Premium English Club</h1>
           <strong class="hero-theme">For Upper Intermediate</strong>
           <p>Program belajar bahasa Inggris intensif periode September-Oktober 2026 untuk kamu yang ingin naik level dengan materi harian, latihan terarah, quiz evaluasi, live class, dan feedback tutor.</p>
+          <div class="hero-rating" aria-label="Rating program 4.94 dari 5 bintang">
+            <span class="hero-rating-stars" aria-hidden="true">★★★★★</span>
+            <strong>4.94/5.00</strong>
+            <span>rating program</span>
+          </div>
           <div class="hero-actions">
             <button class="button primary" type="button" data-open-payment>Daftar Sekarang</button>
             <a class="button" href="#detail">Lihat Detail</a>
@@ -1561,6 +1612,49 @@
       </div>
     </section>
 
+    <section class="section" id="testimonials">
+      <div class="shell">
+        <div class="section-head">
+          <span class="eyebrow">Testimoni Peserta</span>
+          <h2>Belajar bareng, bertumbuh bareng.</h2>
+          <p>Geser untuk membaca pengalaman peserta Premium English Club.</p>
+        </div>
+
+        <div class="testimonial-track" aria-label="Testimoni peserta Premium English Club">
+          <article class="testimonial-card">
+            <span class="testimonial-stars" aria-hidden="true">★★★★★</span>
+            <blockquote>“Kelasnya seru banget dan materinya gampang dipahami. Miss Rae juga baik banget, cara ngajarnya enak dan jelas. Bahkan materi yang menurutku lumayan sulit pun jadi terasa lebih mudah dimengerti. Pokoknya nggak nyesel ikut kelas ini. Semoga bulan depan ada next class lagi ya, Miss! 🥹✨”</blockquote>
+            <cite>— Risma</cite>
+          </article>
+          <article class="testimonial-card">
+            <span class="testimonial-stars" aria-hidden="true">★★★★★</span>
+            <blockquote>“Sangat terorganisir mulai dari materi yang dibagikan di grup wa di hari senin-kamis, ada quiz di hari jum'at dan ada zoom 1,5 jam di hari sabtu, selama satu bulan ini dengan harga yang ramah di kantong, sangatlah memuaskan. Tutornya juga sangat ramah dan tidak pelit ilmu, bebas bertanya kapan saja soal materi bahasa inggris baik yang berkaitan dengan materi yang telah dibagikan ataupun belum. Terima kasih banyak untuk Miss Rae dan admin serta tim Jeya's Club!!!”</blockquote>
+            <cite>— Nur Rahmi</cite>
+          </article>
+          <article class="testimonial-card">
+            <span class="testimonial-stars" aria-hidden="true">★★★★★</span>
+            <blockquote>“Seru bgt!! selama class enjoy, materinya mudah dipahami, penjelasan dari Miss Rae juga membantu sekalii dalam pemahanan, mau lagii 💗”</blockquote>
+            <cite>— Melda</cite>
+          </article>
+          <article class="testimonial-card">
+            <span class="testimonial-stars" aria-hidden="true">★★★★★</span>
+            <blockquote>“Sangat menyenangkan dan bermanfaat bisa belajar disini selama satu bulan, bener2 worth it dan jadi banyak belajar materi baru.”</blockquote>
+            <cite>— Kaylila</cite>
+          </article>
+          <article class="testimonial-card">
+            <span class="testimonial-stars" aria-hidden="true">★★★★★</span>
+            <blockquote>“JUJURRR SERU BANGET LHO YAA.. helpfull, lingkungan belajar yg mendukung, dan terstruktur!”</blockquote>
+            <cite>— Lestari</cite>
+          </article>
+          <article class="testimonial-card">
+            <span class="testimonial-stars" aria-hidden="true">★★★★★</span>
+            <blockquote>“Seru bangeeeeet, cara ngajar tutor, sistem belajar, dan sistem komunikasi club, pokoknya semuanyaaa best dan seruuu!”</blockquote>
+            <cite>— Atikah S. Azzahra</cite>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section soft" id="schedule">
       <div class="shell">
         <div class="section-head">
@@ -1589,6 +1683,34 @@
             <span>Sepanjang program</span>
             <h3>Diskusi dan feedback</h3>
             <p>Diskusi grup difasilitasi tutor, plus laporan hasil belajar di akhir program.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="registration-flow">
+      <div class="shell">
+        <div class="section-head">
+          <span class="eyebrow">Alur Pendaftaran</span>
+          <h2>Tiga langkah untuk bergabung ke Premium English Club.</h2>
+          <p>Ikuti alur berikut setelah kamu memutuskan untuk bergabung.</p>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-card">
+            <span>Langkah 1</span>
+            <h3>Mengisi formulir pendaftaran</h3>
+            <p>Isi formulir pendaftaran dengan data yang diperlukan.</p>
+          </article>
+          <article class="timeline-card">
+            <span>Langkah 2</span>
+            <h3>Admin menghubungi kamu melalui WhatsApp</h3>
+            <p>Admin akan menghubungi kamu untuk proses selanjutnya.</p>
+          </article>
+          <article class="timeline-card">
+            <span>Langkah 3</span>
+            <h3>Masuk ke grup kelas di WhatsApp</h3>
+            <p>Kamu akan mendapatkan akses ke grup kelas Premium English Club.</p>
           </article>
         </div>
       </div>
