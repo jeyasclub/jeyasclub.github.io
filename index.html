@@ -3674,6 +3674,55 @@
   footer#footer .social-link img { width:18px; height:18px; object-fit:contain; display:block; }
   footer#footer .social-link:hover { background:var(--blue-light,#E8F1FD); transform:translateY(-2px); }
   @media (max-width:768px) { footer#footer .footer-top { grid-template-columns:1fr; gap:24px; } footer#footer .footer-tagline { max-width:none; } }
+
+  /* Premium English Club pop-up — matches the outer space PEC page. */
+  .pec-popup-backdrop { background: rgba(2, 6, 23, .76); }
+  .pec-popup-panel {
+    border-color: rgba(160, 177, 255, .9);
+    background:
+      radial-gradient(circle at 12% 18%, rgba(255,255,255,.9) 0 1px, transparent 1.8px),
+      radial-gradient(circle at 84% 12%, rgba(255,216,107,.85) 0 1px, transparent 1.7px),
+      radial-gradient(ellipse at 16% 88%, rgba(39,90,185,.36), transparent 38%),
+      linear-gradient(135deg, #070d29 0%, #17275d 55%, #2a1558 100%);
+    box-shadow: 0 0 0 5px rgba(147,197,253,.13), 0 28px 90px rgba(0,0,0,.64);
+  }
+  .pec-popup-content { color: #f4f7ff; }
+  .pec-popup-badge {
+    border-color: #ffd86b;
+    background: #2d2764;
+    box-shadow: 0 5px 0 #050a1b;
+    color: #ffe7a1;
+  }
+  .pec-popup-title {
+    color: #f9fbff;
+    -webkit-text-stroke: 0;
+    text-shadow: 0 4px 0 #3f2b88, 0 0 26px rgba(147,197,253,.36);
+  }
+  .pec-popup-subtitle { border-color: #9f8cff; color: #ffd86b; }
+  .pec-popup-copy { color: #c6d3f4; }
+  .pec-popup-button { border-color: rgba(177,196,255,.82); box-shadow: 0 5px 0 #050a1b; color: #f4f7ff; }
+  .pec-popup-button.primary { border-color: #ffd86b; background: #ffd86b; color: #17112e; }
+  .pec-popup-button.secondary { background: rgba(18,32,73,.92); }
+  .pec-popup-button:hover { box-shadow: 0 7px 0 #050a1b; }
+  .pec-popup-media {
+    position: relative;
+    background: radial-gradient(circle at 72% 34%, #ffd86b 0 8%, #ef9757 8.5% 14%, transparent 14.5%);
+  }
+  .pec-popup-media::before {
+    content: "";
+    position: absolute;
+    width: 230px;
+    height: 82px;
+    border: 2px solid rgba(158,142,255,.8);
+    border-radius: 50%;
+    transform: rotate(-24deg);
+  }
+  .pec-popup-media img { position: relative; z-index: 1; filter: drop-shadow(0 20px 24px rgba(0,0,0,.48)); }
+  .pec-popup-close { border-color: #fff; background: #fff; box-shadow: 0 4px 0 #050a1b; color: #17112e; }
+  @media (max-width: 768px) {
+    .pec-popup-panel { box-shadow: 0 0 0 4px rgba(147,197,253,.13), 0 22px 70px rgba(0,0,0,.64); }
+    .pec-popup-media { padding: 34px 20px 0; }
+  }
 </style>
 <script type="text/javascript" src="https://mayarembed.r2.mayar.id/mayar-new-min.js"></script>
 
@@ -4047,12 +4096,12 @@
   <div class="pec-popup-panel">
     <button class="pec-popup-close" type="button" aria-label="Tutup pop up Premium English Club" data-close-pec-popup>&times;</button>
     <div class="pec-popup-content">
-      <span class="pec-popup-badge">Program Juli-Agustus 2026</span>
+      <span class="pec-popup-badge">Program September-Oktober 2026</span>
       <h2 class="pec-popup-title" id="pecPopupTitle">Premium English Club</h2>
-      <p class="pec-popup-subtitle">Road to Intermediate</p>
+      <p class="pec-popup-subtitle">For Upper Intermediate</p>
       <p class="pec-popup-copy">Materi harian, latihan terarah, quiz evaluasi, live class, dan feedback tutor untuk bantu kamu naik level.</p>
       <div class="pec-popup-actions">
-        <a class="pec-popup-button primary" href="/pec/">Lihat Program</a>
+        <a class="pec-popup-button primary" href="/pec/">Jelajahi Program</a>
         <button class="pec-popup-button secondary" type="button" data-close-pec-popup>Nanti Dulu</button>
       </div>
     </div>
@@ -5188,6 +5237,8 @@
   document.querySelectorAll('[data-close-pec-popup]').forEach(el => {
     el.addEventListener('click', closePecPopup);
   });
+
+  window.setTimeout(openPecPopup, 450);
 
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && pecPopup && pecPopup.classList.contains('open')) {
