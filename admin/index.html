@@ -270,11 +270,10 @@
 
   <div class="modal-backdrop hidden" id="trackerModal" role="dialog" aria-modal="true" aria-labelledby="trackerModalTitle">
     <form class="modal" id="trackerEditForm">
-      <div class="modal-head"><div><p class="eyebrow">Edit Tracker</p><h2 id="trackerModalTitle">Class Tracker</h2><p class="muted">Update payment, sertifikat, dan testimoni.</p></div><button class="btn" type="button" id="trackerModalClose">Tutup</button></div>
+      <div class="modal-head"><div><p class="eyebrow">Edit Tracker</p><h2 id="trackerModalTitle">Class Tracker</h2><p class="muted">Update payment dan sertifikat. Testimoni diupdate oleh tutor.</p></div><button class="btn" type="button" id="trackerModalClose">Tutup</button></div>
       <div class="modal-body"><input type="hidden" id="trackerEditId"><div class="modal-grid">
         <label>Status Payment<input type="text" id="trackerPaymentStatus" placeholder="0/0" required></label>
         <label>Status Sertifikat<select id="trackerCertificateIssued"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
-        <label>Status Testimoni<select id="trackerTestimonialReceived"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
       </div></div>
       <div class="modal-actions"><button class="btn" type="button" id="trackerModalCancel">Batal</button><button class="btn primary" type="submit" id="trackerSaveButton">Simpan Perubahan</button></div>
     </form>
@@ -320,7 +319,7 @@
     bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton"),
     trackerModal: $("trackerModal"), trackerEditForm: $("trackerEditForm"), trackerEditId: $("trackerEditId"),
     trackerPaymentStatus: $("trackerPaymentStatus"), trackerCertificateIssued: $("trackerCertificateIssued"),
-    trackerTestimonialReceived: $("trackerTestimonialReceived"), trackerModalClose: $("trackerModalClose"),
+    trackerModalClose: $("trackerModalClose"),
     trackerModalCancel: $("trackerModalCancel"), trackerSaveButton: $("trackerSaveButton")
   };
 
@@ -1096,7 +1095,6 @@
     els.trackerEditId.value = row.id;
     els.trackerPaymentStatus.value = `${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}`;
     els.trackerCertificateIssued.value = Boolean(row.certificate_issued) ? "true" : "false";
-    els.trackerTestimonialReceived.value = Boolean(row.testimonial_received) ? "true" : "false";
     els.trackerModal.classList.remove("hidden");
     els.trackerPaymentStatus.focus();
   }
@@ -1126,7 +1124,6 @@
         payments_realized: paymentsRealized,
         payments_total: paymentsTotal,
         certificate_issued: els.trackerCertificateIssued.value === "true",
-        testimonial_received: els.trackerTestimonialReceived.value === "true",
         updated_at: new Date().toISOString()
       })
       .eq("id", els.trackerEditId.value);

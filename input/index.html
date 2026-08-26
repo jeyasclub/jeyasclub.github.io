@@ -163,11 +163,11 @@
       <article class="panel" id="trackerPanel">
         <div class="panel-head">
           <h2>Class Tracker</h2>
-          <p class="muted">Data muncul otomatis dari booking. Edit hanya untuk Total Meeting Realized.</p>
+          <p class="muted">Data muncul otomatis dari booking. Tutor dapat mengupdate meeting realized dan ceklis testimoni.</p>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Testimoni</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -656,7 +656,7 @@
 
   async function loadTrackers() {
     if (!supabaseClient || !hasInputAccess()) return;
-    els.trackerBody.innerHTML = `<tr><td colspan="11">Memuat tracker...</td></tr>`;
+    els.trackerBody.innerHTML = `<tr><td colspan="12">Memuat tracker...</td></tr>`;
     const { data, error } = await supabaseClient
       .from("class_tracker")
       .select("*")
@@ -666,12 +666,12 @@
 
     if (error) {
       console.error(error);
-      els.trackerBody.innerHTML = `<tr><td colspan="11">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="12">Tracker belum bisa dimuat. Pastikan SQL sudah dijalankan.</td></tr>`;
       return;
     }
 
     if (!data || !data.length) {
-      els.trackerBody.innerHTML = `<tr><td colspan="11">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
+      els.trackerBody.innerHTML = `<tr><td colspan="12">${isAdmin() ? "Belum ada data tracker. Simpan booking baru untuk membuat tracker otomatis." : "Belum ada kelas untuk akun tutor ini."}</td></tr>`;
       return;
     }
 
@@ -689,7 +689,8 @@
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
         <td><span class="pill">${escapeHTML(formatToBePaid(row))}</span></td>
         <td><span class="pill">${escapeHTML(formatRemainingFee(row))}</span></td>
-        <td><button class="btn" type="button" data-edit-tracker="${escapeHTML(row.id)}">Edit</button></td>
+        <td><label><input type="checkbox" data-testimonial-tracker="${escapeHTML(row.id)}" ${row.testimonial_received ? "checked" : ""}> Diterima</label></td>
+        <td><button class="btn" type="button" data-edit-tracker="${escapeHTML(row.id)}">Edit Meeting</button></td>
       </tr>
     `).join("");
 
@@ -698,6 +699,9 @@
         const row = displayRows.find((item) => item.id === button.dataset.editTracker);
         if (row) updateMeetingRealized(row);
       });
+    });
+    els.trackerBody.querySelectorAll("[data-testimonial-tracker]").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => updateTestimonialReceived(checkbox));
     });
   }
 
@@ -762,6 +766,24 @@
     }
     setStatus(els.trackerStatus, "Total Meeting Realized berhasil diupdate.", "good");
     await loadTrackers();
+    await loadActivityHistory();
+  }
+
+  async function updateTestimonialReceived(checkbox) {
+    checkbox.disabled = true;
+    setStatus(els.trackerStatus, "Mengupdate status testimoni...");
+    const { error } = await supabaseClient.rpc("update_class_tracker_testimonial_received", {
+      tracker_id: checkbox.dataset.testimonialTracker,
+      next_testimonial_received: checkbox.checked
+    });
+    checkbox.disabled = false;
+    if (error) {
+      console.error(error);
+      checkbox.checked = !checkbox.checked;
+      setStatus(els.trackerStatus, "Status testimoni belum terupdate. Pastikan SQL terbaru sudah dijalankan.", "bad");
+      return;
+    }
+    setStatus(els.trackerStatus, "Status testimoni berhasil diupdate.", "good");
     await loadActivityHistory();
   }
 

@@ -850,6 +850,43 @@ $$;
 
 grant execute on function public.update_class_tracker_meeting_realized(uuid, integer) to authenticated;
 
+create or replace function public.update_class_tracker_testimonial_received(
+  tracker_id uuid,
+  next_testimonial_received boolean
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  tracker_record public.class_tracker;
+begin
+  if next_testimonial_received is null then
+    raise exception 'Testimonial status is required';
+  end if;
+
+  select * into tracker_record
+  from public.class_tracker
+  where id = tracker_id;
+
+  if not found then
+    raise exception 'Tracker not found';
+  end if;
+
+  if not public.is_class_tutor_for(tracker_record.tutor) then
+    raise exception 'Only the assigned tutor can update testimonial status';
+  end if;
+
+  update public.class_tracker
+  set testimonial_received = next_testimonial_received,
+      updated_at = now()
+  where id = tracker_id;
+end;
+$$;
+
+grant execute on function public.update_class_tracker_testimonial_received(uuid, boolean) to authenticated;
+
 create or replace view public.class_tutor_login_accounts
 with (security_invoker = true)
 as
