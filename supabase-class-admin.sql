@@ -90,6 +90,8 @@ create table if not exists public.class_tracker (
   meetings_total integer not null default 0,
   payments_realized integer not null default 0,
   payments_total integer not null default 0,
+  certificate_issued boolean not null default false,
+  testimonial_received boolean not null default false,
   created_by text not null default lower(coalesce(auth.jwt() ->> 'email', '')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -181,7 +183,9 @@ create table if not exists public.class_zoom_bookings (
 alter table public.class_tracker
 add column if not exists booking_id uuid,
 add column if not exists student_name text not null default '',
-add column if not exists student_count integer not null default 1;
+add column if not exists student_count integer not null default 1,
+add column if not exists certificate_issued boolean not null default false,
+add column if not exists testimonial_received boolean not null default false;
 
 alter table public.class_bookings
 add column if not exists booking_group_id uuid not null default gen_random_uuid(),
@@ -196,6 +200,20 @@ add column if not exists note text not null default '';
 update public.class_bookings
 set booking_group_id = id
 where booking_group_id is null;
+
+update public.class_tracker tracker
+set certificate_issued = tracker.certificate_issued or status.certificate_issued,
+    testimonial_received = tracker.testimonial_received or status.testimonial_received
+from (
+  select first_booking.id as booking_id,
+         bool_or(group_booking.certificate_issued) as certificate_issued,
+         bool_or(group_booking.testimonial_received) as testimonial_received
+  from public.class_bookings first_booking
+  join public.class_bookings group_booking on group_booking.booking_group_id = first_booking.booking_group_id
+  where first_booking.booking_student_order = 1
+  group by first_booking.id
+) status
+where tracker.booking_id = status.booking_id;
 
 alter table public.class_tutors
 add column if not exists email text unique,

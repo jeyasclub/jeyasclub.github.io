@@ -189,7 +189,7 @@
         <div class="panel-head"><div><h2>Class Tracker</h2><p class="muted">Tanggal Pemesanan, Program, Tutor, Meeting, dan Payment.</p></div><button class="btn" type="button" id="exportTracker">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Tutor</th><th>Total Meeting Realized</th><th>Status Payment</th><th>To Be Paid</th><th>Remaining Fee</th><th>Sertifikat</th><th>Testimoni</th><th>Aksi</th></tr></thead>
             <tbody id="trackerBody"></tbody>
           </table>
         </div>
@@ -201,7 +201,7 @@
         <div class="panel-head"><div><h2>Class Booking</h2><p class="muted">Tanggal Pemesanan, Program, Harga, dan Tutor.</p></div><button class="btn" type="button" id="exportBooking">Export Excel</button></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Total Pertemuan</th><th>Sertifikat</th><th>Testimoni</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>Tanggal Pemesanan</th><th>Masa Berlaku</th><th>Nama Siswa</th><th>Jumlah Siswa</th><th>Nama Program</th><th>Harga</th><th>Tutor</th><th>Total Pertemuan</th><th>Keterangan</th><th>Aksi</th></tr></thead>
             <tbody id="bookingBody"></tbody>
           </table>
         </div>
@@ -243,7 +243,7 @@
         <div>
           <p class="eyebrow">Edit Booking</p>
           <h2 id="bookingModalTitle">Class Booking</h2>
-          <p class="muted">Update data booking, termasuk status sertifikat dan testimoni.</p>
+          <p class="muted">Update data pemesanan kelas.</p>
         </div>
         <button class="btn" type="button" id="bookingModalClose">Tutup</button>
       </div>
@@ -260,15 +260,23 @@
           <label>Total pertemuan<input type="number" id="bookingMeetingTotal" min="0" step="1" required></label>
         </div>
         <label>Keterangan<textarea id="bookingNote" placeholder="Catatan tambahan untuk booking ini"></textarea></label>
-        <div class="modal-grid">
-          <label>Status Sertifikat<select id="bookingCertificateIssued"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
-          <label>Status Testimoni<select id="bookingTestimonialReceived"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
-        </div>
       </div>
       <div class="modal-actions">
         <button class="btn" type="button" id="bookingModalCancel">Batal</button>
         <button class="btn primary" type="submit" id="bookingSaveButton">Simpan Perubahan</button>
       </div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="trackerModal" role="dialog" aria-modal="true" aria-labelledby="trackerModalTitle">
+    <form class="modal" id="trackerEditForm">
+      <div class="modal-head"><div><p class="eyebrow">Edit Tracker</p><h2 id="trackerModalTitle">Class Tracker</h2><p class="muted">Update payment, sertifikat, dan testimoni.</p></div><button class="btn" type="button" id="trackerModalClose">Tutup</button></div>
+      <div class="modal-body"><input type="hidden" id="trackerEditId"><div class="modal-grid">
+        <label>Status Payment<input type="text" id="trackerPaymentStatus" placeholder="0/0" required></label>
+        <label>Status Sertifikat<select id="trackerCertificateIssued"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
+        <label>Status Testimoni<select id="trackerTestimonialReceived"><option value="false">Not Yet</option><option value="true">Done</option></select></label>
+      </div></div>
+      <div class="modal-actions"><button class="btn" type="button" id="trackerModalCancel">Batal</button><button class="btn primary" type="submit" id="trackerSaveButton">Simpan Perubahan</button></div>
     </form>
   </div>
 
@@ -309,8 +317,11 @@
     bookingStudentName: $("bookingStudentName"), bookingStudentCount: $("bookingStudentCount"),
     bookingProgramName: $("bookingProgramName"), bookingPrice: $("bookingPrice"), bookingTutor: $("bookingTutor"),
     bookingMeetingTotal: $("bookingMeetingTotal"), bookingNote: $("bookingNote"),
-    bookingCertificateIssued: $("bookingCertificateIssued"), bookingTestimonialReceived: $("bookingTestimonialReceived"),
-    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton")
+    bookingModalClose: $("bookingModalClose"), bookingModalCancel: $("bookingModalCancel"), bookingSaveButton: $("bookingSaveButton"),
+    trackerModal: $("trackerModal"), trackerEditForm: $("trackerEditForm"), trackerEditId: $("trackerEditId"),
+    trackerPaymentStatus: $("trackerPaymentStatus"), trackerCertificateIssued: $("trackerCertificateIssued"),
+    trackerTestimonialReceived: $("trackerTestimonialReceived"), trackerModalClose: $("trackerModalClose"),
+    trackerModalCancel: $("trackerModalCancel"), trackerSaveButton: $("trackerSaveButton")
   };
 
   function isAdmin(session = currentSession) {
@@ -1047,7 +1058,9 @@
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
         <td><span class="pill">${escapeHTML(formatToBePaid(row))}</span></td>
         <td><span class="pill">${escapeHTML(formatRemainingFee(row))}</span></td>
-        <td><button class="btn" type="button" data-payment-edit="${escapeHTML(row.id)}" data-payment-value="${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}">Edit Payment</button></td>
+        <td><span class="pill">${formatDoneStatus(row.certificate_issued)}</span></td>
+        <td><span class="pill">${formatDoneStatus(row.testimonial_received)}</span></td>
+        <td><button class="btn" type="button" data-tracker-edit="${escapeHTML(row.id)}">Edit</button></td>
       </tr>
     `;
     }).join("");
@@ -1079,10 +1092,24 @@
     return byDetails ? byDetails.valid_until : "";
   }
 
-  async function editPaymentStatus(trackerId, currentValue) {
-    const nextValue = window.prompt("Update Status Payment dalam format n/n", currentValue || "0/0");
-    if (nextValue === null) return;
-    const match = nextValue.trim().match(/^(\d+)\s*\/\s*(\d+)$/);
+  function openTrackerModal(row) {
+    els.trackerEditId.value = row.id;
+    els.trackerPaymentStatus.value = `${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}`;
+    els.trackerCertificateIssued.value = Boolean(row.certificate_issued) ? "true" : "false";
+    els.trackerTestimonialReceived.value = Boolean(row.testimonial_received) ? "true" : "false";
+    els.trackerModal.classList.remove("hidden");
+    els.trackerPaymentStatus.focus();
+  }
+
+  function closeTrackerModal() {
+    els.trackerModal.classList.add("hidden");
+    els.trackerEditForm.reset();
+    els.trackerEditId.value = "";
+  }
+
+  async function saveTrackerEdit(event) {
+    event.preventDefault();
+    const match = els.trackerPaymentStatus.value.trim().match(/^(\d+)\s*\/\s*(\d+)$/);
     if (!match) {
       els.sessionLabel.textContent = "Format payment harus n/n, contoh: 1/2.";
       return;
@@ -1098,15 +1125,18 @@
       .update({
         payments_realized: paymentsRealized,
         payments_total: paymentsTotal,
+        certificate_issued: els.trackerCertificateIssued.value === "true",
+        testimonial_received: els.trackerTestimonialReceived.value === "true",
         updated_at: new Date().toISOString()
       })
-      .eq("id", trackerId);
+      .eq("id", els.trackerEditId.value);
     if (error) {
       console.error(error);
       els.sessionLabel.textContent = "Status payment belum terupdate. Cek policy Supabase.";
       return;
     }
-    els.sessionLabel.textContent = "Status payment berhasil diupdate.";
+    els.sessionLabel.textContent = "Class Tracker berhasil diupdate.";
+    closeTrackerModal();
     await loadData();
   }
 
@@ -1134,8 +1164,6 @@
             <td rowspan="${rowspan}">${escapeHTML(row.tutor)}</td>
             <td rowspan="${rowspan}"><span class="pill">${Number(getBookingMeetingTotal(row) || 0)}</span></td>
           ` : ""}
-          <td><span class="pill">${formatDoneStatus(row.certificate_issued)}</span></td>
-          <td><span class="pill">${formatDoneStatus(row.testimonial_received)}</span></td>
           ${index === 0 ? `<td rowspan="${rowspan}">${escapeHTML(row.note || "-")}</td>` : ""}
           <td>
             <div class="row-actions">
@@ -1218,8 +1246,6 @@
     els.bookingTutor.value = row.tutor || "";
     els.bookingMeetingTotal.value = getBookingMeetingTotal(row);
     els.bookingNote.value = row.note || "";
-    els.bookingCertificateIssued.value = Boolean(row.certificate_issued) ? "true" : "false";
-    els.bookingTestimonialReceived.value = Boolean(row.testimonial_received) ? "true" : "false";
     els.bookingModal.classList.remove("hidden");
     els.bookingStudentName.focus();
   }
@@ -1250,8 +1276,6 @@
       tutor: els.bookingTutor.value.trim(),
       meetings_total: Math.max(parseNumberInput(els.bookingMeetingTotal.value, 0), 0),
       note: els.bookingNote.value.trim(),
-      certificate_issued: els.bookingCertificateIssued.value === "true",
-      testimonial_received: els.bookingTestimonialReceived.value === "true",
       updated_at: new Date().toISOString()
     };
 
@@ -1296,8 +1320,6 @@
     };
     const studentPayload = {
       student_name: payload.student_name,
-      certificate_issued: payload.certificate_issued,
-      testimonial_received: payload.testimonial_received,
       updated_at: payload.updated_at
     };
 
@@ -1416,7 +1438,7 @@
   function exportTrackerRows() {
     downloadExcel("class-tracker", [
       "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Tutor",
-      "Total Meeting Realized", "Status Payment", "To Be Paid", "Remaining Fee"
+      "Total Meeting Realized", "Status Payment", "To Be Paid", "Remaining Fee", "Sertifikat", "Testimoni"
     ], getFilteredTrackerRows().map((row) => [
       row.order_date,
       getTrackerValidUntil(row),
@@ -1427,13 +1449,15 @@
       `${Number(row.meetings_realized || 0)}/${Number(row.meetings_total || 0)}`,
       `${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}`,
       formatToBePaid(row),
-      formatRemainingFee(row)
+      formatRemainingFee(row),
+      formatDoneStatus(row.certificate_issued),
+      formatDoneStatus(row.testimonial_received)
     ]));
   }
 
   function exportBookingRows() {
     downloadExcel("class-booking", [
-      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Total Pertemuan", "Sertifikat", "Testimoni", "Keterangan"
+      "Tanggal Pemesanan", "Masa Berlaku", "Nama Siswa", "Jumlah Siswa", "Nama Program", "Harga", "Tutor", "Total Pertemuan", "Keterangan"
     ], bookingRows.map((row) => [
       row.order_date,
       row.valid_until,
@@ -1443,8 +1467,6 @@
       formatExportMoney(row.price),
       row.tutor,
       getBookingMeetingTotal(row),
-      formatDoneStatus(row.certificate_issued),
-      formatDoneStatus(row.testimonial_received),
       row.note
     ]));
   }
@@ -1530,6 +1552,12 @@
   els.bookingModal.addEventListener("click", (event) => {
     if (event.target === els.bookingModal) closeBookingModal();
   });
+  els.trackerEditForm.addEventListener("submit", saveTrackerEdit);
+  els.trackerModalClose.addEventListener("click", closeTrackerModal);
+  els.trackerModalCancel.addEventListener("click", closeTrackerModal);
+  els.trackerModal.addEventListener("click", (event) => {
+    if (event.target === els.trackerModal) closeTrackerModal();
+  });
   els.exportTracker.addEventListener("click", exportTrackerRows);
   els.exportBooking.addEventListener("click", exportBookingRows);
   els.exportZoom.addEventListener("click", exportZoomRows);
@@ -1542,9 +1570,12 @@
     renderBookings(bookingRows);
   });
   document.addEventListener("click", (event) => {
-    const paymentButton = event.target.closest("[data-payment-edit]");
+    const trackerButton = event.target.closest("[data-tracker-edit]");
     const zoomDeleteButton = event.target.closest("[data-zoom-delete]");
-    if (paymentButton) editPaymentStatus(paymentButton.dataset.paymentEdit, paymentButton.dataset.paymentValue);
+    if (trackerButton) {
+      const row = trackerRows.find((item) => item.id === trackerButton.dataset.trackerEdit);
+      if (row) openTrackerModal(row);
+    }
     if (zoomDeleteButton) deleteZoomBooking(zoomDeleteButton.dataset.zoomDelete);
   });
   els.month.addEventListener("change", () => { updateAllTimeFilterState(); saveAdminFilters(); loadData(); });
