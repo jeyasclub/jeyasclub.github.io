@@ -95,6 +95,8 @@
   tbody tr:nth-child(even) td { background:#f8fbff; }
   tbody tr:hover td { background:#eef6ff; }
   .pill { display:inline-flex; align-items:center; min-height:28px; border-radius:999px; padding:5px 9px; background:var(--blue-light); color:var(--blue-dark); border:2px solid #bfdbfe; font-size:12px; font-weight:900; white-space:nowrap; }
+  .testimonial-check { display:flex; align-items:center; gap:8px; }
+  .testimonial-check input[type="checkbox"] { width:20px; height:20px; min-height:0; padding:0; border:0; border-radius:0; box-shadow:none; accent-color:var(--blue); cursor:pointer; }
   @media (max-width:820px) {
     body { overflow-x:hidden; }
     .topbar { padding:10px 12px; gap:12px; }
@@ -689,7 +691,7 @@
         <td><span class="pill">${Number(row.payments_realized || 0)}/${Number(row.payments_total || 0)}</span></td>
         <td><span class="pill">${escapeHTML(formatToBePaid(row))}</span></td>
         <td><span class="pill">${escapeHTML(formatRemainingFee(row))}</span></td>
-        <td><label><input type="checkbox" data-testimonial-tracker="${escapeHTML(row.id)}" ${row.testimonial_received ? "checked" : ""}> Diterima</label></td>
+        <td><label class="testimonial-check"><input type="checkbox" data-testimonial-tracker="${escapeHTML(row.id)}" ${row.testimonial_received ? "checked" : ""}> Diberikan</label></td>
         <td><button class="btn" type="button" data-edit-tracker="${escapeHTML(row.id)}">Edit Meeting</button></td>
       </tr>
     `).join("");
@@ -770,6 +772,10 @@
   }
 
   async function updateTestimonialReceived(checkbox) {
+    if (checkbox.checked && !window.confirm("Apakah Anda yakin sudah memberikan link testimoni kepada siswa tersebut?")) {
+      checkbox.checked = false;
+      return;
+    }
     checkbox.disabled = true;
     setStatus(els.trackerStatus, "Mengupdate status testimoni...");
     const { error } = await supabaseClient.rpc("update_class_tracker_testimonial_received", {
