@@ -1010,7 +1010,6 @@
     }
     bookingRows = bookings || [];
     trackerRows = dedupeTrackerRows(trackers || [], bookingRows);
-    trackerExpanded = false;
     bookingExpanded = false;
     renderTracker(getFilteredTrackerRows());
     renderBookings(bookingRows);
@@ -1585,7 +1584,6 @@
   els.programFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
   els.tutorFilter.addEventListener("change", () => { saveAdminFilters(); loadData(); });
   els.completedFilter.addEventListener("change", () => {
-    trackerExpanded = false;
     saveAdminFilters();
     renderTracker(getFilteredTrackerRows());
   });
