@@ -305,7 +305,7 @@
             <label>Tanggal<input type="date" id="manualDate" required></label>
             <label>Tipe<select id="manualType" required><option value="income">Pendapatan</option><option value="expense">Pengeluaran</option></select></label>
             <label>Kategori<input type="text" id="manualCategory" maxlength="120" required placeholder="Contoh: Affiliate, Tools, Bonus"></label>
-            <label>Nominal<input type="number" id="manualAmount" min="0" step="1000" required placeholder="0"></label>
+            <label>Nominal<input type="number" id="manualAmount" min="0" step="any" required placeholder="0"></label>
             <label class="transaction-note-field">Keterangan<textarea id="manualDescription" maxlength="500" placeholder="Catatan singkat"></textarea></label>
             <button class="btn primary" type="submit" id="manualSaveButton">Simpan Transaksi</button>
             <p class="status" id="manualEntryStatus"></p>
