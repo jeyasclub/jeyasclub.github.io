@@ -4113,26 +4113,6 @@
   </div>
 </div>
 
-<div class="pec-popup" id="pecPopup" role="dialog" aria-modal="true" aria-labelledby="pecPopupTitle" aria-hidden="true">
-  <div class="pec-popup-backdrop" data-close-pec-popup></div>
-  <div class="pec-popup-panel">
-    <button class="pec-popup-close" type="button" aria-label="Tutup pop up Premium English Club" data-close-pec-popup>&times;</button>
-    <div class="pec-popup-content">
-      <span class="pec-popup-badge">Program September-Oktober 2026</span>
-      <h2 class="pec-popup-title" id="pecPopupTitle">Premium English Club</h2>
-      <p class="pec-popup-subtitle">For Upper Intermediate</p>
-      <p class="pec-popup-copy">Materi harian, latihan terarah, quiz evaluasi, live class, dan feedback tutor untuk bantu kamu naik level.</p>
-      <div class="pec-popup-actions">
-        <a class="pec-popup-button primary" href="/pec/">Jelajahi Program</a>
-        <button class="pec-popup-button secondary" type="button" data-close-pec-popup>Nanti Dulu</button>
-      </div>
-    </div>
-    <div class="pec-popup-media" aria-hidden="true">
-      <img src="assets/intip.png" alt="" width="1164" height="768" loading="lazy" decoding="async">
-    </div>
-  </div>
-</div>
-
 <!-- COURSE REASONS -->
 <section class="course-reasons" id="kenapa-kursus">
   <div class="container">
@@ -5225,38 +5205,7 @@
     el.addEventListener('click', closeSheetImagePreview);
   });
 
-  const pecPopup = document.getElementById('pecPopup');
-  const pecPopupCloseButton = pecPopup ? pecPopup.querySelector('.pec-popup-close') : null;
-  let pecPopupOpened = false;
-
-  function openPecPopup() {
-    if (!pecPopup || pecPopupOpened) return;
-    pecPopupOpened = true;
-    pecPopup.classList.add('open');
-    pecPopup.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    if (pecPopupCloseButton) pecPopupCloseButton.focus();
-  }
-
-  function closePecPopup(event) {
-    if (event) event.preventDefault();
-    if (!pecPopup) return;
-    pecPopup.classList.remove('open');
-    pecPopup.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
-  document.querySelectorAll('[data-close-pec-popup]').forEach(el => {
-    el.addEventListener('click', closePecPopup);
-  });
-
-  window.setTimeout(openPecPopup, 450);
-
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && pecPopup && pecPopup.classList.contains('open')) {
-      closePecPopup(event);
-      return;
-    }
     if (event.key === 'Escape' && sheetImagePreviewModal && sheetImagePreviewModal.classList.contains('open')) {
       closeSheetImagePreview(event);
       return;
