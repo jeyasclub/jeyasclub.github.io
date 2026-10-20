@@ -783,6 +783,139 @@
   footer#footer .social-link img { width:18px; height:18px; object-fit:contain; display:block; }
   footer#footer .social-link:hover { background:var(--blue-light,#E8F1FD); transform:translateY(-2px); }
   @media (max-width:768px) { footer#footer .footer-top { grid-template-columns:1fr; gap:24px; } footer#footer .footer-tagline { max-width:none; } }
+  .program-card {
+    --program-color: #315f7d;
+    --program-ink: #17192c;
+    --program-muted: #62697a;
+    --program-accent: var(--program-color);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--program-color) 8%, #f7faff) 0%,
+      rgba(255,255,255,0.96) 58%,
+      #fff3bd 100%
+    );
+    border: 4px solid var(--program-color);
+    border-radius: 18px;
+    padding: 22px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    color: var(--program-ink);
+    flex: 0 0 min(280px, 82vw);
+    min-height: 310px;
+    scroll-snap-align: start;
+    box-shadow: 0 10px 24px rgba(22, 35, 58, 0.08);
+  }
+
+  .program-card::before {
+    content: "Program";
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(255,255,255,0.96);
+    color: var(--program-accent);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .program-card::after {
+    content: none;
+  }
+
+  .program-card:hover,
+  .program-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 34px color-mix(in srgb, var(--program-color) 18%, transparent);
+    border-color: var(--program-color);
+    outline: none;
+  }
+
+  .program-card[data-program="basic"] {
+    --program-color: #315f7d;
+  }
+
+  .program-card[data-program="speaking"] {
+    --program-color: #1558c0;
+  }
+
+  .program-card[data-program="writing"] {
+    --program-color: #5d5aa8;
+  }
+
+  .program-card[data-program="kids"] {
+    --program-color: #d99616;
+  }
+
+  .program-card[data-program="basic"]::before { content: "Grammar"; }
+  .program-card[data-program="speaking"]::before { content: "Speaking"; }
+  .program-card[data-program="writing"]::before { content: "Writing"; }
+  .program-card[data-program="kids"]::before { content: "Kids"; }
+
+  .program-card .feature-img {
+    position: relative;
+    z-index: 1;
+    width: 122px;
+    height: 122px;
+    flex: 0 0 122px;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .program-card .feature-name {
+    position: relative;
+    z-index: 1;
+    font-size: 18px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    color: var(--program-ink);
+  }
+
+  .program-card .feature-desc {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--program-muted);
+  }
+
+  .program-card .program-card-action {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-top: 22px;
+    color: var(--program-accent);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+
+  .cta-card { width:min(1200px,100%); }
+  .testimonial-programs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; margin-top:30px; }
+  .testimonial-programs .program-card { min-width:0; text-decoration:none; }
+  .testimonial-programs .feature-img { display:flex; align-items:center; justify-content:center; }
+  .testimonial-programs .feature-img img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
+  .testimonial-programs .feature-name { font-weight:800; }
+  .testimonial-programs .program-card:focus-visible { outline:3px solid var(--program-color); outline-offset:4px; }
+  @media(max-width:1000px) { .testimonial-programs { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:540px) { .cta-card { padding:24px 18px; } .testimonial-programs { grid-template-columns:minmax(0,1fr); } }
 </style>
 <!-- Google tag (gtag.js) -->
 </head>
@@ -1832,7 +1965,40 @@
     <div class="cta-card">
       <h2>Mau jadi cerita berikutnya?</h2>
       <p>Mulai belajar bareng Jeya's Club dan pilih program yang paling cocok untuk tujuanmu.</p>
-      <a class="cta-btn" href="/#features">Lihat Program</a>
+      <div class="testimonial-programs">
+<a class="program-card" data-program="basic" href="/kursus-grammar-bahasa-inggris-online/">
+          <div class="feature-img bg-blue"><img src="/assets/optimized/ok.png" alt="Kursus Dasar Bahasa Inggris" width="203" height="260" loading="lazy" decoding="async"></div>
+          <div>
+            <div class="feature-name">Kursus Dasar Bahasa Inggris (Grammar)</div>
+            <div class="feature-desc">Kursus bahasa Inggris online untuk pemula yang ingin memahami grammar dari dasar sampai lebih percaya diri.</div>
+          </div>
+          <span class="program-card-action">Lihat Detail →</span>
+        </a>
+<a class="program-card" data-program="speaking" href="/private-speaking-bahasa-inggris-online/">
+          <div class="feature-img bg-green"><img src="/assets/optimized/laptop.png" alt="Private Speaking Practice" width="208" height="260" loading="lazy" decoding="async"></div>
+          <div>
+            <div class="feature-name">Private Speaking Practice</div>
+            <div class="feature-desc">Latihan speaking online secara private dengan tutor melalui Zoom untuk melatih kelancaran bicara.</div>
+          </div>
+          <span class="program-card-action">Lihat Detail →</span>
+        </a>
+<a class="program-card" data-program="writing" href="/private-writing-bahasa-inggris-online/">
+          <div class="feature-img bg-purple"><img src="/assets/optimized/book.png" alt="Private Writing Practice" width="218" height="220" loading="lazy" decoding="async"></div>
+          <div>
+            <div class="feature-name">Private Writing Practice</div>
+            <div class="feature-desc">Kelas writing dan reading comprehension online untuk memperkuat struktur kalimat dan pemahaman bacaan.</div>
+          </div>
+          <span class="program-card-action">Lihat Detail →</span>
+        </a>
+<a class="program-card" data-program="kids" href="/kursus-bahasa-inggris-anak-online/">
+          <div class="feature-img bg-yellow"><img src="/assets/optimized/kids.png" alt="English Course for Kids" width="208" height="260" loading="lazy" decoding="async"></div>
+          <div>
+            <div class="feature-name">English Course for Kids</div>
+            <div class="feature-desc">Kursus bahasa Inggris online untuk anak dengan materi private yang menyenangkan dan sesuai kemampuan.</div>
+          </div>
+          <span class="program-card-action">Lihat Detail →</span>
+        </a>
+</div>
     </div>
   </section>
 </main>
