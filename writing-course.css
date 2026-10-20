@@ -67,7 +67,7 @@ section { padding:68px 0; }
 
 .soft { background:#fafbf9; }
 .steps { background:var(--writing-cream); }
-.step-card { padding-top:82px; text-align:center; }
+.step-card { padding:82px 24px 24px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:10px; text-align:center; }
 .step-card::before { left:50%; top:22px; width:48px; height:48px; transform:translateX(-50%); border-radius:50%; background:#e8efe2; color:var(--writing-navy); box-shadow:none; }
 .step-card:nth-child(2)::before { background:#fff0ce; }
 .step-card:nth-child(3)::before { background:#e8eef9; }
