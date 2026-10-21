@@ -1069,7 +1069,8 @@
     width: min(1060px, 100%);
   }
 
-  .program-modal[data-product="english-journey"] {
+  .program-modal[data-product="english-journey"],
+  .program-modal[data-product="english-journey-2"] {
     --product-accent: #315f7d;
     --product-accent-dark: #244a62;
     --product-soft: #eaf4fa;
@@ -4070,11 +4071,11 @@
       </article>
 
       <article class="product-card">
-        <img src="/assets/optimized/emodul2.webp" alt="E-Modul 30-Day English Journey Part 2" style="display:block;width:100%;height:220px;object-fit:contain;margin-bottom:20px" loading="lazy" decoding="async">
+        <div class="product-icon blue">📘</div>
         <h3>E-Modul 30-Day English Journey Part 2</h3>
         <div class="product-price">Rp35.000</div>
         <p>Lanjutkan perjalanan belajar bahasa Inggrismu dengan E-Modul 30-Day English Journey Part 2.</p>
-        <a href="https://forms.gle/Ta2bAfAkZzUed7Db8" class="product-link" target="_blank" rel="noopener noreferrer">Beli E-Modul</a>
+        <a href="#" class="product-link" data-product="english-journey-2" aria-haspopup="dialog">Lihat Produk</a>
       </article>
 
       <article class="product-card">
@@ -4659,6 +4660,25 @@
   let activePaymentTitle = 'Pembayaran 300 TOEFL Vocabulary';
 
   const productDetails = {
+      'english-journey-2': `
+        <div class="product-detail">
+          <div class="product-hero">
+            <div class="product-cover-stage">
+              <img class="product-cover-img" src="/assets/optimized/emodul2.webp" alt="Sampul E-Modul 30-Day English Journey Part 2" width="900" height="1273" decoding="async">
+              <span class="product-badge">Rp35.000</span>
+            </div>
+            <div class="product-copy">
+              <span class="product-kicker">E-Modul Bahasa Inggris</span>
+              <h3 class="product-title" id="productModalTitle">E-Modul 30-Day English Journey Part 2</h3>
+              <p class="product-subtitle">Lanjutkan perjalanan belajar bahasa Inggrismu dengan E-Modul 30-Day English Journey Part 2.</p>
+            </div>
+          </div>
+          <div class="product-cta-row">
+            <a class="module-claim-btn" href="https://forms.gle/Ta2bAfAkZzUed7Db8" target="_blank" rel="noopener noreferrer">Klaim Sekarang</a>
+          </div>
+        </div>
+      `,
+
     'english-journey': `
       <div class="product-detail">
         <div class="product-hero">
