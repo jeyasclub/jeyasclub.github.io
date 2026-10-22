@@ -3750,6 +3750,19 @@
   .module-preview p { margin:8px 0 16px; }
   .module-preview iframe { display:block; width:100%; height:clamp(360px,65vh,680px); border:1px solid #d5e4f7; border-radius:12px; background:#f5f8fc; }
   .module-preview > a { display:inline-block; margin-top:12px; font-size:14px; font-weight:600; }
+
+  /* Compact test picker; details remain available on demand. */
+  #english-test .test-accordion { grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; align-items:start; max-width:1000px; margin:auto; }
+  #english-test .test-card { background:#f6f9ff; border:1px solid #d9e5f5; border-radius:14px; box-shadow:none; }
+  #english-test .test-card::after { display:none; }
+  #english-test .test-card summary { min-height:80px; padding:18px; gap:10px; }
+  #english-test .test-card h3 { font-size:17px; line-height:1.4; }
+  #english-test .test-card-toggle { width:28px; height:28px; min-width:28px; box-shadow:none; border:0; background:transparent; }
+  #english-test .test-card[open] { grid-column:1 / -1; background:#fff; border-color:#88b2ec; }
+  #english-test .test-card[open] summary { min-height:64px; }
+  #english-test .test-card summary:focus-visible { outline:3px solid var(--blue); outline-offset:-4px; border-radius:14px; }
+  #english-test .test-card-body { padding:0 18px 20px; }
+  @media(max-width:768px) { #english-test .test-accordion { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } #english-test .test-card summary { padding:14px; min-height:84px; } #english-test .test-card h3 { font-size:14px; } }
 </style>
 <script type="text/javascript" src="https://mayarembed.r2.mayar.id/mayar-new-min.js"></script>
 
@@ -3876,14 +3889,14 @@
 <section class="english-test" id="english-test">
   <div class="container">
     <h2 class="section-title"><span class="snow-icon"></span> Quick English Test <span class="snow-icon"></span></h2>
-    <p class="section-sub">Cek kemampuan bahasa Inggrismu lewat tes singkat dari Jeya's Club. Hasilnya bisa bantu kamu memilih materi belajar yang paling cocok.</p>
+    <p class="section-sub">Pilih tes yang ingin kamu coba. Klik pilihan untuk melihat detail dan mulai.</p>
 
     <div class="test-accordion">
-      <details class="test-card" name="quick-english-test" open>
+      <details class="test-card" name="quick-english-test">
         <summary>
           <div class="test-card-content">
-            <span class="test-card-label">Available</span>
-            <h3>Vocabulary Test by Jeya's Club</h3>
+            
+            <h3>Vocabulary</h3>
           </div>
           <span class="test-card-toggle" aria-hidden="true"></span>
         </summary>
@@ -3896,8 +3909,8 @@
       <details class="test-card" name="quick-english-test">
         <summary>
           <div class="test-card-content">
-            <span class="test-card-label">Available</span>
-            <h3>Grammar Test by Jeya's Club</h3>
+            
+            <h3>Grammar</h3>
           </div>
           <span class="test-card-toggle" aria-hidden="true"></span>
         </summary>
@@ -3910,8 +3923,8 @@
       <details class="test-card" name="quick-english-test">
         <summary>
           <div class="test-card-content">
-            <span class="test-card-label">Available</span>
-            <h3>Latihan Soal TOEFL Structure & Written Expressions</h3>
+            
+            <h3>TOEFL Structure</h3>
           </div>
           <span class="test-card-toggle" aria-hidden="true"></span>
         </summary>
@@ -3924,8 +3937,8 @@
       <details class="test-card" name="quick-english-test">
         <summary>
           <div class="test-card-content">
-            <span class="test-card-label">Available</span>
-            <h3>Latihan Soal TOEFL Reading Comprehension</h3>
+            
+            <h3>TOEFL Reading</h3>
           </div>
           <span class="test-card-toggle" aria-hidden="true"></span>
         </summary>
@@ -3938,8 +3951,8 @@
       <details class="test-card" name="quick-english-test">
         <summary>
           <div class="test-card-content">
-            <span class="test-card-label">Available</span>
-            <h3>English Slang Test by Jeya's Club</h3>
+            
+            <h3>English Slang</h3>
           </div>
           <span class="test-card-toggle" aria-hidden="true"></span>
         </summary>
@@ -3952,8 +3965,8 @@
       <details class="test-card" name="quick-english-test">
         <summary>
           <div class="test-card-content">
-            <span class="test-card-label">Available</span>
-            <h3>American or British Accent Test</h3>
+            
+            <h3>American vs British</h3>
           </div>
           <span class="test-card-toggle" aria-hidden="true"></span>
         </summary>
