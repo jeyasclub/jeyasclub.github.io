@@ -87,6 +87,42 @@
   .tutor-pie-swatch { width:14px; height:14px; border:2px solid var(--ink); border-radius:3px; }
   .tutor-pie-value { color:var(--muted); white-space:nowrap; }
   .empty { padding:4px 0; color:var(--muted); font-size:13px; }
+  /* Siswa & Meeting */
+  .progress-panel .panel-head { grid-template-columns:minmax(0, 1fr) auto; align-items:center; }
+  .scope-pill { justify-self:end; padding:7px 12px; border:2px solid var(--ink); border-radius:999px; background:var(--yellow); font-size:12px; font-weight:900; box-shadow:2px 3px 0 var(--shadow); white-space:nowrap; }
+  .progress-body { padding:20px 24px 24px; display:grid; gap:26px; }
+  .stat-group { display:grid; gap:12px; }
+  .stat-group-title { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.8px; }
+  .stat-tiles { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+  .stat-tile { display:grid; gap:4px; align-content:start; padding:14px 16px; border:2px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
+  .stat-tile .label { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:12px; font-weight:800; }
+  .stat-tile strong { color:var(--text); font-size:28px; line-height:1.1; font-weight:900; }
+  .stat-tile small { color:var(--muted); font-size:12px; font-weight:700; line-height:1.45; }
+  .swatch { width:10px; height:10px; flex:none; border-radius:3px; background:var(--blue); }
+  .swatch.done { background:var(--blue); } .swatch.active { background:var(--green); }
+  .swatch.realized { background:var(--blue); } .swatch.pending { background:var(--amber); } .swatch.forfeit { background:#cbd5e1; }
+  .split-bar { display:flex; gap:2px; height:14px; border-radius:999px; overflow:hidden; background:#eef2f7; }
+  .split-bar span { height:100%; min-width:0; transition:width .3s ease; }
+  .seg-done, .seg-realized { background:var(--blue); } .seg-active { background:var(--green); }
+  .seg-pending { background:var(--amber); } .seg-forfeit { background:#cbd5e1; }
+  .month-chart-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .month-legend { display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; font-weight:800; }
+  .month-legend span { display:inline-flex; align-items:center; gap:6px; }
+  .month-chart-wrap { position:relative; overflow-x:auto; padding-bottom:4px; }
+  .month-chart { display:flex; align-items:flex-end; gap:8px; min-height:210px; padding:10px 2px 0; border-bottom:2px solid #dbe3ee; }
+  .month-col { flex:1 0 46px; max-width:72px; display:grid; grid-template-rows:auto 160px auto; align-items:end; gap:6px; padding:6px 4px 8px; border:2px solid transparent; border-radius:12px; background:none; cursor:pointer; font:inherit; color:inherit; }
+  .month-col:hover, .month-col:focus-visible { background:var(--blue-light); outline:none; }
+  .month-col.selected { border-color:var(--ink); background:var(--yellow-soft); }
+  .month-col .total { color:var(--text); font-size:11px; font-weight:900; text-align:center; }
+  .month-stack { display:flex; flex-direction:column-reverse; gap:2px; width:100%; max-width:30px; justify-self:center; height:100%; justify-content:flex-start; }
+  .month-stack span { width:100%; border-radius:0; }
+  .month-stack span:last-child { border-radius:4px 4px 0 0; }
+  .month-col .name { color:var(--muted); font-size:11px; font-weight:800; text-align:center; white-space:nowrap; }
+  .month-tip { position:absolute; z-index:5; pointer-events:none; min-width:190px; padding:10px 12px; border:2px solid var(--ink); border-radius:12px; background:#fff; box-shadow:3px 4px 0 var(--shadow); font-size:12px; font-weight:700; display:grid; gap:3px; }
+  .month-tip strong { font-size:13px; font-weight:900; margin-bottom:2px; }
+  .month-tip div { display:flex; justify-content:space-between; gap:12px; }
+  .month-tip span { color:var(--muted); }
+  .chart-hint { color:var(--muted); font-size:12px; font-weight:700; }
   @media (max-width:1040px) { .metrics { grid-template-columns:repeat(3, minmax(0, 1fr)); } .sales-count-list { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
   @media (max-width:900px) { .metrics { grid-template-columns:repeat(2, minmax(0, 1fr)); } .grid-2 { grid-template-columns:1fr; } .sales-count-list { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
   @media (max-width:760px) {
@@ -109,6 +145,11 @@
     .sales-count-list { grid-template-columns:1fr; }
     .sales-count-list .count-row { min-height:58px; }
     .tutor-pie-layout { grid-template-columns:1fr; }
+    .progress-panel .panel-head { grid-template-columns:1fr; }
+    .scope-pill { justify-self:start; }
+    .progress-body { padding:14px; gap:22px; }
+    .stat-tiles { grid-template-columns:1fr; gap:10px; }
+    .stat-tile strong { font-size:24px; }
     .filter-card { display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
     .filter-card label { width:100%; min-width:0; display:grid; grid-template-columns:1fr; overflow:hidden; }
     .filter-card input { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; -webkit-appearance:none; appearance:none; justify-self:start; }
@@ -168,6 +209,49 @@
       <div class="metric"><span>Course Completed</span><strong id="courseCompleted">0</strong></div>
     </section>
 
+    <section class="panel progress-panel">
+      <div class="panel-head">
+        <div><h2>Siswa &amp; Meeting</h2><p class="muted">Dihitung dari kelas yang dipesan pada periode ini (berdasarkan tanggal order).</p></div>
+        <span class="scope-pill" id="progressScope">Semua Bulan</span>
+      </div>
+      <div class="progress-body">
+        <div class="stat-group">
+          <span class="stat-group-title">Siswa</span>
+          <div class="stat-tiles">
+            <div class="stat-tile"><span class="label">Total Siswa</span><strong id="studentTotal">0</strong><small id="studentTotalNote">-</small></div>
+            <div class="stat-tile"><span class="label"><i class="swatch done"></i>Sudah Selesai</span><strong id="studentDone">0</strong><small id="studentDoneNote">-</small></div>
+            <div class="stat-tile"><span class="label"><i class="swatch active"></i>Masih Aktif Kursus</span><strong id="studentActive">0</strong><small id="studentActiveNote">-</small></div>
+          </div>
+          <div class="split-bar" id="studentBar" role="img" aria-label="Perbandingan siswa selesai dan aktif"></div>
+        </div>
+
+        <div class="stat-group">
+          <span class="stat-group-title">Meeting</span>
+          <div class="stat-tiles">
+            <div class="stat-tile"><span class="label">Total Meetings Booked</span><strong id="meetingBooked">0</strong><small id="meetingBookedNote">-</small></div>
+            <div class="stat-tile"><span class="label"><i class="swatch realized"></i>Meetings Realized</span><strong id="meetingRealized">0</strong><small id="meetingRealizedNote">-</small></div>
+            <div class="stat-tile"><span class="label"><i class="swatch pending"></i>Meetings Unrealized</span><strong id="meetingUnrealized">0</strong><small id="meetingUnrealizedNote">-</small></div>
+          </div>
+          <div class="split-bar" id="meetingBar" role="img" aria-label="Perbandingan meeting realized dan unrealized"></div>
+        </div>
+
+        <div class="stat-group">
+          <div class="month-chart-head">
+            <span class="stat-group-title">Meeting per Bulan Order</span>
+            <div class="month-legend">
+              <span><i class="swatch realized"></i>Realized</span>
+              <span><i class="swatch pending"></i>Belum (aktif)</span>
+              <span><i class="swatch forfeit"></i>Hangus (expired)</span>
+            </div>
+          </div>
+          <div class="month-chart-wrap" id="monthChartWrap">
+            <div class="month-chart" id="monthChart"></div>
+          </div>
+          <span class="chart-hint">Klik bulan untuk melihat detailnya. Klik lagi (atau tombol "Semua Bulan") untuk kembali ke total all time.</span>
+        </div>
+      </div>
+    </section>
+
     <section class="grid-2">
       <article class="panel sales-panel">
         <div class="panel-head"><h2>Penjualan Produk Digital</h2><p class="muted" id="productSalesSubtitle">Jumlah checkout Mayar untuk test dan produk digital.</p></div>
@@ -185,7 +269,7 @@
       </article>
 
       <article class="panel">
-        <div class="panel-head"><h2>Course Progress</h2><p class="muted">Active berarti meeting realized belum sama dengan total meeting.</p></div>
+        <div class="panel-head"><h2>Course Progress</h2><p class="muted">Completed berarti semua meeting sudah terealisasi atau masa berlakunya sudah lewat (expired).</p></div>
         <div class="chart-body">
           <div class="donut-wrap">
             <div class="donut-box">
@@ -231,7 +315,13 @@
     productSalesChart:$("productSalesChart"), productSalesSubtitle:$("productSalesSubtitle"),
     courseDonut:$("courseDonut"), courseActivePercent:$("courseActivePercent"),
     courseActiveLegend:$("courseActiveLegend"), courseCompletedLegend:$("courseCompletedLegend"),
-    tutorActiveCount:$("tutorActiveCount"), tutorInactiveCount:$("tutorInactiveCount")
+    tutorActiveCount:$("tutorActiveCount"), tutorInactiveCount:$("tutorInactiveCount"),
+    progressScope:$("progressScope"), studentTotal:$("studentTotal"), studentTotalNote:$("studentTotalNote"),
+    studentDone:$("studentDone"), studentDoneNote:$("studentDoneNote"), studentActive:$("studentActive"), studentActiveNote:$("studentActiveNote"),
+    studentBar:$("studentBar"), meetingBooked:$("meetingBooked"), meetingBookedNote:$("meetingBookedNote"),
+    meetingRealized:$("meetingRealized"), meetingRealizedNote:$("meetingRealizedNote"),
+    meetingUnrealized:$("meetingUnrealized"), meetingUnrealizedNote:$("meetingUnrealizedNote"),
+    meetingBar:$("meetingBar"), monthChart:$("monthChart"), monthChartWrap:$("monthChartWrap")
   };
 
   function isAdmin(session = currentSession) {
@@ -316,9 +406,10 @@
       const groupBookingIds = bookings
         .filter((row) => getBookingGroupId(row) === groupId)
         .map((row) => row.id);
-      return trackerByBookingId.get(booking.id)
+      const tracker = trackerByBookingId.get(booking.id)
         || groupBookingIds.map((id) => trackerByBookingId.get(id)).find(Boolean)
         || { meetings_realized: 0, meetings_total: 0 };
+      return { ...tracker, valid_until: booking.valid_until };
     });
   }
 
@@ -405,7 +496,9 @@
   function isCompletedCourse(row) {
     const realized = Number(row.meetings_realized || 0);
     const total = Number(row.meetings_total || 0);
-    return total > 0 && realized >= total;
+    if (total > 0 && realized >= total) return true;
+    const validUntil = String(row.valid_until || "").slice(0, 10);
+    return Boolean(validUntil) && validUntil < todayInput();
   }
 
   async function loadOverview() {
@@ -413,16 +506,13 @@
     els.refresh.disabled = true;
     els.refresh.textContent = "Memuat...";
     const range = monthRange(els.month.value);
-    let bookingQuery = supabaseClient.from("class_bookings").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
-    let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    // Booking & tracker diambil all time supaya grafik per bulan selalu lengkap; filter bulan diterapkan di browser.
+    const bookingQuery = supabaseClient.from("class_bookings").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
+    const trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
     const productSalesQuery = supabaseClient.rpc("get_mayar_product_sale_counts", {
       p_start_date: range ? range.start : null,
       p_end_date: range ? range.end : null
     });
-    if (range) {
-      bookingQuery = bookingQuery.gte("order_date", range.start).lt("order_date", range.end);
-      trackerQuery = trackerQuery.gte("order_date", range.start).lt("order_date", range.end);
-    }
     const [
       { data: bookings, error: bookingError },
       { data: trackers, error: trackerError },
@@ -445,7 +535,190 @@
     }
     if (memberCountError) console.warn("Member count load failed:", memberCountError);
     if (productSalesError) console.warn("Product sales load failed:", productSalesError);
-    renderOverview(bookings || [], trackers || [], tutors || [], memberCountError ? null : memberCount, productSalesError ? null : productSales);
+    const allBookings = bookings || [];
+    const allTrackers = trackers || [];
+    const inRange = (row) => !range || (String(row.order_date || "") >= range.start && String(row.order_date || "") < range.end);
+    renderOverview(allBookings.filter(inRange), allTrackers.filter(inRange), tutors || [], memberCountError ? null : memberCount, productSalesError ? null : productSales);
+    renderClassProgress(buildClassStats(allBookings, allTrackers));
+  }
+
+  // ===== Siswa & Meeting =====
+  function todayInput() {
+    const date = new Date();
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function formatCount(value) {
+    return Number(value || 0).toLocaleString("id-ID");
+  }
+
+  function percentOf(part, total) {
+    return total > 0 ? Math.round((part / total) * 100) : 0;
+  }
+
+  function monthLabel(monthValue, long = false) {
+    if (!monthValue) return "Semua Bulan";
+    const [year, month] = monthValue.split("-").map(Number);
+    return new Date(year, month - 1, 1).toLocaleDateString("id-ID", long ? { month:"long", year:"numeric" } : { month:"short", year:"2-digit" });
+  }
+
+  // Satu baris per kelas (booking group). Status:
+  // - tuntas  : semua meeting sudah terealisasi
+  // - expired : masa berlaku (valid_until) sudah lewat sebelum meeting habis -> sisa meeting hangus
+  // - aktif   : selain itu
+  function buildClassStats(bookings, trackers) {
+    const today = todayInput();
+    const trackerByBookingId = new Map(trackers.map((row) => [row.booking_id, row]));
+    const rowsByGroup = new Map();
+    bookings.forEach((row) => {
+      const groupId = getBookingGroupId(row);
+      if (!rowsByGroup.has(groupId)) rowsByGroup.set(groupId, []);
+      rowsByGroup.get(groupId).push(row);
+    });
+    return [...rowsByGroup.values()].map((groupRows) => {
+      groupRows.sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+      const booking = groupRows[0];
+      const tracker = groupRows.map((row) => trackerByBookingId.get(row.id)).find(Boolean) || {};
+      const total = Math.max(Number(tracker.meetings_total || 0), 0);
+      const realized = Math.min(Math.max(Number(tracker.meetings_realized || 0), 0), total);
+      const validUntil = String(booking.valid_until || "").slice(0, 10);
+      const finished = total > 0 && realized >= total;
+      const expired = !finished && Boolean(validUntil) && validUntil < today;
+      return {
+        month: String(booking.order_date || "").slice(0, 7),
+        students: Math.max(groupRows.length, Number(booking.student_count || 1), 1),
+        total,
+        realized,
+        unrealized: total - realized,
+        status: finished ? "finished" : expired ? "expired" : "active"
+      };
+    });
+  }
+
+  function summarizeClassStats(rows) {
+    const sum = { classes: rows.length, students: 0, finished: 0, expired: 0, active: 0, booked: 0, realized: 0, pending: 0, forfeit: 0 };
+    rows.forEach((row) => {
+      sum.students += row.students;
+      sum[row.status] += row.students;
+      sum.booked += row.total;
+      sum.realized += row.realized;
+      if (row.status === "expired") sum.forfeit += row.unrealized;
+      else sum.pending += row.unrealized;
+    });
+    sum.done = sum.finished + sum.expired;
+    sum.unrealized = sum.pending + sum.forfeit;
+    return sum;
+  }
+
+  function splitBar(container, parts, total) {
+    container.innerHTML = total > 0
+      ? parts.filter((part) => part.value > 0).map((part) => `<span class="${part.cls}" style="width:${(part.value / total) * 100}%" title="${escapeHTML(part.label)}: ${formatCount(part.value)}"></span>`).join("")
+      : "";
+  }
+
+  function renderClassProgress(allRows) {
+    const selectedMonth = els.month.value || "";
+    const rows = selectedMonth ? allRows.filter((row) => row.month === selectedMonth) : allRows;
+    const s = summarizeClassStats(rows);
+
+    els.progressScope.textContent = selectedMonth ? `Order ${monthLabel(selectedMonth, true)}` : "Semua Bulan (all time)";
+    els.studentTotal.textContent = formatCount(s.students);
+    els.studentTotalNote.textContent = `dari ${formatCount(s.classes)} kelas`;
+    els.studentDone.textContent = formatCount(s.done);
+    els.studentDoneNote.textContent = `${formatCount(s.finished)} tuntas · ${formatCount(s.expired)} expired`;
+    els.studentActive.textContent = formatCount(s.active);
+    els.studentActiveNote.textContent = `${percentOf(s.active, s.students)}% dari total siswa`;
+    splitBar(els.studentBar, [
+      { cls:"seg-done", value:s.done, label:"Sudah selesai" },
+      { cls:"seg-active", value:s.active, label:"Masih aktif" }
+    ], s.students);
+
+    els.meetingBooked.textContent = formatCount(s.booked);
+    els.meetingBookedNote.textContent = s.classes ? `rata-rata ${formatCount(Math.round((s.booked / s.classes) * 10) / 10)} meeting per kelas` : "-";
+    els.meetingRealized.textContent = formatCount(s.realized);
+    els.meetingRealizedNote.textContent = `${percentOf(s.realized, s.booked)}% dari total booked`;
+    els.meetingUnrealized.textContent = formatCount(s.unrealized);
+    els.meetingUnrealizedNote.textContent = `${formatCount(s.pending)} masih aktif · ${formatCount(s.forfeit)} hangus (expired)`;
+    splitBar(els.meetingBar, [
+      { cls:"seg-realized", value:s.realized, label:"Realized" },
+      { cls:"seg-pending", value:s.pending, label:"Belum terealisasi (aktif)" },
+      { cls:"seg-forfeit", value:s.forfeit, label:"Hangus (expired)" }
+    ], s.booked);
+
+    renderMonthChart(allRows, selectedMonth);
+  }
+
+  function renderMonthChart(allRows, selectedMonth) {
+    const byMonth = new Map();
+    allRows.forEach((row) => {
+      if (!row.month) return;
+      if (!byMonth.has(row.month)) byMonth.set(row.month, []);
+      byMonth.get(row.month).push(row);
+    });
+    const months = [...byMonth.keys()].sort();
+    if (!months.length) {
+      els.monthChart.innerHTML = `<p class="empty">Belum ada data kelas.</p>`;
+      return;
+    }
+    const stats = months.map((month) => ({ month, ...summarizeClassStats(byMonth.get(month)) }));
+    const max = Math.max(...stats.map((row) => row.booked), 1);
+    const px = (value) => `${Math.round((value / max) * 160)}px`;
+    els.monthChart.innerHTML = stats.map((row) => `
+      <button type="button" class="month-col ${row.month === selectedMonth ? "selected" : ""}" data-month="${row.month}" aria-pressed="${row.month === selectedMonth}"
+        aria-label="${escapeHTML(monthLabel(row.month, true))}: ${row.booked} meeting booked, ${row.realized} realized, ${row.pending} belum terealisasi, ${row.forfeit} hangus">
+        <span class="total">${formatCount(row.booked)}</span>
+        <span class="month-stack">
+          ${row.realized ? `<span class="seg-realized" style="height:${px(row.realized)}"></span>` : ""}
+          ${row.pending ? `<span class="seg-pending" style="height:${px(row.pending)}"></span>` : ""}
+          ${row.forfeit ? `<span class="seg-forfeit" style="height:${px(row.forfeit)}"></span>` : ""}
+        </span>
+        <span class="name">${escapeHTML(monthLabel(row.month))}</span>
+      </button>
+    `).join("");
+
+    const statByMonth = new Map(stats.map((row) => [row.month, row]));
+    let tip = els.monthChartWrap.querySelector(".month-tip");
+    if (!tip) {
+      tip = document.createElement("div");
+      tip.className = "month-tip hidden";
+      els.monthChartWrap.appendChild(tip);
+    }
+    const showTip = (button) => {
+      const row = statByMonth.get(button.dataset.month);
+      if (!row) return;
+      tip.innerHTML = `
+        <strong>${escapeHTML(monthLabel(row.month, true))}</strong>
+        <div><span>Siswa</span><b>${formatCount(row.students)} (${formatCount(row.active)} aktif)</b></div>
+        <div><span>Booked</span><b>${formatCount(row.booked)}</b></div>
+        <div><span>Realized</span><b>${formatCount(row.realized)}</b></div>
+        <div><span>Belum (aktif)</span><b>${formatCount(row.pending)}</b></div>
+        <div><span>Hangus</span><b>${formatCount(row.forfeit)}</b></div>
+      `;
+      tip.classList.remove("hidden");
+      const wrapRect = els.monthChartWrap.getBoundingClientRect();
+      const rect = button.getBoundingClientRect();
+      const left = rect.left - wrapRect.left + els.monthChartWrap.scrollLeft + rect.width / 2 - tip.offsetWidth / 2;
+      const maxLeft = els.monthChartWrap.scrollLeft + els.monthChartWrap.clientWidth - tip.offsetWidth - 4;
+      tip.style.left = `${Math.max(els.monthChartWrap.scrollLeft + 4, Math.min(left, maxLeft))}px`;
+      tip.style.top = "4px";
+    };
+    els.monthChart.querySelectorAll(".month-col").forEach((button) => {
+      button.addEventListener("mouseenter", () => showTip(button));
+      button.addEventListener("focus", () => showTip(button));
+      button.addEventListener("mouseleave", () => tip.classList.add("hidden"));
+      button.addEventListener("blur", () => tip.classList.add("hidden"));
+      button.addEventListener("click", () => {
+        els.month.value = els.month.value === button.dataset.month ? "" : button.dataset.month;
+        saveOverviewFilter();
+        loadOverview();
+      });
+    });
+    const selected = els.monthChart.querySelector(".month-col.selected");
+    // Geser grafik secara horizontal saja (tanpa ikut menggulir halaman).
+    const wrap = els.monthChartWrap;
+    wrap.scrollLeft = selected
+      ? selected.offsetLeft - wrap.clientWidth / 2 + selected.offsetWidth / 2
+      : wrap.scrollWidth;
   }
 
   function renderOverview(bookings, trackers, tutors, memberCount = 0, productSales = []) {
