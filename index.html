@@ -2687,6 +2687,58 @@
     border: 0;
   }
 
+  /* ── VOCABITE ── */
+  .vocabite-promo { background: #eef5ff; padding-top: 24px; }
+  .vocabite-card {
+    position: relative; overflow: hidden;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: 32px;
+    padding: 48px 56px; border-radius: 28px;
+    background: radial-gradient(ellipse at 85% 30%, #cfe3f3 0%, transparent 60%), linear-gradient(135deg, #f8fbff 0%, #e3eff8 100%);
+    border: 1px solid rgba(26, 111, 232, 0.14);
+    box-shadow: 0 24px 56px rgba(22, 63, 122, 0.12);
+  }
+  .vocabite-brand { display: inline-flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; color: #142c50; margin-bottom: 18px; }
+  .vocabite-brand img { width: 40px; height: 40px; border-radius: 10px; }
+  .vocabite-copy h2 { font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; line-height: 1.15; color: var(--text); }
+  .vocabite-copy h2 em { font-style: normal; color: var(--blue); }
+  .vocabite-copy > p { margin-top: 14px; max-width: 400px; color: var(--text-muted); font-size: 15px; line-height: 1.7; }
+  .vocabite-points { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 28px; }
+  .vocabite-points li { padding: 7px 13px; border-radius: 999px; background: var(--white); border: 1px solid rgba(26, 111, 232, 0.16); color: #142c50; font-size: 13px; font-weight: 600; }
+  .vocabite-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .vocabite-download {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 22px 12px 18px; border-radius: 14px;
+    background: #121820; color: var(--white); text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .vocabite-download:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(18, 24, 32, 0.25); }
+  .vocabite-download svg { width: 24px; height: 24px; flex: none; }
+  .vocabite-download span { display: grid; line-height: 1.15; }
+  .vocabite-download small { font-size: 11px; font-weight: 500; opacity: 0.8; }
+  .vocabite-download strong { font-size: 16px; font-weight: 700; }
+  .vocabite-more { color: var(--blue-dark); font-size: 14px; font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+  .vocabite-phones { position: relative; height: 470px; }
+  .vocabite-phones img { position: absolute; top: 50%; left: 50%; width: 230px; height: auto; filter: drop-shadow(0 18px 24px rgba(25, 59, 86, 0.18)); }
+  .vocabite-phones .phone-center { z-index: 2; transform: translate(-50%, -50%); width: 255px; }
+  .vocabite-phones .phone-left { transform: translate(-112%, -46%) rotate(-7deg); opacity: 0.96; }
+  .vocabite-phones .phone-right { transform: translate(12%, -46%) rotate(7deg); opacity: 0.96; }
+  @media (max-width: 900px) {
+    .vocabite-card { grid-template-columns: 1fr; padding: 36px 24px 8px; gap: 8px; text-align: center; }
+    .vocabite-copy > p { margin-left: auto; margin-right: auto; }
+    .vocabite-points, .vocabite-actions { justify-content: center; }
+    .vocabite-phones { height: 380px; }
+    .vocabite-phones img { width: 180px; }
+    .vocabite-phones .phone-center { width: 205px; }
+  }
+  @media (max-width: 480px) {
+    .vocabite-promo { padding-left: 16px; padding-right: 16px; }
+    .vocabite-phones { height: 320px; }
+    .vocabite-phones img { width: 145px; }
+    .vocabite-phones .phone-center { width: 172px; }
+    .vocabite-phones .phone-left { transform: translate(-100%, -46%) rotate(-7deg); }
+    .vocabite-phones .phone-right { transform: translate(0%, -46%) rotate(7deg); }
+  }
+
   /* ── DIGITAL PRODUCTS ── */
   .digital-products {
     background: var(--bg);
@@ -4188,6 +4240,36 @@
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VOCABITE -->
+<section class="vocabite-promo" id="vocabite">
+  <div class="container">
+    <div class="vocabite-card">
+      <div class="vocabite-copy">
+        <div class="vocabite-brand"><img src="assets/vocabite/logo.png" alt="" width="40" height="40" loading="lazy" decoding="async">Vocabite</div>
+        <h2>Nemu vocab baru? <em>Kantongin</em> dulu biar ga lupa!</h2>
+        <p>Aplikasi saku kosakata dari Jeya's Club. Simpan kata, tambah catatanmu sendiri, lalu latihan sebentar tiap hari.</p>
+        <ul class="vocabite-points">
+          <li>Flashcard pribadi</li>
+          <li>Latihan harian</li>
+          <li>Oxford 3000 &amp; 5000</li>
+        </ul>
+        <div class="vocabite-actions">
+          <a class="vocabite-download" href="https://play.google.com/store/apps/details?id=com.vocabite.myapp" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3v11.17l3.59-3.58L17 12l-6 6-6-6 1.41-1.41L10 14.17V3h2zM5 19h14v2H5v-2z" transform="translate(1 0)"/></svg>
+            <span><small>Download gratis di</small><strong>Google Play</strong></span>
+          </a>
+          <a class="vocabite-more" href="https://vocabite.jeyasclub.com/" target="_blank" rel="noopener">Lihat selengkapnya</a>
+        </div>
+      </div>
+      <div class="vocabite-phones">
+        <img class="phone-left" src="assets/vocabite/training.webp" alt="Tampilan latihan harian Vocabite" width="620" height="1102" loading="lazy" decoding="async">
+        <img class="phone-right" src="assets/vocabite/oxford.webp" alt="Tampilan vocabulary pack Oxford 3000 di Vocabite" width="620" height="1102" loading="lazy" decoding="async">
+        <img class="phone-center" src="assets/vocabite/pocket.webp" alt="Tampilan My Pocket berisi flashcard kosakata di Vocabite" width="620" height="1102" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
