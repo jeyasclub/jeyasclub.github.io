@@ -71,6 +71,7 @@
 .manual-entry-panel .panel-body.grid > * {
   min-width: 0;
 }
+  .unearned-totals { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; }
   .payable-total { min-width:180px; display:grid; justify-items:end; gap:3px; padding:12px 14px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
   .payable-total span { color:var(--muted); font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
   .payable-total strong { color:var(--blue-dark); font-size:20px; line-height:1.1; }
@@ -207,6 +208,7 @@
     .statement-line strong { text-align:left; white-space:normal; }
     .panel-head { align-items:flex-start; flex-direction:column; padding:18px; }
     .payable-total { width:100%; min-width:0; justify-items:start; }
+    .unearned-totals { width:100%; flex-direction:column; }
     .payable-grid { grid-template-columns:1fr; padding:16px; }
     .line-chart, .line-chart svg { width:100%; max-width:100%; min-width:0; }
     .line-chart svg { display:block; min-height:420px; border-radius:14px; box-shadow:none; overflow:hidden; }
@@ -298,10 +300,16 @@
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Unearned Revenue</h2><p class="muted">Pendapatan yang sudah dibayar siswa tapi meeting-nya belum terealisasi (masih kewajiban ke siswa). Rumus: meeting belum terealisasi x harga per sesi (harga paket / total meeting).</p></div>
-          <div class="payable-total">
-            <span>Total Unearned</span>
-            <strong id="unearnedGrandTotal">Rp0</strong>
+          <div><h2>Unearned Revenue</h2><p class="muted">Pendapatan yang sudah dibayar siswa tapi meeting-nya belum terealisasi (masih kewajiban ke siswa). Rumus: meeting belum terealisasi x harga per sesi (harga paket / total meeting). Kelas yang sudah lewat masa berlaku tidak dihitung unearned lagi, sisa sesinya hangus dan jadi pendapatan Jeya's Club.</p></div>
+          <div class="unearned-totals">
+            <div class="payable-total">
+              <span>Total Unearned</span>
+              <strong id="unearnedGrandTotal">Rp0</strong>
+            </div>
+            <div class="payable-total">
+              <span>Hangus (Expired)</span>
+              <strong id="expiredGrandTotal">Rp0</strong>
+            </div>
           </div>
         </div>
         <div class="payable-grid" id="unearnedGrid"></div>
@@ -311,7 +319,7 @@
               <thead>
                 <tr>
                   <th>Tanggal Order</th><th>Siswa</th><th>Program</th><th>Jml Siswa</th>
-                  <th>Harga Paket</th><th>Meeting</th><th>Harga / Sesi</th><th>Belum Terealisasi</th><th>Unearned</th>
+                  <th>Masa Berlaku</th><th>Harga Paket</th><th>Meeting</th><th>Harga / Sesi</th><th>Belum Terealisasi</th><th>Nilai Sisa Sesi</th><th>Status</th>
                 </tr>
               </thead>
               <tbody id="unearnedDetailBody"></tbody>
@@ -398,7 +406,7 @@
     manualEntryBody:$("manualEntryBody"), manualEntryEmpty:$("manualEntryEmpty"), revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"),
     payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty"),
     unearnedGrandTotal:$("unearnedGrandTotal"), unearnedGrid:$("unearnedGrid"), unearnedEmpty:$("unearnedEmpty"),
-    unearnedDetailWrap:$("unearnedDetailWrap"), unearnedDetailBody:$("unearnedDetailBody")
+    unearnedDetailWrap:$("unearnedDetailWrap"), unearnedDetailBody:$("unearnedDetailBody"), expiredGrandTotal:$("expiredGrandTotal")
   };
 
   function isFinanceAdmin(session = currentSession) {
@@ -665,7 +673,11 @@
 
   // Unearned revenue dihitung per kelas (per booking group), memakai harga paket booking itu sendiri,
   // jadi kelas 1 siswa, 2 siswa, 3 siswa, dst. masing-masing memakai harganya sendiri.
+  // Kelas yang masa berlakunya sudah lewat (valid_until < hari ini) dianggap expired:
+  // sisa sesinya hangus dan jadi pendapatan Jeya's Club, bukan unearned lagi.
+  // Masa berlaku masih aktif sampai akhir tanggal valid_until. Tanpa valid_until = masih aktif.
   function buildUnearnedDetails(trackers, bookings) {
+    const today = todayInput();
     const bookingById = new Map(bookings.map((row) => [row.id, row]));
     const firstBookingByGroup = new Map();
     groupBookings(bookings).forEach((row) => firstBookingByGroup.set(getBookingGroupId(row), row));
@@ -677,8 +689,11 @@
       const booking = linked ? firstBookingByGroup.get(getBookingGroupId(linked)) || linked : null;
       const packagePrice = booking ? Number(booking.price || 0) : 0;
       const pricePerSession = total > 0 && packagePrice > 0 ? packagePrice / total : 0;
+      const validUntil = String((booking && booking.valid_until) || (linked && linked.valid_until) || "").slice(0, 10);
       return {
         order_date: row.order_date,
+        valid_until: validUntil,
+        expired: Boolean(validUntil) && validUntil < today,
         student_name: row.student_name || "-",
         program: row.program_name || (booking && booking.program_name) || "Tanpa Program",
         student_count: Math.max(Number(row.student_count || (booking && booking.student_count) || 1), 1),
@@ -711,10 +726,13 @@
   }
 
   function renderUnearned(details) {
-    const summary = summarizeUnearned(details);
-    const grandTotal = details.reduce((sum, row) => sum + row.amount, 0);
+    const activeDetails = details.filter((row) => !row.expired);
+    const summary = summarizeUnearned(activeDetails);
+    const grandTotal = activeDetails.reduce((sum, row) => sum + row.amount, 0);
+    const expiredTotal = details.filter((row) => row.expired).reduce((sum, row) => sum + row.amount, 0);
     els.unearnedGrandTotal.textContent = formatMoney(Math.round(grandTotal));
-    els.unearnedEmpty.classList.toggle("hidden", details.length > 0);
+    els.expiredGrandTotal.textContent = formatMoney(Math.round(expiredTotal));
+    els.unearnedEmpty.classList.toggle("hidden", activeDetails.length > 0);
     els.unearnedDetailWrap.classList.toggle("hidden", details.length === 0);
     els.unearnedGrid.innerHTML = summary.map((row) => `
       <article class="payable-card">
@@ -729,14 +747,16 @@
         <td>${escapeHTML(row.student_name)}</td>
         <td>${escapeHTML(row.program)}</td>
         <td>${formatNumber(row.student_count)}</td>
+        <td>${escapeHTML(formatDate(row.valid_until))}</td>
         <td class="money-cell">${row.package_price > 0 ? formatMoney(row.package_price) : "-"}</td>
         <td>${formatNumber(row.meetings_realized)}/${formatNumber(row.meetings_total)}</td>
         <td class="money-cell">${row.missing_price ? "Belum ada harga" : formatMoney(Math.round(row.price_per_session))}</td>
         <td>${formatNumber(row.unrealized)} meeting</td>
         <td class="money-cell">${formatMoney(Math.round(row.amount))}</td>
+        <td><span class="pill ${row.expired ? "expense" : ""}">${row.expired ? "Hangus (expired)" : "Unearned"}</span></td>
       </tr>
     `).join("");
-    return { summary, grandTotal: Math.round(grandTotal) };
+    return { summary, grandTotal: Math.round(grandTotal), expiredTotal: Math.round(expiredTotal) };
   }
 
   function withDigitalProductRevenue(rows = []) {
@@ -844,7 +864,7 @@
     els.refresh.textContent = "Memuat...";
     updatePeriodControls();
     const range = selectedPeriodRange();
-    let bookingQuery = supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,price,program_name,tutor").order("order_date", { ascending:true }).order("created_at", { ascending:true });
+    let bookingQuery = supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,valid_until,price,program_name,tutor,student_count").order("order_date", { ascending:true }).order("created_at", { ascending:true });
     let trackerQuery = supabaseClient.from("class_tracker").select("*").order("order_date", { ascending:false }).order("created_at", { ascending:false });
     let manualQuery = supabaseClient.from("jeyasclub_finance_manual_entries").select("*").order("entry_date", { ascending:true }).order("created_at", { ascending:true });
     if (range) {
@@ -985,7 +1005,7 @@
     const otherExpense = otherExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     renderPayable(trackers);
     const unearnedDetails = buildUnearnedDetails(trackers, bookings);
-    const { summary: unearnedRows, grandTotal: unearnedRevenue } = renderUnearned(unearnedDetails);
+    const { summary: unearnedRows, grandTotal: unearnedRevenue, expiredTotal: expiredUnearned } = renderUnearned(unearnedDetails);
     const tutorFee = tutorExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const grossRevenue = courseRevenue + digitalRevenue + otherIncome;
     const totalExpense = tutorFee + otherExpense;
@@ -1018,6 +1038,7 @@
       unearnedRows,
       unearnedDetails,
       unearnedRevenue,
+      expiredUnearned,
       digitalRows,
       manualEntries
     };
@@ -1099,19 +1120,22 @@
       ["Unearned Revenue (meeting belum terealisasi)", ""],
       ...lastFinanceReport.unearnedRows.map((row) => [`${row.program} - ${formatNumber(row.student_count)} siswa`, `${formatNumber(row.meetings)} meeting belum terealisasi dari ${formatNumber(row.classes)} kelas`, formatMoney(Math.round(row.amount))]),
       ["Total Unearned Revenue", formatMoney(lastFinanceReport.unearnedRevenue)],
+      ["Sisa Sesi Hangus (Expired, jadi pendapatan)", formatMoney(lastFinanceReport.expiredUnearned)],
       ["", ""],
-      ["Rincian Unearned per Kelas", ""],
-      ["Tanggal Order", "Siswa", "Program", "Jml Siswa", "Harga Paket", "Meeting", "Harga / Sesi", "Belum Terealisasi", "Unearned"],
+      ["Rincian Sisa Sesi per Kelas", ""],
+      ["Tanggal Order", "Siswa", "Program", "Jml Siswa", "Masa Berlaku", "Harga Paket", "Meeting", "Harga / Sesi", "Belum Terealisasi", "Nilai Sisa Sesi", "Status"],
       ...lastFinanceReport.unearnedDetails.map((row) => [
         formatDate(row.order_date),
         row.student_name,
         row.program,
         formatNumber(row.student_count),
+        formatDate(row.valid_until),
         row.package_price > 0 ? formatMoney(row.package_price) : "-",
         `${formatNumber(row.meetings_realized)}/${formatNumber(row.meetings_total)}`,
         row.missing_price ? "Belum ada harga" : formatMoney(Math.round(row.price_per_session)),
         `${formatNumber(row.unrealized)} meeting`,
-        formatMoney(Math.round(row.amount))
+        formatMoney(Math.round(row.amount)),
+        row.expired ? "Hangus (expired)" : "Unearned"
       ])
     ];
     const manualRows = [
