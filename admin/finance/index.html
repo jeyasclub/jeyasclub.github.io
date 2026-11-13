@@ -296,6 +296,31 @@
         <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
       </section>
 
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Unearned Revenue</h2><p class="muted">Pendapatan yang sudah dibayar siswa tapi meeting-nya belum terealisasi (masih kewajiban ke siswa). Rumus: meeting belum terealisasi x harga per sesi (harga paket / total meeting).</p></div>
+          <div class="payable-total">
+            <span>Total Unearned</span>
+            <strong id="unearnedGrandTotal">Rp0</strong>
+          </div>
+        </div>
+        <div class="payable-grid" id="unearnedGrid"></div>
+        <div class="panel-body hidden" id="unearnedDetailWrap">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tanggal Order</th><th>Siswa</th><th>Program</th><th>Jml Siswa</th>
+                  <th>Harga Paket</th><th>Meeting</th><th>Harga / Sesi</th><th>Belum Terealisasi</th><th>Unearned</th>
+                </tr>
+              </thead>
+              <tbody id="unearnedDetailBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="empty hidden" id="unearnedEmpty">Tidak ada unearned revenue untuk filter ini.</div>
+      </section>
+
       <section class="panel manual-entry-panel">
         <div class="panel-head">
           <div><h2>Input Transaksi</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
@@ -371,7 +396,9 @@
     manualType:$("manualType"), manualCategory:$("manualCategory"), manualDescription:$("manualDescription"), manualAmount:$("manualAmount"),
     manualSaveButton:$("manualSaveButton"), manualEntryStatus:$("manualEntryStatus"), manualEntryTableWrap:$("manualEntryTableWrap"),
     manualEntryBody:$("manualEntryBody"), manualEntryEmpty:$("manualEntryEmpty"), revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"),
-    payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty")
+    payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty"),
+    unearnedGrandTotal:$("unearnedGrandTotal"), unearnedGrid:$("unearnedGrid"), unearnedEmpty:$("unearnedEmpty"),
+    unearnedDetailWrap:$("unearnedDetailWrap"), unearnedDetailBody:$("unearnedDetailBody")
   };
 
   function isFinanceAdmin(session = currentSession) {
@@ -636,6 +663,82 @@
       .sort((a, b) => b.amount - a.amount || a.tutor.localeCompare(b.tutor));
   }
 
+  // Unearned revenue dihitung per kelas (per booking group), memakai harga paket booking itu sendiri,
+  // jadi kelas 1 siswa, 2 siswa, 3 siswa, dst. masing-masing memakai harganya sendiri.
+  function buildUnearnedDetails(trackers, bookings) {
+    const bookingById = new Map(bookings.map((row) => [row.id, row]));
+    const firstBookingByGroup = new Map();
+    groupBookings(bookings).forEach((row) => firstBookingByGroup.set(getBookingGroupId(row), row));
+    return trackers.map((row) => {
+      const total = Math.max(Number(row.meetings_total || 0), 0);
+      const realized = Math.min(Math.max(Number(row.meetings_realized || 0), 0), total);
+      const unrealized = total - realized;
+      const linked = bookingById.get(row.booking_id);
+      const booking = linked ? firstBookingByGroup.get(getBookingGroupId(linked)) || linked : null;
+      const packagePrice = booking ? Number(booking.price || 0) : 0;
+      const pricePerSession = total > 0 && packagePrice > 0 ? packagePrice / total : 0;
+      return {
+        order_date: row.order_date,
+        student_name: row.student_name || "-",
+        program: row.program_name || (booking && booking.program_name) || "Tanpa Program",
+        student_count: Math.max(Number(row.student_count || (booking && booking.student_count) || 1), 1),
+        package_price: packagePrice,
+        meetings_total: total,
+        meetings_realized: realized,
+        unrealized,
+        price_per_session: pricePerSession,
+        amount: pricePerSession * unrealized,
+        missing_price: pricePerSession <= 0
+      };
+    })
+      .filter((row) => row.unrealized > 0)
+      .sort((a, b) => String(a.order_date || "").localeCompare(String(b.order_date || "")) || a.student_name.localeCompare(b.student_name));
+  }
+
+  function summarizeUnearned(details) {
+    const groups = new Map();
+    details.forEach((row) => {
+      const key = `${row.program}__${row.student_count}`;
+      const current = groups.get(key) || { program: row.program, student_count: row.student_count, amount: 0, meetings: 0, classes: 0, missingPrice: 0 };
+      current.classes += 1;
+      current.meetings += row.unrealized;
+      current.amount += row.amount;
+      if (row.missing_price) current.missingPrice += row.unrealized;
+      groups.set(key, current);
+    });
+    return [...groups.values()]
+      .sort((a, b) => a.program.localeCompare(b.program) || a.student_count - b.student_count);
+  }
+
+  function renderUnearned(details) {
+    const summary = summarizeUnearned(details);
+    const grandTotal = details.reduce((sum, row) => sum + row.amount, 0);
+    els.unearnedGrandTotal.textContent = formatMoney(Math.round(grandTotal));
+    els.unearnedEmpty.classList.toggle("hidden", details.length > 0);
+    els.unearnedDetailWrap.classList.toggle("hidden", details.length === 0);
+    els.unearnedGrid.innerHTML = summary.map((row) => `
+      <article class="payable-card">
+        <span>${escapeHTML(row.program)} · ${formatNumber(row.student_count)} siswa</span>
+        <strong>${formatMoney(Math.round(row.amount))}</strong>
+        <small>${formatNumber(row.meetings)} meeting belum terealisasi dari ${formatNumber(row.classes)} kelas${row.missingPrice ? `, ${formatNumber(row.missingPrice)} meeting tanpa data harga booking` : ""}</small>
+      </article>
+    `).join("");
+    els.unearnedDetailBody.innerHTML = details.map((row) => `
+      <tr>
+        <td>${escapeHTML(formatDate(row.order_date))}</td>
+        <td>${escapeHTML(row.student_name)}</td>
+        <td>${escapeHTML(row.program)}</td>
+        <td>${formatNumber(row.student_count)}</td>
+        <td class="money-cell">${row.package_price > 0 ? formatMoney(row.package_price) : "-"}</td>
+        <td>${formatNumber(row.meetings_realized)}/${formatNumber(row.meetings_total)}</td>
+        <td class="money-cell">${row.missing_price ? "Belum ada harga" : formatMoney(Math.round(row.price_per_session))}</td>
+        <td>${formatNumber(row.unrealized)} meeting</td>
+        <td class="money-cell">${formatMoney(Math.round(row.amount))}</td>
+      </tr>
+    `).join("");
+    return { summary, grandTotal: Math.round(grandTotal) };
+  }
+
   function withDigitalProductRevenue(rows = []) {
     return rows.map((row) => {
       const unitPrice = Number(digitalProductPrices[row.product_key] || 0);
@@ -881,6 +984,8 @@
     const otherIncome = otherIncomeRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const otherExpense = otherExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     renderPayable(trackers);
+    const unearnedDetails = buildUnearnedDetails(trackers, bookings);
+    const { summary: unearnedRows, grandTotal: unearnedRevenue } = renderUnearned(unearnedDetails);
     const tutorFee = tutorExpenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
     const grossRevenue = courseRevenue + digitalRevenue + otherIncome;
     const totalExpense = tutorFee + otherExpense;
@@ -910,6 +1015,9 @@
       otherExpenseRows,
       totalExpense,
       netProfit,
+      unearnedRows,
+      unearnedDetails,
+      unearnedRevenue,
       digitalRows,
       manualEntries
     };
@@ -986,7 +1094,25 @@
       ...lastFinanceReport.tutorExpenseRows.map((row) => [`Fee Tutor - ${row.tutor}`, `${formatNumber(row.meetings)} meeting terealisasi: ${formatNumber(row.paidMeetings)} dibayar, ${formatNumber(row.unpaidMeetings)} belum dibayar`, formatMoney(row.amount)]),
       ...lastFinanceReport.otherExpenseRows.map((row) => [row.label, formatMoney(row.amount)]),
       ["Total Pengeluaran", formatMoney(lastFinanceReport.totalExpense)],
-      ["Laba Bersih", formatMoney(lastFinanceReport.netProfit)]
+      ["Laba Bersih", formatMoney(lastFinanceReport.netProfit)],
+      ["", ""],
+      ["Unearned Revenue (meeting belum terealisasi)", ""],
+      ...lastFinanceReport.unearnedRows.map((row) => [`${row.program} - ${formatNumber(row.student_count)} siswa`, `${formatNumber(row.meetings)} meeting belum terealisasi dari ${formatNumber(row.classes)} kelas`, formatMoney(Math.round(row.amount))]),
+      ["Total Unearned Revenue", formatMoney(lastFinanceReport.unearnedRevenue)],
+      ["", ""],
+      ["Rincian Unearned per Kelas", ""],
+      ["Tanggal Order", "Siswa", "Program", "Jml Siswa", "Harga Paket", "Meeting", "Harga / Sesi", "Belum Terealisasi", "Unearned"],
+      ...lastFinanceReport.unearnedDetails.map((row) => [
+        formatDate(row.order_date),
+        row.student_name,
+        row.program,
+        formatNumber(row.student_count),
+        row.package_price > 0 ? formatMoney(row.package_price) : "-",
+        `${formatNumber(row.meetings_realized)}/${formatNumber(row.meetings_total)}`,
+        row.missing_price ? "Belum ada harga" : formatMoney(Math.round(row.price_per_session)),
+        `${formatNumber(row.unrealized)} meeting`,
+        formatMoney(Math.round(row.amount))
+      ])
     ];
     const manualRows = [
       ["Input Transaksi", "Tipe", "Kategori", "Keterangan", "Nominal"],
