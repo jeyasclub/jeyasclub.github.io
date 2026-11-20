@@ -413,7 +413,7 @@
   const activityTableLabels = {
     class_tracker:"Class Tracker", class_bookings:"Class Booking", class_programs:"Program",
     class_tutors:"Tutor", class_meeting_fees:"Meeting Fee", class_zoom_bookings:"Zoom Booking",
-    jeyasclub_finance_manual_entries:"Transaksi Finance"
+    jeyasclub_finance_manual_entries:"Transaksi Finance", finance_journal_entries:"Jurnal Finance", finance_accounts:"Akun Finance"
   };
   const activityFieldLabels = {
     meetings_realized:"Meeting realized", meetings_total:"Total meeting", payments_realized:"Payment realized",
@@ -435,10 +435,10 @@
     const tableLabel = activityTableLabels[row.table_name] || row.table_name;
     const oldData = row.old_data || {};
     const newData = row.new_data || {};
-    const recordLabel = newData.student_name || oldData.student_name || newData.name || oldData.name || newData.program_name || oldData.program_name || newData.tutor_name || oldData.tutor_name || newData.tutor || oldData.tutor || "";
+    const recordLabel = newData.student_name || oldData.student_name || newData.name || oldData.name || newData.program_name || oldData.program_name || newData.tutor_name || oldData.tutor_name || newData.tutor || oldData.tutor || newData.description || oldData.description || "";
     if (row.action === "INSERT") return `Menambahkan ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
     if (row.action === "DELETE") return `Menghapus ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
-    const ignoredFields = new Set(["id", "created_at", "updated_at", "created_by", "booking_group_id", "booking_student_order"]);
+    const ignoredFields = new Set(["id", "created_at", "updated_at", "created_by", "booking_group_id", "booking_student_order", "lines"]);
     const changes = [...new Set([...Object.keys(oldData), ...Object.keys(newData)])]
       .filter((field) => !ignoredFields.has(field) && JSON.stringify(oldData[field]) !== JSON.stringify(newData[field]))
       .map((field) => `${activityFieldLabels[field] || field}: ${formatActivityValue(oldData[field])} -> ${formatActivityValue(newData[field])}`);

@@ -143,6 +143,7 @@
         <a class="nav-link active" href="/admin/">Dashboard</a>
         <a class="nav-link" href="/admin/overview/">Overview</a>
         <a class="nav-link" href="/admin/finance/">Finance</a>
+        <a class="nav-link" href="/admin/finance-2/">Finance 2</a>
         <a class="nav-link" href="/admin/database/">Database</a>
         <a class="nav-link" href="/input/">Input</a>
       </nav>
@@ -380,7 +381,7 @@
   const activityTableLabels = {
     class_tracker:"Class Tracker", class_bookings:"Class Booking", class_programs:"Program",
     class_tutors:"Tutor", class_meeting_fees:"Meeting Fee", class_zoom_bookings:"Zoom Booking",
-    jeyasclub_finance_manual_entries:"Transaksi Finance"
+    jeyasclub_finance_manual_entries:"Transaksi Finance", finance_journal_entries:"Jurnal Finance", finance_accounts:"Akun Finance"
   };
   const activityFieldLabels = {
     meetings_realized:"Meeting realized", meetings_total:"Total meeting", payments_realized:"Payment realized",
@@ -399,7 +400,7 @@
   }
 
   function activityRecordLabel(data = {}) {
-    return data.student_name || data.name || data.program_name || data.tutor_name || data.tutor || data.category || data.note || "";
+    return data.student_name || data.name || data.program_name || data.tutor_name || data.tutor || data.category || data.note || data.description || "";
   }
 
   function describeActivity(row) {
@@ -409,7 +410,7 @@
     const recordLabel = activityRecordLabel(newData) || activityRecordLabel(oldData);
     if (row.action === "INSERT") return `Menambahkan ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
     if (row.action === "DELETE") return `Menghapus ${tableLabel}${recordLabel ? `: ${recordLabel}` : ""}`;
-    const ignoredFields = new Set(["id", "created_at", "updated_at", "created_by", "booking_group_id", "booking_student_order"]);
+    const ignoredFields = new Set(["id", "created_at", "updated_at", "created_by", "booking_group_id", "booking_student_order", "lines"]);
     const changes = [...new Set([...Object.keys(oldData), ...Object.keys(newData)])]
       .filter((field) => !ignoredFields.has(field) && JSON.stringify(oldData[field]) !== JSON.stringify(newData[field]))
       .map((field) => `${activityFieldLabels[field] || field}: ${formatActivityValue(oldData[field])} -> ${formatActivityValue(newData[field])}`);

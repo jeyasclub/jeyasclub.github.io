@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance 2 Admin | Jeya's Club</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/assets/favicon/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root { --blue:#1A6FE8; --blue-dark:#1558c0; --blue-light:#E8F1FD; --yellow:#FFE27A; --yellow-soft:#FFF8DA; --ink:#111322; --text:#1a1a2e; --muted:#64748b; --white:#fff; --bg:#f5f9ff; --green:#16a46c; --red:#dc2626; --shadow:#0c1b36; --line:#e2e8f0; --series-1:#1A6FE8; --series-2:#E8590C; }
+  body { min-height:100vh; font-family:'Poppins', Arial, sans-serif; color:var(--text); background:linear-gradient(135deg, rgba(26,111,232,.08) 0 14px, transparent 14px 120px), linear-gradient(45deg, transparent 0 88px, rgba(255,226,122,.34) 88px 94px, transparent 94px 180px), var(--bg); }
+  button, input, select, textarea { font:inherit; }
+  .topbar { position:sticky; top:0; z-index:10; min-height:72px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; gap:18px; background:rgba(255,255,255,.96); border-bottom:3px solid var(--ink); backdrop-filter:blur(10px); }
+  .brand { display:inline-flex; align-items:center; gap:12px; color:var(--text); text-decoration:none; font-weight:900; }
+  .brand img { width:89px; height:38px; object-fit:contain; }
+  .topbar-actions { display:flex; align-items:center; flex-wrap:wrap; gap:12px; justify-content:flex-end; }
+  .admin-nav { display:flex; align-items:center; gap:4px; padding:5px; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  .nav-link { min-height:36px; border-radius:10px; padding:8px 12px; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; font-weight:900; text-decoration:none; white-space:nowrap; }
+  .nav-link:hover, .nav-link.active { background:var(--blue-light); color:var(--blue-dark); }
+  .btn { min-height:42px; border-radius:12px; padding:10px 15px; display:inline-flex; align-items:center; justify-content:center; border:2.5px solid var(--ink); background:var(--white); color:var(--text); box-shadow:3px 4px 0 var(--shadow); font-size:13px; font-weight:900; text-decoration:none; cursor:pointer; transition:transform .16s ease, box-shadow .16s ease, background .16s ease; }
+  .btn:hover { transform:translateY(-1px); box-shadow:4px 5px 0 var(--shadow); }
+  .btn:disabled { opacity:.55; cursor:not-allowed; transform:none; box-shadow:3px 4px 0 var(--shadow); }
+  .btn.primary { background:var(--blue); color:var(--white); }
+  .btn.danger { color:var(--red); background:#fff1f2; }
+  .btn.small { min-height:34px; border-width:2px; border-radius:10px; padding:7px 10px; box-shadow:2px 3px 0 var(--shadow); font-size:12px; }
+  .shell { width:min(1180px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
+  .login-screen { min-height:calc(100vh - 64px); display:grid; place-items:center; padding:32px 16px; }
+  .login-card, .panel, .metric { background:var(--white); border:3px solid var(--ink); border-radius:18px; box-shadow:8px 9px 0 var(--shadow); }
+  .login-card { width:min(430px, 100%); padding:28px; display:grid; gap:18px; }
+  .eyebrow { width:max-content; max-width:100%; color:var(--ink); background:var(--yellow); border:2.5px solid var(--ink); border-radius:999px; padding:6px 12px; font-size:12px; font-weight:900; letter-spacing:.4px; text-transform:uppercase; box-shadow:3px 4px 0 var(--shadow); }
+  .eyebrow + h1 { margin-top:12px; }
+  h1 { font-size:clamp(32px, 5vw, 48px); line-height:1.04; letter-spacing:0; font-weight:900; }
+  h2 { font-size:22px; line-height:1.18; font-weight:900; }
+  h3 { font-size:15px; line-height:1.3; font-weight:900; }
+  .muted { color:var(--muted); font-size:14px; line-height:1.7; }
+  .form { display:grid; gap:14px; }
+  label { display:grid; gap:8px; color:var(--text); font-size:13px; font-weight:800; }
+  input, select, textarea { display:block; width:100%; min-width:0; min-height:48px; border:2.5px solid var(--ink); border-radius:12px; background:var(--white); color:var(--text); padding:11px 13px; outline:none; box-shadow:2px 3px 0 rgba(12,27,54,.95); font-weight:800; }
+  input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 4px rgba(26,111,232,.18), 2px 3px 0 rgba(12,27,54,.95); }
+  input:disabled, select:disabled { background:#f1f5f9; color:var(--muted); }
+  .status { min-height:22px; color:var(--muted); font-size:13px; line-height:1.55; }
+  .status.bad { color:var(--red); }
+  .hidden { display:none !important; }
+  .dashboard { display:none; gap:22px; }
+  .dashboard.open { display:grid; }
+  .hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .filter-card { width:auto; min-width:240px; display:flex; align-items:end; flex-wrap:wrap; gap:10px; padding:12px; background:#fff; border:3px solid var(--ink); border-radius:16px; box-shadow:5px 6px 0 var(--shadow); }
+  .filter-card label { flex:0 0 170px; min-width:0; }
+  .filter-card input, .filter-card select { min-height:42px; padding:8px 11px; }
+  .filter-card .btn { min-height:42px; padding:8px 12px; }
+  .setup-banner { padding:16px 18px; display:grid; gap:6px; border:3px solid var(--ink); border-radius:16px; background:var(--yellow-soft); box-shadow:5px 6px 0 var(--shadow); font-size:14px; line-height:1.65; }
+  .setup-banner strong { font-weight:900; }
+  .setup-banner code, .muted code { padding:2px 6px; border:1.5px solid #cbd5e1; border-radius:6px; background:#fff; font-size:12px; font-weight:800; }
+  .finance-tabs { position:sticky; top:84px; z-index:5; width:max-content; max-width:100%; display:flex; gap:4px; padding:5px; overflow-x:auto; scrollbar-width:none; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  .finance-tabs::-webkit-scrollbar { display:none; }
+  .finance-tab { min-height:40px; border-radius:11px; padding:9px 16px; display:inline-flex; align-items:center; color:var(--muted); font-size:14px; font-weight:900; text-decoration:none; white-space:nowrap; transition:background .16s ease, color .16s ease; }
+  .finance-tab:hover { background:var(--blue-light); color:var(--blue-dark); }
+  .finance-tab.active { background:var(--blue); color:#fff; }
+  .metrics { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px; }
+  .metric { padding:18px; display:grid; gap:5px; align-content:start; }
+  .metric span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; }
+  .metric strong { color:var(--text); font-size:24px; line-height:1.15; }
+  .metric small { color:var(--muted); font-size:12px; font-weight:700; line-height:1.5; }
+  .metric strong.neg { color:var(--red); }
+  .grid { display:grid; gap:18px; }
+  .grid > * { min-width:0; }
+  .panel { overflow:hidden; }
+  .panel-head { padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:3px solid var(--ink); background:linear-gradient(90deg, #fff 0%, #f7fbff 70%, var(--yellow-soft) 100%); }
+  .panel-body { padding:18px 20px 20px; display:grid; gap:16px; }
+  .panel-body > * { min-width:0; }
+  .shortcut-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+  .payable-total { min-width:180px; display:grid; justify-items:end; gap:3px; padding:12px 14px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
+  .payable-total span { color:var(--muted); font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
+  .payable-total strong { color:var(--blue-dark); font-size:20px; line-height:1.1; }
+  .payable-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; }
+  .payable-card { display:grid; gap:8px; align-content:start; padding:16px; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  .payable-card span { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
+  .payable-card strong { color:var(--text); font-size:22px; line-height:1.1; }
+  .payable-card small { color:var(--muted); font-size:12px; font-weight:800; line-height:1.5; }
+  .shortcut-card { color:inherit; text-decoration:none; transition:transform .16s ease, box-shadow .16s ease; }
+  .shortcut-card:hover { transform:translateY(-2px); box-shadow:5px 7px 0 var(--shadow); }
+  .shortcut-card small::after { content:" →"; }
+  .table-wrap { width:100%; overflow-x:auto; border:2.5px solid var(--ink); border-radius:14px; background:#fff; box-shadow:4px 5px 0 var(--shadow); }
+  table { width:100%; border-collapse:collapse; }
+  th, td { padding:11px 13px; border-bottom:1.5px solid #dbeafe; text-align:left; vertical-align:top; font-size:13px; }
+  th { color:var(--muted); background:#f8fbff; font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+  td { color:var(--text); font-weight:700; }
+  tbody:last-child tr:last-child td, tfoot tr:last-child td { border-bottom:0; }
+  .num { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  td.num { font-weight:900; }
+  .neg { color:var(--red); }
+  tr.total-row td { background:#eef2f7; font-weight:900; border-top:2px solid #cbd5e1; }
+  tr.section-row td { background:var(--blue-light); color:var(--blue-dark); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; }
+  tr.net-row td { background:var(--blue); color:#fff; font-weight:900; }
+  tr.net-row td.neg { color:#fff; }
+  tr.clickable { cursor:pointer; }
+  tr.clickable:hover td, tr.clickable.is-selected td { background:var(--yellow-soft); }
+  .data-table { min-width:640px; }
+  .monthly-matrix { min-width:720px; }
+  .monthly-matrix th:first-child, .monthly-matrix td:first-child { position:sticky; left:0; z-index:1; min-width:210px; border-right:1.5px solid #dbeafe; }
+  .monthly-matrix td:first-child { background:#fff; }
+  .monthly-matrix tr.total-row td:first-child { background:#eef2f7; }
+  .monthly-matrix tr.section-row td:first-child { background:var(--blue-light); }
+  .monthly-matrix tr.net-row td:first-child { background:var(--blue); }
+  .pill { display:inline-flex; align-items:center; min-height:24px; border:2px solid #bfdbfe; border-radius:999px; background:var(--blue-light); color:var(--blue-dark); padding:2px 9px; font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; }
+  .pill.manual { border-color:var(--ink); background:var(--yellow); color:var(--ink); }
+  .pill.warn { border-color:#fed7aa; background:#fff7ed; color:#9a3412; }
+  .pill.ok { border-color:#a7f3d0; background:#ecfdf5; color:#047857; }
+  .pill.bad { border-color:#fecdd3; background:#fff1f2; color:var(--red); }
+  .pill.off { border-color:#e2e8f0; background:#f1f5f9; color:var(--muted); }
+  .row-actions { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
+  .empty { padding:22px; color:var(--muted); font-size:14px; }
+  .toolbar { display:flex; align-items:end; flex-wrap:wrap; gap:10px; }
+  .toolbar label { flex:1 1 180px; }
+  .toolbar input, .toolbar select { min-height:42px; padding:8px 11px; }
+  .list-summary { display:flex; flex-wrap:wrap; gap:8px; }
+  .list-summary span { display:inline-flex; align-items:center; min-height:30px; border:2px solid #bfdbfe; border-radius:999px; background:var(--blue-light); color:var(--blue-dark); padding:4px 10px; font-size:12px; font-weight:900; }
+  .journal-table th.num, .journal-table td.num { width:118px; }
+  .journal-table tbody { border-bottom:2.5px solid var(--ink); }
+  .journal-table tbody:last-child { border-bottom:0; }
+  .journal-table tr.entry-head td { padding-top:14px; padding-bottom:6px; border-bottom:0; background:#fbfdff; }
+  .journal-table tr.entry-line td { padding-top:6px; padding-bottom:6px; border-bottom:1px dashed #e2e8f0; }
+  .journal-table tr.entry-line:last-child td { border-bottom:0; padding-bottom:12px; }
+  .entry-title { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .entry-title p { font-size:13px; font-weight:800; line-height:1.5; }
+  .entry-date { white-space:nowrap; font-weight:900; }
+  .entry-meta { display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; margin-bottom:4px; font-size:13px; }
+  .acct-credit { padding-left:38px; }
+  .acct-name small { display:block; margin-top:1px; color:var(--muted); font-size:11px; font-weight:700; line-height:1.4; }
+  .form-row { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px 18px; }
+  .template-row { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:var(--muted); font-size:13px; font-weight:800; }
+  .chip { min-height:32px; border:2px solid var(--ink); border-radius:999px; background:#fff; color:var(--text); padding:5px 12px; font-size:12px; font-weight:900; cursor:pointer; }
+  .chip:hover { background:var(--yellow-soft); }
+  .lines-table { min-width:560px; }
+  .lines-table td { padding:8px 10px; vertical-align:middle; }
+  .lines-table input, .lines-table select { min-height:42px; padding:8px 10px; box-shadow:none; }
+  .lines-table td.amount-cell { width:170px; }
+  .lines-table td.action-cell { width:56px; text-align:right; }
+  .lines-table tfoot td { background:#f8fbff; font-weight:900; }
+  .form-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+  .statement-paper { border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:5px 6px 0 var(--shadow); overflow:hidden; }
+  .statement-title { padding:22px 20px 18px; display:grid; gap:4px; justify-items:center; text-align:center; border-bottom:2.5px solid var(--ink); background:#fff; }
+  .statement-title strong { color:var(--ink); font-size:24px; line-height:1.1; font-weight:900; text-transform:uppercase; }
+  .statement-title span { color:var(--text); font-size:15px; font-weight:800; line-height:1.35; }
+  .statement-section-title { padding:9px 14px; color:#fff; background:var(--blue); border-top:2.5px solid var(--ink); border-bottom:2.5px solid var(--ink); font-size:16px; font-weight:900; text-transform:uppercase; letter-spacing:.4px; }
+  .statement-title + .statement-section-title { border-top:0; }
+  .statement-line { display:grid; grid-template-columns:minmax(0, 1fr) minmax(150px, auto); gap:16px; align-items:start; padding:10px 14px; border-bottom:1px solid var(--line); }
+  .statement-line span { min-width:0; color:var(--text); font-size:14px; font-weight:800; line-height:1.45; }
+  .statement-line small { display:block; margin-top:2px; color:var(--muted); font-size:12px; font-weight:800; line-height:1.4; }
+  .statement-line strong { color:var(--text); font-size:15px; line-height:1.35; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .statement-line.sub { padding:7px 14px 7px 38px; background:#fbfdff; }
+  .statement-line.sub span, .statement-line.sub strong { color:var(--muted); font-size:13px; }
+  .statement-line.subtotal { background:#e5e7eb; border-bottom:2px solid #cbd5e1; }
+  .statement-line.subtotal span, .statement-line.subtotal strong { font-size:16px; font-weight:900; }
+  .statement-line.net { background:var(--blue); border-bottom:0; }
+  .statement-line.net span, .statement-line.net strong { color:#fff; font-size:18px; font-weight:900; text-transform:uppercase; }
+  .statement-line.loss strong { color:var(--red); }
+  .statement-line.net.loss strong { color:#fff; }
+  details.statement-group > summary { list-style:none; cursor:pointer; }
+  details.statement-group > summary::-webkit-details-marker { display:none; }
+  details.statement-group > summary span::before { content:"▸"; display:inline-block; width:16px; color:var(--blue-dark); }
+  details.statement-group[open] > summary span::before { content:"▾"; }
+  .statement-note { color:var(--muted); font-size:12px; line-height:1.6; }
+  .note-list { display:grid; gap:8px; padding-left:18px; color:var(--text); font-size:13px; font-weight:700; line-height:1.6; }
+  .trend-chart { position:relative; }
+  .trend-chart svg { display:block; width:100%; height:auto; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); touch-action:manipulation; }
+  .chart-legend { display:flex; flex-wrap:wrap; gap:6px 18px; margin-bottom:10px; color:var(--text); font-size:13px; font-weight:800; }
+  .chart-key { display:inline-block; width:18px; height:0; margin-right:7px; border-top:3px solid; border-radius:2px; vertical-align:middle; }
+  .trend-chart .grid-line { stroke:var(--line); stroke-width:1; }
+  .trend-chart .zero-line { stroke:#94a3b8; stroke-width:1; }
+  .trend-chart .tick-label { fill:var(--muted); font-size:11px; font-weight:700; }
+  .trend-chart .end-label { fill:var(--text); font-size:12px; font-weight:900; }
+  .trend-chart .series-line { fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .trend-chart .series-dot { stroke:#fff; stroke-width:2; }
+  .trend-chart .crosshair { stroke:#94a3b8; stroke-width:1; opacity:0; }
+  .trend-chart .crosshair.is-on { opacity:1; }
+  .trend-chart .hit { fill:transparent; cursor:pointer; outline:none; }
+  .trend-chart .hit:focus-visible { fill:rgba(26,111,232,.07); }
+  .chart-tooltip { position:absolute; z-index:3; top:8px; min-width:190px; padding:10px 12px; display:none; gap:6px; pointer-events:none; border:2px solid var(--ink); border-radius:12px; background:#fff; box-shadow:3px 4px 0 var(--shadow); }
+  .chart-tooltip.is-on { display:grid; }
+  .chart-tooltip .tip-title { color:var(--muted); font-size:12px; font-weight:800; }
+  .chart-tooltip .tip-row { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:12px; font-weight:700; white-space:nowrap; }
+  .chart-tooltip .tip-row strong { margin-right:4px; color:var(--text); font-size:14px; font-weight:900; }
+  @media (max-width:1020px) { .shortcut-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
+  @media (max-width:900px) { .metrics { grid-template-columns:1fr; } }
+  @media (max-width:760px) {
+    html, body { width:100%; max-width:100%; overflow-x:hidden; }
+    .topbar { align-items:flex-start; flex-direction:column; padding:10px 16px; gap:12px; }
+    .topbar-actions { width:100%; display:grid; grid-template-columns:minmax(0, 1fr) auto; align-items:center; gap:10px; }
+    .admin-nav { max-width:100%; min-width:0; overflow-x:auto; scrollbar-width:none; }
+    .admin-nav::-webkit-scrollbar { display:none; }
+    .nav-link { padding:8px 11px; }
+    .shell { width:100%; max-width:1180px; padding:24px 18px 48px; }
+    .dashboard, .grid, .metrics { width:100%; min-width:0; }
+    .hero-row { align-items:stretch; gap:16px; }
+    .hero-row > div:first-child { min-width:0; }
+    h1 { font-size:clamp(30px, 10vw, 42px); }
+    .muted { overflow-wrap:anywhere; }
+    .filter-card { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; display:grid; grid-template-columns:1fr; align-items:stretch; gap:14px; padding:16px; }
+    .filter-card label { width:100%; min-width:0; display:grid; grid-template-columns:1fr; overflow:hidden; }
+    .filter-card input, .filter-card select { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; -webkit-appearance:none; appearance:none; justify-self:start; }
+    .filter-card .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); }
+    .metric, .panel, .setup-banner { width:calc(100% - 8px); max-width:calc(100% - 8px); }
+    .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
+    .finance-tabs { position:static; width:calc(100% - 8px); }
+    .finance-tab { padding:9px 12px; font-size:13px; }
+    .shortcut-grid { grid-template-columns:1fr; width:calc(100% - 8px); }
+    .panel-head { align-items:flex-start; flex-direction:column; padding:18px; }
+    .panel-body { padding:16px; }
+    .payable-total { width:100%; min-width:0; justify-items:start; }
+    .payable-grid { grid-template-columns:1fr; }
+    .form-row { grid-template-columns:1fr; }
+    .statement-title strong { font-size:20px; }
+    .statement-line { grid-template-columns:1fr; gap:4px; }
+    .statement-line strong { text-align:left; white-space:normal; }
+    .trend-chart svg { border-radius:14px; box-shadow:none; }
+    .journal-table th, .journal-table td { padding-left:10px; padding-right:10px; }
+    .journal-table th.num, .journal-table td.num { width:84px; font-size:12px; }
+    .acct-credit { padding-left:24px !important; }
+    .entry-title { flex-direction:column; }
+    .lines-table { min-width:0; }
+    .lines-table thead { display:none; }
+    .lines-table tbody tr, .lines-table tfoot tr { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr) auto; gap:8px; align-items:center; padding:12px; border-bottom:1.5px solid #dbeafe; }
+    .lines-table tfoot tr { border-bottom:0; background:#f8fbff; }
+    .lines-table td, .lines-table td.amount-cell, .lines-table td.action-cell { display:block; width:auto; padding:0; border:0; }
+    .lines-table td:first-child { grid-column:1 / -1; }
+    .lines-table tfoot td:last-child { display:none; }
+    .lines-table tfoot td.num::before { display:block; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; }
+    .lines-table tfoot td.num:nth-child(2)::before { content:"Debit"; }
+    .lines-table tfoot td.num:nth-child(3)::before { content:"Kredit"; }
+    .toolbar label { flex:1 1 130px; }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/"><img src="/assets/logo2.png" alt="Jeya's Club"></a>
+    <div class="topbar-actions">
+      <nav class="admin-nav" aria-label="Admin navigation">
+        <a class="nav-link" href="/admin/">Dashboard</a>
+        <a class="nav-link" href="/admin/overview/">Overview</a>
+        <a class="nav-link" href="/admin/finance/">Finance</a>
+        <a class="nav-link active" href="/admin/finance-2/">Finance 2</a>
+        <a class="nav-link" href="/admin/database/">Database</a>
+        <a class="nav-link" href="/input/">Input</a>
+      </nav>
+      <button class="btn danger hidden" type="button" id="logoutButton">Logout</button>
+    </div>
+  </header>
+
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div>
+        <p class="eyebrow">Finance 2 · Akuntansi</p>
+        <h1>Accounting</h1>
+        <p class="muted">Login memakai akun admin Jeya's Club untuk melihat jurnal dan laporan keuangan.</p>
+      </div>
+      <form class="form" id="loginForm">
+        <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
+        <label>Password<input id="passwordInput" type="password" autocomplete="current-password" required minlength="6"></label>
+        <button class="btn primary" type="submit" id="loginButton">Login</button>
+        <p class="status" id="authMessage">Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.</p>
+      </form>
+    </div>
+  </section>
+
+  <main class="shell dashboard" id="dashboard">
+    <div class="hero-row">
+      <div>
+        <p class="eyebrow">Finance 2 · Akuntansi</p>
+        <h1>Accounting</h1>
+        <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
+      </div>
+      <div class="filter-card">
+        <label>Jenis periode<select id="periodMode"><option value="all" selected>All time</option><option value="month">Per bulan</option><option value="range">Range bulan</option></select></label>
+        <label id="singleMonthField">Filter bulan<input type="month" id="monthFilter"></label>
+        <label id="rangeStartField" class="hidden">Dari bulan<input type="month" id="startMonthFilter"></label>
+        <label id="rangeEndField" class="hidden">Sampai bulan<input type="month" id="endMonthFilter"></label>
+        <button class="btn primary" type="button" id="refreshButton">Refresh</button>
+        <button class="btn" type="button" id="exportButton">Export Excel</button>
+      </div>
+    </div>
+
+    <div class="setup-banner hidden" id="setupBanner">
+      <strong>Input jurnal manual belum aktif.</strong>
+      <span>Jalankan file <code>supabase-finance-accounting.sql</code> di Supabase SQL Editor, lalu klik Refresh. Jurnal otomatis dan laporan di bawah sudah bisa dipakai tanpa menunggu itu.</span>
+    </div>
+
+    <nav class="finance-tabs" id="financeTabs" aria-label="Sub halaman finance 2">
+      <a class="finance-tab" href="#ringkasan" data-tab="ringkasan">Ringkasan</a>
+      <a class="finance-tab" href="#jurnal" data-tab="jurnal">Jurnal</a>
+      <a class="finance-tab" href="#buku-besar" data-tab="buku-besar">Buku Besar</a>
+      <a class="finance-tab" href="#laba-rugi" data-tab="laba-rugi">Laba Rugi</a>
+      <a class="finance-tab" href="#neraca" data-tab="neraca">Neraca</a>
+      <a class="finance-tab" href="#akun" data-tab="akun">Akun</a>
+    </nav>
+
+    <div class="grid finance-view" data-view="ringkasan">
+      <section class="metrics">
+        <div class="metric"><span>Pendapatan Diakui</span><strong id="metricRevenue">Rp0</strong><small id="metricRevenueNote"></small></div>
+        <div class="metric"><span>Total Beban</span><strong id="metricExpense">Rp0</strong><small id="metricExpenseNote"></small></div>
+        <div class="metric"><span>Laba Bersih</span><strong id="metricProfit">Rp0</strong><small id="metricProfitNote"></small></div>
+      </section>
+
+      <section class="shortcut-grid" aria-label="Posisi keuangan">
+        <a class="payable-card shortcut-card" href="#neraca">
+          <span>Kas &amp; Bank</span>
+          <strong id="cardCash">Rp0</strong>
+          <small id="cardCashNote">Lihat neraca</small>
+        </a>
+        <a class="payable-card shortcut-card" href="#neraca">
+          <span>Unearned Revenue</span>
+          <strong id="cardUnearned">Rp0</strong>
+          <small id="cardUnearnedNote">Kewajiban ke siswa</small>
+        </a>
+        <a class="payable-card shortcut-card" href="#neraca">
+          <span>Utang Fee Tutor</span>
+          <strong id="cardPayable">Rp0</strong>
+          <small id="cardPayableNote">Lihat rincian per tutor</small>
+        </a>
+        <a class="payable-card shortcut-card" href="#jurnal">
+          <span>Jurnal Periode Ini</span>
+          <strong id="cardJournal">0</strong>
+          <small id="cardJournalNote">Lihat jurnal umum</small>
+        </a>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Pendapatan &amp; Laba per Bulan</h2><p class="muted" id="trendSubtitle">Pendapatan diakui saat meeting terealisasi, bukan saat siswa membayar.</p></div>
+        </div>
+        <div class="panel-body">
+          <div id="trendChart"></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Bulan</th><th class="num">Kas Masuk Booking</th><th class="num">Pendapatan Diakui</th><th class="num">Beban</th><th class="num">Laba Bersih</th></tr></thead>
+              <tbody id="monthlySummaryBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Aturan Pengakuan</h2><p class="muted">Jurnal otomatis dibuat dari data booking, tracker, dan penjualan produk digital dengan aturan ini.</p></div>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Kejadian</th><th>Debit</th><th>Kredit</th><th>Tanggal jurnal</th></tr></thead>
+              <tbody id="rulesBody"></tbody>
+            </table>
+          </div>
+          <ul class="note-list" id="dataNotes"></ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid finance-view hidden" data-view="jurnal">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2 id="journalFormTitle">Input Jurnal</h2><p class="muted">Catat transaksi di luar jurnal otomatis: beban operasional, prive, setoran modal, saldo awal, dan lainnya. Total debit harus sama dengan total kredit.</p></div>
+        </div>
+        <div class="panel-body">
+          <form class="form" id="journalForm">
+            <div class="form-row">
+              <label>Tanggal<input type="date" id="journalDate" required></label>
+              <label>Referensi (opsional)<input type="text" id="journalReference" maxlength="120" placeholder="No. invoice / bukti transfer"></label>
+            </div>
+            <label>Keterangan<input type="text" id="journalDescription" maxlength="500" required placeholder="Contoh: Bayar langganan Zoom November"></label>
+            <div class="template-row">
+              <span>Template cepat:</span>
+              <button class="chip" type="button" data-template="expense">Bayar beban</button>
+              <button class="chip" type="button" data-template="prive">Tarik dana pemilik (prive)</button>
+              <button class="chip" type="button" data-template="capital">Setor modal</button>
+              <button class="chip" type="button" data-template="income">Pendapatan lain</button>
+            </div>
+            <div class="table-wrap">
+              <table class="lines-table">
+                <thead><tr><th>Akun</th><th class="num">Debit</th><th class="num">Kredit</th><th></th></tr></thead>
+                <tbody id="journalLinesBody"></tbody>
+                <tfoot><tr><td>Total</td><td class="num" id="journalTotalDebit">0</td><td class="num" id="journalTotalCredit">0</td><td></td></tr></tfoot>
+              </table>
+            </div>
+            <div class="form-actions">
+              <button class="btn small" type="button" id="journalAddLine">+ Tambah baris</button>
+              <span class="pill off" id="journalBalance">Belum diisi</span>
+            </div>
+            <div class="form-actions">
+              <button class="btn primary" type="submit" id="journalSave">Simpan Jurnal</button>
+              <button class="btn hidden" type="button" id="journalCancelEdit">Batal edit</button>
+            </div>
+            <p class="status" id="journalStatus"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel" id="journalListPanel">
+        <div class="panel-head">
+          <div><h2>Jurnal Umum</h2><p class="muted" id="journalSubtitle">Semua jurnal otomatis dan manual sesuai filter periode.</p></div>
+        </div>
+        <div class="panel-body">
+          <div class="toolbar">
+            <label>Sumber<select id="journalSourceFilter"></select></label>
+            <label>Akun<select id="journalAccountFilter"></select></label>
+            <label>Cari<input type="search" id="journalSearch" placeholder="Nama siswa, tutor, keterangan"></label>
+            <label>Urutan<select id="journalSort"><option value="desc" selected>Terbaru dulu</option><option value="asc">Terlama dulu</option></select></label>
+          </div>
+          <div class="list-summary" id="journalSummary"></div>
+          <div class="table-wrap hidden" id="journalTableWrap">
+            <table class="journal-table" id="journalTable">
+              <thead><tr><th>Tanggal, keterangan, akun</th><th class="num">Debit</th><th class="num">Kredit</th></tr></thead>
+            </table>
+          </div>
+          <div class="empty hidden" id="journalEmpty">Tidak ada jurnal untuk filter ini.</div>
+          <div class="form-actions"><button class="btn hidden" type="button" id="journalShowMore">Tampilkan lebih banyak</button></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid finance-view hidden" data-view="buku-besar">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Neraca Saldo</h2><p class="muted" id="trialSubtitle">Mutasi dan saldo tiap akun. Klik akun untuk melihat buku besarnya.</p></div>
+          <span class="pill" id="trialBalancePill">-</span>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Kode</th><th>Akun</th><th class="num">Mutasi Debit</th><th class="num">Mutasi Kredit</th><th class="num">Saldo Debit</th><th class="num">Saldo Kredit</th></tr></thead>
+              <tbody id="trialBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="ledgerPanel">
+        <div class="panel-head">
+          <div><h2>Buku Besar</h2><p class="muted" id="ledgerSubtitle">Rincian transaksi per akun.</p></div>
+          <div class="payable-total">
+            <span>Saldo Akhir</span>
+            <strong id="ledgerClosing">Rp0</strong>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="toolbar"><label>Akun<select id="ledgerAccount"></select></label></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Tanggal</th><th>Keterangan</th><th class="num">Debit</th><th class="num">Kredit</th><th class="num">Saldo</th></tr></thead>
+              <tbody id="ledgerBody"></tbody>
+            </table>
+          </div>
+          <div class="form-actions"><button class="btn hidden" type="button" id="ledgerShowAll">Tampilkan semua baris</button></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid finance-view hidden" data-view="laba-rugi">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Basis akrual: pendapatan diakui saat meeting terealisasi.</p></div>
+        </div>
+        <div class="panel-body">
+          <div class="statement-paper" id="profitLossStatement"></div>
+          <p class="statement-note">Klik baris akun untuk melihat rinciannya per program, produk, tutor, atau kategori.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Laba Rugi per Bulan</h2><p class="muted" id="monthlyMatrixSubtitle">Perbandingan tiap bulan dalam periode ini.</p></div>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap"><table class="monthly-matrix" id="monthlyMatrix"></table></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid finance-view hidden" data-view="neraca">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Neraca (Balance Sheet)</h2><p class="muted" id="balanceSubtitle">Posisi aset, liabilitas, dan ekuitas.</p></div>
+          <span class="pill" id="balancePill">-</span>
+        </div>
+        <div class="panel-body">
+          <div class="statement-paper" id="balanceStatement"></div>
+          <p class="statement-note">Saldo Kas &amp; Bank dihitung dari jurnal. Catat prive, setoran modal, dan biaya lain di tab Jurnal supaya saldonya sama dengan rekening.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Rincian Utang Fee Tutor</h2><p class="muted" id="payableSubtitle">Fee meeting yang sudah terealisasi tapi belum dibayar.</p></div>
+          <div class="payable-total"><span>Total Utang Fee</span><strong id="payableTotal">Rp0</strong></div>
+        </div>
+        <div class="panel-body">
+          <div class="payable-grid" id="payableGrid"></div>
+          <div class="empty hidden" id="payableEmpty">Tidak ada utang fee tutor pada tanggal ini.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Rincian Unearned Revenue</h2><p class="muted" id="unearnedSubtitle">Sisa nilai paket tiap kelas yang meeting-nya belum terealisasi.</p></div>
+          <div class="payable-total"><span>Total Unearned</span><strong id="unearnedTotal">Rp0</strong></div>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap hidden" id="unearnedTableWrap">
+            <table class="data-table">
+              <thead><tr><th>Kelas</th><th class="num">Sisa Nilai</th></tr></thead>
+              <tbody id="unearnedBody"></tbody>
+            </table>
+          </div>
+          <div class="empty hidden" id="unearnedEmpty">Tidak ada unearned revenue pada tanggal ini.</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid finance-view hidden" data-view="akun">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Tambah Akun</h2><p class="muted">Kode 4 digit. Digit pertama mengikuti tipe: 1 aset, 2 liabilitas, 3 ekuitas, 4 pendapatan, 5 beban.</p></div>
+        </div>
+        <div class="panel-body">
+          <form class="form" id="accountForm">
+            <div class="form-row">
+              <label>Tipe<select id="accountType"></select></label>
+              <label>Kode<input type="text" id="accountCode" inputmode="numeric" pattern="[1-5][0-9]{3}" maxlength="4" required placeholder="5204"></label>
+            </div>
+            <label>Nama akun<input type="text" id="accountName" maxlength="80" required placeholder="Contoh: Beban Zoom"></label>
+            <div class="form-actions"><button class="btn primary" type="submit" id="accountSave">Tambah Akun</button></div>
+            <p class="status" id="accountStatus"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Daftar Akun</h2><p class="muted">Akun bertanda Sistem dipakai jurnal otomatis, jadi tidak bisa dihapus. Namanya tetap bisa diubah.</p></div>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Kode</th><th>Nama</th><th>Tipe</th><th>Saldo Normal</th><th class="num">Saldo Saat Ini</th><th>Status</th><th></th></tr></thead>
+              <tbody id="accountsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = "https://ingeqwcpfuugcyafbecl.supabase.co";
+  const supabaseAnonKey = "sb_publishable_X2cELb4JGEOZ102xgjdHXw_UwNBG-wM";
+  const supabaseClient = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseAnonKey) : null;
+  const financeAdminEmails = new Set(["jihamalia@gmail.com", "jeyasclub@gmail.com"]);
+  const adminFilterStorageKey = "jeyasclub_admin_filters";
+  const digitalProductPrices = {
+    "vocabulary-test": 5000,
+    "grammar-test": 15000,
+    "english-slang-test": 10000,
+    "swe-test": 30000,
+    "reading-test": 30000,
+    "accent-test": 5000,
+    "300-toefl-vocabulary": 10000,
+    "study-sheet-100-english-challenges": 1000
+  };
+
+  // Akun yang dipakai jurnal otomatis. Kodenya harus sama dengan supabase-finance-accounting.sql.
+  const SYS = {
+    cash:"1101", tutorPayable:"2101", unearned:"2201", courseRevenue:"4101", expiredRevenue:"4102",
+    digitalRevenue:"4201", otherIncome:"4901", tutorFee:"5101", otherExpense:"5901"
+  };
+  const ACCOUNT_TYPES = {
+    asset:{ label:"Aset", normal:"debit", digit:"1" },
+    liability:{ label:"Liabilitas", normal:"credit", digit:"2" },
+    equity:{ label:"Ekuitas", normal:"credit", digit:"3" },
+    revenue:{ label:"Pendapatan", normal:"credit", digit:"4" },
+    expense:{ label:"Beban", normal:"debit", digit:"5" }
+  };
+  const TYPE_ORDER = ["asset", "liability", "equity", "revenue", "expense"];
+  const DEFAULT_ACCOUNTS = [
+    ["1101", "Kas & Bank", "asset", true], ["1102", "Piutang Usaha", "asset", false],
+    ["2101", "Utang Fee Tutor", "liability", true], ["2102", "Utang Lain-lain", "liability", false],
+    ["2201", "Unearned Revenue", "liability", true],
+    ["3101", "Modal Pemilik", "equity", false], ["3201", "Prive", "equity", false],
+    ["4101", "Course Revenue", "revenue", true], ["4102", "Pendapatan Sesi Hangus", "revenue", true],
+    ["4201", "Digital Product Revenue", "revenue", true], ["4901", "Pendapatan Lain-lain", "revenue", true],
+    ["5101", "Beban Fee Tutor", "expense", true], ["5201", "Beban Marketing", "expense", false],
+    ["5202", "Beban Tools & Langganan", "expense", false], ["5203", "Beban Admin & Payment Gateway", "expense", false],
+    ["5901", "Beban Lain-lain", "expense", true]
+  ].map(([code, name, account_type, is_system]) => ({ code, name, account_type, is_system, is_active:true }));
+  const SOURCE_LABELS = {
+    manual:"Manual", booking:"Booking", revenue:"Pengakuan pendapatan", fee:"Fee tutor",
+    payment:"Bayar tutor", expired:"Sesi hangus", digital:"Produk digital", legacy:"Transaksi Finance 1"
+  };
+  const JOURNAL_TEMPLATES = {
+    expense:{ debit:"5202", credit:SYS.cash },
+    prive:{ debit:"3201", credit:SYS.cash },
+    capital:{ debit:SYS.cash, credit:"3101" },
+    income:{ debit:SYS.cash, credit:SYS.otherIncome }
+  };
+  const financeViews = ["ringkasan", "jurnal", "buku-besar", "laba-rugi", "neraca", "akun"];
+  const journalPageSize = 60;
+  const ledgerPreviewRows = 300;
+
+  let currentSession = null;
+  let rawData = null;
+  let feeRows = [];
+  let accounts = DEFAULT_ACCOUNTS.slice();
+  let accountMap = new Map(accounts.map((account) => [account.code, account]));
+  let journalReady = false;
+  let allEntries = [];
+  let dataNotes = {};
+  let report = null;
+  let journalVisibleCount = journalPageSize;
+  let ledgerAccountCode = SYS.cash;
+  let ledgerShowAll = false;
+  let formLines = [];
+  let editingEntryId = null;
+
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    loginScreen:$("loginScreen"), dashboard:$("dashboard"), loginForm:$("loginForm"),
+    email:$("emailInput"), password:$("passwordInput"), loginButton:$("loginButton"), authMessage:$("authMessage"),
+    logout:$("logoutButton"), sessionLabel:$("sessionLabel"), periodMode:$("periodMode"), month:$("monthFilter"),
+    startMonth:$("startMonthFilter"), endMonth:$("endMonthFilter"), singleMonthField:$("singleMonthField"),
+    rangeStartField:$("rangeStartField"), rangeEndField:$("rangeEndField"), refresh:$("refreshButton"), exportButton:$("exportButton"),
+    setupBanner:$("setupBanner"), financeTabs:$("financeTabs"),
+    metricRevenue:$("metricRevenue"), metricRevenueNote:$("metricRevenueNote"), metricExpense:$("metricExpense"), metricExpenseNote:$("metricExpenseNote"),
+    metricProfit:$("metricProfit"), metricProfitNote:$("metricProfitNote"),
+    cardCash:$("cardCash"), cardCashNote:$("cardCashNote"), cardUnearned:$("cardUnearned"), cardUnearnedNote:$("cardUnearnedNote"),
+    cardPayable:$("cardPayable"), cardPayableNote:$("cardPayableNote"), cardJournal:$("cardJournal"), cardJournalNote:$("cardJournalNote"),
+    trendSubtitle:$("trendSubtitle"), trendChart:$("trendChart"), monthlySummaryBody:$("monthlySummaryBody"), rulesBody:$("rulesBody"), dataNotes:$("dataNotes"),
+    journalFormTitle:$("journalFormTitle"), journalForm:$("journalForm"), journalDate:$("journalDate"), journalReference:$("journalReference"),
+    journalDescription:$("journalDescription"), journalLinesBody:$("journalLinesBody"), journalTotalDebit:$("journalTotalDebit"),
+    journalTotalCredit:$("journalTotalCredit"), journalAddLine:$("journalAddLine"), journalBalance:$("journalBalance"), journalSave:$("journalSave"),
+    journalCancelEdit:$("journalCancelEdit"), journalStatus:$("journalStatus"), journalListPanel:$("journalListPanel"), journalSubtitle:$("journalSubtitle"),
+    journalSourceFilter:$("journalSourceFilter"), journalAccountFilter:$("journalAccountFilter"), journalSearch:$("journalSearch"), journalSort:$("journalSort"),
+    journalSummary:$("journalSummary"), journalTableWrap:$("journalTableWrap"), journalTable:$("journalTable"), journalEmpty:$("journalEmpty"), journalShowMore:$("journalShowMore"),
+    trialSubtitle:$("trialSubtitle"), trialBalancePill:$("trialBalancePill"), trialBody:$("trialBody"), ledgerPanel:$("ledgerPanel"), ledgerSubtitle:$("ledgerSubtitle"),
+    ledgerClosing:$("ledgerClosing"), ledgerAccount:$("ledgerAccount"), ledgerBody:$("ledgerBody"), ledgerShowAll:$("ledgerShowAll"),
+    profitLossSubtitle:$("profitLossSubtitle"), profitLossStatement:$("profitLossStatement"), monthlyMatrixSubtitle:$("monthlyMatrixSubtitle"), monthlyMatrix:$("monthlyMatrix"),
+    balanceSubtitle:$("balanceSubtitle"), balancePill:$("balancePill"), balanceStatement:$("balanceStatement"),
+    payableSubtitle:$("payableSubtitle"), payableTotal:$("payableTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty"),
+    unearnedSubtitle:$("unearnedSubtitle"), unearnedTotal:$("unearnedTotal"), unearnedTableWrap:$("unearnedTableWrap"), unearnedBody:$("unearnedBody"), unearnedEmpty:$("unearnedEmpty"),
+    accountForm:$("accountForm"), accountType:$("accountType"), accountCode:$("accountCode"), accountName:$("accountName"), accountSave:$("accountSave"),
+    accountStatus:$("accountStatus"), accountsBody:$("accountsBody")
+  };
+
+  /* ---------- Sesi, filter, dan navigasi tab ---------- */
+
+  function isFinanceAdmin(session = currentSession) {
+    const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
+    return financeAdminEmails.has(email);
+  }
+
+  function currentFinanceView() {
+    const view = decodeURIComponent(location.hash.slice(1));
+    return financeViews.includes(view) ? view : financeViews[0];
+  }
+
+  function showFinanceView(scroll = false) {
+    const view = currentFinanceView();
+    document.querySelectorAll("[data-view]").forEach((section) => section.classList.toggle("hidden", section.dataset.view !== view));
+    document.querySelectorAll("[data-tab]").forEach((tab) => {
+      const active = tab.dataset.tab === view;
+      tab.classList.toggle("active", active);
+      if (active) tab.setAttribute("aria-current", "page"); else tab.removeAttribute("aria-current");
+    });
+    const activeTab = els.financeTabs.querySelector(".finance-tab.active");
+    if (activeTab) {
+      const tabs = els.financeTabs;
+      const left = activeTab.getBoundingClientRect().left - tabs.getBoundingClientRect().left + tabs.scrollLeft;
+      if (left < tabs.scrollLeft) tabs.scrollLeft = left - 8;
+      else if (left + activeTab.offsetWidth > tabs.scrollLeft + tabs.clientWidth) tabs.scrollLeft = left + activeTab.offsetWidth - tabs.clientWidth + 8;
+    }
+    if (view === "ringkasan" && report) renderTrend();
+    if (!scroll) return;
+    const heroRow = els.dashboard.querySelector(".hero-row");
+    const topbar = document.querySelector(".topbar");
+    const target = heroRow.getBoundingClientRect().bottom + window.scrollY + 22 - (topbar ? topbar.offsetHeight : 0) - 12;
+    if (window.scrollY > target) window.scrollTo({ top:Math.max(target, 0) });
+  }
+
+  function getSavedAdminFilters() {
+    try {
+      return JSON.parse(localStorage.getItem(adminFilterStorageKey) || "{}");
+    } catch {
+      return {};
+    }
+  }
+
+  function saveAdminFilters() {
+    try {
+      localStorage.setItem(adminFilterStorageKey, JSON.stringify({
+        periodMode: els.periodMode.value || "all",
+        month: els.month.value || "",
+        startMonth: els.startMonth.value || "",
+        endMonth: els.endMonth.value || ""
+      }));
+    } catch {
+      /* Filter tetap jalan walau tidak bisa disimpan. */
+    }
+  }
+
+  function restoreAdminFilters() {
+    const filters = getSavedAdminFilters();
+    els.periodMode.value = "all";
+    if (filters.month !== undefined) els.month.value = filters.month || "";
+    if (filters.startMonth !== undefined) els.startMonth.value = filters.startMonth || "";
+    if (filters.endMonth !== undefined) els.endMonth.value = filters.endMonth || "";
+    updatePeriodControls();
+  }
+
+  function setStatus(element, message, type = "") {
+    element.className = `status ${type}`.trim();
+    element.textContent = message;
+  }
+
+  function showLogin(message = "Hanya jihamalia@gmail.com dan jeyasclub@gmail.com.") {
+    els.loginScreen.classList.remove("hidden");
+    els.dashboard.classList.remove("open");
+    els.logout.classList.add("hidden");
+    setStatus(els.authMessage, message);
+  }
+
+  /* ---------- Format dan tanggal ---------- */
+
+  function formatMoney(value) {
+    return new Intl.NumberFormat("id-ID", { style:"currency", currency:"IDR", maximumFractionDigits:0 }).format(Math.round(Number(value || 0)));
+  }
+
+  function formatNumber(value) {
+    return Math.round(Number(value || 0)).toLocaleString("id-ID", { maximumFractionDigits:0 });
+  }
+
+  function formatAmount(value) {
+    const amount = Math.round(Number(value || 0));
+    return amount === 0 ? "" : formatNumber(amount);
+  }
+
+  function formatCompactMoney(value) {
+    const amount = Number(value || 0);
+    const abs = Math.abs(amount);
+    const trim = (number) => number.toLocaleString("id-ID", { maximumFractionDigits:1 });
+    if (abs >= 1e9) return `Rp ${trim(amount / 1e9)} M`;
+    if (abs >= 1e6) return `Rp ${trim(amount / 1e6)} jt`;
+    if (abs >= 1e3) return `Rp ${trim(amount / 1e3)} rb`;
+    return `Rp ${trim(amount)}`;
+  }
+
+  function formatDate(value) {
+    if (!value) return "-";
+    const date = new Date(`${String(value).slice(0, 10)}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return String(value);
+    return date.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
+  }
+
+  function isoDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function todayInput() {
+    return isoDate(new Date());
+  }
+
+  function toMonthInput(date = new Date()) {
+    return isoDate(date).slice(0, 7);
+  }
+
+  // Activity log disimpan dalam UTC, jadi tanggal meeting dikonversi ke WIB.
+  const jakartaFormatter = new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Jakarta", year:"numeric", month:"2-digit", day:"2-digit" });
+  function toJakartaDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const parts = Object.fromEntries(jakartaFormatter.formatToParts(date).map((part) => [part.type, part.value]));
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
+
+  function addMonths(monthKey, amount) {
+    const [year, month] = monthKey.split("-").map(Number);
+    return toMonthInput(new Date(year, month - 1 + amount, 1));
+  }
+
+  function monthEnd(monthKey) {
+    const [year, month] = monthKey.split("-").map(Number);
+    return isoDate(new Date(year, month, 0));
+  }
+
+  function dayBefore(dateValue) {
+    const [year, month, day] = dateValue.split("-").map(Number);
+    return isoDate(new Date(year, month - 1, day - 1));
+  }
+
+  function listMonths(startKey, endKey) {
+    const months = [];
+    for (let key = startKey; key <= endKey && months.length < 240; key = addMonths(key, 1)) months.push(key);
+    return months;
+  }
+
+  function monthLabel(monthKey, short = false) {
+    const [year, month] = String(monthKey).split("-").map(Number);
+    if (!year || !month) return String(monthKey);
+    const date = new Date(year, month - 1, 1);
+    return short
+      ? `${date.toLocaleDateString("id-ID", { month:"short" })} ${String(year).slice(2)}`
+      : date.toLocaleDateString("id-ID", { month:"long", year:"numeric" });
+  }
+
+  function monthRange(monthValue) {
+    if (!monthValue) return null;
+    const [year, month] = monthValue.split("-").map(Number);
+    if (!year || !month) return null;
+    return { start:`${monthValue}-01`, end:`${addMonths(monthValue, 1)}-01` };
+  }
+
+  function selectedPeriodRange() {
+    const mode = els.periodMode.value || "month";
+    if (mode === "all") return null;
+    if (mode === "range") {
+      const startMonth = els.startMonth.value || els.month.value;
+      const endMonth = els.endMonth.value || startMonth;
+      const startRange = monthRange(startMonth);
+      const endRange = monthRange(endMonth);
+      if (!startRange || !endRange) return null;
+      return startRange.start <= endRange.start
+        ? { start:startRange.start, end:endRange.end }
+        : { start:endRange.start, end:startRange.end };
+    }
+    return monthRange(els.month.value);
+  }
+
+  function periodLabel() {
+    const range = selectedPeriodRange();
+    if (!range) return "All time";
+    const first = range.start.slice(0, 7);
+    const last = dayBefore(range.end).slice(0, 7);
+    return first === last ? monthLabel(first) : `${monthLabel(first)} sampai ${monthLabel(last)}`;
+  }
+
+  function updatePeriodControls() {
+    const mode = els.periodMode.value || "month";
+    const currentMonth = toMonthInput();
+    if (mode === "month" && !els.month.value) els.month.value = currentMonth;
+    if (mode === "range") {
+      if (!els.startMonth.value) els.startMonth.value = els.month.value || currentMonth;
+      if (!els.endMonth.value) els.endMonth.value = els.startMonth.value;
+    }
+    els.singleMonthField.classList.toggle("hidden", mode !== "month");
+    els.rangeStartField.classList.toggle("hidden", mode !== "range");
+    els.rangeEndField.classList.toggle("hidden", mode !== "range");
+  }
+
+  function escapeHTML(value) {
+    return String(value === null || value === undefined ? "" : value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[char]));
+  }
+
+  /* ---------- Akun ---------- */
+
+  function typeFromCode(code) {
+    return TYPE_ORDER.find((type) => ACCOUNT_TYPES[type].digit === String(code).charAt(0)) || "expense";
+  }
+
+  function getAccount(code) {
+    return accountMap.get(code) || { code, name:`Akun ${code} (sudah dihapus)`, account_type:typeFromCode(code), is_system:false, is_active:false, missing:true };
+  }
+
+  function accountLabel(code) {
+    const account = getAccount(code);
+    return `${account.code} ${account.name}`;
+  }
+
+  function setAccounts(rows) {
+    const byCode = new Map((rows || []).map((row) => [row.code, { ...row }]));
+    // Akun sistem selalu ada supaya jurnal otomatis tetap punya tujuan walau tabel akun belum dibuat.
+    DEFAULT_ACCOUNTS.forEach((account) => {
+      if (!byCode.has(account.code) && (account.is_system || !rows || !rows.length)) byCode.set(account.code, { ...account });
+    });
+    accounts = [...byCode.values()].sort((a, b) => a.code.localeCompare(b.code));
+    accountMap = new Map(accounts.map((account) => [account.code, account]));
+  }
+
+  function naturalAmount(type, debit, credit) {
+    return ACCOUNT_TYPES[type].normal === "debit" ? debit - credit : credit - debit;
+  }
+
+  function accountOptionsHTML(selectedCode, { includeAll = "" } = {}) {
+    const groups = TYPE_ORDER.map((type) => {
+      const options = accounts
+        .filter((account) => account.account_type === type && (account.is_active || account.code === selectedCode || includeAll))
+        .map((account) => `<option value="${escapeHTML(account.code)}" ${account.code === selectedCode ? "selected" : ""}>${escapeHTML(account.code)} ${escapeHTML(account.name)}</option>`)
+        .join("");
+      return options ? `<optgroup label="${ACCOUNT_TYPES[type].label}">${options}</optgroup>` : "";
+    }).join("");
+    const first = includeAll ? `<option value="">${escapeHTML(includeAll)}</option>` : `<option value="">Pilih akun</option>`;
+    return first + groups;
+  }
+
+  /* ---------- Data dari Supabase ---------- */
+
+  async function fetchAll(buildQuery, pageSize = 1000) {
+    const rows = [];
+    let total = null;
+    for (let guard = 0; guard < 200; guard += 1) {
+      const { data, error, count } = await buildQuery().range(rows.length, rows.length + pageSize - 1);
+      if (error) return { data:rows, error };
+      const page = data || [];
+      rows.push(...page);
+      if (typeof count === "number") total = count;
+      if (!page.length || (total !== null ? rows.length >= total : page.length < pageSize)) break;
+    }
+    return { data:rows, error:null };
+  }
+
+  async function loadTrackerLog() {
+    const base = (columns) => () => supabaseClient
+      .from("class_activity_log")
+      .select(columns, { count:"exact" })
+      .eq("table_name", "class_tracker")
+      .eq("action", "UPDATE")
+      .order("id", { ascending:true });
+    const slim = await fetchAll(base("id,record_id,created_at,old_m:old_data->meetings_realized,new_m:new_data->meetings_realized,old_p:old_data->payments_realized,new_p:new_data->payments_realized"));
+    if (!slim.error) {
+      return { error:null, rows:slim.data.map((row) => ({ record_id:String(row.record_id || ""), date:toJakartaDate(row.created_at), oldM:Number(row.old_m || 0), newM:Number(row.new_m || 0), oldP:Number(row.old_p || 0), newP:Number(row.new_p || 0) })) };
+    }
+    const full = await fetchAll(base("id,record_id,created_at,old_data,new_data"));
+    if (full.error) return { error:full.error, rows:[] };
+    return { error:null, rows:full.data.map((row) => {
+      const oldData = row.old_data || {};
+      const newData = row.new_data || {};
+      return { record_id:String(row.record_id || ""), date:toJakartaDate(row.created_at), oldM:Number(oldData.meetings_realized || 0), newM:Number(newData.meetings_realized || 0), oldP:Number(oldData.payments_realized || 0), newP:Number(newData.payments_realized || 0) };
+    }) };
+  }
+
+  // Jumlah penjualan produk digital per bulan. Kalau RPC bulanan belum ada, pakai RPC lama per bulan.
+  async function loadDigitalSales(floorMonth) {
+    const currentMonth = toMonthInput();
+    const totals = await supabaseClient.rpc("get_mayar_product_sale_counts", { p_start_date:null, p_end_date:null });
+    if (totals.error) return { error:totals.error, rows:[] };
+    let rows = [];
+    const monthly = await supabaseClient.rpc("get_mayar_product_sale_counts_monthly", { p_start_month:`${floorMonth}-01`, p_end_month:`${currentMonth}-01` });
+    if (!monthly.error) {
+      rows = (monthly.data || []).map((row) => ({ month:String(row.sale_month).slice(0, 7), product_key:row.product_key, product_name:row.product_name, sale_count:Number(row.sale_count || 0) }));
+    } else {
+      const months = listMonths(floorMonth, currentMonth);
+      const responses = await Promise.all(months.map((month) => {
+        const range = monthRange(month);
+        return supabaseClient.rpc("get_mayar_product_sale_counts", { p_start_date:range.start, p_end_date:range.end });
+      }));
+      const failed = responses.find((response) => response.error);
+      if (failed) return { error:failed.error, rows:[] };
+      responses.forEach((response, index) => {
+        (response.data || []).forEach((row) => rows.push({ month:months[index], product_key:row.product_key, product_name:row.product_name, sale_count:Number(row.sale_count || 0) }));
+      });
+    }
+    // Penjualan sebelum bulan pertama pembukuan tetap dicatat supaya totalnya sama dengan Finance 1.
+    const counted = new Map();
+    rows.forEach((row) => counted.set(row.product_key, (counted.get(row.product_key) || 0) + row.sale_count));
+    (totals.data || []).forEach((row) => {
+      const rest = Number(row.sale_count || 0) - (counted.get(row.product_key) || 0);
+      if (rest > 0) rows.push({ month:addMonths(floorMonth, -1), product_key:row.product_key, product_name:row.product_name, sale_count:rest, before:true });
+    });
+    return { error:null, rows:rows.filter((row) => row.sale_count > 0) };
+  }
+
+  async function loadJournalTables() {
+    const [accountResult, journalResult] = await Promise.all([
+      fetchAll(() => supabaseClient.from("finance_accounts").select("*", { count:"exact" }).order("code", { ascending:true })),
+      fetchAll(() => supabaseClient.from("finance_journal_entries").select("*", { count:"exact" }).order("entry_date", { ascending:true }).order("created_at", { ascending:true }).order("id", { ascending:true }))
+    ]);
+    if (accountResult.error || journalResult.error) {
+      console.warn("Finance journal tables are not ready:", accountResult.error || journalResult.error);
+      return { ready:false, accounts:[], journal:[] };
+    }
+    return { ready:true, accounts:accountResult.data, journal:journalResult.data };
+  }
+
+  async function loadFinance() {
+    if (!supabaseClient || !isFinanceAdmin()) return;
+    els.refresh.disabled = true;
+    els.refresh.textContent = "Memuat...";
+    updatePeriodControls();
+    const [bookings, trackers, fees, legacy, log, journalTables] = await Promise.all([
+      fetchAll(() => supabaseClient.from("class_bookings").select("id,booking_group_id,booking_student_order,order_date,valid_until,price,program_name,tutor,student_name,student_count", { count:"exact" }).order("order_date", { ascending:true }).order("created_at", { ascending:true }).order("id", { ascending:true })),
+      fetchAll(() => supabaseClient.from("class_tracker").select("*", { count:"exact" }).order("order_date", { ascending:true }).order("created_at", { ascending:true }).order("id", { ascending:true })),
+      fetchAll(() => supabaseClient.from("class_meeting_fees").select("*", { count:"exact" }).order("program_name", { ascending:true }).order("student_count", { ascending:true })),
+      fetchAll(() => supabaseClient.from("jeyasclub_finance_manual_entries").select("*", { count:"exact" }).order("entry_date", { ascending:true }).order("created_at", { ascending:true }).order("id", { ascending:true })),
+      loadTrackerLog(),
+      loadJournalTables()
+    ]);
+    const failed = bookings.error || trackers.error || fees.error || legacy.error;
+    if (failed) {
+      console.error("Finance 2 load failed:", failed);
+      els.refresh.disabled = false;
+      els.refresh.textContent = "Refresh";
+      els.sessionLabel.textContent = "Data finance belum bisa dimuat. Coba Refresh.";
+      return;
+    }
+    if (log.error) console.error("Activity log load failed:", log.error);
+    const firstDates = [bookings.data[0] && bookings.data[0].order_date, trackers.data[0] && trackers.data[0].order_date, legacy.data[0] && legacy.data[0].entry_date, journalTables.journal[0] && journalTables.journal[0].entry_date]
+      .filter(Boolean).map((value) => String(value).slice(0, 7)).sort();
+    const floorMonth = firstDates[0] && firstDates[0] < toMonthInput() ? firstDates[0] : toMonthInput();
+    const digital = await loadDigitalSales(floorMonth);
+    if (digital.error) console.error("Digital sales load failed:", digital.error);
+    els.refresh.disabled = false;
+    els.refresh.textContent = "Refresh";
+    rawData = {
+      bookings:bookings.data, trackers:trackers.data, legacy:legacy.data, logs:log.rows, digital:digital.rows,
+      manual:journalTables.journal, logFailed:Boolean(log.error), digitalFailed:Boolean(digital.error)
+    };
+    feeRows = fees.data;
+    journalReady = journalTables.ready;
+    setAccounts(journalTables.ready ? journalTables.accounts : []);
+    rebuild();
+  }
+
+  async function reloadJournalTables() {
+    if (!rawData) return loadFinance();
+    const journalTables = await loadJournalTables();
+    journalReady = journalTables.ready;
+    setAccounts(journalTables.ready ? journalTables.accounts : []);
+    rawData.manual = journalTables.journal;
+    rebuild();
+  }
+
+  /* ---------- Mesin jurnal otomatis ---------- */
+
+  function getBookingGroupId(row) {
+    return row.booking_group_id || row.id;
+  }
+
+  function dedupeTrackerRows(rows, bookings) {
+    const bookingById = new Map(bookings.map((row) => [row.id, row]));
+    const selectedByGroup = new Map();
+    const orphanRows = [];
+    rows.forEach((row) => {
+      const booking = bookingById.get(row.booking_id);
+      if (!booking) { orphanRows.push(row); return; }
+      const groupId = booking.booking_group_id || booking.id;
+      const current = selectedByGroup.get(groupId);
+      if (!current || Number(booking.booking_student_order || 1) < Number(current.booking.booking_student_order || 1)) {
+        selectedByGroup.set(groupId, { row, booking });
+      }
+    });
+    return { linked:[...selectedByGroup.entries()].map(([groupId, item]) => ({ groupId, tracker:item.row })), orphans:orphanRows };
+  }
+
+  function normalizeProgramName(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  }
+
+  function getMeetingFee(programName, studentCount) {
+    const normalizedProgram = normalizeProgramName(programName);
+    const count = Math.min(Math.max(Number(studentCount || 1), 1), 4);
+    const match = feeRows.find((row) =>
+      row.is_active
+      && Number(row.student_count || 0) === count
+      && normalizeProgramName(row.program_name) === normalizedProgram
+    ) || feeRows.find((row) => {
+      const feeProgram = normalizeProgramName(row.program_name);
+      return row.is_active
+        && Number(row.student_count || 0) === count
+        && feeProgram
+        && normalizedProgram.includes(feeProgram);
+    });
+    return match ? Number(match.fee || 0) : 0;
+  }
+
+  // Mengubah riwayat perubahan angka (misal meeting realized 2 -> 3) jadi daftar kejadian bertanggal.
+  // Koreksi turun membatalkan kenaikan terakhir. Sisa yang tidak punya tanggal di log
+  // (terjadi sebelum activity log aktif) dicatat di fallbackDate dan ditandai estimasi.
+  function buildCounterTimeline(changes, currentValue, fallbackDate) {
+    const stack = [];
+    const removeLatest = (amount) => {
+      let rest = amount;
+      while (rest > 0 && stack.length) {
+        const last = stack[stack.length - 1];
+        const cut = Math.min(last.count, rest);
+        last.count -= cut;
+        rest -= cut;
+        if (last.count === 0) stack.pop();
+      }
+    };
+    changes.forEach(({ date, delta }) => {
+      if (!date || !Number.isFinite(delta) || delta === 0) return;
+      if (delta < 0) { removeLatest(-delta); return; }
+      const last = stack[stack.length - 1];
+      if (last && last.date === date) last.count += delta;
+      else stack.push({ date, count:delta, estimated:false });
+    });
+    const target = Math.max(Math.round(Number(currentValue || 0)), 0);
+    const dated = stack.reduce((sum, item) => sum + item.count, 0);
+    if (dated > target) removeLatest(dated - target);
+    const undated = target - stack.reduce((sum, item) => sum + item.count, 0);
+    if (undated > 0) stack.push({ date:fallbackDate, count:undated, estimated:true });
+    return stack.sort((a, b) => a.date.localeCompare(b.date) || Number(b.estimated) - Number(a.estimated));
+  }
+
+  function buildJournal(data) {
+    const entries = [];
+    const notes = { estimatedMeetings:0, estimatedPayments:0, missingFeeMeetings:0, bookingsWithoutMeetings:0, trackersWithoutBooking:0, missingDigitalPrice:0 };
+    const today = todayInput();
+
+    const post = (date, source, description, lines, extra = {}) => {
+      const cleaned = lines
+        .map((line) => ({ account:line.account, debit:Math.round(Number(line.debit || 0)), credit:Math.round(Number(line.credit || 0)), party:line.party || "" }))
+        .filter((line) => line.debit > 0 || line.credit > 0);
+      const entryDate = String(date || "").slice(0, 10);
+      if (cleaned.length < 2 || !entryDate) return;
+      entries.push({ id:`auto-${entries.length + 1}`, seq:entries.length, date:entryDate, source, description, reference:"", estimated:Boolean(extra.estimated), manualId:null, lines:cleaned });
+    };
+    const pair = (date, source, description, debit, credit, amount, extra) => post(date, source, description, [
+      { account:debit.account, debit:amount, party:debit.party },
+      { account:credit.account, credit:amount, party:credit.party }
+    ], extra);
+
+    const logsByTracker = new Map();
+    data.logs.forEach((row) => {
+      if (!logsByTracker.has(row.record_id)) logsByTracker.set(row.record_id, []);
+      logsByTracker.get(row.record_id).push(row);
+    });
+
+    const postTracker = (tracker, context) => {
+      const logs = logsByTracker.get(String(tracker.id)) || [];
+      const fallbackDate = String(tracker.order_date || context.orderDate || today).slice(0, 10);
+      const realized = Math.max(Number(tracker.meetings_realized || 0), 0);
+      const paid = Math.min(Math.max(Number(tracker.payments_realized || 0), 0), realized);
+      const meetings = buildCounterTimeline(logs.map((row) => ({ date:row.date, delta:row.newM - row.oldM })), realized, fallbackDate);
+      const payments = buildCounterTimeline(logs.map((row) => ({ date:row.date, delta:row.newP - row.oldP })), paid, fallbackDate);
+      const fee = getMeetingFee(tracker.program_name, tracker.student_count);
+      const tutor = tracker.tutor || "Tanpa Tutor";
+      const classText = `${context.students} · ${context.program}`;
+      let cumulative = 0;
+      let recognized = 0;
+
+      meetings.forEach((event) => {
+        const firstNumber = cumulative + 1;
+        cumulative += event.count;
+        const numberLabel = event.count > 1 ? `${firstNumber}-${cumulative}` : `${firstNumber}`;
+        if (event.estimated) notes.estimatedMeetings += event.count;
+        if (context.hasRevenue) {
+          // Dihitung kumulatif supaya pembulatan per sesi tidak membuat totalnya meleset dari harga paket.
+          const target = Math.round(context.price * Math.min(cumulative, context.total) / context.total);
+          const amount = target - recognized;
+          recognized = target;
+          pair(event.date, "revenue", `Pendapatan meeting ${numberLabel}/${context.total} · ${classText}`,
+            { account:SYS.unearned, party:context.classLabel }, { account:SYS.courseRevenue, party:context.program }, amount, { estimated:event.estimated });
+        }
+        if (fee > 0) {
+          pair(event.date, "fee", `Fee tutor ${tutor} · meeting ${numberLabel} · ${classText}`,
+            { account:SYS.tutorFee, party:tutor }, { account:SYS.tutorPayable, party:tutor }, event.count * fee, { estimated:event.estimated });
+        } else {
+          notes.missingFeeMeetings += event.count;
+        }
+      });
+
+      if (fee > 0) {
+        payments.forEach((event) => {
+          if (event.estimated) notes.estimatedPayments += event.count;
+          pair(event.date, "payment", `Bayar fee tutor ${tutor} · ${event.count} meeting · ${classText}`,
+            { account:SYS.tutorPayable, party:tutor }, { account:SYS.cash }, event.count * fee, { estimated:event.estimated });
+        });
+      }
+
+      // Lewat masa berlaku: sisa sesi hangus dan jadi pendapatan, bukan kewajiban lagi.
+      if (context.hasRevenue && context.validUntil && context.validUntil < today && recognized < context.price) {
+        const unused = context.total - Math.min(cumulative, context.total);
+        pair(context.validUntil, "expired", `Sesi hangus · ${classText} (${unused} meeting tidak terpakai)`,
+          { account:SYS.unearned, party:context.classLabel }, { account:SYS.expiredRevenue, party:context.program }, context.price - recognized);
+      }
+    };
+
+    const groups = new Map();
+    data.bookings.forEach((row) => {
+      const groupId = getBookingGroupId(row);
+      if (!groups.has(groupId)) groups.set(groupId, []);
+      groups.get(groupId).push(row);
+    });
+    const trackerSet = dedupeTrackerRows(data.trackers, data.bookings);
+    const trackerByGroup = new Map(trackerSet.linked.map((item) => [item.groupId, item.tracker]));
+
+    groups.forEach((rows, groupId) => {
+      rows.sort((a, b) => Number(a.booking_student_order || 0) - Number(b.booking_student_order || 0));
+      const first = rows[0];
+      const tracker = trackerByGroup.get(groupId);
+      const price = Math.round(Number(first.price || 0));
+      const total = tracker ? Math.max(Number(tracker.meetings_total || 0), 0) : 0;
+      const students = (tracker && tracker.student_name) || rows.map((row) => row.student_name).filter(Boolean).join(", ") || "Siswa";
+      const program = first.program_name || (tracker && tracker.program_name) || "Tanpa Program";
+      const orderDate = String(first.order_date || "").slice(0, 10);
+      const classLabel = `${students} · ${program} (order ${formatDate(orderDate)})`;
+      const hasRevenue = price > 0 && total > 0;
+      if (hasRevenue) {
+        pair(orderDate, "booking", `Booking ${students} · ${program} (${total} meeting)`,
+          { account:SYS.cash }, { account:SYS.unearned, party:classLabel }, price);
+      } else if (price > 0) {
+        notes.bookingsWithoutMeetings += 1;
+        pair(orderDate, "booking", `Booking ${students} · ${program} (tanpa data total meeting, diakui saat order)`,
+          { account:SYS.cash }, { account:SYS.courseRevenue, party:program }, price, { estimated:true });
+      }
+      if (tracker) {
+        postTracker(tracker, { price, total, students, program, classLabel, orderDate, hasRevenue, validUntil:String(first.valid_until || "").slice(0, 10) });
+      }
+    });
+
+    trackerSet.orphans.forEach((tracker) => {
+      notes.trackersWithoutBooking += 1;
+      postTracker(tracker, { price:0, total:0, students:tracker.student_name || "Siswa", program:tracker.program_name || "Tanpa Program", classLabel:"", orderDate:tracker.order_date, hasRevenue:false, validUntil:"" });
+    });
+
+    data.digital.forEach((row) => {
+      const price = Number(digitalProductPrices[row.product_key] || 0);
+      if (price <= 0) { notes.missingDigitalPrice += row.sale_count; return; }
+      const lastDay = monthEnd(row.month);
+      const period = row.before ? `sampai ${monthLabel(row.month)}` : monthLabel(row.month);
+      pair(lastDay > today ? today : lastDay, "digital", `Penjualan ${row.product_name} · ${period} (${formatNumber(row.sale_count)} x ${formatMoney(price)})`,
+        { account:SYS.cash }, { account:SYS.digitalRevenue, party:row.product_name }, row.sale_count * price);
+    });
+
+    data.legacy.forEach((row) => {
+      const category = row.category || "Lainnya";
+      const description = `${category}${row.description ? `: ${row.description}` : ""}`;
+      if (row.entry_type === "expense") pair(row.entry_date, "legacy", description, { account:SYS.otherExpense, party:category }, { account:SYS.cash }, row.amount);
+      else pair(row.entry_date, "legacy", description, { account:SYS.cash }, { account:SYS.otherIncome, party:category }, row.amount);
+    });
+
+    data.manual.forEach((row) => {
+      const lines = (Array.isArray(row.lines) ? row.lines : [])
+        .map((line) => ({ account:String(line.account_code || ""), debit:Math.round(Number(line.debit || 0)), credit:Math.round(Number(line.credit || 0)), party:line.memo || "" }))
+        .filter((line) => line.account && (line.debit > 0 || line.credit > 0));
+      if (lines.length < 2) return;
+      entries.push({ id:`manual-${row.id}`, seq:entries.length, date:String(row.entry_date).slice(0, 10), source:"manual", description:row.description || "", reference:row.reference || "", estimated:false, manualId:row.id, lines });
+    });
+
+    entries.sort((a, b) => a.date.localeCompare(b.date) || a.seq - b.seq);
+    return { entries, notes };
+  }
+
+  /* ---------- Laporan ---------- */
+
+  function computeReport() {
+    const range = selectedPeriodRange();
+    const start = range ? range.start : "";
+    const end = range ? range.end : "";
+    const today = todayInput();
+    const opening = new Map();
+    const movement = new Map();
+    const partyMovement = new Map();
+    const partyClosing = new Map();
+    const months = new Map();
+    const periodEntries = [];
+    const bump = (map, code, debit, credit) => {
+      const current = map.get(code) || { debit:0, credit:0 };
+      current.debit += debit;
+      current.credit += credit;
+      map.set(code, current);
+    };
+    const bumpParty = (map, code, party, amount) => {
+      if (!map.has(code)) map.set(code, new Map());
+      const parties = map.get(code);
+      const key = party || "Lainnya";
+      parties.set(key, (parties.get(key) || 0) + amount);
+    };
+    const monthBucket = (key) => {
+      if (!months.has(key)) months.set(key, { key, accounts:new Map(), bookingCash:0 });
+      return months.get(key);
+    };
+
+    allEntries.forEach((entry) => {
+      if (end && entry.date >= end) return;
+      const inPeriod = !start || entry.date >= start;
+      const bucket = inPeriod ? monthBucket(entry.date.slice(0, 7)) : null;
+      if (inPeriod) periodEntries.push(entry);
+      entry.lines.forEach((line) => {
+        const type = getAccount(line.account).account_type;
+        const amount = naturalAmount(type, line.debit, line.credit);
+        bump(inPeriod ? movement : opening, line.account, line.debit, line.credit);
+        bumpParty(partyClosing, line.account, line.party, amount);
+        if (!inPeriod) return;
+        bumpParty(partyMovement, line.account, line.party, amount);
+        if (type === "revenue" || type === "expense") bucket.accounts.set(line.account, (bucket.accounts.get(line.account) || 0) + amount);
+        if (entry.source === "booking" && line.account === SYS.cash) bucket.bookingCash += line.debit - line.credit;
+      });
+    });
+
+    const codes = new Set([...accounts.map((account) => account.code), ...opening.keys(), ...movement.keys()]);
+    const rows = [...codes].sort().map((code) => {
+      const account = getAccount(code);
+      const open = opening.get(code) || { debit:0, credit:0 };
+      const move = movement.get(code) || { debit:0, credit:0 };
+      const openingBalance = naturalAmount(account.account_type, open.debit, open.credit);
+      const periodAmount = naturalAmount(account.account_type, move.debit, move.credit);
+      return { account, code, openingBalance, debit:move.debit, credit:move.credit, periodAmount, closingBalance:openingBalance + periodAmount, used:open.debit + open.credit + move.debit + move.credit > 0 };
+    });
+    const ofType = (type) => rows.filter((row) => row.account.account_type === type);
+    const sum = (list, key) => list.reduce((total, row) => total + row[key], 0);
+
+    const revenueRows = ofType("revenue").filter((row) => row.debit || row.credit);
+    const expenseRows = ofType("expense").filter((row) => row.debit || row.credit);
+    const totalRevenue = sum(revenueRows, "periodAmount");
+    const totalExpense = sum(expenseRows, "periodAmount");
+    const netProfit = totalRevenue - totalExpense;
+    const retainedOpening = sum(ofType("revenue"), "openingBalance") - sum(ofType("expense"), "openingBalance");
+
+    const keepOnSheet = (row) => Math.round(row.closingBalance) !== 0 || row.account.is_system;
+    const assetRows = ofType("asset").filter(keepOnSheet);
+    const liabilityRows = ofType("liability").filter(keepOnSheet);
+    const equityRows = ofType("equity").filter((row) => Math.round(row.closingBalance) !== 0);
+    const totalAssets = sum(ofType("asset"), "closingBalance");
+    const totalLiabilities = sum(ofType("liability"), "closingBalance");
+    const totalEquity = sum(ofType("equity"), "closingBalance") + retainedOpening + netProfit;
+
+    let monthKeys = [...months.keys()].sort();
+    if (range) monthKeys = listMonths(start.slice(0, 7), dayBefore(end).slice(0, 7));
+    else if (monthKeys.length) monthKeys = listMonths(monthKeys[0], monthKeys[monthKeys.length - 1]);
+    const monthly = monthKeys.map((key) => {
+      const bucket = months.get(key) || { key, accounts:new Map(), bookingCash:0 };
+      let revenue = 0;
+      let expense = 0;
+      bucket.accounts.forEach((amount, code) => {
+        if (getAccount(code).account_type === "revenue") revenue += amount; else expense += amount;
+      });
+      return { key, accounts:bucket.accounts, bookingCash:bucket.bookingCash, revenue, expense, profit:revenue - expense };
+    });
+
+    const periodEnd = end ? dayBefore(end) : today;
+    const closingOf = (code) => { const row = rows.find((item) => item.code === code); return row ? row.closingBalance : 0; };
+    const partyList = (map, code) => [...(map.get(code) || new Map()).entries()]
+      .map(([label, amount]) => ({ label, amount }))
+      .filter((row) => Math.round(row.amount) !== 0)
+      .sort((a, b) => b.amount - a.amount || a.label.localeCompare(b.label));
+
+    return {
+      range, start, end, period:periodLabel(), asOf:periodEnd > today ? today : periodEnd,
+      rows, periodEntries, revenueRows, expenseRows, totalRevenue, totalExpense, netProfit, retainedOpening,
+      assetRows, liabilityRows, equityRows, totalAssets, totalLiabilities, totalEquity,
+      balanced:Math.abs(totalAssets - totalLiabilities - totalEquity) < 1,
+      monthly, cash:closingOf(SYS.cash), unearned:closingOf(SYS.unearned), payable:closingOf(SYS.tutorPayable),
+      partyMovement:(code) => partyList(partyMovement, code),
+      partyClosing:(code) => partyList(partyClosing, code)
+    };
+  }
+
+  function rebuild() {
+    if (!rawData) return;
+    const built = buildJournal(rawData);
+    allEntries = built.entries;
+    dataNotes = { ...built.notes, logFailed:rawData.logFailed, digitalFailed:rawData.digitalFailed };
+    if (!accountMap.has(ledgerAccountCode)) ledgerAccountCode = SYS.cash;
+    renderAll();
+  }
+
+  function renderAll() {
+    report = computeReport();
+    journalVisibleCount = journalPageSize;
+    els.setupBanner.classList.toggle("hidden", journalReady);
+    els.sessionLabel.textContent = `Pembukuan akrual periode ${report.period}`;
+    renderSummary();
+    renderJournalFilters();
+    renderJournal();
+    renderJournalForm();
+    renderTrialBalance();
+    renderLedger();
+    renderProfitLoss();
+    renderBalanceSheet();
+    renderAccounts();
+    syncFormAvailability();
+  }
+
+  /* ---------- Tab Ringkasan ---------- */
+
+  function renderSummary() {
+    const manualCount = report.periodEntries.filter((entry) => entry.source === "manual").length;
+    const bookingCash = report.monthly.reduce((total, month) => total + month.bookingCash, 0);
+    els.metricRevenue.textContent = formatMoney(report.totalRevenue);
+    els.metricRevenueNote.textContent = `Kas masuk dari booking periode ini ${formatMoney(bookingCash)}`;
+    els.metricExpense.textContent = formatMoney(report.totalExpense);
+    els.metricExpenseNote.textContent = "Termasuk fee tutor yang belum dibayar";
+    els.metricProfit.textContent = formatMoney(report.netProfit);
+    els.metricProfit.classList.toggle("neg", report.netProfit < 0);
+    els.metricProfitNote.textContent = report.totalRevenue > 0 ? `Margin ${Math.round(report.netProfit / report.totalRevenue * 100)}% dari pendapatan` : "Belum ada pendapatan diakui";
+    const asOf = `Per ${formatDate(report.asOf)}`;
+    els.cardCash.textContent = formatMoney(report.cash);
+    els.cardCashNote.textContent = `${asOf}, lihat neraca`;
+    els.cardUnearned.textContent = formatMoney(report.unearned);
+    els.cardUnearnedNote.textContent = `${asOf}, masih kewajiban ke siswa`;
+    els.cardPayable.textContent = formatMoney(report.payable);
+    els.cardPayableNote.textContent = `${asOf}, lihat rincian per tutor`;
+    els.cardJournal.textContent = formatNumber(report.periodEntries.length);
+    els.cardJournalNote.textContent = `${formatNumber(manualCount)} manual, ${formatNumber(report.periodEntries.length - manualCount)} otomatis`;
+    els.trendSubtitle.textContent = `Periode ${report.period}. Pendapatan diakui saat meeting terealisasi, bukan saat siswa membayar.`;
+
+    const totals = report.monthly.reduce((sum, month) => ({ bookingCash:sum.bookingCash + month.bookingCash, revenue:sum.revenue + month.revenue, expense:sum.expense + month.expense, profit:sum.profit + month.profit }), { bookingCash:0, revenue:0, expense:0, profit:0 });
+    const moneyCell = (value) => `<td class="num ${value < 0 ? "neg" : ""}">${formatNumber(value)}</td>`;
+    els.monthlySummaryBody.innerHTML = report.monthly.length
+      ? [...report.monthly].reverse().map((month) => `<tr><td>${escapeHTML(monthLabel(month.key))}</td>${moneyCell(month.bookingCash)}${moneyCell(month.revenue)}${moneyCell(month.expense)}${moneyCell(month.profit)}</tr>`).join("")
+        + `<tr class="total-row"><td>Total</td>${moneyCell(totals.bookingCash)}${moneyCell(totals.revenue)}${moneyCell(totals.expense)}${moneyCell(totals.profit)}</tr>`
+      : `<tr><td colspan="5" class="empty">Belum ada jurnal untuk periode ini.</td></tr>`;
+
+    renderTrend();
+    renderRules();
+  }
+
+  function renderRules() {
+    const name = (code) => escapeHTML(getAccount(code).name);
+    const rules = [
+      ["Siswa membayar booking", SYS.cash, SYS.unearned, "Tanggal order"],
+      ["Meeting terealisasi (harga paket / total meeting)", SYS.unearned, SYS.courseRevenue, "Tanggal meeting dicatat di Input"],
+      ["Meeting terealisasi (fee tutor)", SYS.tutorFee, SYS.tutorPayable, "Tanggal meeting dicatat di Input"],
+      ["Fee tutor dibayar", SYS.tutorPayable, SYS.cash, "Tanggal payment diubah di Dashboard"],
+      ["Masa berlaku kelas habis, sisa sesi hangus", SYS.unearned, SYS.expiredRevenue, "Tanggal masa berlaku"],
+      ["Produk digital terjual", SYS.cash, SYS.digitalRevenue, "Akhir bulan penjualan"],
+      ["Pendapatan lain di Finance 1", SYS.cash, SYS.otherIncome, "Tanggal transaksi"],
+      ["Pengeluaran lain di Finance 1", SYS.otherExpense, SYS.cash, "Tanggal transaksi"]
+    ];
+    els.rulesBody.innerHTML = rules.map(([event, debit, credit, when]) => `<tr><td>${escapeHTML(event)}</td><td>${name(debit)}</td><td>${name(credit)}</td><td>${escapeHTML(when)}</td></tr>`).join("");
+
+    const notes = [];
+    if (dataNotes.logFailed) notes.push("Activity log belum bisa dibaca, jadi semua meeting dan pembayaran fee diakui di tanggal order kelasnya.");
+    if (dataNotes.estimatedMeetings) notes.push(`${formatNumber(dataNotes.estimatedMeetings)} meeting terealisasi sebelum tanggalnya tercatat di activity log. Meeting ini diakui di tanggal order kelasnya dan ditandai "Tanggal estimasi" di jurnal.`);
+    if (dataNotes.estimatedPayments) notes.push(`${formatNumber(dataNotes.estimatedPayments)} pembayaran fee tutor tidak punya tanggal di activity log, jadi dicatat di tanggal order kelasnya.`);
+    if (dataNotes.missingFeeMeetings) notes.push(`${formatNumber(dataNotes.missingFeeMeetings)} meeting belum punya fee di Database, jadi beban fee tutornya belum tercatat.`);
+    if (dataNotes.bookingsWithoutMeetings) notes.push(`${formatNumber(dataNotes.bookingsWithoutMeetings)} booking tidak punya total meeting di tracker, jadi pendapatannya langsung diakui di tanggal order.`);
+    if (dataNotes.trackersWithoutBooking) notes.push(`${formatNumber(dataNotes.trackersWithoutBooking)} tracker tidak terhubung ke booking, jadi hanya fee tutornya yang tercatat.`);
+    if (dataNotes.missingDigitalPrice) notes.push(`${formatNumber(dataNotes.missingDigitalPrice)} penjualan produk digital belum punya harga di halaman ini.`);
+    if (dataNotes.digitalFailed) notes.push("Data penjualan produk digital belum bisa dimuat, jadi belum masuk jurnal.");
+    notes.push("Jurnal otomatis selalu dihitung ulang dari data booking dan tracker terbaru. Kalau harga, total meeting, atau fee diubah, jurnalnya ikut menyesuaikan.");
+    notes.push("Booking dianggap lunas di tanggal order. Kalau ada cicilan, potongan payment gateway, atau refund, catat penyesuaiannya di tab Jurnal.");
+    els.dataNotes.innerHTML = notes.map((note) => `<li>${escapeHTML(note)}</li>`).join("");
+  }
+
+  function niceStep(rawStep) {
+    const magnitude = Math.pow(10, Math.floor(Math.log10(Math.max(rawStep, 1))));
+    const scaled = rawStep / magnitude;
+    return (scaled <= 1 ? 1 : scaled <= 2 ? 2 : scaled <= 5 ? 5 : 10) * magnitude;
+  }
+
+  function renderTrend() {
+    const container = els.trendChart;
+    const months = report.monthly;
+    container.innerHTML = "";
+    container.className = "";
+    if (months.length < 2) return;
+    const series = [
+      { name:"Pendapatan diakui", color:"var(--series-1)", values:months.map((month) => month.revenue) },
+      { name:"Laba bersih", color:"var(--series-2)", values:months.map((month) => month.profit) }
+    ];
+    const width = Math.round(Math.max(320, Math.min(1120, container.clientWidth || els.dashboard.clientWidth - 48 || 920)));
+    const compact = width < 560;
+    const height = compact ? 250 : 300;
+    const pad = { top:18, right:compact ? 30 : 92, bottom:34, left:compact ? 52 : 74 };
+    const allValues = series.flatMap((item) => item.values);
+    const rawMin = Math.min(0, ...allValues);
+    const rawMax = Math.max(1, ...allValues);
+    const step = niceStep((rawMax - rawMin) / 4);
+    const yMin = Math.floor(rawMin / step) * step;
+    const yMax = Math.ceil(rawMax / step) * step;
+    const plotWidth = width - pad.left - pad.right;
+    const plotHeight = height - pad.top - pad.bottom;
+    const xFor = (index) => pad.left + (plotWidth * index) / (months.length - 1);
+    const yFor = (value) => pad.top + ((yMax - value) / (yMax - yMin)) * plotHeight;
+    const ticks = [];
+    for (let value = yMin; value <= yMax + step / 2; value += step) ticks.push(value);
+    const labelEvery = Math.ceil(months.length / (compact ? 5 : 12));
+    const showDots = months.length <= 24;
+    const lastIndex = months.length - 1;
+    const endGap = Math.abs(yFor(series[0].values[lastIndex]) - yFor(series[1].values[lastIndex]));
+
+    const svgParts = [];
+    ticks.forEach((value) => {
+      svgParts.push(`<line class="${value === 0 && yMin < 0 ? "zero-line" : "grid-line"}" x1="${pad.left}" y1="${yFor(value)}" x2="${width - pad.right}" y2="${yFor(value)}"></line>`);
+      svgParts.push(`<text class="tick-label" x="${pad.left - 8}" y="${yFor(value) + 4}" text-anchor="end">${escapeHTML(compact ? formatCompactMoney(value).replace("Rp ", "") : formatCompactMoney(value))}</text>`);
+    });
+    const labelIndexes = months.map((month, index) => index).filter((index) => index % labelEvery === 0);
+    if (lastIndex - labelIndexes[labelIndexes.length - 1] >= labelEvery / 2) labelIndexes.push(lastIndex);
+    labelIndexes.forEach((index) => {
+      svgParts.push(`<text class="tick-label" x="${xFor(index)}" y="${height - 12}" text-anchor="middle">${escapeHTML(monthLabel(months[index].key, true))}</text>`);
+    });
+    svgParts.push(`<line class="crosshair" data-crosshair x1="0" y1="${pad.top}" x2="0" y2="${height - pad.bottom}"></line>`);
+    series.forEach((item) => {
+      svgParts.push(`<polyline class="series-line" style="stroke:${item.color}" points="${item.values.map((value, index) => `${xFor(index)},${yFor(value)}`).join(" ")}"></polyline>`);
+      item.values.forEach((value, index) => {
+        if (showDots || index === lastIndex) svgParts.push(`<circle class="series-dot" style="fill:${item.color}" cx="${xFor(index)}" cy="${yFor(value)}" r="4.5"></circle>`);
+      });
+      if (!compact && endGap >= 16) svgParts.push(`<text class="end-label" x="${xFor(lastIndex) + 10}" y="${yFor(item.values[lastIndex]) + 4}">${escapeHTML(formatCompactMoney(item.values[lastIndex]))}</text>`);
+    });
+    const slot = plotWidth / (months.length - 1);
+    months.forEach((month, index) => {
+      const label = `${monthLabel(month.key)}: ${series.map((item) => `${item.name} ${formatMoney(item.values[index])}`).join(", ")}`;
+      svgParts.push(`<rect class="hit" data-index="${index}" x="${xFor(index) - slot / 2}" y="${pad.top}" width="${slot}" height="${plotHeight}" tabindex="0" role="img" aria-label="${escapeHTML(label)}"></rect>`);
+    });
+
+    container.className = "trend-chart";
+    container.innerHTML = `
+      <div class="chart-legend">${series.map((item) => `<span><i class="chart-key" style="border-color:${item.color}"></i>${escapeHTML(item.name)}</span>`).join("")}</div>
+      <svg viewBox="0 0 ${width} ${height}" role="group" aria-label="Grafik garis pendapatan diakui dan laba bersih per bulan">${svgParts.join("")}</svg>
+      <div class="chart-tooltip" data-tooltip></div>
+    `;
+    const svg = container.querySelector("svg");
+    const crosshair = container.querySelector("[data-crosshair]");
+    const tooltip = container.querySelector("[data-tooltip]");
+    const showPoint = (index) => {
+      const x = xFor(index);
+      crosshair.setAttribute("x1", x);
+      crosshair.setAttribute("x2", x);
+      crosshair.classList.add("is-on");
+      tooltip.textContent = "";
+      const title = document.createElement("span");
+      title.className = "tip-title";
+      title.textContent = monthLabel(months[index].key);
+      tooltip.appendChild(title);
+      series.forEach((item) => {
+        const row = document.createElement("span");
+        row.className = "tip-row";
+        const key = document.createElement("i");
+        key.className = "chart-key";
+        key.style.borderColor = item.color;
+        const value = document.createElement("strong");
+        value.textContent = formatMoney(item.values[index]);
+        row.append(key, value, document.createTextNode(item.name));
+        tooltip.appendChild(row);
+      });
+      tooltip.classList.add("is-on");
+      const scale = svg.getBoundingClientRect().width / width;
+      const left = x * scale;
+      const tipWidth = tooltip.offsetWidth;
+      tooltip.style.top = `${svg.offsetTop + 8}px`;
+      tooltip.style.left = `${left + 12 + tipWidth > svg.clientWidth ? Math.max(left - tipWidth - 12, 4) : left + 12}px`;
+    };
+    const hidePoint = () => {
+      crosshair.classList.remove("is-on");
+      tooltip.classList.remove("is-on");
+    };
+    container.querySelectorAll(".hit").forEach((hit) => {
+      const index = Number(hit.dataset.index);
+      hit.addEventListener("pointerenter", () => showPoint(index));
+      hit.addEventListener("click", () => showPoint(index));
+      hit.addEventListener("focus", () => showPoint(index));
+      hit.addEventListener("blur", hidePoint);
+    });
+    svg.addEventListener("pointerleave", hidePoint);
+  }
+
+  /* ---------- Tab Jurnal ---------- */
+
+  function renderJournalFilters() {
+    const source = els.journalSourceFilter.value;
+    const account = els.journalAccountFilter.value;
+    els.journalSourceFilter.innerHTML = [
+      `<option value="">Semua sumber</option>`,
+      `<option value="manual">Manual</option>`,
+      `<option value="auto">Otomatis (semua)</option>`,
+      ...Object.entries(SOURCE_LABELS).filter(([key]) => key !== "manual").map(([key, label]) => `<option value="${key}">Otomatis: ${escapeHTML(label)}</option>`)
+    ].join("");
+    els.journalSourceFilter.value = source;
+    els.journalAccountFilter.innerHTML = accountOptionsHTML(account, { includeAll:"Semua akun" });
+    els.journalAccountFilter.value = accountMap.has(account) ? account : "";
+  }
+
+  function filteredJournalEntries() {
+    const source = els.journalSourceFilter.value;
+    const account = els.journalAccountFilter.value;
+    const keyword = els.journalSearch.value.trim().toLowerCase();
+    const list = report.periodEntries.filter((entry) => {
+      if (source === "auto" && entry.source === "manual") return false;
+      if (source && source !== "auto" && entry.source !== source) return false;
+      if (account && !entry.lines.some((line) => line.account === account)) return false;
+      if (keyword) {
+        const haystack = `${entry.description} ${entry.reference} ${entry.lines.map((line) => `${line.party} ${accountLabel(line.account)}`).join(" ")}`.toLowerCase();
+        if (!haystack.includes(keyword)) return false;
+      }
+      return true;
+    });
+    return els.journalSort.value === "asc" ? list : [...list].reverse();
+  }
+
+  function renderJournal() {
+    const list = filteredJournalEntries();
+    const visible = list.slice(0, journalVisibleCount);
+    const totalDebit = list.reduce((sum, entry) => sum + entry.lines.reduce((lineSum, line) => lineSum + line.debit, 0), 0);
+    const totalCredit = list.reduce((sum, entry) => sum + entry.lines.reduce((lineSum, line) => lineSum + line.credit, 0), 0);
+    els.journalSubtitle.textContent = `Periode ${report.period}. Jurnal otomatis dan manual jadi satu.`;
+    els.journalSummary.innerHTML = `
+      <span>${formatNumber(list.length)} jurnal</span>
+      <span>Total debit ${formatMoney(totalDebit)}</span>
+      <span>Total kredit ${formatMoney(totalCredit)}</span>
+    `;
+    els.journalEmpty.classList.toggle("hidden", list.length > 0);
+    els.journalTableWrap.classList.toggle("hidden", list.length === 0);
+    els.journalShowMore.classList.toggle("hidden", list.length <= journalVisibleCount);
+    els.journalShowMore.textContent = `Tampilkan lebih banyak (${formatNumber(Math.max(list.length - journalVisibleCount, 0))} lagi)`;
+    els.journalTable.querySelectorAll("tbody").forEach((body) => body.remove());
+    els.journalTable.insertAdjacentHTML("beforeend", visible.map((entry) => {
+      const isManual = entry.source === "manual";
+      const tags = [
+        `<span class="pill ${isManual ? "manual" : ""}">${escapeHTML(SOURCE_LABELS[entry.source] || entry.source)}</span>`,
+        entry.estimated ? `<span class="pill warn">Tanggal estimasi</span>` : "",
+        entry.reference ? `<span class="pill off">Ref ${escapeHTML(entry.reference)}</span>` : ""
+      ].join("");
+      const actions = isManual && journalReady
+        ? `<div class="row-actions"><button class="btn small" type="button" data-edit-entry="${escapeHTML(entry.manualId)}">Edit</button><button class="btn small danger" type="button" data-delete-entry="${escapeHTML(entry.manualId)}">Hapus</button></div>`
+        : "";
+      const lines = [...entry.lines].sort((a, b) => Number(b.debit > 0) - Number(a.debit > 0)).map((line) => `
+        <tr class="entry-line">
+          <td class="acct-name ${line.credit > 0 ? "acct-credit" : ""}">${escapeHTML(accountLabel(line.account))}${line.party ? `<small>${escapeHTML(line.party)}</small>` : ""}</td>
+          <td class="num">${formatAmount(line.debit)}</td>
+          <td class="num">${formatAmount(line.credit)}</td>
+        </tr>`).join("");
+      return `
+        <tbody>
+          <tr class="entry-head">
+            <td colspan="3"><div class="entry-title"><div><div class="entry-meta"><span class="entry-date">${escapeHTML(formatDate(entry.date))}</span>${tags}</div><p>${escapeHTML(entry.description || "(tanpa keterangan)")}</p></div>${actions}</div></td>
+          </tr>
+          ${lines}
+        </tbody>`;
+    }).join(""));
+  }
+
+  function blankLine() {
+    return { account:"", debit:"", credit:"" };
+  }
+
+  function resetJournalForm() {
+    editingEntryId = null;
+    formLines = [blankLine(), blankLine()];
+    els.journalForm.reset();
+    els.journalDate.value = todayInput();
+    els.journalFormTitle.textContent = "Input Jurnal";
+    els.journalSave.textContent = "Simpan Jurnal";
+    els.journalCancelEdit.classList.add("hidden");
+    renderJournalForm();
+  }
+
+  function renderJournalForm() {
+    if (!formLines.length) formLines = [blankLine(), blankLine()];
+    if (!els.journalDate.value) els.journalDate.value = todayInput();
+    els.journalLinesBody.innerHTML = formLines.map((line, index) => `
+      <tr data-line="${index}">
+        <td><select data-field="account" aria-label="Akun baris ${index + 1}">${accountOptionsHTML(line.account)}</select></td>
+        <td class="amount-cell"><input type="number" data-field="debit" min="0" step="1" inputmode="numeric" placeholder="Debit" value="${escapeHTML(line.debit)}" aria-label="Debit baris ${index + 1}"></td>
+        <td class="amount-cell"><input type="number" data-field="credit" min="0" step="1" inputmode="numeric" placeholder="Kredit" value="${escapeHTML(line.credit)}" aria-label="Kredit baris ${index + 1}"></td>
+        <td class="action-cell">${formLines.length > 2 ? `<button class="btn small danger" type="button" data-remove-line="${index}" aria-label="Hapus baris ${index + 1}">×</button>` : ""}</td>
+      </tr>`).join("");
+    updateJournalTotals();
+    syncFormAvailability();
+  }
+
+  function journalFormTotals() {
+    const debit = formLines.reduce((sum, line) => sum + Math.round(Number(line.debit || 0)), 0);
+    const credit = formLines.reduce((sum, line) => sum + Math.round(Number(line.credit || 0)), 0);
+    return { debit, credit, balanced:debit > 0 && debit === credit };
+  }
+
+  function updateJournalTotals() {
+    const totals = journalFormTotals();
+    els.journalTotalDebit.textContent = formatNumber(totals.debit);
+    els.journalTotalCredit.textContent = formatNumber(totals.credit);
+    if (!totals.debit && !totals.credit) {
+      els.journalBalance.className = "pill off";
+      els.journalBalance.textContent = "Belum diisi";
+    } else if (totals.balanced) {
+      els.journalBalance.className = "pill ok";
+      els.journalBalance.textContent = "Seimbang";
+    } else {
+      els.journalBalance.className = "pill bad";
+      els.journalBalance.textContent = `Selisih ${formatMoney(Math.abs(totals.debit - totals.credit))}`;
+    }
+  }
+
+  function syncFormAvailability() {
+    els.journalForm.querySelectorAll("input, select, button").forEach((control) => { control.disabled = !journalReady; });
+    els.accountForm.querySelectorAll("input, select, button").forEach((control) => { control.disabled = !journalReady; });
+    const lockedMessages = ["Memuat data...", "Aktif setelah supabase-finance-accounting.sql dijalankan."];
+    [els.journalStatus, els.accountStatus].forEach((status) => {
+      if (!journalReady) setStatus(status, lockedMessages[rawData ? 1 : 0]);
+      else if (lockedMessages.includes(status.textContent)) setStatus(status, "");
+    });
+  }
+
+  function applyTemplate(key) {
+    const template = JOURNAL_TEMPLATES[key];
+    if (!template) return;
+    const pick = (code, type) => (accountMap.has(code) && getAccount(code).is_active ? code : ((accounts.find((account) => account.account_type === type && account.is_active) || {}).code || ""));
+    const amount = formLines[0] ? formLines[0].debit || formLines[0].credit : "";
+    formLines = [
+      { account:pick(template.debit, typeFromCode(template.debit)), debit:amount, credit:"" },
+      { account:pick(template.credit, typeFromCode(template.credit)), debit:"", credit:amount }
+    ];
+    renderJournalForm();
+    const firstAmount = els.journalLinesBody.querySelector('input[data-field="debit"]');
+    if (firstAmount) firstAmount.focus();
+  }
+
+  async function saveJournalEntry(event) {
+    event.preventDefault();
+    if (!supabaseClient || !isFinanceAdmin() || !journalReady) return;
+    const lines = formLines
+      .map((line) => ({ account_code:line.account, debit:Math.round(Number(line.debit || 0)), credit:Math.round(Number(line.credit || 0)), memo:"" }))
+      .filter((line) => line.debit > 0 || line.credit > 0);
+    const totals = journalFormTotals();
+    if (!els.journalDate.value || !els.journalDescription.value.trim()) { setStatus(els.journalStatus, "Tanggal dan keterangan wajib diisi.", "bad"); return; }
+    if (lines.length < 2) { setStatus(els.journalStatus, "Isi minimal dua baris: satu debit dan satu kredit.", "bad"); return; }
+    if (lines.some((line) => !line.account_code)) { setStatus(els.journalStatus, "Setiap baris yang berisi nominal harus punya akun.", "bad"); return; }
+    if (lines.some((line) => line.debit > 0 && line.credit > 0)) { setStatus(els.journalStatus, "Satu baris hanya boleh debit atau kredit, tidak keduanya.", "bad"); return; }
+    if (!totals.balanced) { setStatus(els.journalStatus, `Total debit dan kredit belum sama. Selisih ${formatMoney(Math.abs(totals.debit - totals.credit))}.`, "bad"); return; }
+    const payload = { entry_date:els.journalDate.value, description:els.journalDescription.value.trim(), reference:els.journalReference.value.trim(), lines };
+    els.journalSave.disabled = true;
+    els.journalSave.textContent = "Menyimpan...";
+    const query = editingEntryId
+      ? supabaseClient.from("finance_journal_entries").update({ ...payload, updated_at:new Date().toISOString() }).eq("id", editingEntryId)
+      : supabaseClient.from("finance_journal_entries").insert(payload);
+    const { error } = await query;
+    els.journalSave.disabled = false;
+    if (error) {
+      console.error("Journal save failed:", error);
+      els.journalSave.textContent = editingEntryId ? "Simpan Perubahan" : "Simpan Jurnal";
+      setStatus(els.journalStatus, "Jurnal belum bisa disimpan. Coba lagi.", "bad");
+      return;
+    }
+    const wasEditing = Boolean(editingEntryId);
+    resetJournalForm();
+    await reloadJournalTables();
+    setStatus(els.journalStatus, wasEditing ? "Perubahan jurnal tersimpan." : "Jurnal tersimpan.");
+  }
+
+  function startEditEntry(id) {
+    const row = rawData && rawData.manual.find((item) => String(item.id) === String(id));
+    if (!row) return;
+    editingEntryId = row.id;
+    els.journalDate.value = String(row.entry_date).slice(0, 10);
+    els.journalDescription.value = row.description || "";
+    els.journalReference.value = row.reference || "";
+    formLines = (Array.isArray(row.lines) ? row.lines : []).map((line) => ({
+      account:String(line.account_code || ""),
+      debit:Number(line.debit || 0) > 0 ? String(Math.round(Number(line.debit))) : "",
+      credit:Number(line.credit || 0) > 0 ? String(Math.round(Number(line.credit))) : ""
+    }));
+    while (formLines.length < 2) formLines.push(blankLine());
+    els.journalFormTitle.textContent = "Edit Jurnal";
+    els.journalSave.textContent = "Simpan Perubahan";
+    els.journalCancelEdit.classList.remove("hidden");
+    renderJournalForm();
+    setStatus(els.journalStatus, "Mengedit jurnal. Simpan perubahan atau batalkan.");
+    els.journalForm.scrollIntoView({ block:"center" });
+  }
+
+  async function deleteEntry(id) {
+    if (!id || !supabaseClient || !isFinanceAdmin() || !journalReady) return;
+    if (!confirm("Hapus jurnal manual ini?")) return;
+    const { error } = await supabaseClient.from("finance_journal_entries").delete().eq("id", id);
+    if (error) {
+      console.error("Journal delete failed:", error);
+      setStatus(els.journalStatus, "Jurnal belum bisa dihapus.", "bad");
+      return;
+    }
+    if (String(editingEntryId) === String(id)) resetJournalForm();
+    await reloadJournalTables();
+    setStatus(els.journalStatus, "Jurnal dihapus.");
+  }
+
+  /* ---------- Tab Buku Besar ---------- */
+
+  function renderTrialBalance() {
+    const rows = report.rows.filter((row) => row.used || row.account.is_active);
+    let moveDebit = 0, moveCredit = 0, balanceDebit = 0, balanceCredit = 0;
+    const sides = (value, normalDebit) => {
+      const rounded = Math.round(value);
+      const onDebit = (normalDebit && rounded > 0) || (!normalDebit && rounded < 0);
+      return { debit:rounded !== 0 && onDebit ? Math.abs(rounded) : 0, credit:rounded !== 0 && !onDebit ? Math.abs(rounded) : 0 };
+    };
+    const body = rows.map((row) => {
+      const type = row.account.account_type;
+      // Akun pendapatan dan beban ditutup tiap periode, jadi kolom saldonya hanya mutasi periode ini.
+      const value = type === "revenue" || type === "expense" ? row.periodAmount : row.closingBalance;
+      const balance = sides(value, ACCOUNT_TYPES[type].normal === "debit");
+      moveDebit += row.debit; moveCredit += row.credit; balanceDebit += balance.debit; balanceCredit += balance.credit;
+      return `<tr class="clickable ${row.code === ledgerAccountCode ? "is-selected" : ""}" data-ledger="${escapeHTML(row.code)}" tabindex="0">
+        <td>${escapeHTML(row.code)}</td><td>${escapeHTML(row.account.name)}</td>
+        <td class="num">${formatAmount(row.debit)}</td><td class="num">${formatAmount(row.credit)}</td>
+        <td class="num">${formatAmount(balance.debit)}</td><td class="num">${formatAmount(balance.credit)}</td>
+      </tr>`;
+    }).join("");
+    // Laba atau rugi sebelum periode sudah masuk saldo laba, jadi ditampilkan supaya saldo tetap seimbang.
+    const retained = sides(report.retainedOpening, false);
+    const retainedRow = retained.debit || retained.credit
+      ? `<tr><td></td><td>Saldo laba sebelum periode</td><td class="num"></td><td class="num"></td><td class="num">${formatAmount(retained.debit)}</td><td class="num">${formatAmount(retained.credit)}</td></tr>`
+      : "";
+    balanceDebit += retained.debit;
+    balanceCredit += retained.credit;
+    const balanced = Math.abs(balanceDebit - balanceCredit) < 1 && Math.abs(moveDebit - moveCredit) < 1;
+    els.trialBody.innerHTML = `${body}${retainedRow}<tr class="total-row"><td></td><td>Total</td><td class="num">${formatNumber(moveDebit)}</td><td class="num">${formatNumber(moveCredit)}</td><td class="num">${formatNumber(balanceDebit)}</td><td class="num">${formatNumber(balanceCredit)}</td></tr>`;
+    els.trialSubtitle.textContent = `Periode ${report.period}, saldo per ${formatDate(report.asOf)}. Klik akun untuk melihat buku besarnya.`;
+    els.trialBalancePill.className = `pill ${balanced ? "ok" : "bad"}`;
+    els.trialBalancePill.textContent = balanced ? "Debit = Kredit" : "Tidak seimbang";
+  }
+
+  function renderLedger() {
+    els.ledgerAccount.innerHTML = accountOptionsHTML(ledgerAccountCode, { includeAll:"Pilih akun" });
+    els.ledgerAccount.value = ledgerAccountCode;
+    const row = report.rows.find((item) => item.code === ledgerAccountCode);
+    const account = getAccount(ledgerAccountCode);
+    if (!row) { els.ledgerBody.innerHTML = `<tr><td colspan="5" class="empty">Pilih akun untuk melihat buku besarnya.</td></tr>`; return; }
+    const type = account.account_type;
+    let balance = row.openingBalance;
+    const lines = [];
+    report.periodEntries.forEach((entry) => {
+      entry.lines.forEach((line) => {
+        if (line.account !== ledgerAccountCode) return;
+        balance += naturalAmount(type, line.debit, line.credit);
+        lines.push({ entry, line, balance });
+      });
+    });
+    const hiddenCount = ledgerShowAll ? 0 : Math.max(lines.length - ledgerPreviewRows, 0);
+    const visible = lines.slice(hiddenCount);
+    const carried = hiddenCount ? lines[hiddenCount - 1].balance : row.openingBalance;
+    const firstLabel = hiddenCount
+      ? `Saldo sampai ${formatDate(lines[hiddenCount - 1].entry.date)} (${formatNumber(hiddenCount)} baris sebelumnya disembunyikan)`
+      : report.range ? `Saldo awal per ${formatDate(report.start)}` : "Saldo awal";
+    els.ledgerBody.innerHTML = `<tr class="total-row"><td></td><td>${escapeHTML(firstLabel)}</td><td class="num"></td><td class="num"></td><td class="num ${carried < 0 ? "neg" : ""}">${formatNumber(carried)}</td></tr>`
+      + (visible.length ? visible.map(({ entry, line, balance:running }) => `<tr>
+          <td class="entry-date">${escapeHTML(formatDate(entry.date))}</td>
+          <td class="acct-name">${escapeHTML(entry.description || "(tanpa keterangan)")}<small>${escapeHTML(SOURCE_LABELS[entry.source] || entry.source)}${entry.estimated ? " · tanggal estimasi" : ""}</small></td>
+          <td class="num">${formatAmount(line.debit)}</td><td class="num">${formatAmount(line.credit)}</td>
+          <td class="num ${running < 0 ? "neg" : ""}">${formatNumber(running)}</td>
+        </tr>`).join("") : `<tr><td colspan="5" class="empty">Tidak ada transaksi di akun ini untuk periode ini.</td></tr>`);
+    els.ledgerShowAll.classList.toggle("hidden", hiddenCount === 0);
+    els.ledgerSubtitle.textContent = `${account.code} ${account.name} · ${ACCOUNT_TYPES[type].label}, saldo normal ${ACCOUNT_TYPES[type].normal === "debit" ? "debit" : "kredit"} · periode ${report.period}`;
+    els.ledgerClosing.textContent = formatMoney(row.closingBalance);
+  }
+
+  /* ---------- Tab Laba Rugi dan Neraca ---------- */
+
+  function statementLine(label, amount, options = {}) {
+    const note = options.note ? `<small>${escapeHTML(options.note)}</small>` : "";
+    const className = ["statement-line", options.className || "", amount < 0 ? "loss" : ""].filter(Boolean).join(" ");
+    return `<div class="${className}"><span>${escapeHTML(label)}${note}</span><strong>${formatMoney(amount)}</strong></div>`;
+  }
+
+  function statementAccountLine(row, amount, parties) {
+    const label = `${row.code} ${row.account.name}`;
+    const named = parties.filter((party) => party.label !== "Lainnya");
+    if (!named.length) return statementLine(label, amount);
+    const className = ["statement-line", amount < 0 ? "loss" : ""].filter(Boolean).join(" ");
+    return `<details class="statement-group">
+      <summary class="${className}"><span>${escapeHTML(label)}</span><strong>${formatMoney(amount)}</strong></summary>
+      ${parties.map((party) => statementLine(party.label, party.amount, { className:"sub" })).join("")}
+    </details>`;
+  }
+
+  function renderProfitLoss() {
+    const revenueLines = report.revenueRows.length
+      ? report.revenueRows.map((row) => statementAccountLine(row, row.periodAmount, report.partyMovement(row.code))).join("")
+      : statementLine("Belum ada pendapatan diakui", 0);
+    const expenseLines = report.expenseRows.length
+      ? report.expenseRows.map((row) => statementAccountLine(row, row.periodAmount, report.partyMovement(row.code))).join("")
+      : statementLine("Belum ada beban", 0);
+    els.profitLossSubtitle.textContent = `Periode ${report.period}. Basis akrual: pendapatan diakui saat meeting terealisasi.`;
+    els.profitLossStatement.innerHTML = `
+      <div class="statement-title">
+        <strong>Laporan Laba Rugi</strong>
+        <span>Jeya's Club</span>
+        <span>Periode ${escapeHTML(report.period)}</span>
+      </div>
+      <div class="statement-section-title">Pendapatan</div>
+      ${revenueLines}
+      ${statementLine("Jumlah Pendapatan", report.totalRevenue, { className:"subtotal" })}
+      <div class="statement-section-title">Beban</div>
+      ${expenseLines}
+      ${statementLine("Total Beban", report.totalExpense, { className:"subtotal" })}
+      ${statementLine(report.netProfit < 0 ? "Rugi Bersih" : "Laba Bersih", report.netProfit, { className:"net" })}
+    `;
+    renderMonthlyMatrix();
+  }
+
+  function renderMonthlyMatrix() {
+    const months = report.monthly;
+    els.monthlyMatrixSubtitle.textContent = `Periode ${report.period}. Tiap kolom adalah pendapatan dan beban yang diakui di bulan itu.`;
+    if (!months.length) { els.monthlyMatrix.innerHTML = `<tbody><tr><td class="empty">Belum ada jurnal untuk periode ini.</td></tr></tbody>`; return; }
+    const cell = (value, tag = "td") => `<${tag} class="num ${value < 0 ? "neg" : ""}">${formatAmount(value) || "-"}</${tag}>`;
+    const accountRow = (row) => `<tr><td>${escapeHTML(row.code)} ${escapeHTML(row.account.name)}</td>${months.map((month) => cell(month.accounts.get(row.code) || 0)).join("")}${cell(row.periodAmount)}</tr>`;
+    const totalRow = (label, key, total, className) => `<tr class="${className}"><td>${label}</td>${months.map((month) => cell(month[key])).join("")}${cell(total)}</tr>`;
+    const span = months.length + 2;
+    els.monthlyMatrix.innerHTML = `
+      <thead><tr><th>Akun</th>${months.map((month) => `<th class="num">${escapeHTML(monthLabel(month.key, true))}</th>`).join("")}<th class="num">Total</th></tr></thead>
+      <tbody>
+        <tr class="section-row"><td colspan="${span}">Pendapatan</td></tr>
+        ${report.revenueRows.map(accountRow).join("")}
+        ${totalRow("Jumlah Pendapatan", "revenue", report.totalRevenue, "total-row")}
+        <tr class="section-row"><td colspan="${span}">Beban</td></tr>
+        ${report.expenseRows.map(accountRow).join("")}
+        ${totalRow("Total Beban", "expense", report.totalExpense, "total-row")}
+        ${totalRow("Laba Bersih", "profit", report.netProfit, "net-row")}
+      </tbody>`;
+  }
+
+  function renderBalanceSheet() {
+    const asOf = formatDate(report.asOf);
+    const lines = (rows, emptyLabel) => rows.length
+      ? rows.map((row) => statementLine(`${row.code} ${row.account.name}`, row.closingBalance)).join("")
+      : statementLine(emptyLabel, 0);
+    const retainedLines = report.range
+      ? statementLine("Saldo laba sebelum periode", report.retainedOpening) + statementLine("Laba periode berjalan", report.netProfit, { note:`Laba bersih ${report.period}` })
+      : statementLine("Saldo laba", report.netProfit, { note:"Akumulasi laba bersih sejak awal pembukuan" });
+    els.balanceSubtitle.textContent = `Posisi per ${asOf}.`;
+    els.balancePill.className = `pill ${report.balanced ? "ok" : "bad"}`;
+    els.balancePill.textContent = report.balanced ? "Seimbang" : "Tidak seimbang";
+    els.balanceStatement.innerHTML = `
+      <div class="statement-title">
+        <strong>Neraca</strong>
+        <span>Jeya's Club</span>
+        <span>Per ${escapeHTML(asOf)}</span>
+      </div>
+      <div class="statement-section-title">Aset</div>
+      ${lines(report.assetRows, "Belum ada aset")}
+      ${statementLine("Total Aset", report.totalAssets, { className:"subtotal" })}
+      <div class="statement-section-title">Liabilitas</div>
+      ${lines(report.liabilityRows, "Belum ada liabilitas")}
+      ${statementLine("Total Liabilitas", report.totalLiabilities, { className:"subtotal" })}
+      <div class="statement-section-title">Ekuitas</div>
+      ${report.equityRows.map((row) => statementLine(`${row.code} ${row.account.name}`, row.closingBalance)).join("")}
+      ${retainedLines}
+      ${statementLine("Total Ekuitas", report.totalEquity, { className:"subtotal" })}
+      ${statementLine("Total Liabilitas + Ekuitas", report.totalLiabilities + report.totalEquity, { className:"net" })}
+    `;
+
+    const payableRows = report.partyClosing(SYS.tutorPayable);
+    els.payableSubtitle.textContent = `Fee meeting yang sudah terealisasi tapi belum dibayar, per ${asOf}.`;
+    els.payableTotal.textContent = formatMoney(report.payable);
+    els.payableEmpty.classList.toggle("hidden", payableRows.length > 0);
+    els.payableGrid.classList.toggle("hidden", payableRows.length === 0);
+    els.payableGrid.innerHTML = payableRows.map((row) => `
+      <article class="payable-card">
+        <span>${escapeHTML(row.label)}</span>
+        <strong>${formatMoney(row.amount)}</strong>
+      </article>`).join("");
+
+    const unearnedRows = report.partyClosing(SYS.unearned);
+    els.unearnedSubtitle.textContent = `Sisa nilai paket tiap kelas yang meeting-nya belum terealisasi, per ${asOf}.`;
+    els.unearnedTotal.textContent = formatMoney(report.unearned);
+    els.unearnedEmpty.classList.toggle("hidden", unearnedRows.length > 0);
+    els.unearnedTableWrap.classList.toggle("hidden", unearnedRows.length === 0);
+    els.unearnedBody.innerHTML = unearnedRows.map((row) => `<tr><td>${escapeHTML(row.label)}</td><td class="num ${row.amount < 0 ? "neg" : ""}">${formatNumber(row.amount)}</td></tr>`).join("");
+  }
+
+  /* ---------- Tab Akun ---------- */
+
+  function suggestAccountCode(type) {
+    const digit = ACCOUNT_TYPES[type].digit;
+    const used = accounts.filter((account) => account.code.startsWith(digit)).map((account) => Number(account.code));
+    const regular = used.filter((code) => code < Number(`${digit}900`));
+    let next = regular.length ? Math.max(...regular) + 1 : Number(`${digit}101`);
+    while (used.includes(next) && next < Number(`${digit}999`)) next += 1;
+    return String(next);
+  }
+
+  function renderAccounts() {
+    if (!els.accountType.options.length) {
+      els.accountType.innerHTML = TYPE_ORDER.map((type) => `<option value="${type}">${ACCOUNT_TYPES[type].label}</option>`).join("");
+      els.accountType.value = "expense";
+    }
+    if (!els.accountCode.value) els.accountCode.value = suggestAccountCode(els.accountType.value);
+    const usedCodes = new Set();
+    allEntries.forEach((entry) => entry.lines.forEach((line) => usedCodes.add(line.account)));
+    const allTime = new Map();
+    allEntries.forEach((entry) => entry.lines.forEach((line) => {
+      allTime.set(line.account, (allTime.get(line.account) || 0) + naturalAmount(getAccount(line.account).account_type, line.debit, line.credit));
+    }));
+    els.accountsBody.innerHTML = TYPE_ORDER.map((type) => {
+      const rows = accounts.filter((account) => account.account_type === type);
+      if (!rows.length) return "";
+      return `<tr class="section-row"><td colspan="7">${ACCOUNT_TYPES[type].label}</td></tr>` + rows.map((account) => {
+        const balance = allTime.get(account.code) || 0;
+        const status = [
+          account.is_system ? `<span class="pill">Sistem</span>` : "",
+          account.is_active ? "" : `<span class="pill off">Nonaktif</span>`
+        ].filter(Boolean).join(" ") || `<span class="pill ok">Aktif</span>`;
+        const actions = journalReady ? `
+          <button class="btn small" type="button" data-rename-account="${escapeHTML(account.code)}">Ubah nama</button>
+          ${account.is_system ? "" : `<button class="btn small" type="button" data-toggle-account="${escapeHTML(account.code)}">${account.is_active ? "Nonaktifkan" : "Aktifkan"}</button>`}
+          ${account.is_system || usedCodes.has(account.code) ? "" : `<button class="btn small danger" type="button" data-delete-account="${escapeHTML(account.code)}">Hapus</button>`}` : "";
+        return `<tr>
+          <td>${escapeHTML(account.code)}</td><td>${escapeHTML(account.name)}</td><td>${ACCOUNT_TYPES[type].label}</td>
+          <td>${ACCOUNT_TYPES[type].normal === "debit" ? "Debit" : "Kredit"}</td>
+          <td class="num ${balance < 0 ? "neg" : ""}">${formatNumber(balance)}</td>
+          <td>${status}</td><td><div class="row-actions">${actions}</div></td>
+        </tr>`;
+      }).join("");
+    }).join("");
+  }
+
+  async function addAccount(event) {
+    event.preventDefault();
+    if (!supabaseClient || !isFinanceAdmin() || !journalReady) return;
+    const code = els.accountCode.value.trim();
+    const name = els.accountName.value.trim();
+    const type = els.accountType.value;
+    if (!/^[1-5][0-9]{3}$/.test(code)) { setStatus(els.accountStatus, "Kode harus 4 digit angka, diawali 1 sampai 5.", "bad"); return; }
+    if (code.charAt(0) !== ACCOUNT_TYPES[type].digit) { setStatus(els.accountStatus, `Kode akun ${ACCOUNT_TYPES[type].label} harus diawali angka ${ACCOUNT_TYPES[type].digit}.`, "bad"); return; }
+    if (accountMap.has(code)) { setStatus(els.accountStatus, `Kode ${code} sudah dipakai ${getAccount(code).name}.`, "bad"); return; }
+    if (!name) { setStatus(els.accountStatus, "Nama akun wajib diisi.", "bad"); return; }
+    els.accountSave.disabled = true;
+    const { error } = await supabaseClient.from("finance_accounts").insert({ code, name, account_type:type });
+    els.accountSave.disabled = false;
+    if (error) {
+      console.error("Account insert failed:", error);
+      setStatus(els.accountStatus, "Akun belum bisa ditambahkan.", "bad");
+      return;
+    }
+    els.accountName.value = "";
+    els.accountCode.value = "";
+    await reloadJournalTables();
+    setStatus(els.accountStatus, `Akun ${code} ${name} ditambahkan.`);
+  }
+
+  async function updateAccount(code, changes, successMessage) {
+    const { error } = await supabaseClient.from("finance_accounts").update({ ...changes, updated_at:new Date().toISOString() }).eq("code", code);
+    if (error) {
+      console.error("Account update failed:", error);
+      setStatus(els.accountStatus, "Akun belum bisa diubah.", "bad");
+      return;
+    }
+    await reloadJournalTables();
+    setStatus(els.accountStatus, successMessage);
+  }
+
+  async function handleAccountAction(event) {
+    const button = event.target.closest("button");
+    if (!button || !supabaseClient || !isFinanceAdmin() || !journalReady) return;
+    if (button.dataset.renameAccount) {
+      const account = getAccount(button.dataset.renameAccount);
+      const name = (prompt(`Nama baru untuk akun ${account.code}:`, account.name) || "").trim();
+      if (!name || name === account.name) return;
+      await updateAccount(account.code, { name:name.slice(0, 80) }, `Akun ${account.code} diubah jadi ${name.slice(0, 80)}.`);
+    } else if (button.dataset.toggleAccount) {
+      const account = getAccount(button.dataset.toggleAccount);
+      await updateAccount(account.code, { is_active:!account.is_active }, `Akun ${account.code} ${account.is_active ? "dinonaktifkan" : "diaktifkan"}.`);
+    } else if (button.dataset.deleteAccount) {
+      const account = getAccount(button.dataset.deleteAccount);
+      if (!confirm(`Hapus akun ${account.code} ${account.name}?`)) return;
+      const { error } = await supabaseClient.from("finance_accounts").delete().eq("code", account.code);
+      if (error) {
+        console.error("Account delete failed:", error);
+        setStatus(els.accountStatus, "Akun belum bisa dihapus.", "bad");
+        return;
+      }
+      await reloadJournalTables();
+      setStatus(els.accountStatus, `Akun ${account.code} dihapus.`);
+    }
+  }
+
+  /* ---------- Export ---------- */
+
+  function exportReport() {
+    if (!report) return;
+    const months = report.monthly;
+    const rows = [];
+    const add = (...cells) => rows.push(cells);
+    const amount = (value) => Math.round(Number(value || 0));
+    add("Laporan Laba Rugi");
+    add("Jeya's Club");
+    add("Periode", report.period);
+    add();
+    add("Pendapatan");
+    report.revenueRows.forEach((row) => {
+      add(`${row.code} ${row.account.name}`, amount(row.periodAmount));
+      report.partyMovement(row.code).forEach((party) => add(`   ${party.label}`, "", amount(party.amount)));
+    });
+    add("Jumlah Pendapatan", amount(report.totalRevenue));
+    add("Beban");
+    report.expenseRows.forEach((row) => {
+      add(`${row.code} ${row.account.name}`, amount(row.periodAmount));
+      report.partyMovement(row.code).forEach((party) => add(`   ${party.label}`, "", amount(party.amount)));
+    });
+    add("Total Beban", amount(report.totalExpense));
+    add("Laba Bersih", amount(report.netProfit));
+    add();
+    add("Laba Rugi per Bulan");
+    add("Akun", ...months.map((month) => monthLabel(month.key)), "Total");
+    [...report.revenueRows, ...report.expenseRows].forEach((row) => add(`${row.code} ${row.account.name}`, ...months.map((month) => amount(month.accounts.get(row.code) || 0)), amount(row.periodAmount)));
+    add("Jumlah Pendapatan", ...months.map((month) => amount(month.revenue)), amount(report.totalRevenue));
+    add("Total Beban", ...months.map((month) => amount(month.expense)), amount(report.totalExpense));
+    add("Laba Bersih", ...months.map((month) => amount(month.profit)), amount(report.netProfit));
+    add("Kas Masuk Booking", ...months.map((month) => amount(month.bookingCash)));
+    add();
+    add("Neraca", `Per ${formatDate(report.asOf)}`);
+    add("Aset");
+    report.assetRows.forEach((row) => add(`${row.code} ${row.account.name}`, amount(row.closingBalance)));
+    add("Total Aset", amount(report.totalAssets));
+    add("Liabilitas");
+    report.liabilityRows.forEach((row) => add(`${row.code} ${row.account.name}`, amount(row.closingBalance)));
+    add("Total Liabilitas", amount(report.totalLiabilities));
+    add("Ekuitas");
+    report.equityRows.forEach((row) => add(`${row.code} ${row.account.name}`, amount(row.closingBalance)));
+    if (report.range) add("Saldo laba sebelum periode", amount(report.retainedOpening));
+    add(report.range ? "Laba periode berjalan" : "Saldo laba", amount(report.netProfit));
+    add("Total Ekuitas", amount(report.totalEquity));
+    add("Total Liabilitas + Ekuitas", amount(report.totalLiabilities + report.totalEquity));
+    add();
+    add("Rincian Utang Fee Tutor");
+    report.partyClosing(SYS.tutorPayable).forEach((party) => add(party.label, amount(party.amount)));
+    add();
+    add("Rincian Unearned Revenue");
+    report.partyClosing(SYS.unearned).forEach((party) => add(party.label, amount(party.amount)));
+    add();
+    add("Jurnal Umum", report.period);
+    add("Tanggal", "Sumber", "Keterangan", "Referensi", "Kode Akun", "Nama Akun", "Rincian", "Debit", "Kredit");
+    report.periodEntries.forEach((entry) => {
+      entry.lines.forEach((line) => add(entry.date, SOURCE_LABELS[entry.source] || entry.source, entry.description, entry.reference, line.account, getAccount(line.account).name, line.party, line.debit || "", line.credit || ""));
+    });
+    const table = rows.map((row) => `<tr>${row.map((cell) => `<td>${escapeHTML(cell)}</td>`).join("")}</tr>`).join("");
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><table>${table}</table></body></html>`;
+    const blob = new Blob([html], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `laporan-akuntansi-${report.period.replace(/[^0-9a-zA-Z-]+/g, "-")}.xls`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  /* ---------- Init dan event ---------- */
+
+  async function showDashboard() {
+    els.loginScreen.classList.add("hidden");
+    els.dashboard.classList.add("open");
+    els.logout.classList.remove("hidden");
+    showFinanceView();
+    els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
+    restoreAdminFilters();
+    if (els.month.value === "" && getSavedAdminFilters().month === undefined) els.month.value = toMonthInput();
+    resetJournalForm();
+    await loadFinance();
+  }
+
+  async function init() {
+    if (!supabaseClient) { showLogin("Supabase belum bisa dimuat. Coba refresh halaman."); return; }
+    const { data } = await supabaseClient.auth.getSession();
+    currentSession = data.session;
+    if (isFinanceAdmin()) showDashboard(); else showLogin();
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      const previousUserId = currentSession && currentSession.user ? currentSession.user.id : "";
+      currentSession = session;
+      if (!session || !isFinanceAdmin()) { showLogin(); return; }
+      if (event === "SIGNED_IN" && session.user.id !== previousUserId) showDashboard();
+    });
+  }
+
+  els.loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const email = els.email.value.trim().toLowerCase();
+    if (!financeAdminEmails.has(email)) { setStatus(els.authMessage, "Halaman Finance hanya untuk akun admin Jeya's Club.", "bad"); return; }
+    els.loginButton.disabled = true;
+    els.loginButton.textContent = "Login...";
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password:els.password.value });
+    els.loginButton.disabled = false;
+    els.loginButton.textContent = "Login";
+    if (error) { setStatus(els.authMessage, "Login gagal. Cek email dan password.", "bad"); return; }
+    currentSession = data.session;
+    els.password.value = "";
+    if (isFinanceAdmin()) showDashboard();
+  });
+
+  els.logout.addEventListener("click", async () => { await supabaseClient.auth.signOut(); currentSession = null; showLogin(); });
+  [els.periodMode, els.month, els.startMonth, els.endMonth].forEach((control) => {
+    control.addEventListener("change", () => {
+      updatePeriodControls();
+      saveAdminFilters();
+      ledgerShowAll = false;
+      if (rawData) renderAll();
+    });
+  });
+  els.refresh.addEventListener("click", loadFinance);
+  els.exportButton.addEventListener("click", exportReport);
+
+  els.journalForm.addEventListener("submit", saveJournalEntry);
+  els.journalCancelEdit.addEventListener("click", () => { resetJournalForm(); setStatus(els.journalStatus, "Edit dibatalkan."); });
+  els.journalAddLine.addEventListener("click", () => { formLines.push(blankLine()); renderJournalForm(); });
+  els.journalForm.querySelectorAll("[data-template]").forEach((button) => button.addEventListener("click", () => applyTemplate(button.dataset.template)));
+  els.journalLinesBody.addEventListener("input", (event) => {
+    const row = event.target.closest("tr[data-line]");
+    const field = event.target.dataset.field;
+    if (!row || !field) return;
+    const line = formLines[Number(row.dataset.line)];
+    if (!line) return;
+    line[field] = event.target.value;
+    // Satu baris hanya boleh debit atau kredit, jadi mengisi satu sisi mengosongkan sisi lainnya.
+    if ((field === "debit" || field === "credit") && Number(event.target.value) > 0) {
+      const other = field === "debit" ? "credit" : "debit";
+      line[other] = "";
+      row.querySelector(`[data-field="${other}"]`).value = "";
+    }
+    updateJournalTotals();
+  });
+  els.journalLinesBody.addEventListener("change", (event) => {
+    const row = event.target.closest("tr[data-line]");
+    if (row && event.target.dataset.field === "account") formLines[Number(row.dataset.line)].account = event.target.value;
+  });
+  els.journalLinesBody.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-remove-line]");
+    if (!button) return;
+    formLines.splice(Number(button.dataset.removeLine), 1);
+    renderJournalForm();
+  });
+  els.journalTable.addEventListener("click", (event) => {
+    const editButton = event.target.closest("[data-edit-entry]");
+    const deleteButton = event.target.closest("[data-delete-entry]");
+    if (editButton) startEditEntry(editButton.dataset.editEntry);
+    if (deleteButton) deleteEntry(deleteButton.dataset.deleteEntry);
+  });
+  [els.journalSourceFilter, els.journalAccountFilter, els.journalSort].forEach((control) => control.addEventListener("change", () => { journalVisibleCount = journalPageSize; renderJournal(); }));
+  els.journalSearch.addEventListener("input", () => { journalVisibleCount = journalPageSize; renderJournal(); });
+  els.journalShowMore.addEventListener("click", () => { journalVisibleCount += journalPageSize; renderJournal(); });
+
+  const openLedger = (code) => {
+    if (!code) return;
+    ledgerAccountCode = code;
+    ledgerShowAll = false;
+    renderTrialBalance();
+    renderLedger();
+  };
+  els.trialBody.addEventListener("click", (event) => {
+    const row = event.target.closest("tr[data-ledger]");
+    if (!row) return;
+    openLedger(row.dataset.ledger);
+    els.ledgerPanel.scrollIntoView({ block:"start" });
+  });
+  els.trialBody.addEventListener("keydown", (event) => {
+    const row = event.target.closest("tr[data-ledger]");
+    if (!row || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    openLedger(row.dataset.ledger);
+    els.ledgerPanel.scrollIntoView({ block:"start" });
+  });
+  els.ledgerAccount.addEventListener("change", () => openLedger(els.ledgerAccount.value));
+  els.ledgerShowAll.addEventListener("click", () => { ledgerShowAll = true; renderLedger(); });
+
+  els.accountForm.addEventListener("submit", addAccount);
+  els.accountType.addEventListener("change", () => { els.accountCode.value = suggestAccountCode(els.accountType.value); });
+  els.accountsBody.addEventListener("click", handleAccountAction);
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (report && currentFinanceView() === "ringkasan") renderTrend(); }, 180);
+  });
+  window.addEventListener("hashchange", () => showFinanceView(true));
+  showFinanceView();
+  init();
+</script>
+</body>
+</html>
