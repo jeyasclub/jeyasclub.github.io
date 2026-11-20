@@ -138,6 +138,19 @@
   .line-chart-selected strong { color:var(--text); font-size:13px; line-height:1.2; }
   .line-chart-selected span { color:var(--blue-dark); font-size:20px; font-weight:900; line-height:1.1; text-align:right; }
   .empty { padding:22px; color:var(--muted); font-size:14px; }
+  .finance-tabs { position:sticky; top:84px; z-index:5; width:max-content; max-width:100%; display:flex; gap:4px; padding:5px; overflow-x:auto; scrollbar-width:none; border:2.5px solid var(--ink); border-radius:16px; background:#fff; box-shadow:4px 5px 0 var(--shadow); scroll-margin-top:96px; }
+  .finance-tabs::-webkit-scrollbar { display:none; }
+  .finance-tab { min-height:40px; border-radius:11px; padding:9px 16px; display:inline-flex; align-items:center; color:var(--muted); font-size:14px; font-weight:900; text-decoration:none; white-space:nowrap; transition:background .16s ease, color .16s ease; }
+  .finance-tab:hover { background:var(--blue-light); color:var(--blue-dark); }
+  .finance-tab.active { background:var(--blue); color:#fff; }
+  .shortcut-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px; }
+  .shortcut-card { color:inherit; text-decoration:none; transition:transform .16s ease, box-shadow .16s ease; }
+  .shortcut-card:hover { transform:translateY(-2px); box-shadow:5px 7px 0 var(--shadow); }
+  .shortcut-card small::after { content:" →"; }
+  .formula-note { margin-top:6px; color:var(--muted); font-size:13px; line-height:1.6; }
+  .formula-note summary { width:max-content; cursor:pointer; color:var(--blue-dark); font-weight:900; }
+  .formula-note p { margin-top:6px; max-width:720px; }
+  @media (max-width:1020px) { .shortcut-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
   @media (max-width:900px) { .metrics { grid-template-columns:1fr; } }
   @media (max-width:760px) {
     html, body { width:100%; max-width:100%; overflow-x:hidden; }
@@ -158,6 +171,9 @@
     .filter-card input, .filter-card select { width:calc(100% - 8px); max-width:calc(100% - 8px); min-width:0; -webkit-appearance:none; appearance:none; justify-self:start; }
     .filter-card .btn { width:calc(100% - 8px); max-width:calc(100% - 8px); }
     .metric, .panel { width:calc(100% - 8px); max-width:calc(100% - 8px); }
+    .finance-tabs { position:static; width:calc(100% - 8px); scroll-margin-top:130px; }
+    .finance-tab { padding:9px 12px; font-size:13px; }
+    .shortcut-grid { grid-template-columns:1fr; width:calc(100% - 8px); }
     .metric, .panel { box-shadow:5px 6px 0 var(--shadow); }
     .panel { overflow:hidden; }
     .panel-body { padding:18px; }
@@ -272,20 +288,66 @@
       </div>
     </div>
 
-    <section class="metrics">
-      <div class="metric"><span>Total Revenue</span><strong id="totalRevenue">Rp0</strong></div>
-      <div class="metric"><span>Total Expense</span><strong id="totalPayable">Rp0</strong></div>
-      <div class="metric"><span>Net Profit</span><strong id="netRevenue">Rp0</strong></div>
-    </section>
+    <nav class="finance-tabs" id="financeTabs" aria-label="Sub halaman finance">
+      <a class="finance-tab" href="#ringkasan" data-tab="ringkasan">Ringkasan</a>
+      <a class="finance-tab" href="#laba-rugi" data-tab="laba-rugi">Laba Rugi</a>
+      <a class="finance-tab" href="#payable" data-tab="payable">Payable</a>
+      <a class="finance-tab" href="#unearned" data-tab="unearned">Unearned</a>
+      <a class="finance-tab" href="#transaksi" data-tab="transaksi">Input Transaksi</a>
+    </nav>
 
-    <div class="grid">
+    <div class="grid finance-view" data-view="ringkasan">
+      <section class="metrics">
+        <div class="metric"><span>Total Revenue</span><strong id="totalRevenue">Rp0</strong></div>
+        <div class="metric"><span>Total Expense</span><strong id="totalPayable">Rp0</strong></div>
+        <div class="metric"><span>Net Profit</span><strong id="netRevenue">Rp0</strong></div>
+      </section>
+
+      <section class="shortcut-grid" aria-label="Pintasan sub halaman">
+        <a class="payable-card shortcut-card" href="#payable">
+          <span>Remaining Fee Tutor</span>
+          <strong id="summaryPayable">Rp0</strong>
+          <small id="summaryPayableNote">Lihat rincian per tutor</small>
+        </a>
+        <a class="payable-card shortcut-card" href="#unearned">
+          <span>Unearned Revenue</span>
+          <strong id="summaryUnearned">Rp0</strong>
+          <small id="summaryUnearnedNote">Lihat rincian per kelas</small>
+        </a>
+        <a class="payable-card shortcut-card" href="#unearned">
+          <span>Hangus (Expired)</span>
+          <strong id="summaryExpired">Rp0</strong>
+          <small>Sisa sesi kelas yang lewat masa berlaku</small>
+        </a>
+        <a class="payable-card shortcut-card" href="#transaksi">
+          <span>Input Transaksi</span>
+          <strong id="summaryManual">0</strong>
+          <small id="summaryManualNote">Transaksi manual periode ini</small>
+        </a>
+      </section>
+
       <section class="panel">
         <div class="panel-head">
           <div><h2>Course Revenue</h2><p class="muted" id="revenueSubtitle">Grafik pendapatan dari booking kelas.</p></div>
         </div>
         <div class="panel-body"><div class="line-chart" id="revenueChart"></div></div>
       </section>
+    </div>
 
+    <div class="grid finance-view hidden" data-view="laba-rugi">
+      <section class="panel">
+        <div class="panel-head">
+          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Ringkasan pendapatan dan pengeluaran.</p></div>
+          <button class="btn primary" type="button" id="exportFinance">Export Excel</button>
+        </div>
+        <div class="panel-body">
+          <div class="statement-paper" id="profitLossStatement"></div>
+          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari jumlah checkout Mayar di overview dikali harga produk.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid finance-view hidden" data-view="payable">
       <section class="panel">
         <div class="panel-head">
           <div><h2>Payable</h2><p class="muted">Total remaining fee berdasarkan masing tutor.</p></div>
@@ -297,10 +359,19 @@
         <div class="payable-grid" id="payableGrid"></div>
         <div class="empty hidden" id="payableEmpty">Belum ada remaining fee untuk filter ini.</div>
       </section>
+    </div>
 
+    <div class="grid finance-view hidden" data-view="unearned">
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Unearned Revenue</h2><p class="muted">Pendapatan yang sudah dibayar siswa tapi meeting-nya belum terealisasi (masih kewajiban ke siswa). Rumus: meeting belum terealisasi x harga per sesi (harga paket / total meeting). Kelas yang sudah lewat masa berlaku tidak dihitung unearned lagi, sisa sesinya hangus dan jadi pendapatan Jeya's Club.</p></div>
+          <div>
+            <h2>Unearned Revenue</h2>
+            <p class="muted">Pendapatan yang sudah dibayar siswa tapi meeting-nya belum terealisasi (masih kewajiban ke siswa).</p>
+            <details class="formula-note">
+              <summary>Cara hitung</summary>
+              <p>Meeting belum terealisasi x harga per sesi (harga paket / total meeting). Kelas yang sudah lewat masa berlaku tidak dihitung unearned lagi, sisa sesinya hangus dan jadi pendapatan Jeya's Club.</p>
+            </details>
+          </div>
           <div class="unearned-totals">
             <div class="payable-total">
               <span>Total Unearned</span>
@@ -313,7 +384,14 @@
           </div>
         </div>
         <div class="payable-grid" id="unearnedGrid"></div>
-        <div class="panel-body hidden" id="unearnedDetailWrap">
+        <div class="empty hidden" id="unearnedEmpty">Tidak ada unearned revenue untuk filter ini.</div>
+      </section>
+
+      <section class="panel hidden" id="unearnedDetailWrap">
+        <div class="panel-head">
+          <div><h2>Rincian per Kelas</h2><p class="muted">Sisa sesi tiap kelas, termasuk yang sudah hangus.</p></div>
+        </div>
+        <div class="panel-body">
           <div class="table-wrap">
             <table>
               <thead>
@@ -326,14 +404,15 @@
             </table>
           </div>
         </div>
-        <div class="empty hidden" id="unearnedEmpty">Tidak ada unearned revenue untuk filter ini.</div>
       </section>
+    </div>
 
+    <div class="grid finance-view hidden" data-view="transaksi">
       <section class="panel manual-entry-panel">
         <div class="panel-head">
           <div><h2>Input Transaksi</h2><p class="muted">Tambahkan pendapatan atau pengeluaran lain di luar booking kursus, produk digital, dan fee tutor.</p></div>
         </div>
-        <div class="panel-body grid">
+        <div class="panel-body">
           <form class="form manual-form" id="manualEntryForm">
             <label>Tanggal<input type="date" id="manualDate" required></label>
             <label>Tipe<select id="manualType" required><option value="income">Pendapatan</option><option value="expense">Pengeluaran</option></select></label>
@@ -343,26 +422,21 @@
             <button class="btn primary" type="submit" id="manualSaveButton">Simpan Transaksi</button>
             <p class="status" id="manualEntryStatus"></p>
           </form>
-          <div>
-            <div class="table-wrap hidden" id="manualEntryTableWrap">
-              <table>
-                <thead><tr><th>Tanggal</th><th>Tipe</th><th>Kategori</th><th>Keterangan</th><th class="money-cell">Nominal</th><th></th></tr></thead>
-                <tbody id="manualEntryBody"></tbody>
-              </table>
-            </div>
-            <div class="empty" id="manualEntryEmpty">Belum ada input manual untuk filter ini.</div>
-          </div>
         </div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Ringkasan pendapatan dan pengeluaran.</p></div>
-          <button class="btn primary" type="button" id="exportFinance">Export Excel</button>
+          <div><h2>Riwayat Transaksi</h2><p class="muted" id="manualEntrySubtitle">Transaksi manual sesuai filter periode.</p></div>
         </div>
         <div class="panel-body">
-          <div class="statement-paper" id="profitLossStatement"></div>
-          <p class="statement-note" id="digitalRevenueNote">Digital Produk Revenue dihitung dari jumlah checkout Mayar di overview dikali harga produk.</p>
+          <div class="table-wrap hidden" id="manualEntryTableWrap">
+            <table>
+              <thead><tr><th>Tanggal</th><th>Tipe</th><th>Kategori</th><th>Keterangan</th><th class="money-cell">Nominal</th><th></th></tr></thead>
+              <tbody id="manualEntryBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="manualEntryEmpty">Belum ada input manual untuk filter ini.</div>
         </div>
       </section>
     </div>
@@ -406,8 +480,34 @@
     manualEntryBody:$("manualEntryBody"), manualEntryEmpty:$("manualEntryEmpty"), revenueSubtitle:$("revenueSubtitle"), revenueChart:$("revenueChart"),
     payableGrandTotal:$("payableGrandTotal"), payableGrid:$("payableGrid"), payableEmpty:$("payableEmpty"),
     unearnedGrandTotal:$("unearnedGrandTotal"), unearnedGrid:$("unearnedGrid"), unearnedEmpty:$("unearnedEmpty"),
-    unearnedDetailWrap:$("unearnedDetailWrap"), unearnedDetailBody:$("unearnedDetailBody"), expiredGrandTotal:$("expiredGrandTotal")
+    unearnedDetailWrap:$("unearnedDetailWrap"), unearnedDetailBody:$("unearnedDetailBody"), expiredGrandTotal:$("expiredGrandTotal"),
+    financeTabs:$("financeTabs"), summaryPayable:$("summaryPayable"), summaryPayableNote:$("summaryPayableNote"),
+    summaryUnearned:$("summaryUnearned"), summaryUnearnedNote:$("summaryUnearnedNote"), summaryExpired:$("summaryExpired"),
+    summaryManual:$("summaryManual"), summaryManualNote:$("summaryManualNote"), manualEntrySubtitle:$("manualEntrySubtitle")
   };
+  const financeViews = ["ringkasan", "laba-rugi", "payable", "unearned", "transaksi"];
+
+  function currentFinanceView() {
+    const view = decodeURIComponent(location.hash.slice(1));
+    return financeViews.includes(view) ? view : financeViews[0];
+  }
+
+  function showFinanceView(scroll = false) {
+    const view = currentFinanceView();
+    document.querySelectorAll("[data-view]").forEach((section) => section.classList.toggle("hidden", section.dataset.view !== view));
+    document.querySelectorAll("[data-tab]").forEach((tab) => {
+      const active = tab.dataset.tab === view;
+      tab.classList.toggle("active", active);
+      if (active) tab.setAttribute("aria-current", "page"); else tab.removeAttribute("aria-current");
+    });
+    const activeTab = els.financeTabs.querySelector(".finance-tab.active");
+    if (activeTab) els.financeTabs.scrollLeft = activeTab.offsetLeft - 8;
+    if (!scroll) return;
+    const heroRow = els.dashboard.querySelector(".hero-row");
+    const topbar = document.querySelector(".topbar");
+    const target = heroRow.getBoundingClientRect().bottom + window.scrollY + 22 - (topbar ? topbar.offsetHeight : 0) - 12;
+    if (window.scrollY > target) window.scrollTo({ top:Math.max(target, 0) });
+  }
 
   function isFinanceAdmin(session = currentSession) {
     const email = session && session.user && session.user.email ? session.user.email.toLowerCase() : "";
@@ -732,6 +832,9 @@
     const expiredTotal = details.filter((row) => row.expired).reduce((sum, row) => sum + row.amount, 0);
     els.unearnedGrandTotal.textContent = formatMoney(Math.round(grandTotal));
     els.expiredGrandTotal.textContent = formatMoney(Math.round(expiredTotal));
+    els.summaryUnearned.textContent = formatMoney(Math.round(grandTotal));
+    els.summaryExpired.textContent = formatMoney(Math.round(expiredTotal));
+    els.summaryUnearnedNote.textContent = activeDetails.length ? `${formatNumber(activeDetails.length)} kelas aktif, lihat rincian` : "Tidak ada kelas dengan sisa sesi";
     els.unearnedEmpty.classList.toggle("hidden", activeDetails.length > 0);
     els.unearnedDetailWrap.classList.toggle("hidden", details.length === 0);
     els.unearnedGrid.innerHTML = summary.map((row) => `
@@ -903,7 +1006,8 @@
     const grandTotal = payableRows.reduce((sum, row) => sum + row.amount, 0);
 
     els.payableGrandTotal.textContent = formatMoney(grandTotal);
-    els.totalPayable.textContent = formatMoney(grandTotal);
+    els.summaryPayable.textContent = formatMoney(grandTotal);
+    els.summaryPayableNote.textContent = payableRows.length ? `${formatNumber(payableRows.length)} tutor, lihat rincian` : "Tidak ada fee tertunda";
     els.payableEmpty.classList.toggle("hidden", payableRows.length > 0);
     els.payableGrid.innerHTML = payableRows.map((row) => `
       <article class="payable-card">
@@ -973,6 +1077,10 @@
   function renderManualEntries(rows) {
     const sortedRows = [...rows].sort(compareEntryDateAsc);
     const hasRows = rows.length > 0;
+    const incomeCount = rows.filter((row) => row.entry_type !== "expense").length;
+    els.summaryManual.textContent = formatNumber(rows.length);
+    els.summaryManualNote.textContent = hasRows ? `${formatNumber(incomeCount)} pendapatan, ${formatNumber(rows.length - incomeCount)} pengeluaran` : "Belum ada transaksi manual";
+    els.manualEntrySubtitle.textContent = `Transaksi manual periode ${periodLabel()}.`;
     els.manualEntryTableWrap.classList.toggle("hidden", !hasRows);
     els.manualEntryEmpty.classList.toggle("hidden", hasRows);
     els.manualEntryBody.innerHTML = sortedRows.map((row) => `
@@ -1168,6 +1276,7 @@
     els.loginScreen.classList.add("hidden");
     els.dashboard.classList.add("open");
     els.logout.classList.remove("hidden");
+    showFinanceView();
     els.sessionLabel.textContent = `Login sebagai ${currentSession.user.email}`;
     restoreAdminFilters();
     if (els.month.value === "" && getSavedAdminFilters().month === undefined) els.month.value = toMonthInput();
@@ -1216,6 +1325,8 @@
     });
   });
   els.refresh.addEventListener("click", async () => { await loadMasterData(); await loadFinance(); });
+  window.addEventListener("hashchange", () => showFinanceView(true));
+  showFinanceView();
   init();
 </script>
 </body>
