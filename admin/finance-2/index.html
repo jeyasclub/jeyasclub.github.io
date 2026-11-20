@@ -1890,7 +1890,8 @@
   }
 
   function renderMonthlyMatrix() {
-    const months = report.monthly;
+    // Bulan terbaru di kiri supaya langsung terlihat tanpa menggeser tabel.
+    const months = [...report.monthly].reverse();
     els.monthlyMatrixSubtitle.textContent = `Periode ${report.period}. Tiap kolom adalah pendapatan dan beban yang diakui di bulan itu.`;
     if (!months.length) { els.monthlyMatrix.innerHTML = `<tbody><tr><td class="empty">Belum ada jurnal untuk periode ini.</td></tr></tbody>`; return; }
     const cell = (value, tag = "td") => `<${tag} class="num ${value < 0 ? "neg" : ""}">${formatAmount(value) || "-"}</${tag}>`;
