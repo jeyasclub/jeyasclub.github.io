@@ -1245,7 +1245,11 @@
       // Gaji admin yang dicatat di Finance 1 masuk ke akun Beban Gaji, bukan Beban Lain-lain.
       const isSalary = /\bgaji\b|salary/i.test(`${category} ${row.description || ""}`);
       if (row.entry_type === "expense") pair(row.entry_date, "legacy", description, { account:isSalary ? salaryAccount : SYS.otherExpense, party:category }, { account:SYS.cash }, row.amount);
-      else pair(row.entry_date, "legacy", description, { account:SYS.cash }, { account:SYS.otherIncome, party:category }, row.amount);
+      else {
+        // Penjualan video dan modul TOEFL yang dicatat di Finance 1 adalah produk digital, bukan pendapatan lain-lain.
+        const isDigital = /toefl|video|modul/i.test(`${category} ${row.description || ""}`);
+        pair(row.entry_date, "legacy", description, { account:SYS.cash }, { account:isDigital ? SYS.digitalRevenue : SYS.otherIncome, party:category }, row.amount);
+      }
     });
 
     data.manual.forEach((row) => {
@@ -1434,6 +1438,7 @@
       ["Fee tutor dibayar", SYS.tutorPayable, SYS.cash, "Tanggal payment diubah di Dashboard"],
       ["Masa berlaku kelas habis, sisa sesi hangus", SYS.unearned, SYS.expiredRevenue, "Valid-until date"],
       ["Produk digital terjual", SYS.cash, SYS.digitalRevenue, "End of sale month"],
+      ["Video dan modul TOEFL di Finance 1 (kategori atau keterangan memuat \"toefl\", \"video\", atau \"modul\")", SYS.cash, SYS.digitalRevenue, "Transaction date"],
       ["Other income di Finance 1", SYS.cash, SYS.otherIncome, "Transaction date"],
       ["Gaji admin di Finance 1 (kategori atau keterangan memuat \"gaji\")", SYS.salary, SYS.cash, "Transaction date"],
       ["Other expense di Finance 1", SYS.otherExpense, SYS.cash, "Transaction date"]
