@@ -109,24 +109,48 @@ on public.finance_journal_entries (entry_date);
 -- Accounts marked is_system are the ones the automatic journal on /admin/finance-2/ posts to.
 insert into public.finance_accounts (code, name, account_type, is_system)
 values
-  ('1101', 'Kas & Bank', 'asset', true),
-  ('1102', 'Piutang Usaha', 'asset', false),
-  ('2101', 'Utang Fee Tutor', 'liability', true),
-  ('2102', 'Utang Lain-lain', 'liability', false),
+  ('1101', 'Cash & Bank', 'asset', true),
+  ('1102', 'Accounts Receivable', 'asset', false),
+  ('2101', 'Tutor Fee Payable', 'liability', true),
+  ('2102', 'Other Payables', 'liability', false),
   ('2201', 'Unearned Revenue', 'liability', true),
-  ('3101', 'Modal Pemilik', 'equity', false),
-  ('3201', 'Prive', 'equity', false),
+  ('3101', 'Owner''s Capital', 'equity', false),
+  ('3201', 'Owner''s Drawings', 'equity', false),
   ('4101', 'Course Revenue', 'revenue', true),
-  ('4102', 'Pendapatan Sesi Hangus', 'revenue', true),
+  ('4102', 'Expired Session Revenue', 'revenue', true),
   ('4201', 'Digital Product Revenue', 'revenue', true),
-  ('4901', 'Pendapatan Lain-lain', 'revenue', true),
-  ('5101', 'Beban Fee Tutor', 'expense', true),
-  ('5102', 'Beban Gaji', 'expense', true),
-  ('5201', 'Beban Marketing', 'expense', false),
-  ('5202', 'Beban Tools & Langganan', 'expense', false),
-  ('5203', 'Beban Admin & Payment Gateway', 'expense', false),
-  ('5901', 'Beban Lain-lain', 'expense', true)
+  ('4901', 'Other Income', 'revenue', true),
+  ('5101', 'Tutor Fee Expense', 'expense', true),
+  ('5102', 'Salary Expense', 'expense', true),
+  ('5201', 'Marketing Expense', 'expense', false),
+  ('5202', 'Tools & Subscriptions Expense', 'expense', false),
+  ('5203', 'Admin & Payment Gateway Expense', 'expense', false),
+  ('5901', 'Other Expenses', 'expense', true)
 on conflict (code) do nothing;
+
+-- Earlier versions seeded Indonesian account names. Rename them to English,
+-- but only where the name was never changed by hand.
+update public.finance_accounts account
+set name = renamed.new_name, updated_at = now()
+from (
+  values
+    ('1101', 'Kas & Bank', 'Cash & Bank'),
+    ('1102', 'Piutang Usaha', 'Accounts Receivable'),
+    ('2101', 'Utang Fee Tutor', 'Tutor Fee Payable'),
+    ('2102', 'Utang Lain-lain', 'Other Payables'),
+    ('3101', 'Modal Pemilik', 'Owner''s Capital'),
+    ('3201', 'Prive', 'Owner''s Drawings'),
+    ('4102', 'Pendapatan Sesi Hangus', 'Expired Session Revenue'),
+    ('4901', 'Pendapatan Lain-lain', 'Other Income'),
+    ('5101', 'Beban Fee Tutor', 'Tutor Fee Expense'),
+    ('5102', 'Beban Gaji', 'Salary Expense'),
+    ('5201', 'Beban Marketing', 'Marketing Expense'),
+    ('5202', 'Beban Tools & Langganan', 'Tools & Subscriptions Expense'),
+    ('5203', 'Beban Admin & Payment Gateway', 'Admin & Payment Gateway Expense'),
+    ('5901', 'Beban Lain-lain', 'Other Expenses')
+) as renamed(code, old_name, new_name)
+where account.code = renamed.code
+  and account.name = renamed.old_name;
 
 alter table public.finance_accounts enable row level security;
 alter table public.finance_journal_entries enable row level security;

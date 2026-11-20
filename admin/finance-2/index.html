@@ -235,7 +235,7 @@
     .lines-table tfoot td:last-child { display:none; }
     .lines-table tfoot td.num::before { display:block; color:var(--muted); font-size:11px; font-weight:800; text-transform:uppercase; }
     .lines-table tfoot td.num:nth-child(2)::before { content:"Debit"; }
-    .lines-table tfoot td.num:nth-child(3)::before { content:"Kredit"; }
+    .lines-table tfoot td.num:nth-child(3)::before { content:"Credit"; }
     .toolbar label { flex:1 1 130px; }
   }
 </style>
@@ -259,9 +259,9 @@
   <section class="login-screen" id="loginScreen">
     <div class="login-card">
       <div>
-        <p class="eyebrow">Finance 2 · Akuntansi</p>
+        <p class="eyebrow">Finance 2 · Accounting</p>
         <h1>Accounting</h1>
-        <p class="muted">Login memakai akun admin Jeya's Club untuk melihat jurnal dan laporan keuangan.</p>
+        <p class="muted">Login memakai akun admin Jeya's Club untuk melihat journal dan financial statements.</p>
       </div>
       <form class="form" id="loginForm">
         <label>Email<input id="emailInput" type="email" autocomplete="email" required placeholder="jihamalia@gmail.com"></label>
@@ -275,7 +275,7 @@
   <main class="shell dashboard" id="dashboard">
     <div class="hero-row">
       <div>
-        <p class="eyebrow">Finance 2 · Akuntansi</p>
+        <p class="eyebrow">Finance 2 · Accounting</p>
         <h1>Accounting</h1>
         <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
       </div>
@@ -290,58 +290,58 @@
     </div>
 
     <div class="setup-banner hidden" id="setupBanner">
-      <strong>Input jurnal manual belum aktif.</strong>
-      <span>Jalankan file <code>supabase-finance-accounting.sql</code> di Supabase SQL Editor, lalu klik Refresh. Jurnal otomatis dan laporan di bawah sudah bisa dipakai tanpa menunggu itu.</span>
+      <strong>Manual journal entry belum aktif.</strong>
+      <span>Jalankan file <code>supabase-finance-accounting.sql</code> di Supabase SQL Editor, lalu klik Refresh. Automatic journal dan laporan di bawah sudah bisa dipakai tanpa menunggu itu.</span>
     </div>
 
     <nav class="finance-tabs" id="financeTabs" aria-label="Sub halaman finance 2">
-      <a class="finance-tab" href="#ringkasan" data-tab="ringkasan">Ringkasan</a>
-      <a class="finance-tab" href="#jurnal" data-tab="jurnal">Jurnal</a>
-      <a class="finance-tab" href="#buku-besar" data-tab="buku-besar">Buku Besar</a>
-      <a class="finance-tab" href="#laba-rugi" data-tab="laba-rugi">Laba Rugi</a>
-      <a class="finance-tab" href="#neraca" data-tab="neraca">Neraca</a>
-      <a class="finance-tab" href="#akun" data-tab="akun">Akun</a>
+      <a class="finance-tab" href="#summary" data-tab="summary">Summary</a>
+      <a class="finance-tab" href="#journal" data-tab="journal">Journal</a>
+      <a class="finance-tab" href="#ledger" data-tab="ledger">Ledger</a>
+      <a class="finance-tab" href="#income-statement" data-tab="income-statement">Income Statement</a>
+      <a class="finance-tab" href="#balance-sheet" data-tab="balance-sheet">Balance Sheet</a>
+      <a class="finance-tab" href="#accounts" data-tab="accounts">Accounts</a>
     </nav>
 
-    <div class="grid finance-view" data-view="ringkasan">
+    <div class="grid finance-view" data-view="summary">
       <section class="metrics">
-        <div class="metric"><span>Pendapatan Diakui</span><strong id="metricRevenue">Rp0</strong><small id="metricRevenueNote"></small></div>
-        <div class="metric"><span>Total Beban</span><strong id="metricExpense">Rp0</strong><small id="metricExpenseNote"></small></div>
-        <div class="metric"><span>Laba Bersih</span><strong id="metricProfit">Rp0</strong><small id="metricProfitNote"></small></div>
+        <div class="metric"><span>Recognized Revenue</span><strong id="metricRevenue">Rp0</strong><small id="metricRevenueNote"></small></div>
+        <div class="metric"><span>Total Expenses</span><strong id="metricExpense">Rp0</strong><small id="metricExpenseNote"></small></div>
+        <div class="metric"><span>Net Profit</span><strong id="metricProfit">Rp0</strong><small id="metricProfitNote"></small></div>
       </section>
 
       <section class="shortcut-grid" aria-label="Posisi keuangan">
-        <a class="payable-card shortcut-card" href="#neraca">
-          <span>Kas &amp; Bank</span>
+        <a class="payable-card shortcut-card" href="#balance-sheet">
+          <span>Cash &amp; Bank</span>
           <strong id="cardCash">Rp0</strong>
-          <small id="cardCashNote">Lihat neraca</small>
+          <small id="cardCashNote">Lihat balance sheet</small>
         </a>
-        <a class="payable-card shortcut-card" href="#neraca">
+        <a class="payable-card shortcut-card" href="#balance-sheet">
           <span>Unearned Revenue</span>
           <strong id="cardUnearned">Rp0</strong>
           <small id="cardUnearnedNote">Kewajiban ke siswa</small>
         </a>
-        <a class="payable-card shortcut-card" href="#neraca">
-          <span>Utang Fee Tutor</span>
+        <a class="payable-card shortcut-card" href="#balance-sheet">
+          <span>Tutor Fee Payable</span>
           <strong id="cardPayable">Rp0</strong>
           <small id="cardPayableNote">Lihat rincian per tutor</small>
         </a>
-        <a class="payable-card shortcut-card" href="#jurnal">
-          <span>Jurnal Periode Ini</span>
+        <a class="payable-card shortcut-card" href="#journal">
+          <span>Journal Entries</span>
           <strong id="cardJournal">0</strong>
-          <small id="cardJournalNote">Lihat jurnal umum</small>
+          <small id="cardJournalNote">Lihat general journal</small>
         </a>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Pendapatan &amp; Laba per Bulan</h2><p class="muted" id="trendSubtitle">Pendapatan diakui saat meeting terealisasi, bukan saat siswa membayar.</p></div>
+          <div><h2>Monthly Revenue &amp; Profit</h2><p class="muted" id="trendSubtitle">Revenue diakui saat meeting terealisasi, bukan saat siswa membayar.</p></div>
         </div>
         <div class="panel-body">
           <div id="trendChart"></div>
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>Bulan</th><th class="num">Kas Masuk Booking</th><th class="num">Pendapatan Diakui</th><th class="num">Beban</th><th class="num">Laba Bersih</th></tr></thead>
+              <thead><tr><th>Month</th><th class="num">Cash In (Bookings)</th><th class="num">Recognized Revenue</th><th class="num">Expenses</th><th class="num">Net Profit</th></tr></thead>
               <tbody id="monthlySummaryBody"></tbody>
             </table>
           </div>
@@ -350,12 +350,12 @@
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Aturan Pengakuan</h2><p class="muted">Jurnal otomatis dibuat dari data booking, tracker, dan penjualan produk digital dengan aturan ini.</p></div>
+          <div><h2>Recognition Rules</h2><p class="muted">Automatic journal dibuat dari data booking, tracker, dan penjualan produk digital dengan aturan ini.</p></div>
         </div>
         <div class="panel-body">
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>Kejadian</th><th>Debit</th><th>Kredit</th><th>Tanggal jurnal</th></tr></thead>
+              <thead><tr><th>Event</th><th>Debit</th><th>Credit</th><th>Journal date</th></tr></thead>
               <tbody id="rulesBody"></tbody>
             </table>
           </div>
@@ -364,39 +364,39 @@
       </section>
     </div>
 
-    <div class="grid finance-view hidden" data-view="jurnal">
+    <div class="grid finance-view hidden" data-view="journal">
       <section class="panel">
         <div class="panel-head">
-          <div><h2 id="journalFormTitle">Input Jurnal</h2><p class="muted">Catat transaksi di luar jurnal otomatis: beban operasional, prive, setoran modal, saldo awal, dan lainnya. Total debit harus sama dengan total kredit.</p></div>
+          <div><h2 id="journalFormTitle">New Journal Entry</h2><p class="muted">Catat transaksi di luar automatic journal: operating expenses, owner's drawings, capital, opening balance, dan lainnya. Total debit harus sama dengan total credit.</p></div>
         </div>
         <div class="panel-body">
           <form class="form" id="journalForm">
             <div class="form-row">
-              <label>Tanggal<input type="date" id="journalDate" required></label>
-              <label>Referensi (opsional)<input type="text" id="journalReference" maxlength="120" placeholder="No. invoice / bukti transfer"></label>
+              <label>Date<input type="date" id="journalDate" required></label>
+              <label>Reference (opsional)<input type="text" id="journalReference" maxlength="120" placeholder="No. invoice / bukti transfer"></label>
             </div>
-            <label>Keterangan<input type="text" id="journalDescription" maxlength="500" required placeholder="Contoh: Bayar langganan Zoom November"></label>
+            <label>Description<input type="text" id="journalDescription" maxlength="500" required placeholder="Contoh: Bayar langganan Zoom November"></label>
             <div class="template-row">
-              <span>Template cepat:</span>
-              <button class="chip" type="button" data-template="expense">Bayar beban</button>
-              <button class="chip" type="button" data-template="prive">Tarik dana pemilik (prive)</button>
-              <button class="chip" type="button" data-template="capital">Setor modal</button>
-              <button class="chip" type="button" data-template="income">Pendapatan lain</button>
+              <span>Quick template:</span>
+              <button class="chip" type="button" data-template="expense">Pay expense</button>
+              <button class="chip" type="button" data-template="prive">Owner's drawing</button>
+              <button class="chip" type="button" data-template="capital">Capital contribution</button>
+              <button class="chip" type="button" data-template="income">Other income</button>
             </div>
             <div class="table-wrap">
               <table class="lines-table">
-                <thead><tr><th>Akun</th><th class="num">Debit</th><th class="num">Kredit</th><th></th></tr></thead>
+                <thead><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th><th></th></tr></thead>
                 <tbody id="journalLinesBody"></tbody>
                 <tfoot><tr><td>Total</td><td class="num" id="journalTotalDebit">0</td><td class="num" id="journalTotalCredit">0</td><td></td></tr></tfoot>
               </table>
             </div>
             <div class="form-actions">
-              <button class="btn small" type="button" id="journalAddLine">+ Tambah baris</button>
-              <span class="pill off" id="journalBalance">Belum diisi</span>
+              <button class="btn small" type="button" id="journalAddLine">+ Add line</button>
+              <span class="pill off" id="journalBalance">Empty</span>
             </div>
             <div class="form-actions">
-              <button class="btn primary" type="submit" id="journalSave">Simpan Jurnal</button>
-              <button class="btn hidden" type="button" id="journalCancelEdit">Batal edit</button>
+              <button class="btn primary" type="submit" id="journalSave">Save Entry</button>
+              <button class="btn hidden" type="button" id="journalCancelEdit">Cancel edit</button>
             </div>
             <p class="status" id="journalStatus"></p>
           </form>
@@ -405,37 +405,37 @@
 
       <section class="panel" id="journalListPanel">
         <div class="panel-head">
-          <div><h2>Jurnal Umum</h2><p class="muted" id="journalSubtitle">Semua jurnal otomatis dan manual sesuai filter periode.</p></div>
+          <div><h2>General Journal</h2><p class="muted" id="journalSubtitle">Semua automatic dan manual entries sesuai filter periode.</p></div>
         </div>
         <div class="panel-body">
           <div class="toolbar">
-            <label>Sumber<select id="journalSourceFilter"></select></label>
-            <label>Akun<select id="journalAccountFilter"></select></label>
-            <label>Cari<input type="search" id="journalSearch" placeholder="Nama siswa, tutor, keterangan"></label>
-            <label>Urutan<select id="journalSort"><option value="desc" selected>Terbaru dulu</option><option value="asc">Terlama dulu</option></select></label>
+            <label>Source<select id="journalSourceFilter"></select></label>
+            <label>Account<select id="journalAccountFilter"></select></label>
+            <label>Search<input type="search" id="journalSearch" placeholder="Nama siswa, tutor, keterangan"></label>
+            <label>Sort<select id="journalSort"><option value="desc" selected>Newest first</option><option value="asc">Oldest first</option></select></label>
           </div>
           <div class="list-summary" id="journalSummary"></div>
           <div class="table-wrap hidden" id="journalTableWrap">
             <table class="journal-table" id="journalTable">
-              <thead><tr><th>Tanggal, keterangan, akun</th><th class="num">Debit</th><th class="num">Kredit</th></tr></thead>
+              <thead><tr><th>Date, description, account</th><th class="num">Debit</th><th class="num">Credit</th></tr></thead>
             </table>
           </div>
-          <div class="empty hidden" id="journalEmpty">Tidak ada jurnal untuk filter ini.</div>
-          <div class="form-actions"><button class="btn hidden" type="button" id="journalShowMore">Tampilkan lebih banyak</button></div>
+          <div class="empty hidden" id="journalEmpty">Tidak ada journal entry untuk filter ini.</div>
+          <div class="form-actions"><button class="btn hidden" type="button" id="journalShowMore">Show more</button></div>
         </div>
       </section>
     </div>
 
-    <div class="grid finance-view hidden" data-view="buku-besar">
+    <div class="grid finance-view hidden" data-view="ledger">
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Neraca Saldo</h2><p class="muted" id="trialSubtitle">Mutasi dan saldo tiap akun. Klik akun untuk melihat buku besarnya.</p></div>
+          <div><h2>Trial Balance</h2><p class="muted" id="trialSubtitle">Movement dan balance tiap account. Klik account untuk melihat ledger-nya.</p></div>
           <span class="pill" id="trialBalancePill">-</span>
         </div>
         <div class="panel-body">
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>Kode</th><th>Akun</th><th class="num">Mutasi Debit</th><th class="num">Mutasi Kredit</th><th class="num">Saldo Debit</th><th class="num">Saldo Kredit</th></tr></thead>
+              <thead><tr><th>Code</th><th>Account</th><th class="num">Debit Movement</th><th class="num">Credit Movement</th><th class="num">Debit Balance</th><th class="num">Credit Balance</th></tr></thead>
               <tbody id="trialBody"></tbody>
             </table>
           </div>
@@ -444,39 +444,39 @@
 
       <section class="panel" id="ledgerPanel">
         <div class="panel-head">
-          <div><h2>Buku Besar</h2><p class="muted" id="ledgerSubtitle">Rincian transaksi per akun.</p></div>
+          <div><h2>General Ledger</h2><p class="muted" id="ledgerSubtitle">Rincian transaksi per account.</p></div>
           <div class="payable-total">
-            <span>Saldo Akhir</span>
+            <span>Closing Balance</span>
             <strong id="ledgerClosing">Rp0</strong>
           </div>
         </div>
         <div class="panel-body">
-          <div class="toolbar"><label>Akun<select id="ledgerAccount"></select></label></div>
+          <div class="toolbar"><label>Account<select id="ledgerAccount"></select></label></div>
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>Tanggal</th><th>Keterangan</th><th class="num">Debit</th><th class="num">Kredit</th><th class="num">Saldo</th></tr></thead>
+              <thead><tr><th>Date</th><th>Description</th><th class="num">Debit</th><th class="num">Credit</th><th class="num">Balance</th></tr></thead>
               <tbody id="ledgerBody"></tbody>
             </table>
           </div>
-          <div class="form-actions"><button class="btn hidden" type="button" id="ledgerShowAll">Tampilkan semua baris</button></div>
+          <div class="form-actions"><button class="btn hidden" type="button" id="ledgerShowAll">Show all rows</button></div>
         </div>
       </section>
     </div>
 
-    <div class="grid finance-view hidden" data-view="laba-rugi">
+    <div class="grid finance-view hidden" data-view="income-statement">
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Laporan Laba Rugi</h2><p class="muted" id="profitLossSubtitle">Basis akrual: pendapatan diakui saat meeting terealisasi.</p></div>
+          <div><h2>Income Statement</h2><p class="muted" id="profitLossSubtitle">Accrual basis: revenue diakui saat meeting terealisasi.</p></div>
         </div>
         <div class="panel-body">
           <div class="statement-paper" id="profitLossStatement"></div>
-          <p class="statement-note">Klik baris akun untuk melihat rinciannya per program, produk, tutor, atau kategori.</p>
+          <p class="statement-note">Klik baris account untuk melihat rinciannya per program, produk, tutor, atau kategori.</p>
         </div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Laba Rugi per Bulan</h2><p class="muted" id="monthlyMatrixSubtitle">Perbandingan tiap bulan dalam periode ini.</p></div>
+          <div><h2>Monthly Income Statement</h2><p class="muted" id="monthlyMatrixSubtitle">Perbandingan tiap bulan dalam periode ini.</p></div>
         </div>
         <div class="panel-body">
           <div class="table-wrap"><table class="monthly-matrix" id="monthlyMatrix"></table></div>
@@ -484,38 +484,38 @@
       </section>
     </div>
 
-    <div class="grid finance-view hidden" data-view="neraca">
+    <div class="grid finance-view hidden" data-view="balance-sheet">
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Neraca (Balance Sheet)</h2><p class="muted" id="balanceSubtitle">Posisi aset, liabilitas, dan ekuitas.</p></div>
+          <div><h2>Balance Sheet</h2><p class="muted" id="balanceSubtitle">Posisi assets, liabilities, dan equity.</p></div>
           <span class="pill" id="balancePill">-</span>
         </div>
         <div class="panel-body">
           <div class="statement-paper" id="balanceStatement"></div>
-          <p class="statement-note">Saldo Kas &amp; Bank dihitung dari jurnal. Catat prive, setoran modal, dan biaya lain di tab Jurnal supaya saldonya sama dengan rekening.</p>
+          <p class="statement-note">Saldo Cash &amp; Bank dihitung dari journal. Catat owner's drawings, capital, dan expenses lain di tab Journal supaya saldonya sama dengan rekening.</p>
         </div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Rincian Utang Fee Tutor</h2><p class="muted" id="payableSubtitle">Fee meeting yang sudah terealisasi tapi belum dibayar.</p></div>
-          <div class="payable-total"><span>Total Utang Fee</span><strong id="payableTotal">Rp0</strong></div>
+          <div><h2>Tutor Fee Payable Detail</h2><p class="muted" id="payableSubtitle">Fee meeting yang sudah terealisasi tapi belum dibayar.</p></div>
+          <div class="payable-total"><span>Total Payable</span><strong id="payableTotal">Rp0</strong></div>
         </div>
         <div class="panel-body">
           <div class="payable-grid" id="payableGrid"></div>
-          <div class="empty hidden" id="payableEmpty">Tidak ada utang fee tutor pada tanggal ini.</div>
+          <div class="empty hidden" id="payableEmpty">Tidak ada tutor fee payable pada tanggal ini.</div>
         </div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Rincian Unearned Revenue</h2><p class="muted" id="unearnedSubtitle">Sisa nilai paket tiap kelas yang meeting-nya belum terealisasi.</p></div>
+          <div><h2>Unearned Revenue Detail</h2><p class="muted" id="unearnedSubtitle">Sisa nilai paket tiap kelas yang meeting-nya belum terealisasi.</p></div>
           <div class="payable-total"><span>Total Unearned</span><strong id="unearnedTotal">Rp0</strong></div>
         </div>
         <div class="panel-body">
           <div class="table-wrap hidden" id="unearnedTableWrap">
             <table class="data-table">
-              <thead><tr><th>Kelas</th><th class="num">Sisa Nilai</th></tr></thead>
+              <thead><tr><th>Class</th><th class="num">Remaining Value</th></tr></thead>
               <tbody id="unearnedBody"></tbody>
             </table>
           </div>
@@ -524,19 +524,19 @@
       </section>
     </div>
 
-    <div class="grid finance-view hidden" data-view="akun">
+    <div class="grid finance-view hidden" data-view="accounts">
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Tambah Akun</h2><p class="muted">Kode 4 digit. Digit pertama mengikuti tipe: 1 aset, 2 liabilitas, 3 ekuitas, 4 pendapatan, 5 beban.</p></div>
+          <div><h2>Add Account</h2><p class="muted">Code 4 digit. Digit pertama mengikuti type: 1 assets, 2 liabilities, 3 equity, 4 revenue, 5 expenses.</p></div>
         </div>
         <div class="panel-body">
           <form class="form" id="accountForm">
             <div class="form-row">
-              <label>Tipe<select id="accountType"></select></label>
-              <label>Kode<input type="text" id="accountCode" inputmode="numeric" pattern="[1-5][0-9]{3}" maxlength="4" required placeholder="5204"></label>
+              <label>Type<select id="accountType"></select></label>
+              <label>Code<input type="text" id="accountCode" inputmode="numeric" pattern="[1-5][0-9]{3}" maxlength="4" required placeholder="5204"></label>
             </div>
-            <label>Nama akun<input type="text" id="accountName" maxlength="80" required placeholder="Contoh: Beban Zoom"></label>
-            <div class="form-actions"><button class="btn primary" type="submit" id="accountSave">Tambah Akun</button></div>
+            <label>Account name<input type="text" id="accountName" maxlength="80" required placeholder="Contoh: Zoom Expense"></label>
+            <div class="form-actions"><button class="btn primary" type="submit" id="accountSave">Add Account</button></div>
             <p class="status" id="accountStatus"></p>
           </form>
         </div>
@@ -544,12 +544,12 @@
 
       <section class="panel">
         <div class="panel-head">
-          <div><h2>Daftar Akun</h2><p class="muted">Akun bertanda Sistem dipakai jurnal otomatis, jadi tidak bisa dihapus. Namanya tetap bisa diubah.</p></div>
+          <div><h2>Chart of Accounts</h2><p class="muted">Account bertanda System dipakai automatic journal, jadi tidak bisa dihapus. Namanya tetap bisa diubah.</p></div>
         </div>
         <div class="panel-body">
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>Kode</th><th>Nama</th><th>Tipe</th><th>Saldo Normal</th><th class="num">Saldo Saat Ini</th><th>Status</th><th></th></tr></thead>
+              <thead><tr><th>Code</th><th>Name</th><th>Type</th><th>Normal Balance</th><th class="num">Current Balance</th><th>Status</th><th></th></tr></thead>
               <tbody id="accountsBody"></tbody>
             </table>
           </div>
@@ -582,27 +582,29 @@
     digitalRevenue:"4201", otherIncome:"4901", tutorFee:"5101", salary:"5102", otherExpense:"5901"
   };
   const ACCOUNT_TYPES = {
-    asset:{ label:"Aset", normal:"debit", digit:"1" },
-    liability:{ label:"Liabilitas", normal:"credit", digit:"2" },
-    equity:{ label:"Ekuitas", normal:"credit", digit:"3" },
-    revenue:{ label:"Pendapatan", normal:"credit", digit:"4" },
-    expense:{ label:"Beban", normal:"debit", digit:"5" }
+    asset:{ label:"Assets", normal:"debit", digit:"1" },
+    liability:{ label:"Liabilities", normal:"credit", digit:"2" },
+    equity:{ label:"Equity", normal:"credit", digit:"3" },
+    revenue:{ label:"Revenue", normal:"credit", digit:"4" },
+    expense:{ label:"Expenses", normal:"debit", digit:"5" }
   };
   const TYPE_ORDER = ["asset", "liability", "equity", "revenue", "expense"];
   const DEFAULT_ACCOUNTS = [
-    ["1101", "Kas & Bank", "asset", true], ["1102", "Piutang Usaha", "asset", false],
-    ["2101", "Utang Fee Tutor", "liability", true], ["2102", "Utang Lain-lain", "liability", false],
+    ["1101", "Cash & Bank", "asset", true], ["1102", "Accounts Receivable", "asset", false],
+    ["2101", "Tutor Fee Payable", "liability", true], ["2102", "Other Payables", "liability", false],
     ["2201", "Unearned Revenue", "liability", true],
-    ["3101", "Modal Pemilik", "equity", false], ["3201", "Prive", "equity", false],
-    ["4101", "Course Revenue", "revenue", true], ["4102", "Pendapatan Sesi Hangus", "revenue", true],
-    ["4201", "Digital Product Revenue", "revenue", true], ["4901", "Pendapatan Lain-lain", "revenue", true],
-    ["5101", "Beban Fee Tutor", "expense", true], ["5102", "Beban Gaji", "expense", true], ["5201", "Beban Marketing", "expense", false],
-    ["5202", "Beban Tools & Langganan", "expense", false], ["5203", "Beban Admin & Payment Gateway", "expense", false],
-    ["5901", "Beban Lain-lain", "expense", true]
+    ["3101", "Owner's Capital", "equity", false], ["3201", "Owner's Drawings", "equity", false],
+    ["4101", "Course Revenue", "revenue", true], ["4102", "Expired Session Revenue", "revenue", true],
+    ["4201", "Digital Product Revenue", "revenue", true], ["4901", "Other Income", "revenue", true],
+    ["5101", "Tutor Fee Expense", "expense", true], ["5102", "Salary Expense", "expense", true], ["5201", "Marketing Expense", "expense", false],
+    ["5202", "Tools & Subscriptions Expense", "expense", false], ["5203", "Admin & Payment Gateway Expense", "expense", false],
+    ["5901", "Other Expenses", "expense", true]
   ].map(([code, name, account_type, is_system]) => ({ code, name, account_type, is_system, is_active:true }));
+  // Nama bawaan lama (bahasa Indonesia) yang mungkin masih tersimpan di database; ditampilkan dengan nama Inggrisnya.
+  const LEGACY_ACCOUNT_NAMES = {"1101":["Kas & Bank","Cash & Bank"],"1102":["Piutang Usaha","Accounts Receivable"],"2101":["Utang Fee Tutor","Tutor Fee Payable"],"2102":["Utang Lain-lain","Other Payables"],"3101":["Modal Pemilik","Owner's Capital"],"3201":["Prive","Owner's Drawings"],"4102":["Pendapatan Sesi Hangus","Expired Session Revenue"],"4901":["Pendapatan Lain-lain","Other Income"],"5101":["Beban Fee Tutor","Tutor Fee Expense"],"5102":["Beban Gaji","Salary Expense"],"5201":["Beban Marketing","Marketing Expense"],"5202":["Beban Tools & Langganan","Tools & Subscriptions Expense"],"5203":["Beban Admin & Payment Gateway","Admin & Payment Gateway Expense"],"5901":["Beban Lain-lain","Other Expenses"]};
   const SOURCE_LABELS = {
-    manual:"Manual", booking:"Booking", revenue:"Pengakuan pendapatan", fee:"Fee tutor",
-    payment:"Bayar tutor", expired:"Sesi hangus", digital:"Produk digital", legacy:"Transaksi Finance 1"
+    manual:"Manual", booking:"Booking", revenue:"Revenue recognition", fee:"Tutor fee",
+    payment:"Tutor payment", expired:"Expired sessions", digital:"Digital product", legacy:"Finance 1 entry"
   };
   const JOURNAL_TEMPLATES = {
     expense:{ debit:"5202", credit:SYS.cash },
@@ -610,7 +612,9 @@
     capital:{ debit:SYS.cash, credit:"3101" },
     income:{ debit:SYS.cash, credit:SYS.otherIncome }
   };
-  const financeViews = ["ringkasan", "jurnal", "buku-besar", "laba-rugi", "neraca", "akun"];
+  const financeViews = ["summary", "journal", "ledger", "income-statement", "balance-sheet", "accounts"];
+  // Link lama (sebelum istilah diganti ke bahasa Inggris) tetap membuka tab yang sama.
+  const legacyViews = { ringkasan:"summary", jurnal:"journal", "buku-besar":"ledger", "laba-rugi":"income-statement", neraca:"balance-sheet", akun:"accounts" };
   const journalPageSize = 60;
   const ledgerPreviewRows = 300;
 
@@ -666,7 +670,8 @@
   }
 
   function currentFinanceView() {
-    const view = decodeURIComponent(location.hash.slice(1));
+    const hash = decodeURIComponent(location.hash.slice(1));
+    const view = legacyViews[hash] || hash;
     return financeViews.includes(view) ? view : financeViews[0];
   }
 
@@ -685,7 +690,7 @@
       if (left < tabs.scrollLeft) tabs.scrollLeft = left - 8;
       else if (left + activeTab.offsetWidth > tabs.scrollLeft + tabs.clientWidth) tabs.scrollLeft = left + activeTab.offsetWidth - tabs.clientWidth + 8;
     }
-    if (view === "ringkasan" && report) renderTrend();
+    if (view === "summary" && report) renderTrend();
     if (!scroll) return;
     const heroRow = els.dashboard.querySelector(".hero-row");
     const topbar = document.querySelector(".topbar");
@@ -873,7 +878,7 @@
   }
 
   function getAccount(code) {
-    return accountMap.get(code) || { code, name:`Akun ${code} (sudah dihapus)`, account_type:typeFromCode(code), is_system:false, is_active:false, missing:true };
+    return accountMap.get(code) || { code, name:`Account ${code} (deleted)`, account_type:typeFromCode(code), is_system:false, is_active:false, missing:true };
   }
 
   function accountLabel(code) {
@@ -882,7 +887,10 @@
   }
 
   function setAccounts(rows) {
-    const byCode = new Map((rows || []).map((row) => [row.code, { ...row }]));
+    const byCode = new Map((rows || []).map((row) => {
+      const legacy = LEGACY_ACCOUNT_NAMES[row.code];
+      return [row.code, { ...row, name:legacy && row.name === legacy[0] ? legacy[1] : row.name }];
+    }));
     // Akun sistem selalu ada supaya jurnal otomatis tetap punya tujuan walau tabel akun belum dibuat.
     DEFAULT_ACCOUNTS.forEach((account) => {
       if (!byCode.has(account.code) && (account.is_system || !rows || !rows.length)) byCode.set(account.code, { ...account });
@@ -903,7 +911,7 @@
         .join("");
       return options ? `<optgroup label="${ACCOUNT_TYPES[type].label}">${options}</optgroup>` : "";
     }).join("");
-    const first = includeAll ? `<option value="">${escapeHTML(includeAll)}</option>` : `<option value="">Pilih akun</option>`;
+    const first = includeAll ? `<option value="">${escapeHTML(includeAll)}</option>` : `<option value="">Select account</option>`;
     return first + groups;
   }
 
@@ -1154,11 +1162,11 @@
           const target = Math.round(context.price * Math.min(cumulative, context.total) / context.total);
           const amount = target - recognized;
           recognized = target;
-          pair(event.date, "revenue", `Pendapatan meeting ${numberLabel}/${context.total} · ${classText}`,
+          pair(event.date, "revenue", `Revenue · meeting ${numberLabel}/${context.total} · ${classText}`,
             { account:SYS.unearned, party:context.classLabel }, { account:SYS.courseRevenue, party:context.program }, amount, { estimated:event.estimated });
         }
         if (fee > 0) {
-          pair(event.date, "fee", `Fee tutor ${tutor} · meeting ${numberLabel} · ${classText}`,
+          pair(event.date, "fee", `Tutor fee ${tutor} · meeting ${numberLabel} · ${classText}`,
             { account:SYS.tutorFee, party:tutor }, { account:SYS.tutorPayable, party:tutor }, event.count * fee, { estimated:event.estimated });
         } else {
           notes.missingFeeMeetings += event.count;
@@ -1168,7 +1176,7 @@
       if (fee > 0) {
         payments.forEach((event) => {
           if (event.estimated) notes.estimatedPayments += event.count;
-          pair(event.date, "payment", `Bayar fee tutor ${tutor} · ${event.count} meeting · ${classText}`,
+          pair(event.date, "payment", `Tutor fee payment ${tutor} · ${event.count} meeting · ${classText}`,
             { account:SYS.tutorPayable, party:tutor }, { account:SYS.cash }, event.count * fee, { estimated:event.estimated });
         });
       }
@@ -1176,7 +1184,7 @@
       // Lewat masa berlaku: sisa sesi hangus dan jadi pendapatan, bukan kewajiban lagi.
       if (context.hasRevenue && context.validUntil && context.validUntil < today && recognized < context.price) {
         const unused = context.total - Math.min(cumulative, context.total);
-        pair(context.validUntil, "expired", `Sesi hangus · ${classText} (${unused} meeting tidak terpakai)`,
+        pair(context.validUntil, "expired", `Expired sessions · ${classText} (${unused} unused meeting)`,
           { account:SYS.unearned, party:context.classLabel }, { account:SYS.expiredRevenue, party:context.program }, context.price - recognized);
       }
     };
@@ -1206,7 +1214,7 @@
           { account:SYS.cash }, { account:SYS.unearned, party:classLabel }, price);
       } else if (price > 0) {
         notes.bookingsWithoutMeetings += 1;
-        pair(orderDate, "booking", `Booking ${students} · ${program} (tanpa data total meeting, diakui saat order)`,
+        pair(orderDate, "booking", `Booking ${students} · ${program} (no meeting total, recognized at order)`,
           { account:SYS.cash }, { account:SYS.courseRevenue, party:program }, price, { estimated:true });
       }
       if (tracker) {
@@ -1224,12 +1232,12 @@
       if (price <= 0) { notes.missingDigitalPrice += row.sale_count; return; }
       const lastDay = monthEnd(row.month);
       const period = row.before ? `sampai ${monthLabel(row.month)}` : monthLabel(row.month);
-      pair(lastDay > today ? today : lastDay, "digital", `Penjualan ${row.product_name} · ${period} (${formatNumber(row.sale_count)} x ${formatMoney(price)})`,
+      pair(lastDay > today ? today : lastDay, "digital", `Sales ${row.product_name} · ${period} (${formatNumber(row.sale_count)} x ${formatMoney(price)})`,
         { account:SYS.cash }, { account:SYS.digitalRevenue, party:row.product_name }, row.sale_count * price);
     });
 
     // Kalau sudah ada akun bernama "Beban Gaji" dengan kode lain, pakai akun itu.
-    const namedSalary = accounts.find((account) => account.account_type === "expense" && account.name.trim().toLowerCase() === "beban gaji");
+    const namedSalary = accounts.find((account) => account.account_type === "expense" && ["salary expense", "beban gaji"].includes(account.name.trim().toLowerCase()));
     const salaryAccount = namedSalary ? namedSalary.code : SYS.salary;
     data.legacy.forEach((row) => {
       const category = row.category || "Lainnya";
@@ -1370,7 +1378,7 @@
     report = computeReport();
     journalVisibleCount = journalPageSize;
     els.setupBanner.classList.toggle("hidden", journalReady);
-    els.sessionLabel.textContent = `Pembukuan akrual periode ${report.period}`;
+    els.sessionLabel.textContent = `Accrual basis · periode ${report.period}`;
     renderSummary();
     renderJournalFilters();
     renderJournal();
@@ -1389,29 +1397,29 @@
     const manualCount = report.periodEntries.filter((entry) => entry.source === "manual").length;
     const bookingCash = report.monthly.reduce((total, month) => total + month.bookingCash, 0);
     els.metricRevenue.textContent = formatMoney(report.totalRevenue);
-    els.metricRevenueNote.textContent = `Kas masuk dari booking periode ini ${formatMoney(bookingCash)}`;
+    els.metricRevenueNote.textContent = `Cash in dari booking periode ini ${formatMoney(bookingCash)}`;
     els.metricExpense.textContent = formatMoney(report.totalExpense);
-    els.metricExpenseNote.textContent = "Termasuk fee tutor yang belum dibayar";
+    els.metricExpenseNote.textContent = "Termasuk tutor fee yang belum dibayar";
     els.metricProfit.textContent = formatMoney(report.netProfit);
     els.metricProfit.classList.toggle("neg", report.netProfit < 0);
-    els.metricProfitNote.textContent = report.totalRevenue > 0 ? `Margin ${Math.round(report.netProfit / report.totalRevenue * 100)}% dari pendapatan` : "Belum ada pendapatan diakui";
+    els.metricProfitNote.textContent = report.totalRevenue > 0 ? `Margin ${Math.round(report.netProfit / report.totalRevenue * 100)}% dari revenue` : "Belum ada recognized revenue";
     const asOf = `Per ${formatDate(report.asOf)}`;
     els.cardCash.textContent = formatMoney(report.cash);
-    els.cardCashNote.textContent = `${asOf}, lihat neraca`;
+    els.cardCashNote.textContent = `${asOf}, lihat balance sheet`;
     els.cardUnearned.textContent = formatMoney(report.unearned);
     els.cardUnearnedNote.textContent = `${asOf}, masih kewajiban ke siswa`;
     els.cardPayable.textContent = formatMoney(report.payable);
     els.cardPayableNote.textContent = `${asOf}, lihat rincian per tutor`;
     els.cardJournal.textContent = formatNumber(report.periodEntries.length);
-    els.cardJournalNote.textContent = `${formatNumber(manualCount)} manual, ${formatNumber(report.periodEntries.length - manualCount)} otomatis`;
-    els.trendSubtitle.textContent = `Periode ${report.period}. Pendapatan diakui saat meeting terealisasi, bukan saat siswa membayar.`;
+    els.cardJournalNote.textContent = `${formatNumber(manualCount)} manual, ${formatNumber(report.periodEntries.length - manualCount)} automatic`;
+    els.trendSubtitle.textContent = `Periode ${report.period}. Revenue diakui saat meeting terealisasi, bukan saat siswa membayar.`;
 
     const totals = report.monthly.reduce((sum, month) => ({ bookingCash:sum.bookingCash + month.bookingCash, revenue:sum.revenue + month.revenue, expense:sum.expense + month.expense, profit:sum.profit + month.profit }), { bookingCash:0, revenue:0, expense:0, profit:0 });
     const moneyCell = (value) => `<td class="num ${value < 0 ? "neg" : ""}">${formatNumber(value)}</td>`;
     els.monthlySummaryBody.innerHTML = report.monthly.length
       ? [...report.monthly].reverse().map((month) => `<tr><td>${escapeHTML(monthLabel(month.key))}</td>${moneyCell(month.bookingCash)}${moneyCell(month.revenue)}${moneyCell(month.expense)}${moneyCell(month.profit)}</tr>`).join("")
         + `<tr class="total-row"><td>Total</td>${moneyCell(totals.bookingCash)}${moneyCell(totals.revenue)}${moneyCell(totals.expense)}${moneyCell(totals.profit)}</tr>`
-      : `<tr><td colspan="5" class="empty">Belum ada jurnal untuk periode ini.</td></tr>`;
+      : `<tr><td colspan="5" class="empty">Belum ada journal entry untuk periode ini.</td></tr>`;
 
     renderTrend();
     renderRules();
@@ -1420,29 +1428,29 @@
   function renderRules() {
     const name = (code) => escapeHTML(getAccount(code).name);
     const rules = [
-      ["Siswa membayar booking", SYS.cash, SYS.unearned, "Tanggal order"],
+      ["Siswa membayar booking", SYS.cash, SYS.unearned, "Order date"],
       ["Meeting terealisasi (harga paket / total meeting)", SYS.unearned, SYS.courseRevenue, "Tanggal meeting dicatat di Input"],
       ["Meeting terealisasi (fee tutor)", SYS.tutorFee, SYS.tutorPayable, "Tanggal meeting dicatat di Input"],
       ["Fee tutor dibayar", SYS.tutorPayable, SYS.cash, "Tanggal payment diubah di Dashboard"],
-      ["Masa berlaku kelas habis, sisa sesi hangus", SYS.unearned, SYS.expiredRevenue, "Tanggal masa berlaku"],
-      ["Produk digital terjual", SYS.cash, SYS.digitalRevenue, "Akhir bulan penjualan"],
-      ["Pendapatan lain di Finance 1", SYS.cash, SYS.otherIncome, "Tanggal transaksi"],
-      ["Gaji admin di Finance 1 (kategori atau keterangan memuat \"gaji\")", SYS.salary, SYS.cash, "Tanggal transaksi"],
-      ["Pengeluaran lain di Finance 1", SYS.otherExpense, SYS.cash, "Tanggal transaksi"]
+      ["Masa berlaku kelas habis, sisa sesi hangus", SYS.unearned, SYS.expiredRevenue, "Valid-until date"],
+      ["Produk digital terjual", SYS.cash, SYS.digitalRevenue, "End of sale month"],
+      ["Other income di Finance 1", SYS.cash, SYS.otherIncome, "Transaction date"],
+      ["Gaji admin di Finance 1 (kategori atau keterangan memuat \"gaji\")", SYS.salary, SYS.cash, "Transaction date"],
+      ["Other expense di Finance 1", SYS.otherExpense, SYS.cash, "Transaction date"]
     ];
     els.rulesBody.innerHTML = rules.map(([event, debit, credit, when]) => `<tr><td>${escapeHTML(event)}</td><td>${name(debit)}</td><td>${name(credit)}</td><td>${escapeHTML(when)}</td></tr>`).join("");
 
     const notes = [];
     if (dataNotes.logFailed) notes.push("Activity log belum bisa dibaca, jadi semua meeting dan pembayaran fee diakui di tanggal order kelasnya.");
-    if (dataNotes.estimatedMeetings) notes.push(`${formatNumber(dataNotes.estimatedMeetings)} meeting terealisasi sebelum tanggalnya tercatat di activity log. Meeting ini diakui di tanggal order kelasnya dan ditandai "Tanggal estimasi" di jurnal.`);
+    if (dataNotes.estimatedMeetings) notes.push(`${formatNumber(dataNotes.estimatedMeetings)} meeting terealisasi sebelum tanggalnya tercatat di activity log. Meeting ini diakui di tanggal order kelasnya dan ditandai "Estimated date" di journal.`);
     if (dataNotes.estimatedPayments) notes.push(`${formatNumber(dataNotes.estimatedPayments)} pembayaran fee tutor tidak punya tanggal di activity log, jadi dicatat di tanggal order kelasnya.`);
-    if (dataNotes.missingFeeMeetings) notes.push(`${formatNumber(dataNotes.missingFeeMeetings)} meeting belum punya fee di Database, jadi beban fee tutornya belum tercatat.`);
-    if (dataNotes.bookingsWithoutMeetings) notes.push(`${formatNumber(dataNotes.bookingsWithoutMeetings)} booking tidak punya total meeting di tracker, jadi pendapatannya langsung diakui di tanggal order.`);
+    if (dataNotes.missingFeeMeetings) notes.push(`${formatNumber(dataNotes.missingFeeMeetings)} meeting belum punya fee di Database, jadi tutor fee expense-nya belum tercatat.`);
+    if (dataNotes.bookingsWithoutMeetings) notes.push(`${formatNumber(dataNotes.bookingsWithoutMeetings)} booking tidak punya total meeting di tracker, jadi revenue-nya langsung diakui di tanggal order.`);
     if (dataNotes.trackersWithoutBooking) notes.push(`${formatNumber(dataNotes.trackersWithoutBooking)} tracker tidak terhubung ke booking, jadi hanya fee tutornya yang tercatat.`);
     if (dataNotes.missingDigitalPrice) notes.push(`${formatNumber(dataNotes.missingDigitalPrice)} penjualan produk digital belum punya harga di halaman ini.`);
-    if (dataNotes.digitalFailed) notes.push("Data penjualan produk digital belum bisa dimuat, jadi belum masuk jurnal.");
-    notes.push("Jurnal otomatis selalu dihitung ulang dari data booking dan tracker terbaru. Kalau harga, total meeting, atau fee diubah, jurnalnya ikut menyesuaikan.");
-    notes.push("Booking dianggap lunas di tanggal order. Kalau ada cicilan, potongan payment gateway, atau refund, catat penyesuaiannya di tab Jurnal.");
+    if (dataNotes.digitalFailed) notes.push("Data penjualan produk digital belum bisa dimuat, jadi belum masuk journal.");
+    notes.push("Automatic journal selalu dihitung ulang dari data booking dan tracker terbaru. Kalau harga, total meeting, atau fee diubah, journal-nya ikut menyesuaikan.");
+    notes.push("Booking dianggap lunas di tanggal order. Kalau ada cicilan, potongan payment gateway, atau refund, catat penyesuaiannya di tab Journal.");
     els.dataNotes.innerHTML = notes.map((note) => `<li>${escapeHTML(note)}</li>`).join("");
   }
 
@@ -1459,8 +1467,8 @@
     container.className = "";
     if (months.length < 2) return;
     const series = [
-      { name:"Pendapatan diakui", color:"var(--series-1)", values:months.map((month) => month.revenue) },
-      { name:"Laba bersih", color:"var(--series-2)", values:months.map((month) => month.profit) }
+      { name:"Recognized revenue", color:"var(--series-1)", values:months.map((month) => month.revenue) },
+      { name:"Net profit", color:"var(--series-2)", values:months.map((month) => month.profit) }
     ];
     const width = Math.round(Math.max(320, Math.min(1120, container.clientWidth || els.dashboard.clientWidth - 48 || 920)));
     const compact = width < 560;
@@ -1510,7 +1518,7 @@
     container.className = "trend-chart";
     container.innerHTML = `
       <div class="chart-legend">${series.map((item) => `<span><i class="chart-key" style="border-color:${item.color}"></i>${escapeHTML(item.name)}</span>`).join("")}</div>
-      <svg viewBox="0 0 ${width} ${height}" role="group" aria-label="Grafik garis pendapatan diakui dan laba bersih per bulan">${svgParts.join("")}</svg>
+      <svg viewBox="0 0 ${width} ${height}" role="group" aria-label="Line chart of recognized revenue and net profit per month">${svgParts.join("")}</svg>
       <div class="chart-tooltip" data-tooltip></div>
     `;
     const svg = container.querySelector("svg");
@@ -1564,13 +1572,13 @@
     const source = els.journalSourceFilter.value;
     const account = els.journalAccountFilter.value;
     els.journalSourceFilter.innerHTML = [
-      `<option value="">Semua sumber</option>`,
+      `<option value="">All sources</option>`,
       `<option value="manual">Manual</option>`,
-      `<option value="auto">Otomatis (semua)</option>`,
-      ...Object.entries(SOURCE_LABELS).filter(([key]) => key !== "manual").map(([key, label]) => `<option value="${key}">Otomatis: ${escapeHTML(label)}</option>`)
+      `<option value="auto">Automatic (all)</option>`,
+      ...Object.entries(SOURCE_LABELS).filter(([key]) => key !== "manual").map(([key, label]) => `<option value="${key}">Automatic: ${escapeHTML(label)}</option>`)
     ].join("");
     els.journalSourceFilter.value = source;
-    els.journalAccountFilter.innerHTML = accountOptionsHTML(account, { includeAll:"Semua akun" });
+    els.journalAccountFilter.innerHTML = accountOptionsHTML(account, { includeAll:"All accounts" });
     els.journalAccountFilter.value = accountMap.has(account) ? account : "";
   }
 
@@ -1596,26 +1604,26 @@
     const visible = list.slice(0, journalVisibleCount);
     const totalDebit = list.reduce((sum, entry) => sum + entry.lines.reduce((lineSum, line) => lineSum + line.debit, 0), 0);
     const totalCredit = list.reduce((sum, entry) => sum + entry.lines.reduce((lineSum, line) => lineSum + line.credit, 0), 0);
-    els.journalSubtitle.textContent = `Periode ${report.period}. Jurnal otomatis dan manual jadi satu.`;
+    els.journalSubtitle.textContent = `Periode ${report.period}. Automatic dan manual entries jadi satu.`;
     els.journalSummary.innerHTML = `
-      <span>${formatNumber(list.length)} jurnal</span>
+      <span>${formatNumber(list.length)} entries</span>
       <span>Total debit ${formatMoney(totalDebit)}</span>
-      <span>Total kredit ${formatMoney(totalCredit)}</span>
+      <span>Total credit ${formatMoney(totalCredit)}</span>
     `;
     els.journalEmpty.classList.toggle("hidden", list.length > 0);
     els.journalTableWrap.classList.toggle("hidden", list.length === 0);
     els.journalShowMore.classList.toggle("hidden", list.length <= journalVisibleCount);
-    els.journalShowMore.textContent = `Tampilkan lebih banyak (${formatNumber(Math.max(list.length - journalVisibleCount, 0))} lagi)`;
+    els.journalShowMore.textContent = `Show more (${formatNumber(Math.max(list.length - journalVisibleCount, 0))} left)`;
     els.journalTable.querySelectorAll("tbody").forEach((body) => body.remove());
     els.journalTable.insertAdjacentHTML("beforeend", visible.map((entry) => {
       const isManual = entry.source === "manual";
       const tags = [
         `<span class="pill ${isManual ? "manual" : ""}">${escapeHTML(SOURCE_LABELS[entry.source] || entry.source)}</span>`,
-        entry.estimated ? `<span class="pill warn">Tanggal estimasi</span>` : "",
+        entry.estimated ? `<span class="pill warn">Estimated date</span>` : "",
         entry.reference ? `<span class="pill off">Ref ${escapeHTML(entry.reference)}</span>` : ""
       ].join("");
       const actions = isManual && journalReady
-        ? `<div class="row-actions"><button class="btn small" type="button" data-edit-entry="${escapeHTML(entry.manualId)}">Edit</button><button class="btn small danger" type="button" data-delete-entry="${escapeHTML(entry.manualId)}">Hapus</button></div>`
+        ? `<div class="row-actions"><button class="btn small" type="button" data-edit-entry="${escapeHTML(entry.manualId)}">Edit</button><button class="btn small danger" type="button" data-delete-entry="${escapeHTML(entry.manualId)}">Delete</button></div>`
         : "";
       const lines = [...entry.lines].sort((a, b) => Number(b.debit > 0) - Number(a.debit > 0)).map((line) => `
         <tr class="entry-line">
@@ -1626,7 +1634,7 @@
       return `
         <tbody>
           <tr class="entry-head">
-            <td colspan="3"><div class="entry-title"><div><div class="entry-meta"><span class="entry-date">${escapeHTML(formatDate(entry.date))}</span>${tags}</div><p>${escapeHTML(entry.description || "(tanpa keterangan)")}</p></div>${actions}</div></td>
+            <td colspan="3"><div class="entry-title"><div><div class="entry-meta"><span class="entry-date">${escapeHTML(formatDate(entry.date))}</span>${tags}</div><p>${escapeHTML(entry.description || "(no description)")}</p></div>${actions}</div></td>
           </tr>
           ${lines}
         </tbody>`;
@@ -1642,8 +1650,8 @@
     formLines = [blankLine(), blankLine()];
     els.journalForm.reset();
     els.journalDate.value = todayInput();
-    els.journalFormTitle.textContent = "Input Jurnal";
-    els.journalSave.textContent = "Simpan Jurnal";
+    els.journalFormTitle.textContent = "New Journal Entry";
+    els.journalSave.textContent = "Save Entry";
     els.journalCancelEdit.classList.add("hidden");
     renderJournalForm();
   }
@@ -1653,10 +1661,10 @@
     if (!els.journalDate.value) els.journalDate.value = todayInput();
     els.journalLinesBody.innerHTML = formLines.map((line, index) => `
       <tr data-line="${index}">
-        <td><select data-field="account" aria-label="Akun baris ${index + 1}">${accountOptionsHTML(line.account)}</select></td>
-        <td class="amount-cell"><input type="number" data-field="debit" min="0" step="1" inputmode="numeric" placeholder="Debit" value="${escapeHTML(line.debit)}" aria-label="Debit baris ${index + 1}"></td>
-        <td class="amount-cell"><input type="number" data-field="credit" min="0" step="1" inputmode="numeric" placeholder="Kredit" value="${escapeHTML(line.credit)}" aria-label="Kredit baris ${index + 1}"></td>
-        <td class="action-cell">${formLines.length > 2 ? `<button class="btn small danger" type="button" data-remove-line="${index}" aria-label="Hapus baris ${index + 1}">×</button>` : ""}</td>
+        <td><select data-field="account" aria-label="Account line ${index + 1}">${accountOptionsHTML(line.account)}</select></td>
+        <td class="amount-cell"><input type="number" data-field="debit" min="0" step="1" inputmode="numeric" placeholder="Debit" value="${escapeHTML(line.debit)}" aria-label="Debit line ${index + 1}"></td>
+        <td class="amount-cell"><input type="number" data-field="credit" min="0" step="1" inputmode="numeric" placeholder="Credit" value="${escapeHTML(line.credit)}" aria-label="Credit line ${index + 1}"></td>
+        <td class="action-cell">${formLines.length > 2 ? `<button class="btn small danger" type="button" data-remove-line="${index}" aria-label="Remove line ${index + 1}">×</button>` : ""}</td>
       </tr>`).join("");
     updateJournalTotals();
     syncFormAvailability();
@@ -1674,13 +1682,13 @@
     els.journalTotalCredit.textContent = formatNumber(totals.credit);
     if (!totals.debit && !totals.credit) {
       els.journalBalance.className = "pill off";
-      els.journalBalance.textContent = "Belum diisi";
+      els.journalBalance.textContent = "Empty";
     } else if (totals.balanced) {
       els.journalBalance.className = "pill ok";
-      els.journalBalance.textContent = "Seimbang";
+      els.journalBalance.textContent = "Balanced";
     } else {
       els.journalBalance.className = "pill bad";
-      els.journalBalance.textContent = `Selisih ${formatMoney(Math.abs(totals.debit - totals.credit))}`;
+      els.journalBalance.textContent = `Difference ${formatMoney(Math.abs(totals.debit - totals.credit))}`;
     }
   }
 
@@ -1715,11 +1723,11 @@
       .map((line) => ({ account_code:line.account, debit:Math.round(Number(line.debit || 0)), credit:Math.round(Number(line.credit || 0)), memo:"" }))
       .filter((line) => line.debit > 0 || line.credit > 0);
     const totals = journalFormTotals();
-    if (!els.journalDate.value || !els.journalDescription.value.trim()) { setStatus(els.journalStatus, "Tanggal dan keterangan wajib diisi.", "bad"); return; }
-    if (lines.length < 2) { setStatus(els.journalStatus, "Isi minimal dua baris: satu debit dan satu kredit.", "bad"); return; }
-    if (lines.some((line) => !line.account_code)) { setStatus(els.journalStatus, "Setiap baris yang berisi nominal harus punya akun.", "bad"); return; }
-    if (lines.some((line) => line.debit > 0 && line.credit > 0)) { setStatus(els.journalStatus, "Satu baris hanya boleh debit atau kredit, tidak keduanya.", "bad"); return; }
-    if (!totals.balanced) { setStatus(els.journalStatus, `Total debit dan kredit belum sama. Selisih ${formatMoney(Math.abs(totals.debit - totals.credit))}.`, "bad"); return; }
+    if (!els.journalDate.value || !els.journalDescription.value.trim()) { setStatus(els.journalStatus, "Date dan description wajib diisi.", "bad"); return; }
+    if (lines.length < 2) { setStatus(els.journalStatus, "Isi minimal dua baris: satu debit dan satu credit.", "bad"); return; }
+    if (lines.some((line) => !line.account_code)) { setStatus(els.journalStatus, "Setiap baris yang berisi nominal harus punya account.", "bad"); return; }
+    if (lines.some((line) => line.debit > 0 && line.credit > 0)) { setStatus(els.journalStatus, "Satu baris hanya boleh debit atau credit, tidak keduanya.", "bad"); return; }
+    if (!totals.balanced) { setStatus(els.journalStatus, `Total debit dan credit belum sama. Selisih ${formatMoney(Math.abs(totals.debit - totals.credit))}.`, "bad"); return; }
     const payload = { entry_date:els.journalDate.value, description:els.journalDescription.value.trim(), reference:els.journalReference.value.trim(), lines };
     els.journalSave.disabled = true;
     els.journalSave.textContent = "Menyimpan...";
@@ -1730,14 +1738,14 @@
     els.journalSave.disabled = false;
     if (error) {
       console.error("Journal save failed:", error);
-      els.journalSave.textContent = editingEntryId ? "Simpan Perubahan" : "Simpan Jurnal";
-      setStatus(els.journalStatus, "Jurnal belum bisa disimpan. Coba lagi.", "bad");
+      els.journalSave.textContent = editingEntryId ? "Save Changes" : "Save Entry";
+      setStatus(els.journalStatus, "Journal entry belum bisa disimpan. Coba lagi.", "bad");
       return;
     }
     const wasEditing = Boolean(editingEntryId);
     resetJournalForm();
     await reloadJournalTables();
-    setStatus(els.journalStatus, wasEditing ? "Perubahan jurnal tersimpan." : "Jurnal tersimpan.");
+    setStatus(els.journalStatus, wasEditing ? "Perubahan journal entry tersimpan." : "Journal entry tersimpan.");
   }
 
   function startEditEntry(id) {
@@ -1753,26 +1761,26 @@
       credit:Number(line.credit || 0) > 0 ? String(Math.round(Number(line.credit))) : ""
     }));
     while (formLines.length < 2) formLines.push(blankLine());
-    els.journalFormTitle.textContent = "Edit Jurnal";
-    els.journalSave.textContent = "Simpan Perubahan";
+    els.journalFormTitle.textContent = "Edit Journal Entry";
+    els.journalSave.textContent = "Save Changes";
     els.journalCancelEdit.classList.remove("hidden");
     renderJournalForm();
-    setStatus(els.journalStatus, "Mengedit jurnal. Simpan perubahan atau batalkan.");
+    setStatus(els.journalStatus, "Mengedit journal entry. Simpan perubahan atau batalkan.");
     els.journalForm.scrollIntoView({ block:"center" });
   }
 
   async function deleteEntry(id) {
     if (!id || !supabaseClient || !isFinanceAdmin() || !journalReady) return;
-    if (!confirm("Hapus jurnal manual ini?")) return;
+    if (!confirm("Hapus manual journal entry ini?")) return;
     const { error } = await supabaseClient.from("finance_journal_entries").delete().eq("id", id);
     if (error) {
       console.error("Journal delete failed:", error);
-      setStatus(els.journalStatus, "Jurnal belum bisa dihapus.", "bad");
+      setStatus(els.journalStatus, "Journal entry belum bisa dihapus.", "bad");
       return;
     }
     if (String(editingEntryId) === String(id)) resetJournalForm();
     await reloadJournalTables();
-    setStatus(els.journalStatus, "Jurnal dihapus.");
+    setStatus(els.journalStatus, "Journal entry dihapus.");
   }
 
   /* ---------- Tab Buku Besar ---------- */
@@ -1800,23 +1808,23 @@
     // Laba atau rugi sebelum periode sudah masuk saldo laba, jadi ditampilkan supaya saldo tetap seimbang.
     const retained = sides(report.retainedOpening, false);
     const retainedRow = retained.debit || retained.credit
-      ? `<tr><td></td><td>Saldo laba sebelum periode</td><td class="num"></td><td class="num"></td><td class="num">${formatAmount(retained.debit)}</td><td class="num">${formatAmount(retained.credit)}</td></tr>`
+      ? `<tr><td></td><td>Retained earnings before period</td><td class="num"></td><td class="num"></td><td class="num">${formatAmount(retained.debit)}</td><td class="num">${formatAmount(retained.credit)}</td></tr>`
       : "";
     balanceDebit += retained.debit;
     balanceCredit += retained.credit;
     const balanced = Math.abs(balanceDebit - balanceCredit) < 1 && Math.abs(moveDebit - moveCredit) < 1;
     els.trialBody.innerHTML = `${body}${retainedRow}<tr class="total-row"><td></td><td>Total</td><td class="num">${formatNumber(moveDebit)}</td><td class="num">${formatNumber(moveCredit)}</td><td class="num">${formatNumber(balanceDebit)}</td><td class="num">${formatNumber(balanceCredit)}</td></tr>`;
-    els.trialSubtitle.textContent = `Periode ${report.period}, saldo per ${formatDate(report.asOf)}. Klik akun untuk melihat buku besarnya.`;
+    els.trialSubtitle.textContent = `Periode ${report.period}, balance per ${formatDate(report.asOf)}. Klik account untuk melihat ledger-nya.`;
     els.trialBalancePill.className = `pill ${balanced ? "ok" : "bad"}`;
-    els.trialBalancePill.textContent = balanced ? "Debit = Kredit" : "Tidak seimbang";
+    els.trialBalancePill.textContent = balanced ? "Debit = Credit" : "Not balanced";
   }
 
   function renderLedger() {
-    els.ledgerAccount.innerHTML = accountOptionsHTML(ledgerAccountCode, { includeAll:"Pilih akun" });
+    els.ledgerAccount.innerHTML = accountOptionsHTML(ledgerAccountCode, { includeAll:"Select account" });
     els.ledgerAccount.value = ledgerAccountCode;
     const row = report.rows.find((item) => item.code === ledgerAccountCode);
     const account = getAccount(ledgerAccountCode);
-    if (!row) { els.ledgerBody.innerHTML = `<tr><td colspan="5" class="empty">Pilih akun untuk melihat buku besarnya.</td></tr>`; return; }
+    if (!row) { els.ledgerBody.innerHTML = `<tr><td colspan="5" class="empty">Pilih account untuk melihat ledger-nya.</td></tr>`; return; }
     const type = account.account_type;
     let balance = row.openingBalance;
     const lines = [];
@@ -1831,17 +1839,17 @@
     const visible = lines.slice(hiddenCount);
     const carried = hiddenCount ? lines[hiddenCount - 1].balance : row.openingBalance;
     const firstLabel = hiddenCount
-      ? `Saldo sampai ${formatDate(lines[hiddenCount - 1].entry.date)} (${formatNumber(hiddenCount)} baris sebelumnya disembunyikan)`
-      : report.range ? `Saldo awal per ${formatDate(report.start)}` : "Saldo awal";
+      ? `Balance up to ${formatDate(lines[hiddenCount - 1].entry.date)} (${formatNumber(hiddenCount)} earlier rows hidden)`
+      : report.range ? `Opening balance per ${formatDate(report.start)}` : "Opening balance";
     els.ledgerBody.innerHTML = `<tr class="total-row"><td></td><td>${escapeHTML(firstLabel)}</td><td class="num"></td><td class="num"></td><td class="num ${carried < 0 ? "neg" : ""}">${formatNumber(carried)}</td></tr>`
       + (visible.length ? visible.map(({ entry, line, balance:running }) => `<tr>
           <td class="entry-date">${escapeHTML(formatDate(entry.date))}</td>
-          <td class="acct-name">${escapeHTML(entry.description || "(tanpa keterangan)")}<small>${escapeHTML(SOURCE_LABELS[entry.source] || entry.source)}${entry.estimated ? " · tanggal estimasi" : ""}</small></td>
+          <td class="acct-name">${escapeHTML(entry.description || "(no description)")}<small>${escapeHTML(SOURCE_LABELS[entry.source] || entry.source)}${entry.estimated ? " · estimated date" : ""}</small></td>
           <td class="num">${formatAmount(line.debit)}</td><td class="num">${formatAmount(line.credit)}</td>
           <td class="num ${running < 0 ? "neg" : ""}">${formatNumber(running)}</td>
-        </tr>`).join("") : `<tr><td colspan="5" class="empty">Tidak ada transaksi di akun ini untuk periode ini.</td></tr>`);
+        </tr>`).join("") : `<tr><td colspan="5" class="empty">Tidak ada transaksi di account ini untuk periode ini.</td></tr>`);
     els.ledgerShowAll.classList.toggle("hidden", hiddenCount === 0);
-    els.ledgerSubtitle.textContent = `${account.code} ${account.name} · ${ACCOUNT_TYPES[type].label}, saldo normal ${ACCOUNT_TYPES[type].normal === "debit" ? "debit" : "kredit"} · periode ${report.period}`;
+    els.ledgerSubtitle.textContent = `${account.code} ${account.name} · ${ACCOUNT_TYPES[type].label}, normal balance ${ACCOUNT_TYPES[type].normal} · periode ${report.period}`;
     els.ledgerClosing.textContent = formatMoney(row.closingBalance);
   }
 
@@ -1867,24 +1875,24 @@
   function renderProfitLoss() {
     const revenueLines = report.revenueRows.length
       ? report.revenueRows.map((row) => statementAccountLine(row, row.periodAmount, report.partyMovement(row.code))).join("")
-      : statementLine("Belum ada pendapatan diakui", 0);
+      : statementLine("No recognized revenue yet", 0);
     const expenseLines = report.expenseRows.length
       ? report.expenseRows.map((row) => statementAccountLine(row, row.periodAmount, report.partyMovement(row.code))).join("")
-      : statementLine("Belum ada beban", 0);
-    els.profitLossSubtitle.textContent = `Periode ${report.period}. Basis akrual: pendapatan diakui saat meeting terealisasi.`;
+      : statementLine("No expenses yet", 0);
+    els.profitLossSubtitle.textContent = `Periode ${report.period}. Accrual basis: revenue diakui saat meeting terealisasi.`;
     els.profitLossStatement.innerHTML = `
       <div class="statement-title">
-        <strong>Laporan Laba Rugi</strong>
+        <strong>Income Statement</strong>
         <span>Jeya's Club</span>
-        <span>Periode ${escapeHTML(report.period)}</span>
+        <span>Period ${escapeHTML(report.period)}</span>
       </div>
-      <div class="statement-section-title">Pendapatan</div>
+      <div class="statement-section-title">Revenue</div>
       ${revenueLines}
-      ${statementLine("Jumlah Pendapatan", report.totalRevenue, { className:"subtotal" })}
-      <div class="statement-section-title">Beban</div>
+      ${statementLine("Total Revenue", report.totalRevenue, { className:"subtotal" })}
+      <div class="statement-section-title">Expenses</div>
       ${expenseLines}
-      ${statementLine("Total Beban", report.totalExpense, { className:"subtotal" })}
-      ${statementLine(report.netProfit < 0 ? "Rugi Bersih" : "Laba Bersih", report.netProfit, { className:"net" })}
+      ${statementLine("Total Expenses", report.totalExpense, { className:"subtotal" })}
+      ${statementLine(report.netProfit < 0 ? "Net Loss" : "Net Profit", report.netProfit, { className:"net" })}
     `;
     renderMonthlyMatrix();
   }
@@ -1892,22 +1900,22 @@
   function renderMonthlyMatrix() {
     // Bulan terbaru di kiri supaya langsung terlihat tanpa menggeser tabel.
     const months = [...report.monthly].reverse();
-    els.monthlyMatrixSubtitle.textContent = `Periode ${report.period}. Tiap kolom adalah pendapatan dan beban yang diakui di bulan itu.`;
-    if (!months.length) { els.monthlyMatrix.innerHTML = `<tbody><tr><td class="empty">Belum ada jurnal untuk periode ini.</td></tr></tbody>`; return; }
+    els.monthlyMatrixSubtitle.textContent = `Periode ${report.period}. Tiap kolom adalah revenue dan expenses yang diakui di bulan itu.`;
+    if (!months.length) { els.monthlyMatrix.innerHTML = `<tbody><tr><td class="empty">Belum ada journal entry untuk periode ini.</td></tr></tbody>`; return; }
     const cell = (value, tag = "td") => `<${tag} class="num ${value < 0 ? "neg" : ""}">${formatAmount(value) || "-"}</${tag}>`;
     const accountRow = (row) => `<tr><td>${escapeHTML(row.code)} ${escapeHTML(row.account.name)}</td>${months.map((month) => cell(month.accounts.get(row.code) || 0)).join("")}${cell(row.periodAmount)}</tr>`;
     const totalRow = (label, key, total, className) => `<tr class="${className}"><td>${label}</td>${months.map((month) => cell(month[key])).join("")}${cell(total)}</tr>`;
     const span = months.length + 2;
     els.monthlyMatrix.innerHTML = `
-      <thead><tr><th>Akun</th>${months.map((month) => `<th class="num">${escapeHTML(monthLabel(month.key, true))}</th>`).join("")}<th class="num">Total</th></tr></thead>
+      <thead><tr><th>Account</th>${months.map((month) => `<th class="num">${escapeHTML(monthLabel(month.key, true))}</th>`).join("")}<th class="num">Total</th></tr></thead>
       <tbody>
-        <tr class="section-row"><td colspan="${span}">Pendapatan</td></tr>
+        <tr class="section-row"><td colspan="${span}">Revenue</td></tr>
         ${report.revenueRows.map(accountRow).join("")}
-        ${totalRow("Jumlah Pendapatan", "revenue", report.totalRevenue, "total-row")}
-        <tr class="section-row"><td colspan="${span}">Beban</td></tr>
+        ${totalRow("Total Revenue", "revenue", report.totalRevenue, "total-row")}
+        <tr class="section-row"><td colspan="${span}">Expenses</td></tr>
         ${report.expenseRows.map(accountRow).join("")}
-        ${totalRow("Total Beban", "expense", report.totalExpense, "total-row")}
-        ${totalRow("Laba Bersih", "profit", report.netProfit, "net-row")}
+        ${totalRow("Total Expenses", "expense", report.totalExpense, "total-row")}
+        ${totalRow("Net Profit", "profit", report.netProfit, "net-row")}
       </tbody>`;
   }
 
@@ -1917,28 +1925,28 @@
       ? rows.map((row) => statementLine(`${row.code} ${row.account.name}`, row.closingBalance)).join("")
       : statementLine(emptyLabel, 0);
     const retainedLines = report.range
-      ? statementLine("Saldo laba sebelum periode", report.retainedOpening) + statementLine("Laba periode berjalan", report.netProfit, { note:`Laba bersih ${report.period}` })
-      : statementLine("Saldo laba", report.netProfit, { note:"Akumulasi laba bersih sejak awal pembukuan" });
+      ? statementLine("Retained earnings before period", report.retainedOpening) + statementLine("Current period profit", report.netProfit, { note:`Net profit ${report.period}` })
+      : statementLine("Retained earnings", report.netProfit, { note:"Akumulasi net profit sejak awal pembukuan" });
     els.balanceSubtitle.textContent = `Posisi per ${asOf}.`;
     els.balancePill.className = `pill ${report.balanced ? "ok" : "bad"}`;
-    els.balancePill.textContent = report.balanced ? "Seimbang" : "Tidak seimbang";
+    els.balancePill.textContent = report.balanced ? "Balanced" : "Not balanced";
     els.balanceStatement.innerHTML = `
       <div class="statement-title">
-        <strong>Neraca</strong>
+        <strong>Balance Sheet</strong>
         <span>Jeya's Club</span>
-        <span>Per ${escapeHTML(asOf)}</span>
+        <span>As of ${escapeHTML(asOf)}</span>
       </div>
-      <div class="statement-section-title">Aset</div>
-      ${lines(report.assetRows, "Belum ada aset")}
-      ${statementLine("Total Aset", report.totalAssets, { className:"subtotal" })}
-      <div class="statement-section-title">Liabilitas</div>
-      ${lines(report.liabilityRows, "Belum ada liabilitas")}
-      ${statementLine("Total Liabilitas", report.totalLiabilities, { className:"subtotal" })}
-      <div class="statement-section-title">Ekuitas</div>
+      <div class="statement-section-title">Assets</div>
+      ${lines(report.assetRows, "No assets yet")}
+      ${statementLine("Total Assets", report.totalAssets, { className:"subtotal" })}
+      <div class="statement-section-title">Liabilities</div>
+      ${lines(report.liabilityRows, "No liabilities yet")}
+      ${statementLine("Total Liabilities", report.totalLiabilities, { className:"subtotal" })}
+      <div class="statement-section-title">Equity</div>
       ${report.equityRows.map((row) => statementLine(`${row.code} ${row.account.name}`, row.closingBalance)).join("")}
       ${retainedLines}
-      ${statementLine("Total Ekuitas", report.totalEquity, { className:"subtotal" })}
-      ${statementLine("Total Liabilitas + Ekuitas", report.totalLiabilities + report.totalEquity, { className:"net" })}
+      ${statementLine("Total Equity", report.totalEquity, { className:"subtotal" })}
+      ${statementLine("Total Liabilities + Equity", report.totalLiabilities + report.totalEquity, { className:"net" })}
     `;
 
     const payableRows = report.partyClosing(SYS.tutorPayable);
@@ -1989,16 +1997,16 @@
       return `<tr class="section-row"><td colspan="7">${ACCOUNT_TYPES[type].label}</td></tr>` + rows.map((account) => {
         const balance = allTime.get(account.code) || 0;
         const status = [
-          account.is_system ? `<span class="pill">Sistem</span>` : "",
-          account.is_active ? "" : `<span class="pill off">Nonaktif</span>`
-        ].filter(Boolean).join(" ") || `<span class="pill ok">Aktif</span>`;
+          account.is_system ? `<span class="pill">System</span>` : "",
+          account.is_active ? "" : `<span class="pill off">Inactive</span>`
+        ].filter(Boolean).join(" ") || `<span class="pill ok">Active</span>`;
         const actions = journalReady ? `
-          <button class="btn small" type="button" data-rename-account="${escapeHTML(account.code)}">Ubah nama</button>
-          ${account.is_system ? "" : `<button class="btn small" type="button" data-toggle-account="${escapeHTML(account.code)}">${account.is_active ? "Nonaktifkan" : "Aktifkan"}</button>`}
-          ${account.is_system || usedCodes.has(account.code) ? "" : `<button class="btn small danger" type="button" data-delete-account="${escapeHTML(account.code)}">Hapus</button>`}` : "";
+          <button class="btn small" type="button" data-rename-account="${escapeHTML(account.code)}">Rename</button>
+          ${account.is_system ? "" : `<button class="btn small" type="button" data-toggle-account="${escapeHTML(account.code)}">${account.is_active ? "Deactivate" : "Activate"}</button>`}
+          ${account.is_system || usedCodes.has(account.code) ? "" : `<button class="btn small danger" type="button" data-delete-account="${escapeHTML(account.code)}">Delete</button>`}` : "";
         return `<tr>
           <td>${escapeHTML(account.code)}</td><td>${escapeHTML(account.name)}</td><td>${ACCOUNT_TYPES[type].label}</td>
-          <td>${ACCOUNT_TYPES[type].normal === "debit" ? "Debit" : "Kredit"}</td>
+          <td>${ACCOUNT_TYPES[type].normal === "debit" ? "Debit" : "Credit"}</td>
           <td class="num ${balance < 0 ? "neg" : ""}">${formatNumber(balance)}</td>
           <td>${status}</td><td><div class="row-actions">${actions}</div></td>
         </tr>`;
@@ -2012,29 +2020,29 @@
     const code = els.accountCode.value.trim();
     const name = els.accountName.value.trim();
     const type = els.accountType.value;
-    if (!/^[1-5][0-9]{3}$/.test(code)) { setStatus(els.accountStatus, "Kode harus 4 digit angka, diawali 1 sampai 5.", "bad"); return; }
-    if (code.charAt(0) !== ACCOUNT_TYPES[type].digit) { setStatus(els.accountStatus, `Kode akun ${ACCOUNT_TYPES[type].label} harus diawali angka ${ACCOUNT_TYPES[type].digit}.`, "bad"); return; }
+    if (!/^[1-5][0-9]{3}$/.test(code)) { setStatus(els.accountStatus, "Code harus 4 digit angka, diawali 1 sampai 5.", "bad"); return; }
+    if (code.charAt(0) !== ACCOUNT_TYPES[type].digit) { setStatus(els.accountStatus, `Code account ${ACCOUNT_TYPES[type].label} harus diawali angka ${ACCOUNT_TYPES[type].digit}.`, "bad"); return; }
     if (accountMap.has(code)) { setStatus(els.accountStatus, `Kode ${code} sudah dipakai ${getAccount(code).name}.`, "bad"); return; }
-    if (!name) { setStatus(els.accountStatus, "Nama akun wajib diisi.", "bad"); return; }
+    if (!name) { setStatus(els.accountStatus, "Account name wajib diisi.", "bad"); return; }
     els.accountSave.disabled = true;
     const { error } = await supabaseClient.from("finance_accounts").insert({ code, name, account_type:type });
     els.accountSave.disabled = false;
     if (error) {
       console.error("Account insert failed:", error);
-      setStatus(els.accountStatus, "Akun belum bisa ditambahkan.", "bad");
+      setStatus(els.accountStatus, "Account belum bisa ditambahkan.", "bad");
       return;
     }
     els.accountName.value = "";
     els.accountCode.value = "";
     await reloadJournalTables();
-    setStatus(els.accountStatus, `Akun ${code} ${name} ditambahkan.`);
+    setStatus(els.accountStatus, `Account ${code} ${name} ditambahkan.`);
   }
 
   async function updateAccount(code, changes, successMessage) {
     const { error } = await supabaseClient.from("finance_accounts").update({ ...changes, updated_at:new Date().toISOString() }).eq("code", code);
     if (error) {
       console.error("Account update failed:", error);
-      setStatus(els.accountStatus, "Akun belum bisa diubah.", "bad");
+      setStatus(els.accountStatus, "Account belum bisa diubah.", "bad");
       return;
     }
     await reloadJournalTables();
@@ -2046,23 +2054,23 @@
     if (!button || !supabaseClient || !isFinanceAdmin() || !journalReady) return;
     if (button.dataset.renameAccount) {
       const account = getAccount(button.dataset.renameAccount);
-      const name = (prompt(`Nama baru untuk akun ${account.code}:`, account.name) || "").trim();
+      const name = (prompt(`Nama baru untuk account ${account.code}:`, account.name) || "").trim();
       if (!name || name === account.name) return;
-      await updateAccount(account.code, { name:name.slice(0, 80) }, `Akun ${account.code} diubah jadi ${name.slice(0, 80)}.`);
+      await updateAccount(account.code, { name:name.slice(0, 80) }, `Account ${account.code} diubah jadi ${name.slice(0, 80)}.`);
     } else if (button.dataset.toggleAccount) {
       const account = getAccount(button.dataset.toggleAccount);
-      await updateAccount(account.code, { is_active:!account.is_active }, `Akun ${account.code} ${account.is_active ? "dinonaktifkan" : "diaktifkan"}.`);
+      await updateAccount(account.code, { is_active:!account.is_active }, `Account ${account.code} ${account.is_active ? "dinonaktifkan" : "diaktifkan"}.`);
     } else if (button.dataset.deleteAccount) {
       const account = getAccount(button.dataset.deleteAccount);
-      if (!confirm(`Hapus akun ${account.code} ${account.name}?`)) return;
+      if (!confirm(`Hapus account ${account.code} ${account.name}?`)) return;
       const { error } = await supabaseClient.from("finance_accounts").delete().eq("code", account.code);
       if (error) {
         console.error("Account delete failed:", error);
-        setStatus(els.accountStatus, "Akun belum bisa dihapus.", "bad");
+        setStatus(els.accountStatus, "Account belum bisa dihapus.", "bad");
         return;
       }
       await reloadJournalTables();
-      setStatus(els.accountStatus, `Akun ${account.code} dihapus.`);
+      setStatus(els.accountStatus, `Account ${account.code} dihapus.`);
     }
   }
 
@@ -2074,54 +2082,54 @@
     const rows = [];
     const add = (...cells) => rows.push(cells);
     const amount = (value) => Math.round(Number(value || 0));
-    add("Laporan Laba Rugi");
+    add("Income Statement");
     add("Jeya's Club");
-    add("Periode", report.period);
+    add("Period", report.period);
     add();
-    add("Pendapatan");
+    add("Revenue");
     report.revenueRows.forEach((row) => {
       add(`${row.code} ${row.account.name}`, amount(row.periodAmount));
       report.partyMovement(row.code).forEach((party) => add(`   ${party.label}`, "", amount(party.amount)));
     });
-    add("Jumlah Pendapatan", amount(report.totalRevenue));
-    add("Beban");
+    add("Total Revenue", amount(report.totalRevenue));
+    add("Expenses");
     report.expenseRows.forEach((row) => {
       add(`${row.code} ${row.account.name}`, amount(row.periodAmount));
       report.partyMovement(row.code).forEach((party) => add(`   ${party.label}`, "", amount(party.amount)));
     });
-    add("Total Beban", amount(report.totalExpense));
-    add("Laba Bersih", amount(report.netProfit));
+    add("Total Expenses", amount(report.totalExpense));
+    add("Net Profit", amount(report.netProfit));
     add();
-    add("Laba Rugi per Bulan");
-    add("Akun", ...months.map((month) => monthLabel(month.key)), "Total");
+    add("Monthly Income Statement");
+    add("Account", ...months.map((month) => monthLabel(month.key)), "Total");
     [...report.revenueRows, ...report.expenseRows].forEach((row) => add(`${row.code} ${row.account.name}`, ...months.map((month) => amount(month.accounts.get(row.code) || 0)), amount(row.periodAmount)));
-    add("Jumlah Pendapatan", ...months.map((month) => amount(month.revenue)), amount(report.totalRevenue));
-    add("Total Beban", ...months.map((month) => amount(month.expense)), amount(report.totalExpense));
-    add("Laba Bersih", ...months.map((month) => amount(month.profit)), amount(report.netProfit));
-    add("Kas Masuk Booking", ...months.map((month) => amount(month.bookingCash)));
+    add("Total Revenue", ...months.map((month) => amount(month.revenue)), amount(report.totalRevenue));
+    add("Total Expenses", ...months.map((month) => amount(month.expense)), amount(report.totalExpense));
+    add("Net Profit", ...months.map((month) => amount(month.profit)), amount(report.netProfit));
+    add("Cash In (Bookings)", ...months.map((month) => amount(month.bookingCash)));
     add();
-    add("Neraca", `Per ${formatDate(report.asOf)}`);
-    add("Aset");
+    add("Balance Sheet", `As of ${formatDate(report.asOf)}`);
+    add("Assets");
     report.assetRows.forEach((row) => add(`${row.code} ${row.account.name}`, amount(row.closingBalance)));
-    add("Total Aset", amount(report.totalAssets));
-    add("Liabilitas");
+    add("Total Assets", amount(report.totalAssets));
+    add("Liabilities");
     report.liabilityRows.forEach((row) => add(`${row.code} ${row.account.name}`, amount(row.closingBalance)));
-    add("Total Liabilitas", amount(report.totalLiabilities));
-    add("Ekuitas");
+    add("Total Liabilities", amount(report.totalLiabilities));
+    add("Equity");
     report.equityRows.forEach((row) => add(`${row.code} ${row.account.name}`, amount(row.closingBalance)));
-    if (report.range) add("Saldo laba sebelum periode", amount(report.retainedOpening));
-    add(report.range ? "Laba periode berjalan" : "Saldo laba", amount(report.netProfit));
-    add("Total Ekuitas", amount(report.totalEquity));
-    add("Total Liabilitas + Ekuitas", amount(report.totalLiabilities + report.totalEquity));
+    if (report.range) add("Retained earnings before period", amount(report.retainedOpening));
+    add(report.range ? "Current period profit" : "Retained earnings", amount(report.netProfit));
+    add("Total Equity", amount(report.totalEquity));
+    add("Total Liabilities + Equity", amount(report.totalLiabilities + report.totalEquity));
     add();
-    add("Rincian Utang Fee Tutor");
+    add("Tutor Fee Payable Detail");
     report.partyClosing(SYS.tutorPayable).forEach((party) => add(party.label, amount(party.amount)));
     add();
-    add("Rincian Unearned Revenue");
+    add("Unearned Revenue Detail");
     report.partyClosing(SYS.unearned).forEach((party) => add(party.label, amount(party.amount)));
     add();
-    add("Jurnal Umum", report.period);
-    add("Tanggal", "Sumber", "Keterangan", "Referensi", "Kode Akun", "Nama Akun", "Rincian", "Debit", "Kredit");
+    add("General Journal", report.period);
+    add("Date", "Source", "Description", "Reference", "Account Code", "Account Name", "Detail", "Debit", "Credit");
     report.periodEntries.forEach((entry) => {
       entry.lines.forEach((line) => add(entry.date, SOURCE_LABELS[entry.source] || entry.source, entry.description, entry.reference, line.account, getAccount(line.account).name, line.party, line.debit || "", line.credit || ""));
     });
@@ -2131,7 +2139,7 @@
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `laporan-akuntansi-${report.period.replace(/[^0-9a-zA-Z-]+/g, "-")}.xls`;
+    link.download = `accounting-report-${report.period.replace(/[^0-9a-zA-Z-]+/g, "-")}.xls`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -2261,7 +2269,7 @@
   let resizeTimer = null;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { if (report && currentFinanceView() === "ringkasan") renderTrend(); }, 180);
+    resizeTimer = setTimeout(() => { if (report && currentFinanceView() === "summary") renderTrend(); }, 180);
   });
   window.addEventListener("hashchange", () => showFinanceView(true));
   showFinanceView();
