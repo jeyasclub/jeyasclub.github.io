@@ -579,7 +579,7 @@
   // Akun yang dipakai jurnal otomatis. Kodenya harus sama dengan supabase-finance-accounting.sql.
   const SYS = {
     cash:"1101", tutorPayable:"2101", unearned:"2201", courseRevenue:"4101", expiredRevenue:"4102",
-    digitalRevenue:"4201", otherIncome:"4901", tutorFee:"5101", otherExpense:"5901"
+    digitalRevenue:"4201", otherIncome:"4901", tutorFee:"5101", salary:"5102", otherExpense:"5901"
   };
   const ACCOUNT_TYPES = {
     asset:{ label:"Aset", normal:"debit", digit:"1" },
@@ -596,7 +596,7 @@
     ["3101", "Modal Pemilik", "equity", false], ["3201", "Prive", "equity", false],
     ["4101", "Course Revenue", "revenue", true], ["4102", "Pendapatan Sesi Hangus", "revenue", true],
     ["4201", "Digital Product Revenue", "revenue", true], ["4901", "Pendapatan Lain-lain", "revenue", true],
-    ["5101", "Beban Fee Tutor", "expense", true], ["5201", "Beban Marketing", "expense", false],
+    ["5101", "Beban Fee Tutor", "expense", true], ["5102", "Beban Gaji", "expense", true], ["5201", "Beban Marketing", "expense", false],
     ["5202", "Beban Tools & Langganan", "expense", false], ["5203", "Beban Admin & Payment Gateway", "expense", false],
     ["5901", "Beban Lain-lain", "expense", true]
   ].map(([code, name, account_type, is_system]) => ({ code, name, account_type, is_system, is_active:true }));
@@ -1228,10 +1228,15 @@
         { account:SYS.cash }, { account:SYS.digitalRevenue, party:row.product_name }, row.sale_count * price);
     });
 
+    // Kalau sudah ada akun bernama "Beban Gaji" dengan kode lain, pakai akun itu.
+    const namedSalary = accounts.find((account) => account.account_type === "expense" && account.name.trim().toLowerCase() === "beban gaji");
+    const salaryAccount = namedSalary ? namedSalary.code : SYS.salary;
     data.legacy.forEach((row) => {
       const category = row.category || "Lainnya";
       const description = `${category}${row.description ? `: ${row.description}` : ""}`;
-      if (row.entry_type === "expense") pair(row.entry_date, "legacy", description, { account:SYS.otherExpense, party:category }, { account:SYS.cash }, row.amount);
+      // Gaji admin yang dicatat di Finance 1 masuk ke akun Beban Gaji, bukan Beban Lain-lain.
+      const isSalary = /\bgaji\b|salary/i.test(`${category} ${row.description || ""}`);
+      if (row.entry_type === "expense") pair(row.entry_date, "legacy", description, { account:isSalary ? salaryAccount : SYS.otherExpense, party:category }, { account:SYS.cash }, row.amount);
       else pair(row.entry_date, "legacy", description, { account:SYS.cash }, { account:SYS.otherIncome, party:category }, row.amount);
     });
 
@@ -1422,6 +1427,7 @@
       ["Masa berlaku kelas habis, sisa sesi hangus", SYS.unearned, SYS.expiredRevenue, "Tanggal masa berlaku"],
       ["Produk digital terjual", SYS.cash, SYS.digitalRevenue, "Akhir bulan penjualan"],
       ["Pendapatan lain di Finance 1", SYS.cash, SYS.otherIncome, "Tanggal transaksi"],
+      ["Gaji admin di Finance 1 (kategori atau keterangan memuat \"gaji\")", SYS.salary, SYS.cash, "Tanggal transaksi"],
       ["Pengeluaran lain di Finance 1", SYS.otherExpense, SYS.cash, "Tanggal transaksi"]
     ];
     els.rulesBody.innerHTML = rules.map(([event, debit, credit, when]) => `<tr><td>${escapeHTML(event)}</td><td>${name(debit)}</td><td>${name(credit)}</td><td>${escapeHTML(when)}</td></tr>`).join("");

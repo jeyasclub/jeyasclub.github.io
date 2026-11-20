@@ -121,6 +121,7 @@ values
   ('4201', 'Digital Product Revenue', 'revenue', true),
   ('4901', 'Pendapatan Lain-lain', 'revenue', true),
   ('5101', 'Beban Fee Tutor', 'expense', true),
+  ('5102', 'Beban Gaji', 'expense', true),
   ('5201', 'Beban Marketing', 'expense', false),
   ('5202', 'Beban Tools & Langganan', 'expense', false),
   ('5203', 'Beban Admin & Payment Gateway', 'expense', false),
