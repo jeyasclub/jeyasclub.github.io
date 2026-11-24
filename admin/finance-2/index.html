@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finance 2 Admin | Jeya's Club</title>
+<title>Accounting Admin | Jeya's Club</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
@@ -248,7 +248,7 @@
         <a class="nav-link" href="/admin/">Dashboard</a>
         <a class="nav-link" href="/admin/overview/">Overview</a>
         <a class="nav-link" href="/admin/finance/">Finance</a>
-        <a class="nav-link active" href="/admin/finance-2/">Finance 2</a>
+        <a class="nav-link active" href="/admin/finance-2/">Accounting</a>
         <a class="nav-link" href="/admin/database/">Database</a>
         <a class="nav-link" href="/input/">Input</a>
       </nav>
@@ -259,7 +259,7 @@
   <section class="login-screen" id="loginScreen">
     <div class="login-card">
       <div>
-        <p class="eyebrow">Finance 2 · Accounting</p>
+        <p class="eyebrow">Accounting · Accrual Basis</p>
         <h1>Accounting</h1>
         <p class="muted">Login memakai akun admin Jeya's Club untuk melihat journal dan financial statements.</p>
       </div>
@@ -275,7 +275,7 @@
   <main class="shell dashboard" id="dashboard">
     <div class="hero-row">
       <div>
-        <p class="eyebrow">Finance 2 · Accounting</p>
+        <p class="eyebrow">Accounting · Accrual Basis</p>
         <h1>Accounting</h1>
         <p class="muted" id="sessionLabel">Memuat sesi admin...</p>
       </div>
@@ -294,7 +294,7 @@
       <span>Jalankan file <code>supabase-finance-accounting.sql</code> di Supabase SQL Editor, lalu klik Refresh. Automatic journal dan laporan di bawah sudah bisa dipakai tanpa menunggu itu.</span>
     </div>
 
-    <nav class="finance-tabs" id="financeTabs" aria-label="Sub halaman finance 2">
+    <nav class="finance-tabs" id="financeTabs" aria-label="Sub halaman accounting">
       <a class="finance-tab" href="#summary" data-tab="summary">Summary</a>
       <a class="finance-tab" href="#journal" data-tab="journal">Journal</a>
       <a class="finance-tab" href="#ledger" data-tab="ledger">Ledger</a>
@@ -1009,7 +1009,7 @@
     ]);
     const failed = bookings.error || trackers.error || fees.error || legacy.error;
     if (failed) {
-      console.error("Finance 2 load failed:", failed);
+      console.error("Accounting load failed:", failed);
       els.refresh.disabled = false;
       els.refresh.textContent = "Refresh";
       els.sessionLabel.textContent = "Data finance belum bisa dimuat. Coba Refresh.";
